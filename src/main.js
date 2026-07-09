@@ -148,3 +148,100 @@ document.getElementById('btn-png').addEventListener('click', async () => {
 
     // Récupérer la font BPMN woff2 et l'embarquer en base64
     const fontUrl = new URL(
+      '/node_modules/bpmn-js/dist/assets/bpmn-font/font/bpmn.woff2',
+      window.location.origin
+    ).href
+
+    let fontFaceStyle = ''
+    try {
+      // Cherche la font dans les stylesheets déjà chargées
+      const fontB64 = await fetchFontAsBase64(
+        '/assets/bpmn-' + Array.from(document.styleSheets)
+          .flatMap(s => { try { return Array.from(s.cssRules) } catch { return [] } })
+          .find(r => r.cssText && r.cssText.includes('bpmn.woff2'))
+          ?.cssText?.match(/url\("([^"]+\.woff2)"\)/)?.[1]?.split('/').pop() || ''
+      )
+      fontFaceStyle = `@font-face { font-family: 'bpmn'; src: url('data:font/woff2;base64,${fontB64}') format('woff2'); }`
+    } catch {
+      // Fallback : récupérer toutes les règles CSS sans les fonts
+    }
+
+    // Injecter styles + font dans le SVG
+    const allStyles = Array.from(document.styleSheets)
+      .flatMap(sheet => {
+        try { return Array.from(sheet.cssRules).map(r => r.cssText) }
+        catch { return [] }
+      })
+      .filter(rule => !rule.includes('url(')) // exclure les @font-face avec URL externes
+      .join('\n')
+
+    const svgWithStyles = svg.replace(
+      /(<svg[^>]*>)/,
+      `$1<defs><style>${fontFaceStyle}\n${allStyles}</style></defs>`
+    )
+
+    // Parser pour récupérer les dimensions
+    const parser = new DOMParser()
+    const svgDoc = parser.parseFromString(svgWithStyles, 'image/svg+xml')
+    const svgEl = svgDoc.querySelector('svg')
+    const vb = svgEl.getAttribute('viewBox')?.split(' ').map(Number)
+    const w = vb ? vb[2] : (parseFloat(svgEl.getAttribute('width')) || 800)
+    const h = vb ? vb[3] : (parseFloat(svgEl.getAttribute('height')) || 600)
+
+    const scale = 2
+    const canvas = document.createElement('canvas')
+    canvas.width = w * scale
+    canvas.height = h * scale
+    const ctx = canvas.getContext('2d')
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    const blob = new Blob([svgWithStyles], { type: 'image/svg+xml;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      URL.revokeObjectURL(url)
+      canvas.toBlob(b => {
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(b)
+        a.download = 'diagramme.png'
+        a.click()
+      }, 'image/png')
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      alert('Export PNG échoué — utilise Export SVG à la place.')
+    }
+    img.src = url
+  } catch (e) {
+    console.error('Export PNG:', e)
+    alert('Export PNG échoué — utilise Export SVG à la place.')
+  }
+})
+
+let simActive = false
+document.getElementById('btn-simulation').addEventListener('click', () => {
+  const btn = document.getElementById('btn-simulation')
+  simActive = !simActive
+  if (simActive) {
+    btn.textContent = '⏹ Arrêter Simulation'
+    btn.classList.add('active')
+  } else {
+    btn.textContent = '▶ Simulation'
+    btn.classList.remove('active')
+  }
+  try {
+    modeler.get('eventBus').fire('tokenSimulation.toggleMode')
+  } catch(e) { console.warn('Simulation toggle:', e) }
+})
+
+function download(content, filename, type) {
+  const a = document.createElement('a')
+  const blob = content instanceof Blob ? content : new Blob([content], { type })
+  a.href = content instanceof Blob ? URL.createObjectURL(content) : URL.createObjectURL(blob)
+  a.download = filename
+  a.click()
+}
+
+loadInitial()
