@@ -2,6 +2,7 @@ import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel'
 import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
+import { Canvg } from 'canvg'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -133,49 +134,44 @@ document.getElementById('btn-svg').addEventListener('click', async () => {
 })
 
 document.getElementById('btn-png').addEventListener('click', async () => {
-  const { svg } = await modeler.saveSVG()
+  try {
+    const { svg } = await modeler.saveSVG()
 
-  // Récupérer toutes les règles CSS du document et les inliner dans le SVG
-  const allStyles = Array.from(document.styleSheets)
-    .flatMap(sheet => {
-      try { return Array.from(sheet.cssRules).map(r => r.cssText) }
-      catch { return [] }
-    })
-    .join('\n')
+    // Parser le SVG pour récupérer width/height
+    const parser = new DOMParser()
+    const svgDoc = parser.parseFromString(svg, 'image/svg+xml')
+    const svgEl = svgDoc.querySelector('svg')
+    const vb = svgEl.getAttribute('viewBox')?.split(' ').map(Number)
+    const w = vb ? vb[2] : (parseFloat(svgEl.getAttribute('width')) || 800)
+    const h = vb ? vb[3] : (parseFloat(svgEl.getAttribute('height')) || 600)
 
-  // Injecter les styles dans le SVG
-  const svgWithStyles = svg.replace(
-    /(<svg[^>]*>)/,
-    `$1<defs><style>${allStyles}</style></defs>`
-  )
-
-  const blob = new Blob([svgWithStyles], { type: 'image/svg+xml;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-
-  const img = new Image()
-  img.onload = () => {
+    const scale = 2
     const canvas = document.createElement('canvas')
-    const scale = 2 // retina
-    canvas.width = (img.naturalWidth || 800) * scale
-    canvas.height = (img.naturalHeight || 600) * scale
+    canvas.width = w * scale
+    canvas.height = h * scale
     const ctx = canvas.getContext('2d')
-    ctx.scale(scale, scale)
     ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
-    ctx.drawImage(img, 0, 0)
-    URL.revokeObjectURL(url)
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+    // canvg gère le SVG nativement sans passer par Image
+    const v = await Canvg.fromString(ctx, svg, {
+      scaleWidth: w * scale,
+      scaleHeight: h * scale,
+      ignoreMouse: true,
+      ignoreAnimation: true,
+    })
+    await v.render()
+
     canvas.toBlob(b => {
       const a = document.createElement('a')
       a.href = URL.createObjectURL(b)
       a.download = 'diagramme.png'
       a.click()
     }, 'image/png')
-  }
-  img.onerror = () => {
-    URL.revokeObjectURL(url)
+  } catch (e) {
+    console.error('Export PNG:', e)
     alert('Export PNG échoué — utilise Export SVG à la place.')
   }
-  img.src = url
 })
 
 let simActive = false
