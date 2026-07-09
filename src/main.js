@@ -119,3 +119,87 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
   } catch (err) {
     alert('Fichier BPMN invalide : ' + err.message)
   }
+  e.target.value = ''
+})
+
+document.getElementById('btn-save').addEventListener('click', async () => {
+  const { xml } = await modeler.saveXML({ format: true })
+  download(xml, 'diagramme.bpmn', 'application/xml')
+})
+
+document.getElementById('btn-svg').addEventListener('click', async () => {
+  const { svg } = await modeler.saveSVG()
+  download(svg, 'diagramme.svg', 'image/svg+xml')
+})
+
+document.getElementById('btn-png').addEventListener('click', async () => {
+  const { svg } = await modeler.saveSVG()
+
+  // Récupérer toutes les règles CSS du document et les inliner dans le SVG
+  const allStyles = Array.from(document.styleSheets)
+    .flatMap(sheet => {
+      try { return Array.from(sheet.cssRules).map(r => r.cssText) }
+      catch { return [] }
+    })
+    .join('\n')
+
+  // Injecter les styles dans le SVG
+  const svgWithStyles = svg.replace(
+    /(<svg[^>]*>)/,
+    `$1<defs><style>${allStyles}</style></defs>`
+  )
+
+  const blob = new Blob([svgWithStyles], { type: 'image/svg+xml;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+
+  const img = new Image()
+  img.onload = () => {
+    const canvas = document.createElement('canvas')
+    const scale = 2 // retina
+    canvas.width = (img.naturalWidth || 800) * scale
+    canvas.height = (img.naturalHeight || 600) * scale
+    const ctx = canvas.getContext('2d')
+    ctx.scale(scale, scale)
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
+    ctx.drawImage(img, 0, 0)
+    URL.revokeObjectURL(url)
+    canvas.toBlob(b => {
+      const a = document.createElement('a')
+      a.href = URL.createObjectURL(b)
+      a.download = 'diagramme.png'
+      a.click()
+    }, 'image/png')
+  }
+  img.onerror = () => {
+    URL.revokeObjectURL(url)
+    alert('Export PNG échoué — utilise Export SVG à la place.')
+  }
+  img.src = url
+})
+
+let simActive = false
+document.getElementById('btn-simulation').addEventListener('click', () => {
+  const btn = document.getElementById('btn-simulation')
+  simActive = !simActive
+  if (simActive) {
+    btn.textContent = '⏹ Arrêter Simulation'
+    btn.classList.add('active')
+  } else {
+    btn.textContent = '▶ Simulation'
+    btn.classList.remove('active')
+  }
+  try {
+    modeler.get('eventBus').fire('tokenSimulation.toggleMode')
+  } catch(e) { console.warn('Simulation toggle:', e) }
+})
+
+function download(content, filename, type) {
+  const a = document.createElement('a')
+  const blob = content instanceof Blob ? content : new Blob([content], { type })
+  a.href = content instanceof Blob ? URL.createObjectURL(content) : URL.createObjectURL(blob)
+  a.download = filename
+  a.click()
+}
+
+loadInitial()
