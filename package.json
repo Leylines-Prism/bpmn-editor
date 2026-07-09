@@ -8,11 +8,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "bpmn-js": "17.11.1",
-    "bpmn-js-properties-panel": "3.26.0",
-    "@bpmn-io/properties-panel": "3.26.0",
+    "bpmn-js": "18.19.0",
+    "bpmn-js-properties-panel": "5.50.1",
+    "@bpmn-io/properties-panel": "3.40.5",
     "diagram-js-minimap": "5.1.0",
-    "bpmn-js-token-simulation": "0.34.0"
+    "bpmn-js-token-simulation": "0.39.4"
   },
   "devDependencies": {
     "vite": "6.3.5"
