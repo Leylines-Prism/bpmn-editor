@@ -2,7 +2,6 @@ import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel'
 import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
-import { Canvg } from 'canvg'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -133,69 +132,19 @@ document.getElementById('btn-svg').addEventListener('click', async () => {
   download(svg, 'diagramme.svg', 'image/svg+xml')
 })
 
+// ── Export PNG : embarque les fonts BPMN en base64 dans le SVG ────────────
+async function fetchFontAsBase64(url) {
+  const res = await fetch(url)
+  const buf = await res.arrayBuffer()
+  const bytes = new Uint8Array(buf)
+  let binary = ''
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
+  return btoa(binary)
+}
+
 document.getElementById('btn-png').addEventListener('click', async () => {
   try {
     const { svg } = await modeler.saveSVG()
 
-    // Parser le SVG pour récupérer width/height
-    const parser = new DOMParser()
-    const svgDoc = parser.parseFromString(svg, 'image/svg+xml')
-    const svgEl = svgDoc.querySelector('svg')
-    const vb = svgEl.getAttribute('viewBox')?.split(' ').map(Number)
-    const w = vb ? vb[2] : (parseFloat(svgEl.getAttribute('width')) || 800)
-    const h = vb ? vb[3] : (parseFloat(svgEl.getAttribute('height')) || 600)
-
-    const scale = 2
-    const canvas = document.createElement('canvas')
-    canvas.width = w * scale
-    canvas.height = h * scale
-    const ctx = canvas.getContext('2d')
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-    // canvg gère le SVG nativement sans passer par Image
-    const v = await Canvg.fromString(ctx, svg, {
-      scaleWidth: w * scale,
-      scaleHeight: h * scale,
-      ignoreMouse: true,
-      ignoreAnimation: true,
-    })
-    await v.render()
-
-    canvas.toBlob(b => {
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(b)
-      a.download = 'diagramme.png'
-      a.click()
-    }, 'image/png')
-  } catch (e) {
-    console.error('Export PNG:', e)
-    alert('Export PNG échoué — utilise Export SVG à la place.')
-  }
-})
-
-let simActive = false
-document.getElementById('btn-simulation').addEventListener('click', () => {
-  const btn = document.getElementById('btn-simulation')
-  simActive = !simActive
-  if (simActive) {
-    btn.textContent = '⏹ Arrêter Simulation'
-    btn.classList.add('active')
-  } else {
-    btn.textContent = '▶ Simulation'
-    btn.classList.remove('active')
-  }
-  try {
-    modeler.get('eventBus').fire('tokenSimulation.toggleMode')
-  } catch(e) { console.warn('Simulation toggle:', e) }
-})
-
-function download(content, filename, type) {
-  const a = document.createElement('a')
-  const blob = content instanceof Blob ? content : new Blob([content], { type })
-  a.href = content instanceof Blob ? URL.createObjectURL(content) : URL.createObjectURL(blob)
-  a.download = filename
-  a.click()
-}
-
-loadInitial()
+    // Récupérer la font BPMN woff2 et l'embarquer en base64
+    const fontUrl = new URL(
