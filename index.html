@@ -31,7 +31,6 @@
     #canvas { flex: 1; position: relative; background: #fff; }
     #properties-panel { width: 280px; border-left: 1px solid #0f3460; overflow-y: auto; background: #16213e; flex-shrink: 0; }
 
-    .bjs-powered-by { display: none !important; } /* on remet notre propre crédit */
     #credit {
       position: absolute; bottom: 8px; left: 8px;
       font-size: 10px; color: #999; z-index: 100;
@@ -39,6 +38,29 @@
     }
     #credit a { color: #555; text-decoration: none; }
     #credit a:hover { text-decoration: underline; }
+
+    /* Fix popup menu bpmn-js — forcer couleurs claires */
+    .djs-popup {
+      color: #1a1a1a !important;
+      background: #ffffff !important;
+    }
+    .djs-popup .entry {
+      color: #1a1a1a !important;
+    }
+    .djs-popup .entry:hover {
+      background: #f0f0f0 !important;
+      color: #1a1a1a !important;
+    }
+    .djs-popup-header .entry {
+      color: #1a1a1a !important;
+    }
+    .djs-popup .search input {
+      color: #1a1a1a !important;
+      background: #ffffff !important;
+    }
+    .djs-popup .group-title {
+      color: #6b7280 !important;
+    }
   </style>
 </head>
 <body>
