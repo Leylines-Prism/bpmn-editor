@@ -3,6 +3,8 @@ import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js
 import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
 import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
+import BpmnColorPickerModule from 'bpmn-js-color-picker'
+import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -10,6 +12,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import '@bpmn-io/properties-panel/assets/properties-panel.css'
 import 'diagram-js-minimap/assets/diagram-js-minimap.css'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
+import 'bpmn-js-color-picker/colors/color-picker.css'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -66,6 +69,8 @@ const modeler = new BpmnModeler({
     minimapModule,
     TokenSimulationModule,
     CreateAppendAnythingModule,
+    BpmnColorPickerModule,
+    NativeCopyPasteModule,
   ],
 })
 
