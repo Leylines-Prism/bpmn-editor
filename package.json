@@ -13,7 +13,7 @@
     "@bpmn-io/properties-panel": "3.40.5",
     "diagram-js-minimap": "5.1.0",
     "bpmn-js-token-simulation": "0.39.4",
-    "canvg": "4.0.2"
+    "bpmn-js-create-append-anything": "1.2.0"
   },
   "devDependencies": {
     "vite": "6.3.5"
