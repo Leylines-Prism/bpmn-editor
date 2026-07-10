@@ -2,6 +2,7 @@ import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel'
 import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
+import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -64,6 +65,7 @@ const modeler = new BpmnModeler({
     BpmnPropertiesProviderModule,
     minimapModule,
     TokenSimulationModule,
+    CreateAppendAnythingModule,
   ],
 })
 
