@@ -11,6 +11,7 @@ import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { autoLayout } from './auto-layout.js'
+import { importDiagram, setupXmlDialog, setupFileDrop } from './import-xml.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -134,20 +135,46 @@ document.getElementById('btn-open').addEventListener('click', () => {
   document.getElementById('file-input').click()
 })
 
+// Import commun au bouton Ouvrir, au glisser-déposer et à la fenêtre Importer XML.
+// Renvoie un message d'erreur, ou rien si l'import a réussi.
+async function importAndReport(xml, fileName) {
+  try {
+    const { warnings, laidOut } = await importDiagram(modeler, xml)
+    if (fileName) baseName = fileName.replace(/\.(bpmn|xml)$/i, '') || DEFAULT_NAME
+    else baseName = DEFAULT_NAME
+    let status = fileName ? 'Fichier ouvert' : 'XML importé'
+    if (laidOut) status += ', rangé automatiquement (pas de partie graphique)'
+    if (warnings.length) {
+      status += ', ' + warnings.length + (warnings.length > 1 ? ' avertissements' : ' avertissement') + ' (voir la console)'
+      console.warn('Avertissements d\'import :', warnings)
+    }
+    setStatus(status)
+  } catch (err) {
+    return err.message
+  }
+}
+
+async function importFile(file) {
+  if (!/\.(bpmn|xml)$/i.test(file.name)) {
+    alert('Format non pris en charge : choisis un fichier .bpmn ou .xml.')
+    return
+  }
+  const failure = await importAndReport(await file.text(), file.name)
+  if (failure) alert('Import impossible : ' + failure)
+}
+
 document.getElementById('file-input').addEventListener('change', async (e) => {
   const file = e.target.files[0]
-  if (!file) return
-  const xml = await file.text()
-  try {
-    await modeler.importXML(xml)
-    baseName = file.name.replace(/\.(bpmn|xml)$/i, '') || DEFAULT_NAME
-    modeler.get('canvas').zoom('fit-viewport')
-    setStatus('Fichier ouvert')
-  } catch (err) {
-    alert('Fichier BPMN invalide : ' + err.message)
-  }
   e.target.value = ''
+  if (file) await importFile(file)
 })
+
+setupXmlDialog({
+  openButton: document.getElementById('btn-import-xml'),
+  fileInput: document.getElementById('file-input'),
+  onImport: (xml) => importAndReport(xml, null),
+})
+setupFileDrop({ onFile: importFile })
 
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })

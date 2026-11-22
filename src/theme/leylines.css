@@ -78,6 +78,7 @@ body {
 [data-icon="layout"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='5' cy='12' r='2'/%3E%3Crect x='10' y='4' width='5' height='5' rx='1'/%3E%3Crect x='10' y='15' width='5' height='5' rx='1'/%3E%3Ccircle cx='20' cy='12' r='2'/%3E%3Cpath d='M7 12h1.5v-5.5H10M8.5 12v5.5H10M15 6.5h1.5V12H18M15 17.5h1.5V12'/%3E%3C/svg%3E"); }
 [data-icon="play"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5l12 7-12 7z'/%3E%3C/svg%3E"); }
 .btn.active[data-icon="play"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='6' width='12' height='12' rx='2'/%3E%3C/svg%3E"); }
+[data-icon="code"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14'/%3E%3C/svg%3E"); }
 [data-icon="theme"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 4a8 8 0 0 1 0 16z' fill='black'/%3E%3C/svg%3E"); }
 #btn-chat            { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4V6a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
 
@@ -281,3 +282,29 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
 }
+
+/* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
+
+#xml-dialog {
+  margin: auto; width: min(720px, calc(100vw - 32px));
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--surface-raised); color: var(--ink);
+  box-shadow: var(--elevation-1); padding: var(--space-6);
+}
+#xml-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#xml-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
+#xml-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#xml-dialog .hint { color: var(--ink-muted); font-size: 13px; }
+#xml-dialog textarea {
+  width: 100%; height: 320px; resize: vertical;
+  padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  background: var(--surface); color: var(--ink);
+  font-family: var(--font-mono); font-size: 12px; line-height: 18px;
+}
+#xml-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#xml-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
+#xml-dialog .error:empty { display: none; }
+#xml-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#xml-dialog .grow { flex: 1; }
+
+body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6px; }
