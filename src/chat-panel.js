@@ -28,6 +28,7 @@ const CSS = `
 .chat-tools { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
 .chat-tools span { font-size: 11px; padding: 1px 7px; border-radius: 10px; border: 1px solid #0f3460; color: #9ca3af; white-space: nowrap; }
 .chat-tools span.failed { color: #fca5a5; border-color: #e94560; }
+.chat-status { font-size: 11px; color: #9ca3af; margin-top: 6px; }
 #chat-form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #0f3460; }
 #chat-input { flex: 1; resize: none; height: 60px; padding: 6px 8px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; font-size: 13px; }
 #chat-input:disabled { opacity: 0.5; }
@@ -138,18 +139,31 @@ export function createChatPanel({ chatUrl, bridge }) {
   async function send(text) {
     add('user', text)
     const reply = add('assistant')
-    reply.textContent = '…'
+    reply.hidden = true // affichée au premier texte ou au premier outil
     let tools = null
     let gotText = false
     let toolSinceText = false
     controller = new AbortController()
     setBusy(true)
 
+    // Ligne d'état sous la réponse : ce que fait l'assistant et depuis combien de temps.
+    const status = document.createElement('div')
+    status.className = 'chat-status'
+    let statusText = 'envoi'
+    const started = Date.now()
+    const renderStatus = () => {
+      status.textContent = `⏳ ${statusText}… ${Math.round((Date.now() - started) / 1000)} s`
+    }
+    renderStatus()
+    log.append(status)
+    const timer = setInterval(renderStatus, 1000)
+
     const handle = (event) => {
+      if (event.type === 'text') statusText = 'rédige'
       if (event.type === 'conversation') {
         conversationId = event.id
       } else if (event.type === 'text') {
-        if (!gotText) reply.textContent = ''
+        reply.hidden = false
         // Un paragraphe par étape : le texte qui suit des appels d'outils repart à la ligne.
         const chunk = (toolSinceText && reply.firstChild !== tools ? '\n\n' : '') + event.text
         gotText = true
@@ -158,10 +172,8 @@ export function createChatPanel({ chatUrl, bridge }) {
         if (tools) reply.insertBefore(document.createTextNode(chunk), tools)
         else reply.append(chunk)
       } else if (event.type === 'tool') {
-        if (!gotText) {
-          reply.textContent = ''
-          gotText = true
-        }
+        reply.hidden = false
+        gotText = true
         if (!tools) {
           tools = document.createElement('div')
           tools.className = 'chat-tools'
@@ -173,6 +185,13 @@ export function createChatPanel({ chatUrl, bridge }) {
         chip.title = event.error || event.name
         if (!event.ok) chip.classList.add('failed')
         tools.append(chip)
+      } else if (event.type === 'status') {
+        const label = TOOL_LABELS[event.tool] || event.tool
+        if (event.phase === 'thinking') statusText = 'réflexion'
+        else if (event.phase === 'preparing')
+          statusText = `prépare : ${label}` + (event.size ? ` (${(event.size / 1024).toFixed(1)} Ko)` : '')
+        else if (event.phase === 'running') statusText = `exécute : ${label}`
+        renderStatus()
       } else if (event.type === 'error') {
         add('error', event.message)
       }
@@ -210,6 +229,8 @@ export function createChatPanel({ chatUrl, bridge }) {
       if (err.name === 'AbortError') add('notice', 'Réponse interrompue.')
       else add('error', `Échec de l'envoi : ${err.message}`)
     } finally {
+      clearInterval(timer)
+      status.remove()
       if (!gotText) reply.remove()
       controller = null
       setBusy(false)
