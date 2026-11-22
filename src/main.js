@@ -4,6 +4,7 @@ import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
 import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 import BpmnColorPickerModule from 'bpmn-js-color-picker'
+import { COLORS, CustomColorModule } from './color-palette.js'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
@@ -109,6 +110,7 @@ const modeler = new BpmnModeler({
   container: '#canvas',
   propertiesPanel: { parent: '#properties-panel' },
   linting: { bpmnlint: lintConfig, active: true },
+  colorPicker: { colors: COLORS },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -116,6 +118,7 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     CreateAppendAnythingModule,
     BpmnColorPickerModule,
+    CustomColorModule,
     NativeCopyPasteModule,
     LintModule,
     GridModule,
