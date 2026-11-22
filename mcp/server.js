@@ -14,6 +14,7 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 
 import { EditorBridge } from './bridge.js'
 import { ChatService } from './chat.js'
+import { OpenAICompatError } from './openai-compat.js'
 import { INSTRUCTIONS, TOOLS } from './tools.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
@@ -103,9 +104,13 @@ app.options('/chat', chatCors)
 app.get('/chat', chatCors, (req, res) => res.json(chat.status()))
 
 app.post('/chat', chatCors, async (req, res) => {
-  const { conversationId, tabId, text } = req.body ?? {}
+  const { conversationId, tabId, text, model } = req.body ?? {}
   if (typeof text !== 'string' || !text.trim() || text.length > 20000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: 'Requête invalide' })
+  }
+  // Seuls les modèles configurés sur le serveur sont acceptés.
+  if (model !== undefined && (typeof model !== 'string' || !chat.hasModel(model))) {
+    return res.status(400).json({ error: 'Modèle inconnu' })
   }
   res.set({ 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
   res.flushHeaders()
@@ -119,6 +124,7 @@ app.post('/chat', chatCors, async (req, res) => {
     await chat.send({
       conversationId: typeof conversationId === 'string' ? conversationId : undefined,
       tabId,
+      model,
       text: text.trim(),
       emit,
       signal: abort.signal,
@@ -139,6 +145,13 @@ function chatErrorMessage(err) {
   if (err instanceof Anthropic.RateLimitError) return "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard."
   if (err instanceof Anthropic.BadRequestError) return `Requête refusée par l'API : ${err.message}`
   if (err instanceof Anthropic.APIError) return `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`
+  if (err instanceof OpenAICompatError) {
+    if (err.status === 401 || err.status === 403) return 'Clé refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.'
+    if (err.status === 404) return `Modèle ou adresse introuvable chez le fournisseur compatible OpenAI. Vérifiez OPENAI_BASE_URL et OPENAI_MODELS (${err.message}).`
+    if (err.status === 429) return "Limite d'utilisation du fournisseur atteinte, ou crédits épuisés. Réessayez plus tard."
+    if (err.status === null) return `Fournisseur compatible OpenAI injoignable. Vérifiez OPENAI_BASE_URL (${err.message}).`
+    return `Erreur du fournisseur compatible OpenAI (${err.status}) : ${err.message}`
+  }
   return err.message
 }
 
@@ -149,6 +162,11 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
-  log(chat.enabled ? `Chat intégré actif (${chat.status().model})` : 'Chat intégré inactif : ANTHROPIC_API_KEY non définie')
+  for (const warning of chat.warnings) log(`Attention : ${warning}`)
+  log(
+    chat.enabled
+      ? `Chat intégré actif : ${chat.models.map((m) => m.key).join(', ')} (par défaut ${chat.defaultKey})`
+      : 'Chat intégré inactif : ni ANTHROPIC_API_KEY ni OPENAI_MODELS ne sont définies',
+  )
 })
 httpServer.on('upgrade', (req, socket, head) => bridge.handleUpgrade(req, socket, head))

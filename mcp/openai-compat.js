@@ -1,0 +1,124 @@
+// Client minimal pour les API compatibles OpenAI (route /chat/completions) :
+// OpenAI, OpenRouter, Ollama, LM Studio, vLLM, Mistral…
+//
+// Requête en flux (SSE). Le texte et les appels d'outils arrivent par morceaux :
+// on les assemble ici, et on signale au fil de l'eau ce qui se passe.
+
+export class OpenAICompatError extends Error {
+  constructor(status, message) {
+    super(message)
+    this.name = 'OpenAICompatError'
+    this.status = status // null si le serveur n'a pas répondu
+  }
+}
+
+export class OpenAICompatClient {
+  constructor({ baseUrl, apiKey }) {
+    this.baseUrl = baseUrl.replace(/\/+$/, '')
+    this.apiKey = apiKey || null
+  }
+
+  // Envoie une requête en flux. Rappels facultatifs :
+  //   onText(delta)                texte de la réponse
+  //   onReasoning()                le modèle réfléchit (champ reasoning ou reasoning_content)
+  //   onToolStart(name)            un appel d'outil commence
+  //   onToolArgs(totalLength)      taille cumulée des arguments
+  // Renvoie { content, toolCalls: [{ id, name, arguments }], finishReason }.
+  async stream(body, { signal, onText, onReasoning, onToolStart, onToolArgs } = {}) {
+    let res
+    try {
+      res = await fetch(`${this.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'text/event-stream',
+          ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
+        },
+        body: JSON.stringify({ ...body, stream: true }),
+        signal,
+      })
+    } catch (err) {
+      if (signal?.aborted) throw err
+      throw new OpenAICompatError(null, err.cause?.code || err.message)
+    }
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '')
+      let message = text.slice(0, 500) || res.statusText
+      try {
+        const data = JSON.parse(text)
+        message = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : message)
+      } catch {}
+      throw new OpenAICompatError(res.status, message)
+    }
+
+    let content = ''
+    let finishReason = null
+    let reasoning = false
+    const calls = [] // par index : { id, name, arguments }
+    let argsLength = 0
+
+    const handle = (chunk) => {
+      if (chunk.error) throw new OpenAICompatError(res.status, chunk.error.message || JSON.stringify(chunk.error))
+      const choice = chunk.choices?.[0]
+      if (!choice) return
+      const delta = choice.delta ?? {}
+      if (!reasoning && (delta.reasoning || delta.reasoning_content)) {
+        reasoning = true
+        onReasoning?.()
+      }
+      if (typeof delta.content === 'string' && delta.content) {
+        content += delta.content
+        onText?.(delta.content)
+      }
+      for (const part of delta.tool_calls ?? []) {
+        const index = part.index ?? calls.length
+        let call = calls[index]
+        if (!call) {
+          call = calls[index] = { id: part.id || null, name: '', arguments: '' }
+        }
+        if (part.id) call.id = part.id
+        if (part.function?.name) {
+          const starting = !call.name
+          call.name += part.function.name
+          if (starting) onToolStart?.(call.name)
+        }
+        if (part.function?.arguments) {
+          call.arguments += part.function.arguments
+          argsLength += part.function.arguments.length
+          onToolArgs?.(argsLength)
+        }
+      }
+      if (choice.finish_reason) finishReason = choice.finish_reason
+    }
+
+    // Flux SSE : des lignes « data: {json} », terminé par « data: [DONE] ».
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
+    let buffer = ''
+    for (;;) {
+      const { value, done } = await reader.read()
+      if (done) break
+      buffer += value
+      let cut
+      while ((cut = buffer.indexOf('\n')) !== -1) {
+        const line = buffer.slice(0, cut).trim()
+        buffer = buffer.slice(cut + 1)
+        if (!line.startsWith('data:')) continue
+        const data = line.slice(5).trim()
+        if (data === '[DONE]') continue
+        let chunk
+        try {
+          chunk = JSON.parse(data)
+        } catch {
+          continue // ligne incomplète ou commentaire : ignorée
+        }
+        handle(chunk)
+      }
+    }
+
+    const toolCalls = calls
+      .filter(Boolean)
+      .map((c, i) => ({ id: c.id || `call_${Date.now().toString(36)}_${i}`, name: c.name, arguments: c.arguments }))
+    return { content, toolCalls, finishReason }
+  }
+}

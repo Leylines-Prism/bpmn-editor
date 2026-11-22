@@ -32,7 +32,24 @@ const CSS = `
 #chat-form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #0f3460; }
 #chat-input { flex: 1; resize: none; height: 60px; padding: 6px 8px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; font-size: 13px; }
 #chat-input:disabled { opacity: 0.5; }
+#chat-options { display: flex; align-items: center; gap: 6px; padding: 6px 8px 0; font-size: 12px; color: #9ca3af; }
+#chat-options[hidden] { display: none; }
+#chat-model { flex: 1; min-width: 0; height: 26px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; }
 `
+
+const MODEL_STORAGE_KEY = 'bpmn-editor-chat-model'
+function readStoredModel() {
+  try {
+    return localStorage.getItem(MODEL_STORAGE_KEY)
+  } catch {
+    return null
+  }
+}
+function storeModel(value) {
+  try {
+    localStorage.setItem(MODEL_STORAGE_KEY, value)
+  } catch {}
+}
 
 export function createChatPanel({ chatUrl, bridge }) {
   const style = document.createElement('style')
@@ -44,6 +61,10 @@ export function createChatPanel({ chatUrl, bridge }) {
   panel.innerHTML = `
     <header><span>Assistant IA</span><button class="btn" type="button" id="chat-reset">Nouvelle discussion</button></header>
     <div id="chat-log" aria-live="polite"></div>
+    <div id="chat-options" hidden>
+      <label for="chat-model">Modèle</label>
+      <select id="chat-model"></select>
+    </div>
     <form id="chat-form">
       <textarea id="chat-input" placeholder="Décrivez le processus à dessiner, ou ce qu'il faut changer…"></textarea>
       <button class="btn primary" type="submit" id="chat-send">Envoyer</button>
@@ -61,10 +82,44 @@ export function createChatPanel({ chatUrl, bridge }) {
   const form = panel.querySelector('#chat-form')
   const input = panel.querySelector('#chat-input')
   const sendButton = panel.querySelector('#chat-send')
+  const options = panel.querySelector('#chat-options')
+  const modelSelect = panel.querySelector('#chat-model')
 
   let conversationId = null
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
+  let models = [] // { id, label, provider, providerLabel }, envoyés par le serveur
+  let conversationProvider = null // fournisseur de la conversation en cours
+
+  const currentModel = () => models.find((m) => m.id === modelSelect.value)
+
+  // Remplit le menu, groupé par fournisseur. Garde le choix précédent s'il existe encore.
+  function fillModels(list, defaultId) {
+    models = Array.isArray(list) ? list : []
+    modelSelect.replaceChildren()
+    const groups = new Map()
+    for (const m of models) {
+      let group = groups.get(m.provider)
+      if (!group) {
+        group = document.createElement('optgroup')
+        group.label = m.providerLabel || m.provider
+        groups.set(m.provider, group)
+        modelSelect.append(group)
+      }
+      const option = document.createElement('option')
+      option.value = m.id
+      option.textContent = m.label
+      group.append(option)
+    }
+    // Un seul fournisseur : les groupes n'apportent rien.
+    if (groups.size === 1) {
+      const [group] = groups.values()
+      modelSelect.replaceChildren(...group.children)
+    }
+    const stored = readStoredModel()
+    modelSelect.value = models.some((m) => m.id === stored) ? stored : defaultId || models[0]?.id || ''
+    options.hidden = models.length < 2
+  }
 
   function add(kind, text = '') {
     const el = document.createElement('div')
@@ -78,6 +133,7 @@ export function createChatPanel({ chatUrl, bridge }) {
   function setBusy(busy) {
     sendButton.textContent = busy ? 'Arrêter' : 'Envoyer'
     input.disabled = busy
+    modelSelect.disabled = busy
   }
 
   // Vérifie une fois, à l'ouverture, que le serveur répond et que le chat est configuré.
@@ -86,8 +142,9 @@ export function createChatPanel({ chatUrl, bridge }) {
       const res = await fetch(chatUrl)
       const status = await res.json()
       checked = true
+      fillModels(status.models, status.model)
       if (!status.enabled) {
-        add('notice', "Le chat n'est pas configuré : ajoutez ANTHROPIC_API_KEY dans mcp/.env puis relancez le serveur.")
+        add('notice', "Le chat n'est pas configuré : ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur.")
       } else if (!log.childElementCount) {
         add('notice', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)
       }
@@ -108,9 +165,25 @@ export function createChatPanel({ chatUrl, bridge }) {
   panel.querySelector('#chat-reset').addEventListener('click', () => {
     controller?.abort()
     conversationId = null
+    conversationProvider = null
     log.replaceChildren()
     checked = false
     checkServer()
+  })
+
+  modelSelect.addEventListener('change', () => {
+    storeModel(modelSelect.value)
+    const model = currentModel()
+    if (!model) return
+    // Le serveur ne peut pas reprendre un historique d'un fournisseur à l'autre.
+    if (conversationId && conversationProvider && model.provider !== conversationProvider) {
+      conversationId = null
+      conversationProvider = null
+      add('notice', `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`)
+    } else if (conversationId) {
+      add('notice', `Les prochains messages iront à ${model.label}.`)
+    }
+    input.focus()
   })
 
   input.addEventListener('keydown', (e) => {
@@ -158,10 +231,12 @@ export function createChatPanel({ chatUrl, bridge }) {
     log.append(status)
     const timer = setInterval(renderStatus, 1000)
 
+    const model = currentModel()
     const handle = (event) => {
       if (event.type === 'text') statusText = 'rédige'
       if (event.type === 'conversation') {
         conversationId = event.id
+        conversationProvider = model?.provider ?? null
       } else if (event.type === 'text') {
         reply.hidden = false
         // Un paragraphe par étape : le texte qui suit des appels d'outils repart à la ligne.
@@ -202,7 +277,7 @@ export function createChatPanel({ chatUrl, bridge }) {
       const res = await fetch(chatUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, tabId: bridge.tabId, text }),
+        body: JSON.stringify({ conversationId, tabId: bridge.tabId, model: model?.id, text }),
         signal: controller.signal,
       })
       if (!res.ok) throw new Error(`le serveur a répondu ${res.status}`)
