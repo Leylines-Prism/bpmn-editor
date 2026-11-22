@@ -17,6 +17,8 @@ import { EditorBridge } from './bridge.js'
 import { ChatService } from './chat.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
+import { describeProviderError } from '../src/ai/errors.js'
+import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
 try {
@@ -103,15 +105,52 @@ function chatCors(req, res, next) {
   next()
 }
 app.options('/chat', chatCors)
+app.options('/chat/models', chatCors)
 app.get('/chat', chatCors, (req, res) => res.json(chat.status()))
+
+// Fournisseur réglé dans la fenêtre Options : { provider, format, baseUrl, apiKey, model? }.
+// La clé n'est ni enregistrée ni écrite dans le journal. Renvoie null si invalide.
+const PROVIDER_IDS = new Set(PROVIDERS.map((p) => p.id))
+function readCustom(value, { needModel }) {
+  if (!value || typeof value !== 'object') return null
+  const { provider, label, format, baseUrl, apiKey, model } = value
+  if (!PROVIDER_IDS.has(provider) || (format !== 'anthropic' && format !== 'openai')) return null
+  const url = checkBaseUrl(baseUrl)
+  if (!url) return null
+  if (apiKey !== undefined && apiKey !== null && (typeof apiKey !== 'string' || apiKey.length > 500)) return null
+  if (needModel && (typeof model !== 'string' || !model.trim() || model.length > 200)) return null
+  const fallbackLabel = PROVIDERS.find((p) => p.id === provider).label
+  return {
+    provider,
+    label: typeof label === 'string' && label.trim() ? label.trim().slice(0, 60) : fallbackLabel,
+    format,
+    baseUrl: url,
+    apiKey: apiKey || null,
+    model: needModel ? model.trim() : undefined,
+  }
+}
+
+// Bouton « Tester » ou « Lister » de la fenêtre Options, relayé par le serveur.
+app.post('/chat/models', chatCors, async (req, res) => {
+  const custom = readCustom(req.body, { needModel: false })
+  if (!custom) return res.status(400).json({ error: 'Réglages invalides' })
+  try {
+    const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000) })
+    res.json({ models })
+  } catch (err) {
+    res.json({ error: describeProviderError(err, { label: custom.label, providerId: custom.provider }) })
+  }
+})
 
 app.post('/chat', chatCors, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
   if (typeof text !== 'string' || !text.trim() || text.length > 20000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: 'Requête invalide' })
   }
-  // Seuls les modèles configurés sur le serveur sont acceptés.
-  if (model !== undefined && (typeof model !== 'string' || !chat.hasModel(model))) {
+  const custom = req.body.custom === undefined ? null : readCustom(req.body.custom, { needModel: true })
+  if (req.body.custom !== undefined && !custom) return res.status(400).json({ error: 'Réglages du fournisseur invalides' })
+  // Sinon, seuls les modèles configurés sur le serveur sont acceptés.
+  if (!custom && model !== undefined && (typeof model !== 'string' || !chat.hasModel(model))) {
     return res.status(400).json({ error: 'Modèle inconnu' })
   }
   res.set({ 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
@@ -127,6 +166,7 @@ app.post('/chat', chatCors, async (req, res) => {
       conversationId: typeof conversationId === 'string' ? conversationId : undefined,
       tabId,
       model,
+      custom,
       text: text.trim(),
       emit,
       signal: abort.signal,
@@ -135,7 +175,7 @@ app.post('/chat', chatCors, async (req, res) => {
   } catch (err) {
     if (!abort.signal.aborted) {
       log('[chat] erreur :', err.message)
-      emit({ type: 'error', message: chatErrorMessage(err) })
+      emit({ type: 'error', message: custom ? describeProviderError(err, { label: custom.label, providerId: custom.provider }) : chatErrorMessage(err) })
     }
   }
   res.end()

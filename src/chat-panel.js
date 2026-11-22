@@ -1,6 +1,18 @@
 // Panneau de chat intégré : l'utilisateur décrit un processus, l'IA le dessine
-// dans cet onglet par le serveur (dossier mcp/, route /chat). La clé d'API
-// reste sur le serveur, le navigateur n'en voit jamais.
+// dans cet onglet.
+//
+// Deux modes :
+//   - « server » (version docker, développement) : la boucle tourne sur le serveur
+//     (dossier mcp/, route /chat), qui exécute les outils dans l'onglet par le pont.
+//     Les modèles viennent du serveur (variables d'environnement) ou de la fenêtre
+//     Options, dont la clé part avec chaque message et n'est pas enregistrée.
+//   - « online » (site public) : la boucle tourne dans la page et appelle
+//     directement le fournisseur réglé dans Options, avec la clé du visiteur.
+
+import { describeProviderError } from './ai/errors.js'
+import { listModels } from './ai/providers.js'
+import { connectionFor, loadSettings, userModels } from './ai-settings.js'
+import { createOptionsDialog } from './options-dialog.js'
 
 const TOOL_LABELS = {
   get_shapes: 'lecture du diagramme',
@@ -19,6 +31,7 @@ const CSS = `
 #chat-panel.open { display: flex; }
 #chat-panel header { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid #0f3460; font-size: 13px; font-weight: 600; }
 #chat-panel header span { flex: 1; }
+#chat-panel header .btn { font-size: 12px; height: 28px; padding: 0 8px; }
 #chat-log { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 1.45; }
 .chat-msg { padding: 8px 10px; border-radius: 8px; white-space: pre-wrap; overflow-wrap: anywhere; }
 .chat-msg.user { align-self: flex-end; max-width: 85%; background: #0f3460; }
@@ -51,7 +64,9 @@ function storeModel(value) {
   } catch {}
 }
 
-export function createChatPanel({ chatUrl, bridge }) {
+// mode : « server » ou « online ». En mode server : chatUrl et bridge (pont MCP).
+// En mode online : tools, les outils exécutés sur le bpmn-js de la page.
+export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const style = document.createElement('style')
   style.textContent = CSS
   document.head.append(style)
@@ -59,7 +74,7 @@ export function createChatPanel({ chatUrl, bridge }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span>Assistant IA</span><button class="btn" type="button" id="chat-reset">Nouvelle discussion</button></header>
+    <header><span>Assistant IA</span><button class="btn" type="button" id="chat-settings" title="Fournisseurs, clés et modèles">Options</button><button class="btn" type="button" id="chat-reset">Nouvelle discussion</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-options" hidden>
       <label for="chat-model">Modèle</label>
@@ -82,20 +97,63 @@ export function createChatPanel({ chatUrl, bridge }) {
   const form = panel.querySelector('#chat-form')
   const input = panel.querySelector('#chat-input')
   const sendButton = panel.querySelector('#chat-send')
-  const options = panel.querySelector('#chat-options')
+  const modelBar = panel.querySelector('#chat-options')
   const modelSelect = panel.querySelector('#chat-model')
 
-  let conversationId = null
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
-  let models = [] // { id, label, provider, providerLabel }, envoyés par le serveur
-  let conversationProvider = null // fournisseur de la conversation en cours
+  let settings = loadSettings()
+  let serverModels = [] // { id, label, provider, providerLabel }, envoyés par le serveur
+  let models = [] // serverModels puis modèles de la fenêtre Options
+  // Discussion en cours : sur le serveur ({ id }) ou dans la page ({ messages }).
+  // kind « server:anthropic », « local:openai »… : l'historique ne passe pas d'un format à l'autre.
+  let conversation = null
 
   const currentModel = () => models.find((m) => m.id === modelSelect.value)
+  const kindOf = (m) => `${mode === 'online' ? 'local' : 'server'}:${m.source === 'user' ? m.format : m.provider}`
+
+  const options = createOptionsDialog({
+    mode,
+    test: testConnection,
+    onSave(saved) {
+      settings = saved
+      fillModels()
+      if (saved.defaultModel && models.some((m) => m.id === saved.defaultModel)) {
+        modelSelect.value = saved.defaultModel
+        storeModel(saved.defaultModel)
+      }
+      announce()
+      input.focus()
+    },
+  })
+
+  // Bouton Tester ou Lister : directement depuis la page en ligne, par le serveur sinon.
+  async function testConnection(conn) {
+    if (mode === 'online') {
+      try {
+        return await listModels({ ...conn, browser: true, signal: AbortSignal.timeout(15000) })
+      } catch (err) {
+        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin }))
+      }
+    }
+    let res
+    try {
+      res = await fetch(`${chatUrl}/models`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(conn),
+      })
+    } catch {
+      throw new Error('Serveur injoignable. Lancez-le avec : cd mcp && npm start')
+    }
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok || data.error) throw new Error(data.error || `le serveur a répondu ${res.status}`)
+    return data.models
+  }
 
   // Remplit le menu, groupé par fournisseur. Garde le choix précédent s'il existe encore.
-  function fillModels(list, defaultId) {
-    models = Array.isArray(list) ? list : []
+  function fillModels() {
+    models = [...serverModels.map((m) => ({ ...m, source: 'server' })), ...userModels(settings)]
     modelSelect.replaceChildren()
     const groups = new Map()
     for (const m of models) {
@@ -117,10 +175,25 @@ export function createChatPanel({ chatUrl, bridge }) {
       modelSelect.replaceChildren(...group.children)
     }
     const stored = readStoredModel()
-    modelSelect.value = models.some((m) => m.id === stored) ? stored : defaultId || models[0]?.id || ''
-    options.hidden = models.length < 2
+    const fallback = models.some((m) => m.id === settings.defaultModel) ? settings.defaultModel : serverDefault || models[0]?.id || ''
+    modelSelect.value = models.some((m) => m.id === stored) ? stored : fallback
+    modelBar.hidden = models.length < 2
   }
+  let serverDefault = null
 
+  // Message d'accueil, ou marche à suivre si aucun modèle n'est disponible.
+  function announce() {
+    if (!models.length) {
+      add(
+        'notice',
+        mode === 'online'
+          ? 'Pour commencer, ouvrez Options et activez un fournisseur : Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.'
+          : "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur.",
+      )
+    } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
+      add('notice', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`).classList.add('welcome')
+    }
+  }
   function add(kind, text = '') {
     const el = document.createElement('div')
     el.className = `chat-msg ${kind}`
@@ -136,19 +209,24 @@ export function createChatPanel({ chatUrl, bridge }) {
     modelSelect.disabled = busy
   }
 
-  // Vérifie une fois, à l'ouverture, que le serveur répond et que le chat est configuré.
+  // À l'ouverture : en mode server, demande au serveur ses modèles.
   async function checkServer() {
+    checked = true
+    if (mode === 'online') {
+      fillModels()
+      announce()
+      return
+    }
     try {
       const res = await fetch(chatUrl)
       const status = await res.json()
-      checked = true
-      fillModels(status.models, status.model)
-      if (!status.enabled) {
-        add('notice', "Le chat n'est pas configuré : ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur.")
-      } else if (!log.childElementCount) {
-        add('notice', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)
-      }
+      serverModels = Array.isArray(status.models) ? status.models : []
+      serverDefault = status.model
+      fillModels()
+      announce()
     } catch {
+      checked = false
+      fillModels()
       add('notice', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start')
     }
   }
@@ -162,10 +240,11 @@ export function createChatPanel({ chatUrl, bridge }) {
     }
   })
 
+  panel.querySelector('#chat-settings').addEventListener('click', () => options.open(settings, { server: serverModels }))
+
   panel.querySelector('#chat-reset').addEventListener('click', () => {
     controller?.abort()
-    conversationId = null
-    conversationProvider = null
+    conversation = null
     log.replaceChildren()
     checked = false
     checkServer()
@@ -175,12 +254,11 @@ export function createChatPanel({ chatUrl, bridge }) {
     storeModel(modelSelect.value)
     const model = currentModel()
     if (!model) return
-    // Le serveur ne peut pas reprendre un historique d'un fournisseur à l'autre.
-    if (conversationId && conversationProvider && model.provider !== conversationProvider) {
-      conversationId = null
-      conversationProvider = null
+    // Un historique ne passe pas d'un format d'API à l'autre.
+    if (conversation && conversation.kind !== kindOf(model)) {
+      conversation = null
       add('notice', `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`)
-    } else if (conversationId) {
+    } else if (conversation) {
       add('notice', `Les prochains messages iront à ${model.label}.`)
     }
     input.focus()
@@ -201,7 +279,11 @@ export function createChatPanel({ chatUrl, bridge }) {
     }
     const text = input.value.trim()
     if (!text) return
-    if (!bridge.tabId) {
+    if (!currentModel()) {
+      add('error', 'Aucun modèle disponible : ouvrez Options pour régler un fournisseur.')
+      return
+    }
+    if (mode !== 'online' && !bridge.tabId) {
       add('error', "L'éditeur n'est pas relié au serveur (badge MCP hors ligne).")
       return
     }
@@ -216,6 +298,7 @@ export function createChatPanel({ chatUrl, bridge }) {
     let tools = null
     let gotText = false
     let toolSinceText = false
+    let failed = false
     controller = new AbortController()
     setBusy(true)
 
@@ -235,8 +318,7 @@ export function createChatPanel({ chatUrl, bridge }) {
     const handle = (event) => {
       if (event.type === 'text') statusText = 'rédige'
       if (event.type === 'conversation') {
-        conversationId = event.id
-        conversationProvider = model?.provider ?? null
+        conversation = { kind: kindOf(model), id: event.id }
       } else if (event.type === 'text') {
         reply.hidden = false
         // Un paragraphe par étape : le texte qui suit des appels d'outils repart à la ligne.
@@ -268,48 +350,110 @@ export function createChatPanel({ chatUrl, bridge }) {
         else if (event.phase === 'running') statusText = `exécute : ${label}`
         renderStatus()
       } else if (event.type === 'error') {
+        failed = true
         add('error', event.message)
       }
       log.scrollTop = log.scrollHeight
     }
 
+    const conn = model.source === 'user' ? connectionFor(model, settings) : null
     try {
-      const res = await fetch(chatUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationId, tabId: bridge.tabId, model: model?.id, text }),
-        signal: controller.signal,
-      })
-      if (!res.ok) throw new Error(`le serveur a répondu ${res.status}`)
-      // Flux SSE : des blocs « data: {json} » séparés par une ligne vide.
-      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
-      let buffer = ''
-      for (;;) {
-        const { value, done } = await reader.read()
-        if (done) break
-        buffer += value
-        let cut
-        while ((cut = buffer.indexOf('\n\n')) !== -1) {
-          const block = buffer.slice(0, cut)
-          buffer = buffer.slice(cut + 2)
-          const data = block.replace(/^data: /, '')
-          try {
-            handle(JSON.parse(data))
-          } catch (err) {
-            console.warn('[chat] événement illisible :', data, err)
-          }
-        }
-      }
+      if (mode === 'online') await sendLocal({ conn, model, text, handle, signal: controller.signal })
+      else await sendServer({ conn, model, text, handle, signal: controller.signal })
     } catch (err) {
-      if (err.name === 'AbortError') add('notice', 'Réponse interrompue.')
+      failed = true
+      if (controller.signal.aborted) add('notice', 'Réponse interrompue.')
+      else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin }))
       else add('error', `Échec de l'envoi : ${err.message}`)
     } finally {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
+      if (!gotText && !failed) add('notice', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle.")
       controller = null
       setBusy(false)
       input.focus()
     }
   }
+
+  // Version docker : le serveur fait la boucle et renvoie un flux SSE.
+  async function sendServer({ conn, model, text, handle, signal }) {
+    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text }
+    if (conn) body.custom = conn
+    else body.model = model.id
+    const res = await fetch(chatUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal,
+    })
+    if (!res.ok) throw new Error(`le serveur a répondu ${res.status}`)
+    // Flux SSE : des blocs « data: {json} » séparés par une ligne vide.
+    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
+    let buffer = ''
+    for (;;) {
+      const { value, done } = await reader.read()
+      if (done) break
+      buffer += value
+      let cut
+      while ((cut = buffer.indexOf('\n\n')) !== -1) {
+        const block = buffer.slice(0, cut)
+        buffer = buffer.slice(cut + 2)
+        const data = block.replace(/^data: /, '')
+        try {
+          handle(JSON.parse(data))
+        } catch (err) {
+          console.warn('[chat] événement illisible :', data, err)
+        }
+      }
+    }
+  }
+
+  // Version en ligne : la boucle tourne ici, les outils agissent sur cette page.
+  async function sendLocal({ conn, model, text, handle, signal }) {
+    const engine = await loadEngine()
+    const kind = kindOf(model)
+    if (!conversation || conversation.kind !== kind || !conversation.messages) conversation = { kind, messages: [] }
+    const conv = conversation
+    const common = {
+      model: conn.model,
+      conv,
+      text,
+      toolSet: engine.toolSet,
+      executeTool: async (name, args) => {
+        const tool = tools[name]
+        if (!tool) throw new Error(`Outil inconnu : ${name}`)
+        return tool(args)
+      },
+      emit: handle,
+      signal,
+      log: (...args) => console.warn(...args),
+    }
+    if (conn.format === 'anthropic') {
+      const client = new engine.Anthropic({ apiKey: conn.apiKey, authToken: null, baseURL: conn.baseUrl, dangerouslyAllowBrowser: true })
+      await engine.runAnthropicTurn({ ...common, client, APIError: engine.Anthropic.APIError })
+    } else {
+      const client = new engine.OpenAICompatClient({ baseUrl: conn.baseUrl, apiKey: conn.apiKey })
+      await engine.runOpenAITurn({ ...common, client })
+    }
+  }
+}
+
+// Chargé au premier message seulement : le SDK et zod ne pèsent rien avant.
+let enginePromise = null
+function loadEngine() {
+  enginePromise ??= Promise.all([
+    import('@anthropic-ai/sdk'),
+    import('zod/v4'),
+    import('./ai/chat-loop.js'),
+    import('./ai/openai-compat.js'),
+  ]).then(([{ default: Anthropic }, z, loop, { OpenAICompatClient }]) => ({
+    Anthropic,
+    OpenAICompatClient,
+    runAnthropicTurn: loop.runAnthropicTurn,
+    runOpenAITurn: loop.runOpenAITurn,
+    toolSet: loop.createToolSet(z),
+  }))
+  enginePromise.catch(() => (enginePromise = null))
+  return enginePromise
 }
