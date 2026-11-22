@@ -350,27 +350,29 @@ body #chat-model:disabled { opacity: 0.5; }
 
 /* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
 
-#xml-dialog {
+#xml-dialog, #xml-export-dialog {
   margin: auto; width: min(720px, calc(100vw - 32px));
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: var(--surface-raised); color: var(--ink);
   box-shadow: var(--elevation-1); padding: var(--space-6);
 }
-#xml-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
-#xml-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
-#xml-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
-#xml-dialog .hint { color: var(--ink-muted); font-size: 13px; }
-#xml-dialog textarea {
+#xml-dialog::backdrop, #xml-export-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#xml-dialog form, #xml-export-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
+#xml-dialog h2, #xml-export-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#xml-dialog .hint, #xml-export-dialog .hint { color: var(--ink-muted); font-size: 13px; }
+#xml-dialog textarea, #xml-export-dialog textarea {
   width: 100%; height: 320px; resize: vertical;
   padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
   background: var(--surface); color: var(--ink);
   font-family: var(--font-mono); font-size: 12px; line-height: 18px;
 }
-#xml-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
-#xml-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
-#xml-dialog .error:empty { display: none; }
-#xml-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
-#xml-dialog .grow { flex: 1; }
+#xml-dialog textarea:focus-visible, #xml-export-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#xml-dialog .error, #xml-export-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
+#xml-dialog .error:empty, #xml-export-dialog .error:empty { display: none; }
+#xml-dialog .actions, #xml-export-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#xml-dialog .grow, #xml-export-dialog .grow { flex: 1; }
+#xml-export-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
+#xml-export-dialog .status:empty { display: none; }
 
 /* ── Fenêtre « Options de l'assistant » (src/options-dialog.js) ───────── */
 

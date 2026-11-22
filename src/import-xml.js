@@ -120,6 +120,51 @@ export function setupXmlDialog({ openButton, fileInput, onImport }) {
   })
 }
 
+// Fenêtre « Code XML » du menu Exporter : l'inverse de « Importer XML ».
+// Montre le XML du diagramme, à copier ou à télécharger en .xml.
+// getXml() renvoie le XML, download(xml) l'enregistre.
+export function setupXmlExport({ openButton, getXml, download }) {
+  const dialog = document.createElement('dialog')
+  dialog.id = 'xml-export-dialog'
+  dialog.innerHTML = `
+    <form method="dialog">
+      <h2>Exporter le XML BPMN</h2>
+      <p class="hint">Le XML BPMN 2.0 du diagramme, à copier dans un autre outil ou à enregistrer en fichier .xml.</p>
+      <textarea id="xml-export-text" spellcheck="false" readonly></textarea>
+      <p class="status" id="xml-export-status" role="status"></p>
+      <div class="actions">
+        <button type="button" class="btn" data-icon="save" id="xml-export-download">Télécharger .xml</button>
+        <span class="grow"></span>
+        <button type="button" class="btn" id="xml-export-close">Fermer</button>
+        <button type="button" class="btn primary" id="xml-export-copy">Copier</button>
+      </div>
+    </form>`
+  document.body.appendChild(dialog)
+
+  const text = dialog.querySelector('#xml-export-text')
+  const status = dialog.querySelector('#xml-export-status')
+
+  openButton.addEventListener('click', async () => {
+    status.textContent = ''
+    text.value = await getXml()
+    dialog.showModal()
+    text.scrollTop = 0
+  })
+  dialog.querySelector('#xml-export-close').addEventListener('click', () => dialog.close())
+  dialog.querySelector('#xml-export-download').addEventListener('click', () => download(text.value))
+  dialog.querySelector('#xml-export-copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(text.value)
+      status.textContent = 'XML copié dans le presse-papiers.'
+    } catch {
+      // Presse-papiers refusé : on sélectionne le texte pour un Ctrl+C.
+      text.focus()
+      text.select()
+      status.textContent = 'Copie automatique impossible : le texte est sélectionné, faites Ctrl+C.'
+    }
+  })
+}
+
 // Glisser-déposer d'un fichier .bpmn ou .xml n'importe où sur la page.
 export function setupFileDrop({ onFile }) {
   let depth = 0
