@@ -5,7 +5,9 @@
 //   POST /chat    chat intégré à l'éditeur (réponse en flux SSE)
 //   GET  /healthz état du serveur et nombre d'onglets connectés
 //
-// N'écoute que sur 127.0.0.1 : rien n'est exposé sur le réseau.
+// N'écoute que sur 127.0.0.1 : rien n'est exposé sur le réseau. Dans le conteneur docker,
+// MCP_HOST=0.0.0.0 le rend joignable par nginx, et MCP_ALLOWED_HOSTS limite les noms
+// d'hôte acceptés (protection contre le DNS rebinding).
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
@@ -25,7 +27,12 @@ try {
   process.loadEnvFile(new URL('.env', import.meta.url))
 } catch {}
 
-const HOST = '127.0.0.1'
+const HOST = process.env.MCP_HOST || '127.0.0.1'
+const LOCAL_HOSTS = ['127.0.0.1', 'localhost', '::1']
+const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
 const PORT = Number(process.env.MCP_PORT || 3333)
 const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',')
@@ -58,7 +65,10 @@ function buildMcpServer() {
   return server
 }
 
-const app = createMcpExpressApp({ host: HOST })
+// Hors de 127.0.0.1, les noms d'hôte acceptés sont ceux de MCP_ALLOWED_HOSTS, ou localhost par défaut.
+const app = createMcpExpressApp(
+  LOCAL_HOSTS.includes(HOST) ? { host: HOST } : { host: HOST, allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1'] },
+)
 
 app.post('/mcp', async (req, res) => {
   const server = buildMcpServer()
@@ -91,6 +101,9 @@ app.get('/healthz', (req, res) => res.json({ ok: true, ...bridge.status(), chat:
 const ALLOWED_ORIGIN_SET = new Set(ALLOWED_ORIGINS)
 function chatCors(req, res, next) {
   const origin = req.headers.origin
+  // Image docker : l'éditeur et le serveur partagent une adresse, et le navigateur
+  // n'envoie pas d'en-tête Origin pour une lecture (GET) sur le même site.
+  if (!origin && req.headers['sec-fetch-site'] === 'same-origin') return next()
   if (!origin || !ALLOWED_ORIGIN_SET.has(origin)) {
     return res.status(403).json({ error: 'Origine non autorisée' })
   }
