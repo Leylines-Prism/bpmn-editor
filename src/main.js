@@ -11,7 +11,7 @@ import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { autoLayout } from './auto-layout.js'
-import { importDiagram, setupXmlDialog, setupFileDrop } from './import-xml.js'
+import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
 import { exportPdf } from './export-pdf.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
@@ -230,6 +230,12 @@ exportMenu.addEventListener('beforetoggle', (e) => {
 })
 exportMenu.addEventListener('click', (e) => {
   if (e.target.closest('button')) exportMenu.hidePopover()
+})
+
+setupXmlExport({
+  openButton: document.getElementById('btn-xml'),
+  getXml: async () => (await modeler.saveXML({ format: true })).xml,
+  download: (xml) => download(xml, baseName() + '.xml', 'application/xml'),
 })
 
 document.getElementById('btn-svg').addEventListener('click', async () => {
