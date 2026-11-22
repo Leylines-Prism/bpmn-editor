@@ -30,6 +30,7 @@ import '@fontsource/urbanist/600.css'
 import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
+import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { fitView } from './fit-view.js'
 
@@ -327,6 +328,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupBrandLogo()
 setupPanelToggle({
   button: document.getElementById('btn-properties'),
   panel: document.getElementById('properties-panel'),
