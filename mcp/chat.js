@@ -12,45 +12,12 @@ import Anthropic from '@anthropic-ai/sdk'
 import { randomUUID } from 'node:crypto'
 import * as z from 'zod/v4'
 
+import { createToolSet, runAnthropicTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
+import { OpenAICompatClient } from '../src/ai/openai-compat.js'
 import { buildCatalog } from './models.js'
-import { OpenAICompatClient } from './openai-compat.js'
-import { INSTRUCTIONS, TOOLS } from './tools.js'
 
-const MAX_STEPS = 30 // appels successifs au modèle pour un seul message
 const MAX_CONVERSATIONS = 20
-
-const SYSTEM = `${INSTRUCTIONS}
-
-Tu es l'assistant intégré à cet éditeur BPMN. L'utilisateur voit le canevas à côté de la discussion :
-chaque outil que tu appelles modifie son diagramme sous ses yeux.
-- Réponds en français, brièvement. Ne recopie pas le XML ni la liste des formes dans ta réponse.
-- Avant de modifier un diagramme existant, lis-le avec get_shapes.
-- Quand tu as fini de dessiner, valide avec validate_diagram et corrige ce qui peut l'être.
-- Pour une demande floue, dessine une première version raisonnable plutôt que de poser des questions.
-- Pour un grand schéma, procède en plusieurs appels de 10 à 15 formes : l'utilisateur voit le dessin avancer.`
-
-// Schémas zod pour valider les arguments, schémas JSON pour l'API.
-const VALIDATORS = Object.fromEntries(TOOLS.map((t) => [t.name, z.object(t.inputSchema)]))
-const JSON_SCHEMAS = Object.fromEntries(
-  TOOLS.map((t) => {
-    const { $schema, ...schema } = z.toJSONSchema(VALIDATORS[t.name])
-    return [t.name, schema]
-  }),
-)
-// Les arguments arrivent au fil de l'eau : le panneau montre leur progression.
-// Ils ne sont plus validés par l'API, d'où la validation zod avant exécution.
-const API_TOOLS = TOOLS.map((t) => ({
-  name: t.name,
-  description: t.description,
-  input_schema: JSON_SCHEMAS[t.name],
-  eager_input_streaming: true,
-}))
-// Même liste au format des API compatibles OpenAI.
-const OPENAI_TOOLS = TOOLS.map((t) => ({
-  type: 'function',
-  function: { name: t.name, description: t.description, parameters: JSON_SCHEMAS[t.name] },
-}))
-const MAX_JSON_RETRIES = 2
+const TOOL_SET = createToolSet(z)
 
 export class ChatService {
   constructor({ bridge, log = console.error }) {
@@ -131,190 +98,33 @@ export class ChatService {
   }
 
   async #sendAnthropic({ conv, model, tabId, text, emit, signal }) {
-    // On travaille sur une copie, et on n'enregistre que des étapes complètes :
-    // une interruption ne laisse jamais un appel d'outil sans résultat.
-    const before = conv.messages
-    const messages = [...before, { role: 'user', content: text }]
-    conv.messages = messages.slice()
-
-    // Si le modèle décline une demande, l'API la rejoue sur un modèle de repli.
-    // Haiku n'a pas de repli côté serveur : le paramètre est omis.
-    const fallback = model.id.startsWith('claude-haiku') ? {} : { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' }
-    let jsonRetries = 0
-    for (let step = 0; step < MAX_STEPS; step++) {
-      const stream = this.anthropic.beta.messages.stream(
-        {
-          model: model.id,
-          max_tokens: 64000,
-          output_config: { effort: this.effort },
-          ...fallback,
-          cache_control: { type: 'ephemeral' },
-          system: SYSTEM,
-          tools: API_TOOLS,
-          messages,
-        },
-        { signal },
-      )
-      stream.on('text', (delta) => emit({ type: 'text', text: delta }))
-      // État en direct pour le panneau : réflexion, puis outil en préparation
-      // avec la taille de ses arguments (au plus une mise à jour par 300 ms).
-      let toolName = null
-      let inputSize = 0
-      let lastStatus = 0
-      stream.on('streamEvent', (event) => {
-        if (event.type !== 'content_block_start') return
-        const block = event.content_block
-        if (block.type === 'thinking' || block.type === 'redacted_thinking') emit({ type: 'status', phase: 'thinking' })
-        if (block.type === 'tool_use') {
-          toolName = block.name
-          inputSize = 0
-          emit({ type: 'status', phase: 'preparing', tool: toolName, size: 0 })
-        }
-      })
-      stream.on('inputJson', (partial) => {
-        inputSize += partial.length
-        const now = Date.now()
-        if (now - lastStatus < 300) return
-        lastStatus = now
-        emit({ type: 'status', phase: 'preparing', tool: toolName, size: inputSize })
-      })
-
-      let message
-      try {
-        message = await stream.finalMessage()
-        jsonRetries = 0
-      } catch (err) {
-        // Arguments d'outil illisibles : on relance l'étape. Les erreurs de l'API
-        // et l'interruption par l'utilisateur remontent telles quelles.
-        if (err instanceof Anthropic.APIError || signal?.aborted || jsonRetries++ >= MAX_JSON_RETRIES) throw err
-        this.log(`[chat] étape relancée : ${err.message}`)
-        step--
-        continue
-      }
-
-      if (message.stop_reason === 'refusal') {
-        // La demande est retirée de l'historique pour ne pas bloquer la suite.
-        conv.messages = before
-        throw new Error('La demande a été refusée par le modèle.')
-      }
-
-      const toolUses = message.content.filter((b) => b.type === 'tool_use')
-      if (message.stop_reason === 'max_tokens' && toolUses.length) {
-        // Arguments tronqués : on n'exécute rien et on n'enregistre pas cette étape.
-        throw new Error("Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois.")
-      }
-      if (toolUses.length === 0 || message.stop_reason !== 'tool_use') {
-        messages.push({ role: 'assistant', content: message.content })
-        conv.messages = messages.slice()
-        if (message.stop_reason === 'max_tokens') throw new Error('Réponse interrompue : longueur maximale atteinte.')
-        return
-      }
-
-      const results = []
-      for (const use of toolUses) {
-        emit({ type: 'status', phase: 'running', tool: use.name })
-        const { content, isError } = await this.#runTool(use.name, use.input, tabId, emit)
-        results.push({ type: 'tool_result', tool_use_id: use.id, content, ...(isError ? { is_error: true } : {}) })
-      }
-      messages.push({ role: 'assistant', content: message.content }, { role: 'user', content: results })
-      conv.messages = messages.slice()
-    }
-    throw new Error(`Arrêt après ${MAX_STEPS} étapes sans réponse finale.`)
+    await runAnthropicTurn({
+      client: this.anthropic,
+      APIError: Anthropic.APIError,
+      model: model.id,
+      effort: this.effort,
+      conv,
+      text,
+      toolSet: TOOL_SET,
+      executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
+      emit,
+      signal,
+      log: this.log,
+    })
   }
 
-  // Même boucle pour une API compatible OpenAI (/chat/completions avec outils).
   async #sendOpenAI({ conv, model, tabId, text, emit, signal }) {
-    const before = conv.messages
-    const messages = [...before, { role: 'user', content: text }]
-    conv.messages = messages.slice()
-
-    for (let step = 0; step < MAX_STEPS; step++) {
-      let toolName = null
-      let lastStatus = 0
-      const result = await this.openai.stream(
-        {
-          model: model.id,
-          messages: [{ role: 'system', content: SYSTEM }, ...messages],
-          tools: OPENAI_TOOLS,
-          ...(this.openaiEffort ? { reasoning_effort: this.openaiEffort } : {}),
-        },
-        {
-          signal,
-          onText: (delta) => emit({ type: 'text', text: delta }),
-          onReasoning: () => emit({ type: 'status', phase: 'thinking' }),
-          onToolStart: (name) => {
-            toolName = name
-            emit({ type: 'status', phase: 'preparing', tool: name, size: 0 })
-          },
-          onToolArgs: (size) => {
-            const now = Date.now()
-            if (now - lastStatus < 300) return
-            lastStatus = now
-            emit({ type: 'status', phase: 'preparing', tool: toolName, size })
-          },
-        },
-      )
-
-      if (result.finishReason === 'content_filter') {
-        conv.messages = before
-        throw new Error('La demande a été refusée par le filtre du fournisseur.')
-      }
-      if (result.finishReason === 'length' && result.toolCalls.length) {
-        throw new Error("Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois.")
-      }
-      // Certains serveurs (Ollama notamment) terminent par « stop » même avec
-      // des appels d'outils : on se fie à leur présence, pas à finish_reason.
-      if (result.toolCalls.length === 0) {
-        messages.push({ role: 'assistant', content: result.content })
-        conv.messages = messages.slice()
-        if (result.finishReason === 'length') throw new Error('Réponse interrompue : longueur maximale atteinte.')
-        return
-      }
-
-      const assistant = {
-        role: 'assistant',
-        content: result.content || null,
-        tool_calls: result.toolCalls.map((c) => ({ id: c.id, type: 'function', function: { name: c.name, arguments: c.arguments } })),
-      }
-      const results = []
-      for (const call of result.toolCalls) {
-        emit({ type: 'status', phase: 'running', tool: call.name })
-        let input
-        try {
-          input = call.arguments.trim() ? JSON.parse(call.arguments) : {}
-        } catch {
-          input = undefined
-        }
-        const { content } =
-          input === undefined
-            ? this.#toolError(call.name, 'Arguments illisibles : JSON invalide. Renvoie un objet JSON complet.', emit)
-            : await this.#runTool(call.name, input, tabId, emit)
-        results.push({ role: 'tool', tool_call_id: call.id, content })
-      }
-      messages.push(assistant, ...results)
-      conv.messages = messages.slice()
-    }
-    throw new Error(`Arrêt après ${MAX_STEPS} étapes sans réponse finale.`)
-  }
-
-  #toolError(name, content, emit) {
-    this.log(`[chat] ${name} : ${content}`)
-    emit({ type: 'tool', name, ok: false, error: content })
-    return { content, isError: true }
-  }
-
-  // Valide les arguments puis exécute l'outil dans l'onglet. Renvoie { content, isError }.
-  async #runTool(name, input, tabId, emit) {
-    const validator = VALIDATORS[name]
-    if (!validator) return this.#toolError(name, `Outil inconnu : ${name}`, emit)
-    const parsed = validator.safeParse(input)
-    if (!parsed.success) return this.#toolError(name, `Arguments invalides : ${z.prettifyError(parsed.error)}`, emit)
-    try {
-      const data = await this.bridge.call(name, parsed.data, { tabId })
-      emit({ type: 'tool', name, ok: true })
-      return { content: typeof data === 'string' ? data : JSON.stringify(data), isError: false }
-    } catch (err) {
-      return this.#toolError(name, `Erreur : ${err.message}`, emit)
-    }
+    await runOpenAITurn({
+      client: this.openai,
+      model: model.id,
+      reasoningEffort: this.openaiEffort,
+      conv,
+      text,
+      toolSet: TOOL_SET,
+      executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
+      emit,
+      signal,
+      log: this.log,
+    })
   }
 }
