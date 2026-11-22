@@ -2,6 +2,7 @@
 // « Ranger » et l'outil MCP auto_layout.
 
 import { layoutProcess } from 'bpmn-auto-layout'
+import { fitView } from './fit-view.js'
 
 // bpmn-auto-layout se repère avec les listes incoming/outgoing des éléments,
 // or un fichier BPMN valide venu d'un autre outil peut ne pas les contenir.
@@ -23,5 +24,5 @@ export async function autoLayout(modeler) {
   const { xml } = await modeler.saveXML({ format: true })
   const laid = await layoutProcess(xml)
   await modeler.importXML(laid)
-  modeler.get('canvas').zoom('fit-viewport')
+  fitView(modeler.get('canvas'))
 }

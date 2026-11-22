@@ -30,6 +30,7 @@ import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupPanelToggle } from './panel-toggle.js'
+import { fitView } from './fit-view.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -134,12 +135,12 @@ async function loadInitial() {
   nameInput.value = (saved && savedName && cleanName(savedName)) || DEFAULT_NAME
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
-    modeler.get('canvas').zoom('fit-viewport')
+    fitView(modeler.get('canvas'))
     setStatus(saved ? 'Reprise auto-save' : 'Nouveau diagramme')
   } catch (e) {
     console.error('Import error:', e)
     await modeler.importXML(EMPTY_DIAGRAM)
-    modeler.get('canvas').zoom('fit-viewport')
+    fitView(modeler.get('canvas'))
   }
 }
 
@@ -166,7 +167,7 @@ document.getElementById('btn-new').addEventListener('click', async () => {
   localStorage.removeItem(LS_KEY)
   setBaseName(DEFAULT_NAME)
   await modeler.importXML(EMPTY_DIAGRAM)
-  modeler.get('canvas').zoom('fit-viewport')
+  fitView(modeler.get('canvas'))
   setStatus('Nouveau')
 })
 
