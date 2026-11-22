@@ -12,6 +12,7 @@ import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupFileDrop } from './import-xml.js'
+import { exportPdf } from './export-pdf.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -181,6 +182,18 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   download(xml, baseName + '.bpmn', 'application/xml')
 })
 
+// Menu Exporter : ouvert sous son bouton, refermé dès qu'un format est choisi.
+const exportMenu = document.getElementById('export-menu')
+exportMenu.addEventListener('beforetoggle', (e) => {
+  if (e.newState !== 'open') return
+  const r = document.getElementById('btn-export').getBoundingClientRect()
+  exportMenu.style.left = r.left + 'px'
+  exportMenu.style.top = (r.bottom + 4) + 'px'
+})
+exportMenu.addEventListener('click', (e) => {
+  if (e.target.closest('button')) exportMenu.hidePopover()
+})
+
 document.getElementById('btn-svg').addEventListener('click', async () => {
   const { svg } = await modeler.saveSVG()
   download(svg, baseName + '.svg', 'image/svg+xml')
@@ -209,6 +222,19 @@ document.getElementById('btn-png').addEventListener('click', async () => {
     alert('Export PNG indisponible, utilise Export SVG.')
   }
   img.src = url
+})
+
+document.getElementById('btn-pdf').addEventListener('click', async (e) => {
+  const button = e.currentTarget
+  button.disabled = true
+  try {
+    download(await exportPdf(modeler), baseName + '.pdf', 'application/pdf')
+  } catch (err) {
+    console.error('PDF export error:', err)
+    alert('Export PDF impossible : ' + err.message)
+  } finally {
+    button.disabled = false
+  }
 })
 
 document.getElementById('btn-layout').addEventListener('click', async () => {

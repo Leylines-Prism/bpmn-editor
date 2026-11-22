@@ -79,6 +79,7 @@ body {
 [data-icon="play"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5l12 7-12 7z'/%3E%3C/svg%3E"); }
 .btn.active[data-icon="play"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='6' width='12' height='12' rx='2'/%3E%3C/svg%3E"); }
 [data-icon="code"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14'/%3E%3C/svg%3E"); }
+[data-icon="pdf"]    { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h4'/%3E%3C/svg%3E"); }
 [data-icon="theme"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 4a8 8 0 0 1 0 16z' fill='black'/%3E%3C/svg%3E"); }
 #btn-chat            { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4V6a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
 
@@ -282,6 +283,17 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
 }
+
+/* ── Menu Exporter ────────────────────────────────────────────────────── */
+
+#export-menu {
+  position: fixed; inset: auto; margin: 0;
+  flex-direction: column; align-items: stretch; gap: 2px; min-width: 180px;
+  padding: var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-md);
+  background: var(--surface-raised); color: var(--ink); box-shadow: var(--elevation-1);
+}
+#export-menu:popover-open { display: flex; }
+#export-menu .btn { justify-content: flex-start; }
 
 /* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
 

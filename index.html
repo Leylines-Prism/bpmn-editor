@@ -29,8 +29,12 @@
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
     <div class="sep"></div>
     <button class="btn" id="btn-save" data-icon="save">Enregistrer .bpmn</button>
-    <button class="btn" id="btn-svg" data-icon="image">Export SVG</button>
-    <button class="btn" id="btn-png" data-icon="image">Export PNG</button>
+    <button class="btn" id="btn-export" data-icon="image" popovertarget="export-menu" aria-haspopup="menu">Exporter</button>
+    <div id="export-menu" class="menu" popover role="menu">
+      <button class="btn" id="btn-svg" data-icon="image" role="menuitem">Image SVG</button>
+      <button class="btn" id="btn-png" data-icon="image" role="menuitem">Image PNG</button>
+      <button class="btn" id="btn-pdf" data-icon="pdf" role="menuitem">Document PDF</button>
+    </div>
     <div class="sep"></div>
     <button class="btn" id="btn-layout" data-icon="layout">Ranger</button>
     <button class="btn" id="btn-simulation" data-icon="play">Simulation</button>
