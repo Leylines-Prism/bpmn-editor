@@ -8,9 +8,9 @@ import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
 import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
-import { layoutProcess } from 'bpmn-auto-layout'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
+import { autoLayout } from './auto-layout.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -181,27 +181,10 @@ document.getElementById('btn-png').addEventListener('click', async () => {
   img.src = url
 })
 
-// bpmn-auto-layout se repère avec les listes incoming/outgoing des éléments,
-// or un fichier BPMN valide venu d'un autre outil peut ne pas les contenir.
-// On les complète à partir des flux de séquence avant de ranger.
-function ensureFlowRefs() {
-  modeler.get('elementRegistry').forEach((el) => {
-    const bo = el.businessObject
-    if (!bo || bo.$type !== 'bpmn:SequenceFlow') return
-    const { sourceRef, targetRef } = bo
-    if (sourceRef && !(sourceRef.get('outgoing') || []).includes(bo)) sourceRef.get('outgoing').push(bo)
-    if (targetRef && !(targetRef.get('incoming') || []).includes(bo)) targetRef.get('incoming').push(bo)
-  })
-}
-
 document.getElementById('btn-layout').addEventListener('click', async () => {
   if (!confirm('Ranger le diagramme automatiquement ? Toutes les positions seront recalculées et l\'historique d\'annulation sera effacé.')) return
   try {
-    ensureFlowRefs()
-    const { xml } = await modeler.saveXML({ format: true })
-    const laid = await layoutProcess(xml)
-    await modeler.importXML(laid)
-    modeler.get('canvas').zoom('fit-viewport')
+    await autoLayout(modeler)
     setStatus('Diagramme rangé')
   } catch (err) {
     console.error('Layout error:', err)
