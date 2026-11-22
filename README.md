@@ -34,6 +34,10 @@ Le serveur et l'assistant sont décrits dans [mcp/README.md](mcp/README.md).
 - **Couleurs** : le pinceau du menu contextuel propose 18 couleurs, avec un fond pâle et un trait
   foncé lisible, et « Couleur personnalisée… » pour choisir n'importe quelle teinte. Le trait est
   alors calculé pour rester lisible.
+- **Texte** : le bouton « A » du menu contextuel met en forme le libellé de l'élément : gras,
+  italique, souligné, taille (10 à 24) et police (Sans serif, Serif, Monospace). « Texte par
+  défaut » retire la mise en forme. Le style est enregistré dans le .bpmn selon la norme BPMN
+  (`bpmndi:BPMNLabelStyle`). Le souligné n'apparaît pas dans l'export PDF.
 - **Ranger** remet en ordre la disposition du diagramme.
 - **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
 - Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
