@@ -4,6 +4,10 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
+# « /bridge » (docker-compose) relie l'éditeur au serveur MCP relayé par nginx.
+# Vide : l'éditeur seul, sans assistant côté serveur ni badge MCP.
+ARG VITE_MCP_BRIDGE_URL=""
+ENV VITE_MCP_BRIDGE_URL=$VITE_MCP_BRIDGE_URL
 RUN npm run build
 
 # ── Stage 2 : serve statique ───────────────────────────────────────────────

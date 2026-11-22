@@ -337,14 +337,16 @@ loadInitial()
 // Chat intégré, en deux modes :
 //   - en ligne (build « vite build --mode online ») : le chat tourne dans la page et
 //     appelle le fournisseur réglé dans Options. Pas de pont MCP.
-//   - serveur (développement, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
+//   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 if (import.meta.env.MODE === 'online') {
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
     createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })
 } else {
-  const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+  // Une adresse relative (« /bridge », image docker) vise le site lui-même, relayé par nginx.
+  const configured = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+  const mcpBridgeUrl = configured.startsWith('/') ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${configured}` : configured
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
       const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
