@@ -63,6 +63,18 @@ body {
 #autosave-status { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted); margin-left: auto; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 #toolbar > .btn, #toolbar > .brand, #mcp-status { flex-shrink: 0; }
 
+/* Nom du fichier, repris par l'enregistrement et les exports */
+#file-name {
+  flex: 0 1 180px; min-width: 96px; height: 32px; margin-right: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--ink);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px;
+  text-overflow: ellipsis;
+}
+#file-name:hover { border-color: var(--ink-muted); }
+#file-name:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent); }
+
 /* Pictogrammes des boutons : trait de 1,75 px, extrémités rondes comme la ligne.
    Ajout à la charte, qui ne définit pas de jeu d'icônes. */
 .btn[data-icon]::before, #btn-chat::before {
@@ -334,3 +346,13 @@ body #chat-model:disabled { opacity: 0.5; }
 #xml-dialog .grow { flex: 1; }
 
 body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6px; }
+
+/* Barre étroite : le champ du nom de fichier tient lieu de titre, le titre
+   « Éditeur BPMN » s'efface (il reste lisible par les lecteurs d'écran). */
+@media (max-width: 1599px) {
+  .brand { margin-right: var(--space-1); }
+  .brand h1 {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+  }
+}
