@@ -194,3 +194,10 @@ function download(content, filename, type) {
 }
 
 loadInitial()
+
+// Pont vers le serveur MCP (dossier mcp/) : actif en développement, ou quand
+// VITE_MCP_BRIDGE_URL est définie au moment du build.
+const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+if (mcpBridgeUrl) {
+  import('./mcp-bridge.js').then(({ connectMcpBridge }) => connectMcpBridge(modeler, mcpBridgeUrl))
+}
