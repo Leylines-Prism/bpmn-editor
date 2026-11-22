@@ -66,6 +66,11 @@ function storeModel(value) {
 
 // mode : « server » ou « online ». En mode server : chatUrl et bridge (pont MCP).
 // En mode online : tools, les outils exécutés sur le bpmn-js de la page.
+// Longueur maximale d'un message, la même que celle acceptée par le serveur.
+const MAX_MESSAGE = 100000
+
+const EXPAND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9"/></svg>`
+
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const style = document.createElement('style')
   style.textContent = CSS
@@ -81,9 +86,25 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       <select id="chat-model"></select>
     </div>
     <form id="chat-form">
-      <textarea id="chat-input" placeholder="Décrivez le processus à dessiner, ou ce qu'il faut changer…"></textarea>
+      <div class="chat-input-wrap">
+        <textarea id="chat-input" placeholder="Décrivez le processus à dessiner, ou ce qu'il faut changer…"></textarea>
+        <button type="button" id="chat-expand" title="Agrandir la zone de saisie" aria-label="Agrandir la zone de saisie">${EXPAND_ICON}</button>
+      </div>
       <button class="btn primary" type="submit" id="chat-send">Envoyer</button>
-    </form>`
+    </form>
+    <dialog id="chat-editor">
+      <form method="dialog">
+        <h2>Message à l'assistant</h2>
+        <textarea id="chat-editor-text" placeholder="Collez ou écrivez un long message. Ctrl+Entrée pour envoyer."></textarea>
+        <div class="chat-editor-actions">
+          <button class="btn" type="button" id="chat-editor-file">Ouvrir un fichier texte…</button>
+          <input type="file" id="chat-editor-input" accept=".txt,.md,.markdown,text/plain,text/markdown" hidden>
+          <span class="chat-editor-count" aria-live="polite"></span>
+          <button class="btn" type="submit" value="close">Fermer</button>
+          <button class="btn primary" type="submit" value="send" id="chat-editor-send">Envoyer</button>
+        </div>
+      </form>
+    </dialog>`
   document.getElementById('canvas').after(panel)
 
   const toggle = document.createElement('button')
@@ -264,6 +285,62 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     input.focus()
   })
 
+  // Zone de saisie : grandit avec le texte jusqu'à la moitié du panneau.
+  const MIN_INPUT = 72
+  function fitInput() {
+    input.style.height = 'auto'
+    const max = Math.max(MIN_INPUT, Math.round(panel.clientHeight * 0.5))
+    input.style.height = `${Math.min(Math.max(input.scrollHeight + 2, MIN_INPUT), max)}px`
+    input.style.overflowY = input.scrollHeight + 2 > max ? 'auto' : 'hidden'
+  }
+  input.addEventListener('input', fitInput)
+
+  // Grand éditeur, pour coller ou écrire un long message, ou l'ouvrir depuis un fichier.
+  const editor = panel.querySelector('#chat-editor')
+  const editorText = panel.querySelector('#chat-editor-text')
+  const editorFile = panel.querySelector('#chat-editor-input')
+  const editorCount = panel.querySelector('.chat-editor-count')
+  const countChars = () => {
+    const n = editorText.value.length
+    editorCount.textContent = n ? `${n.toLocaleString('fr-FR')} caractère${n > 1 ? 's' : ''}${n > MAX_MESSAGE ? ` : trop long, ${MAX_MESSAGE.toLocaleString('fr-FR')} au plus` : ''}` : ''
+    editorCount.classList.toggle('too-long', n > MAX_MESSAGE)
+  }
+  panel.querySelector('#chat-expand').addEventListener('click', () => {
+    editorText.value = input.value
+    countChars()
+    editor.showModal()
+    editorText.focus()
+    editorText.setSelectionRange(editorText.value.length, editorText.value.length)
+  })
+  editorText.addEventListener('input', countChars)
+  editorText.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault()
+      editor.close('send')
+    }
+  })
+  panel.querySelector('#chat-editor-file').addEventListener('click', () => editorFile.click())
+  editorFile.addEventListener('change', async () => {
+    const file = editorFile.files[0]
+    editorFile.value = ''
+    if (!file) return
+    if (file.size > MAX_MESSAGE * 4) {
+      editorCount.textContent = 'Fichier trop volumineux.'
+      return
+    }
+    const text = await file.text()
+    const { selectionStart: a, selectionEnd: b, value } = editorText
+    editorText.value = value.slice(0, a) + text + value.slice(b)
+    countChars()
+    editorText.focus()
+  })
+  editor.addEventListener('close', () => {
+    input.value = editorText.value
+    fitInput()
+    if (editor.returnValue === 'send' && !input.disabled) form.requestSubmit()
+    else input.focus()
+  })
+
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
       e.preventDefault()
@@ -279,6 +356,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
     const text = input.value.trim()
     if (!text) return
+    if (text.length > MAX_MESSAGE) {
+      add('error', `Message trop long : ${MAX_MESSAGE.toLocaleString('fr-FR')} caractères au plus.`)
+      return
+    }
     if (!currentModel()) {
       add('error', 'Aucun modèle disponible : ouvrez Options pour régler un fournisseur.')
       return
@@ -288,6 +369,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       return
     }
     input.value = ''
+    fitInput()
     send(text)
   })
 
