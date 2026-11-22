@@ -7,6 +7,7 @@
 // les applique au moment où le texte est dessiné.
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
+import { T } from './i18n/lang.js'
 
 // Polices proposées : leurs équivalents existent dans les PDF (Helvetica, Times, Courier).
 export const FONTS = [
@@ -15,11 +16,11 @@ export const FONTS = [
   { id: 'mono', label: 'Monospace', name: 'Courier New', family: '"Courier New", Courier, monospace' },
 ]
 export const SIZES = [
-  { size: 10, label: 'Petit' },
+  { size: 10, label: T('Small', 'Petit') },
   { size: 12, label: 'Normal' },
-  { size: 14, label: 'Grand' },
-  { size: 18, label: 'Très grand' },
-  { size: 24, label: 'Énorme' },
+  { size: 14, label: T('Large', 'Grand') },
+  { size: 18, label: T('Extra large', 'Très grand') },
+  { size: 24, label: T('Huge', 'Énorme') },
 ]
 
 const PROPS = ['name', 'size', 'isBold', 'isItalic', 'isUnderline']
@@ -180,15 +181,15 @@ LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
     group: { id: 'style', name: 'Style' },
     action: () => this._apply(elements, { [key]: !font[key] }),
   })
-  entries['label-bold'] = toggle('isBold', 'G', 'Gras', 'label-bold')
-  entries['label-italic'] = toggle('isItalic', 'I', 'Italique', 'label-italic')
-  entries['label-underline'] = toggle('isUnderline', 'S', 'Souligné', 'label-underline')
+  entries['label-bold'] = toggle('isBold', T('B', 'G'), T('Bold', 'Gras'), 'label-bold')
+  entries['label-italic'] = toggle('isItalic', 'I', T('Italic', 'Italique'), 'label-italic')
+  entries['label-underline'] = toggle('isUnderline', T('U', 'S'), T('Underline', 'Souligné'), 'label-underline')
   for (const s of SIZES) {
     entries[`label-size-${s.size}`] = {
       label: String(s.size),
       title: `${s.label} (${s.size})`,
       className: cls(font.size === s.size),
-      group: { id: 'size', name: 'Taille' },
+      group: { id: 'size', name: T('Size', 'Taille') },
       action: () => this._apply(elements, { size: s.size }),
     }
   }
@@ -197,13 +198,13 @@ LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
       label: f.label,
       title: f.name,
       className: cls(font.name === f.name, `label-font-${f.id}`),
-      group: { id: 'font', name: 'Police' },
+      group: { id: 'font', name: T('Font', 'Police') },
       action: () => this._apply(elements, { name: f.name }),
     }
   }
   entries['label-reset'] = {
-    label: 'Texte par défaut',
-    title: 'Retirer la mise en forme',
+    label: T('Default text', 'Texte par défaut'),
+    title: T('Remove formatting', 'Retirer la mise en forme'),
     group: { id: 'reset' },
     action: () => this._apply(elements, null),
   }
@@ -217,12 +218,12 @@ LabelStylePopupProvider.prototype._padEntry = function (elements) {
   return {
     'label-style': {
       group: 'edit',
-      title: 'Mise en forme du texte',
+      title: T('Text formatting', 'Mise en forme du texte'),
       html: `<div class="entry">${TEXT_ICON}</div>`,
       action: {
         click: (event) => {
           const rect = contextPad.getPad(elements).html.getBoundingClientRect()
-          popupMenu.open(elements, 'label-style', { x: rect.left, y: rect.bottom + 5, cursor: { x: event.x, y: event.y } }, { title: 'Texte', width: 220 })
+          popupMenu.open(elements, 'label-style', { x: rect.left, y: rect.bottom + 5, cursor: { x: event.x, y: event.y } }, { title: T('Text', 'Texte'), width: 220 })
         },
       },
     },

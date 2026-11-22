@@ -4,27 +4,28 @@
 
 import { PROVIDERS } from './ai/providers.js'
 import { forgetKeys, providerLabel, saveSettings, userModels } from './ai-settings.js'
+import { T } from './i18n/lang.js'
 
 const HINTS = {
   online: {
-    anthropic: "Créez une clé sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.",
-    openai: "Créez une clé sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker.",
-    ollama: "Ollama doit autoriser cette page : lancez-le avec la variable OLLAMA_ORIGINS={origin}. Choisissez un modèle qui sait appeler des outils.",
-    compat: "LiteLLM, LM Studio, vLLM… Le serveur doit autoriser l'origine {origin} (réglage CORS). Une page en https ne peut appeler qu'une adresse en https, ou localhost.",
+    anthropic: T('Create a key at console.anthropic.com. Calls go straight from this page to Anthropic.', 'Créez une clé sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.'),
+    openai: T('Create a key at platform.openai.com. OpenAI does not always allow calls made from a web page: if "Test" fails, use the docker version.', "Créez une clé sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker."),
+    ollama: T('Ollama must allow this page: start it with OLLAMA_ORIGINS={origin}. Pick a model that supports tool calls.', 'Ollama doit autoriser cette page : lancez-le avec la variable OLLAMA_ORIGINS={origin}. Choisissez un modèle qui sait appeler des outils.'),
+    compat: T('LiteLLM, LM Studio, vLLM… The server must allow the origin {origin} (CORS setting). An https page can only call an https address, or localhost.', "LiteLLM, LM Studio, vLLM… Le serveur doit autoriser l'origine {origin} (réglage CORS). Une page en https ne peut appeler qu'une adresse en https, ou localhost."),
   },
   server: {
-    anthropic: 'Créez une clé sur console.anthropic.com.',
-    openai: 'Créez une clé sur platform.openai.com.',
-    ollama: "Adresse vue depuis le serveur. S'il tourne dans docker, essayez http://host.docker.internal:11434/v1. Choisissez un modèle qui sait appeler des outils.",
-    compat: 'LiteLLM, LM Studio, vLLM… Adresse vue depuis le serveur.',
+    anthropic: T('Create a key at console.anthropic.com.', 'Créez une clé sur console.anthropic.com.'),
+    openai: T('Create a key at platform.openai.com.', 'Créez une clé sur platform.openai.com.'),
+    ollama: T('Address as seen from the server. If it runs in docker, try http://host.docker.internal:11434/v1. Pick a model that supports tool calls.', "Adresse vue depuis le serveur. S'il tourne dans docker, essayez http://host.docker.internal:11434/v1. Choisissez un modèle qui sait appeler des outils."),
+    compat: T('LiteLLM, LM Studio, vLLM… Address as seen from the server.', 'LiteLLM, LM Studio, vLLM… Adresse vue depuis le serveur.'),
   },
 }
 
 const PRIVACY = {
   online:
-    "Vos clés et vos réglages restent dans ce navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. Ce site ne reçoit ni vos clés ni vos diagrammes.",
+    T('Your keys and settings stay in this browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. This site receives neither your keys nor your diagrams.', 'Vos clés et vos réglages restent dans ce navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. Ce site ne reçoit ni vos clés ni vos diagrammes.'),
   server:
-    "Vos clés et vos réglages restent dans ce navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif.",
+    T('Your keys and settings stay in this browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés et vos réglages restent dans ce navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
 }
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -39,25 +40,25 @@ export function createOptionsDialog({ mode, test, onSave }) {
   dialog.setAttribute('aria-labelledby', 'options-title')
   dialog.innerHTML = `
     <form method="dialog">
-      <h2 id="options-title">Options de l'assistant</h2>
-      <p class="hint">Activez un ou plusieurs fournisseurs, collez la clé si besoin, puis choisissez le modèle par défaut.</p>
+      <h2 id="options-title">${T('Assistant options', "Options de l'assistant")}</h2>
+      <p class="hint">${T('Turn on one or more providers, paste the key if needed, then pick the default model.', 'Activez un ou plusieurs fournisseurs, collez la clé si besoin, puis choisissez le modèle par défaut.')}</p>
       <p class="hint" id="options-server" hidden></p>
       <div class="providers">
         ${PROVIDERS.map(
           (p) => `
         <fieldset class="provider" data-id="${p.id}">
-          <legend><label><input type="checkbox" class="p-enabled" /> ${esc(p.label)}</label></legend>
+          <legend><label><input type="checkbox" class="p-enabled" /> ${esc(p.id === 'compat' ? T('OpenAI-compatible', 'Compatible OpenAI') : p.label)}</label></legend>
           <div class="p-body">
-            ${p.customLabel ? `<label class="field"><span>Nom affiché</span><input type="text" class="p-label" maxlength="60" placeholder="Par exemple : LiteLLM" /></label>` : ''}
-            <label class="field"><span>Adresse</span><input type="url" class="p-url" spellcheck="false" placeholder="${esc(p.baseUrl || 'http://localhost:4000/v1')}" /></label>
-            <label class="field"><span>Clé${p.needsKey ? '' : ' (facultative)'}</span><input type="password" class="p-key" spellcheck="false" autocomplete="off" placeholder="${esc(p.keyHint || '')}" /></label>
-            <div class="field"><span>Modèles</span>
+            ${p.customLabel ? `<label class="field"><span>${T('Display name', 'Nom affiché')}</span><input type="text" class="p-label" maxlength="60" placeholder="${T('For example: LiteLLM', 'Par exemple : LiteLLM')}" /></label>` : ''}
+            <label class="field"><span>${T('Address', 'Adresse')}</span><input type="url" class="p-url" spellcheck="false" placeholder="${esc(p.baseUrl || 'http://localhost:4000/v1')}" /></label>
+            <label class="field"><span>${T('Key', 'Clé')}${p.needsKey ? '' : T(' (optional)', ' (facultative)')}</span><input type="password" class="p-key" spellcheck="false" autocomplete="off" placeholder="${esc(p.keyHint || '')}" /></label>
+            <div class="field"><span>${T('Models', 'Modèles')}</span>
               <div class="p-models"></div>
-              <div class="p-add-row"><input type="text" class="p-add" spellcheck="false" placeholder="Ajouter un modèle par son identifiant" aria-label="Identifiant du modèle à ajouter" /><button type="button" class="btn p-add-btn">Ajouter</button></div>
+              <div class="p-add-row"><input type="text" class="p-add" spellcheck="false" placeholder="${T('Add a model by its id', 'Ajouter un modèle par son identifiant')}" aria-label="${T('Id of the model to add', 'Identifiant du modèle à ajouter')}" /><button type="button" class="btn p-add-btn">${T('Add', 'Ajouter')}</button></div>
             </div>
             <div class="p-actions">
-              <button type="button" class="btn p-test">Tester</button>
-              <button type="button" class="btn p-list">Lister les modèles</button>
+              <button type="button" class="btn p-test">${T('Test', 'Tester')}</button>
+              <button type="button" class="btn p-list">${T('List models', 'Lister les modèles')}</button>
               <span class="p-result" role="status"></span>
             </div>
             <p class="hint p-hint">${esc(HINTS[mode][p.id]).replaceAll('{origin}', esc(origin))}</p>
@@ -65,17 +66,17 @@ export function createOptionsDialog({ mode, test, onSave }) {
         </fieldset>`,
         ).join('')}
       </div>
-      <label class="field default-model"><span>Modèle par défaut</span><select id="options-default"></select></label>
+      <label class="field default-model"><span>${T('Default model', 'Modèle par défaut')}</span><select id="options-default"></select></label>
       <div class="keys-row">
-        <label><input type="checkbox" id="options-remember" /> Se souvenir des clés sur cet appareil</label>
+        <label><input type="checkbox" id="options-remember" /> ${T('Remember keys on this device', 'Se souvenir des clés sur cet appareil')}</label>
         <span class="grow"></span>
-        <button type="button" class="btn" id="options-forget">Effacer les clés</button>
+        <button type="button" class="btn" id="options-forget">${T('Clear keys', 'Effacer les clés')}</button>
       </div>
-      <p class="hint privacy">${esc(PRIVACY[mode])} Sans la case ci-dessus, les clés sont oubliées à la fermeture de l'onglet.</p>
+      <p class="hint privacy">${esc(PRIVACY[mode])} ${T('Without the box above, keys are forgotten when the tab is closed.', "Sans la case ci-dessus, les clés sont oubliées à la fermeture de l'onglet.")}</p>
       <div class="actions">
         <span class="grow"></span>
-        <button type="button" class="btn" id="options-cancel">Annuler</button>
-        <button type="button" class="btn primary" id="options-save">Enregistrer</button>
+        <button type="button" class="btn" id="options-cancel">${T('Cancel', 'Annuler')}</button>
+        <button type="button" class="btn primary" id="options-save">${T('Save', 'Enregistrer')}</button>
       </div>
     </form>`
   document.body.append(dialog)
@@ -111,7 +112,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
         return row
       }),
     )
-    if (!models.length) box.textContent = 'Aucun modèle : « Lister les modèles » les demande au fournisseur.'
+    if (!models.length) box.textContent = T('No models: "List models" asks the provider for them.', 'Aucun modèle : « Lister les modèles » les demande au fournisseur.')
   }
 
   function renderDefault() {
@@ -128,7 +129,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       }
       group.append(new Option(m.label, m.id))
     }
-    if (!options.length) defaultSelect.append(new Option('Aucun modèle disponible', ''))
+    if (!options.length) defaultSelect.append(new Option(T('No model available', 'Aucun modèle disponible'), ''))
     defaultSelect.value = options.some((m) => m.id === draft.defaultModel) ? draft.defaultModel : options[0]?.id || ''
     defaultSelect.disabled = !options.length
   }
@@ -160,10 +161,10 @@ export function createOptionsDialog({ mode, test, onSave }) {
     const conn = connection(id)
     const def = PROVIDERS.find((p) => p.id === id)
     if (!conn.baseUrl) return showResult(result, false, "Indiquez d'abord l'adresse.")
-    if (def.needsKey && !conn.apiKey) return showResult(result, false, "Collez d'abord la clé.")
+    if (def.needsKey && !conn.apiKey) return showResult(result, false, T('Paste the key first.', "Collez d'abord la clé."))
     const buttons = el.querySelectorAll('.p-test, .p-list')
     buttons.forEach((b) => (b.disabled = true))
-    showResult(result, null, 'Connexion…')
+    showResult(result, null, T('Connecting…', 'Connexion…'))
     try {
       const models = await test(conn)
       if (fill) {
@@ -174,9 +175,9 @@ export function createOptionsDialog({ mode, test, onSave }) {
         draft.providers[id].models = [...kept, ...models.map((m) => ({ ...m, on: on.has(m.id) }))]
         renderModels(id)
         renderDefault()
-        showResult(result, true, `${models.length} modèle${models.length > 1 ? 's' : ''} reçu${models.length > 1 ? 's' : ''} : cochez ceux à proposer.`)
+        showResult(result, true, T(`${models.length} model${models.length > 1 ? 's' : ''} received: tick the ones to offer.`, `${models.length} modèle${models.length > 1 ? 's' : ''} reçu${models.length > 1 ? 's' : ''} : cochez ceux à proposer.`))
       } else {
-        showResult(result, true, `Connexion réussie : ${models.length} modèle${models.length > 1 ? 's' : ''} disponible${models.length > 1 ? 's' : ''}.`)
+        showResult(result, true, T(`Connected: ${models.length} model${models.length > 1 ? 's' : ''} available.`, `Connexion réussie : ${models.length} modèle${models.length > 1 ? 's' : ''} disponible${models.length > 1 ? 's' : ''}.`))
       }
     } catch (err) {
       showResult(result, false, err.message)
@@ -249,7 +250,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       const groups = [...new Set(server.map((m) => m.providerLabel))]
       note.hidden = !groups.length
       note.textContent = groups.length
-        ? `Configuré sur le serveur : ${groups.map((g) => `${g} (${server.filter((m) => m.providerLabel === g).length} modèle${server.filter((m) => m.providerLabel === g).length > 1 ? 's' : ''})`).join(', ')}. Ces modèles sont déjà proposés, sans clé à saisir ici.`
+        ? T(`Set up on the server: ${groups.map((g) => { const n = server.filter((m) => m.providerLabel === g).length; return `${g} (${n} model${n > 1 ? 's' : ''})` }).join(', ')}. These models are already offered, with no key to enter here.`, `Configuré sur le serveur : ${groups.map((g) => { const n = server.filter((m) => m.providerLabel === g).length; return `${g} (${n} modèle${n > 1 ? 's' : ''})` }).join(', ')}. Ces modèles sont déjà proposés, sans clé à saisir ici.`)
         : ''
       for (const id of blocks.keys()) renderBlock(id)
       remember.checked = draft.remember

@@ -20,7 +20,7 @@ export const PROVIDERS = [
   },
   { id: 'openai', label: 'OpenAI', format: 'openai', baseUrl: 'https://api.openai.com/v1', needsKey: true, keyHint: 'sk-…', models: [] },
   { id: 'ollama', label: 'Ollama', format: 'openai', baseUrl: 'http://localhost:11434/v1', needsKey: false, models: [] },
-  { id: 'compat', label: 'Compatible OpenAI', format: 'openai', baseUrl: '', needsKey: false, models: [], customLabel: true },
+  { id: 'compat', label: 'OpenAI-compatible', format: 'openai', baseUrl: '', needsKey: false, models: [], customLabel: true },
 ]
 
 export const providerById = (id) => PROVIDERS.find((p) => p.id === id)
@@ -82,7 +82,7 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
     throw new ProviderError(res.status, message)
   }
   const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : null
-  if (!list) throw new ProviderError(res.status, "réponse inattendue : ce n'est pas une liste de modèles")
+  if (!list) throw new ProviderError(res.status, 'unexpected response: not a list of models')
   return list
     .map((m) => ({ id: String(m.id ?? m.name ?? ''), label: String(m.display_name || m.id || m.name || '') }))
     .filter((m) => m.id)
