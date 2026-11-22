@@ -337,16 +337,17 @@ body #chat-model:disabled { opacity: 0.5; }
   .btn { transition: none; }
 }
 
-/* ── Menu Exporter ────────────────────────────────────────────────────── */
+/* ── Menus Ouvrir et Exporter ─────────────────────────────────────────── */
 
-#export-menu {
+#toolbar .menu {
   position: fixed; inset: auto; margin: 0;
   flex-direction: column; align-items: stretch; gap: 2px; min-width: 180px;
   padding: var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-md);
   background: var(--surface-raised); color: var(--ink); box-shadow: var(--elevation-1);
 }
-#export-menu:popover-open { display: flex; }
-#export-menu .btn { justify-content: flex-start; }
+#toolbar .menu:popover-open { display: flex; }
+#toolbar .menu .btn { justify-content: flex-start; }
+#toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
 
 /* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
 
