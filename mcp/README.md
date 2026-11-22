@@ -1,65 +1,68 @@
-# Serveur MCP et chat intégré de l'éditeur BPMN (prototype)
+# MCP server and built-in chat for the BPMN editor (prototype)
 
-Ce serveur permet à une IA (Claude Code, Claude Desktop ou tout client MCP) de lire et de dessiner
-dans l'éditeur BPMN **ouvert dans le navigateur**. Les modifications apparaissent en direct sur le
-canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z, sauf `set_diagram_xml` et `auto_layout` qui rechargent tout le diagramme.
+**English** | [Français](README.fr.md)
 
-## Fonctionnement
+This server lets an AI (Claude Code, Claude Desktop or any MCP client) read and draw in the BPMN
+editor **open in the browser**. Changes show up live on the canvas, as if made by hand, and each tool
+call can be undone with a single Ctrl+Z, except `set_diagram_xml` and `auto_layout`, which reload the
+whole diagram.
 
-```
-Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSocket──▶  onglet de l'éditeur (bpmn-js)
-             /mcp                                            /bridge
-```
-
-- Le serveur valide les arguments de chaque outil puis relaie l'appel à l'onglet ouvert.
-- L'onglet exécute l'outil avec l'API de modélisation de bpmn-js (`src/mcp-bridge.js`) et renvoie le résultat.
-- Si plusieurs onglets sont ouverts, c'est le dernier utilisé qui reçoit les appels des clients MCP. Le chat intégré, lui, dessine toujours dans l'onglet où l'on discute.
-- Sans onglet ouvert, les outils répondent par une erreur explicite.
-- Un badge « MCP » dans la barre d'outils indique si l'éditeur est relié au serveur.
-- Les outils, les consignes et la boucle du chat sont définis dans `src/ai/`, partagé avec l'éditeur : le serveur se lance depuis le dépôt complet, pas depuis le seul dossier `mcp/`.
-
-## Chat intégré
-
-Le bouton « 💬 Assistant » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
-On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
-outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
-Le menu « Modèle », au-dessus de la zone de saisie, choisit le modèle parmi ceux que le serveur propose
-(il n'apparaît qu'à partir de deux modèles). Le choix est retenu par le navigateur. Passer d'un
-fournisseur à l'autre ouvre une nouvelle discussion, sans toucher au diagramme.
-Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion » repart de zéro.
+## How it works
 
 ```
-éditeur (panneau de chat) ──HTTP /chat──▶ serveur ──API Claude──────────────▶ Claude
-                                                  └─API compatible OpenAI──▶ OpenAI, OpenRouter, Ollama…
-                          ◀──WebSocket── outils exécutés dans l'onglet
+MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSocket──▶  editor tab (bpmn-js)
+             /mcp                                           /bridge
 ```
 
-- Les clés des variables d'environnement restent sur le serveur. Le navigateur ne reçoit que la liste
-  des modèles (identifiant et libellé), ni clé ni adresse de fournisseur, et le serveur refuse tout
-  modèle absent de cette liste.
-- Un fournisseur réglé dans la fenêtre Options (voir plus bas) part avec chaque message : adresse,
-  clé et modèle. Le serveur s'en sert pour cet appel, sans l'enregistrer ni l'écrire dans son journal.
-- La route `/chat` n'accepte que les pages de l'éditeur (même liste d'origines que le WebSocket).
-- Les conversations sont gardées en mémoire par le serveur (20 au plus) et perdues à son redémarrage.
-- Si Claude Opus ou Sonnet décline une demande, l'API la rejoue sur un modèle de repli
-  (`fallbacks: "default"`). Haiku n'a pas ce repli.
-- Chaque message consomme des crédits d'API : la clé de l'organisation à crédits inclus s'arrête
-  quand ils sont épuisés, une clé avec moyen de paiement est facturée à l'usage. Il en va de même chez
-  les fournisseurs compatibles OpenAI, sauf un modèle local (Ollama, LM Studio).
+- The server validates each tool's arguments, then relays the call to the open tab.
+- The tab runs the tool with the bpmn-js modeling API (`src/mcp-bridge.js`) and sends back the result.
+- When several tabs are open, the last one used receives calls from MCP clients. The built-in chat
+  always draws in the tab where the conversation takes place.
+- With no tab open, tools answer with an explicit error.
+- An "MCP" badge in the toolbar shows whether the editor is connected to the server.
+- Tools, instructions and the chat loop are defined in `src/ai/`, shared with the editor: the server
+  runs from the full repository, not from the `mcp/` folder alone.
 
-### Configurer les fournisseurs
+## Built-in chat
 
-Copier `mcp/.env.example` en `mcp/.env` (exclu de git) et remplir ce qui sert. Un fournisseur n'apparaît
-dans le menu que s'il est configuré. Les deux peuvent l'être en même temps.
+The "Assistant IA" button in the toolbar opens a chat panel to the right of the canvas. Describe a
+process or a change, and the model draws it in **this tab** with the same tools as the MCP server.
+Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The "Modèle" menu, above the
+input, picks the model among those the server offers (it only shows with two models or more). The
+browser remembers the choice. Switching provider starts a new conversation, without touching the
+diagram. The "Arrêter" button stops the current answer. "Nouvelle discussion" starts over.
 
-**Anthropic** : il suffit de la clé. Le menu propose alors Claude Opus 5.5, Sonnet 5.5 et Haiku 5.5.
+```
+editor (chat panel) ──HTTP /chat──▶ server ──Claude API──────────────▶ Claude
+                                           └─OpenAI-compatible API──▶ OpenAI, OpenRouter, Ollama…
+                    ◀──WebSocket── tools run in the tab
+```
+
+- Keys from environment variables stay on the server. The browser only receives the list of models
+  (id and label), neither key nor provider address, and the server rejects any model not in that list.
+- A provider set up in the Options window (see below) is sent with each message: address, key and
+  model. The server uses it for that call, without storing it or writing it to its log.
+- The `/chat` route only accepts editor pages (same list of origins as the WebSocket).
+- Conversations are kept in the server's memory (20 at most) and lost when it restarts.
+- If Claude Opus or Sonnet declines a request, the API replays it on a fallback model
+  (`fallbacks: "default"`). Haiku has no fallback.
+- Each message uses API credits: a key from an organization with included credits stops when they
+  run out, a key with a payment method is billed by usage. The same goes for OpenAI-compatible
+  providers, except a local model (Ollama, LM Studio).
+
+### Setting up providers
+
+Copy `mcp/.env.example` to `mcp/.env` (excluded from git) and fill in what you need. A provider only
+shows in the menu once it is set up. Both can be set up at the same time.
+
+**Anthropic**: the key is enough. The menu then offers Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5.
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-**Compatible OpenAI** : tout service qui expose `/chat/completions` avec appels d'outils (`tools`).
-La liste des modèles est obligatoire, car elle dépend du service.
+**OpenAI-compatible**: any service that exposes `/chat/completions` with tool calls (`tools`). The list
+of models is required, since it depends on the service.
 
 ```
 OPENAI_BASE_URL=https://openrouter.ai/api/v1
@@ -68,106 +71,112 @@ OPENAI_MODELS=openai/gpt-5=GPT-5,mistralai/mistral-large=Mistral Large
 OPENAI_LABEL=OpenRouter
 ```
 
-Pour un modèle local avec Ollama, pas de clé : `OPENAI_BASE_URL=http://localhost:11434/v1` et
-`OPENAI_MODELS=qwen3:14b`. Le modèle doit savoir appeler des outils, et un petit modèle dessine moins
-bien qu'un grand.
+For a local model with Ollama, no key: `OPENAI_BASE_URL=http://localhost:11434/v1` and
+`OPENAI_MODELS=qwen3:14b`. The model must support tool calls, and a small model draws less well than
+a large one.
 
-Sans aucun fournisseur, le serveur démarre quand même : les outils MCP marchent, et le panneau invite
-à régler un fournisseur dans la fenêtre Options.
+With no provider at all, the server still starts: the MCP tools work, and the panel suggests setting
+up a provider in the Options window.
 
-### Fenêtre Options
+### Options window
 
-Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisseur : Anthropic, OpenAI,
-Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse (préremplie pour
-Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
-fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
-Le « Modèle par défaut » choisit celui du menu.
+The "Options" button of the panel opens a window with one block per provider: Anthropic, OpenAI,
+Ollama and "Compatible OpenAI" (LiteLLM, LM Studio, vLLM…). For each one: the address (prefilled for
+Anthropic, OpenAI and Ollama), the key, and the models to offer. "Lister les modèles" asks the
+provider for them, "Tester" checks the address and the key. Neither button uses any credit. "Modèle
+par défaut" picks the one selected in the menu.
 
-- Les réglages restent dans le navigateur. Les clés sont oubliées à la fermeture de l'onglet, sauf si
-  « Se souvenir des clés sur cet appareil » est coché. « Effacer les clés » les retire.
-- Les appels passent par le serveur (routes `/chat` et `/chat/models`) : l'adresse est vue depuis le
-  serveur. S'il tourne dans docker, Ollama sur la machine hôte se joint par
+- Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Se souvenir des
+  clés sur cet appareil" is checked. "Effacer les clés" removes them.
+- Calls go through the server (`/chat` and `/chat/models` routes): the address is reached from the
+  server. When it runs in docker, Ollama on the host machine is reachable at
   `http://host.docker.internal:11434/v1`.
-- Les modèles des variables d'environnement restent proposés, sous leur propre groupe.
+- Models from environment variables are still offered, under their own group.
 
-### Dans un docker compose
+### With docker compose
 
-Les mêmes variables se passent par `environment`, les clés de préférence par un fichier `.env` à côté
-du compose, jamais écrites dans le compose lui-même :
+The `docker-compose.yml` file at the root of the repository starts the editor and this server (see
+the [main README](../README.md#docker-version)). The server reads `mcp/.env` when it exists.
+Variables can also be passed through `environment`, keys preferably through a `.env` file next to the
+compose file, never written in the compose file itself:
 
 ```yaml
 services:
-  bpmn-mcp:
+  mcp:
     environment:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CHAT_MODEL: anthropic:claude-sonnet-5-5
-      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      OPENAI_MODELS: ${OPENAI_MODELS:-}
-      OPENAI_LABEL: ${OPENAI_LABEL:-}
 ```
 
-## Lancer
+## Running
 
-Dans deux terminaux, à la racine du dépôt :
+With docker: `docker compose up -d --build` at the root of the repository, then open
+http://localhost:8080. MCP clients connect to `http://localhost:8080/mcp`.
+
+For development, in two terminals, at the root of the repository:
 
 ```
 npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Puis ouvrir http://localhost:5173. Le badge passe à « MCP : connecté ».
+Then open http://localhost:5173. The badge switches to "MCP : connecté".
 
-Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
+For Claude Code, the `.mcp.json` file at the root already declares the server
 (`http://127.0.0.1:3333/mcp`).
 
-## Outils
+## Tools
 
-| Outil | Rôle |
+| Tool | Purpose |
 |---|---|
-| `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
-| `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
-| `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
-| `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme |
-| `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
-| `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
-| `remove_elements` | supprime des formes ou des connexions |
-| `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Vide l'historique d'annulation |
-| `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |
+| `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
+| `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
+| `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
+| `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram |
+| `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
+| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
+| `remove_elements` | removes shapes or connections |
+| `auto_layout` | tidies up the whole diagram, like the "Ranger" button. Clears the undo history |
+| `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
 
-Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
+A call that fails halfway is undone entirely: the diagram is never left half changed.
 
-## Sécurité
+## Security
 
-- Le serveur n'écoute que sur `127.0.0.1`.
-- Les requêtes MCP dont l'en-tête `Host` n'est pas local sont refusées (protection contre le DNS rebinding, fournie par le SDK).
-- Seules les pages de l'éditeur peuvent se connecter au WebSocket : l'origine doit figurer dans
-  `BPMN_EDITOR_ORIGINS` (par défaut `http://localhost:5173` et `http://127.0.0.1:5173`).
-- Le pont et le panneau de chat ne sont actifs dans l'éditeur qu'en développement, ou si `VITE_MCP_BRIDGE_URL` est définie au build.
-  La version de production servie par nginx n'est pas modifiée.
-- Les routes `/chat` et `/chat/models` appellent l'adresse qu'on leur donne : elles n'acceptent que les
-  pages de l'éditeur, et le serveur ne doit pas être exposé sur un réseau public.
+- The server only listens on `127.0.0.1`. In its docker container it listens on all of the
+  container's interfaces, but the site is only published on `127.0.0.1` of the host machine.
+- MCP requests whose `Host` header is not local are rejected (DNS rebinding protection, provided by
+  the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
+- Only editor pages can connect to the WebSocket: the origin must be listed in `BPMN_EDITOR_ORIGINS`
+  (`http://localhost:5173` and `http://127.0.0.1:5173` by default).
+- The bridge and the chat panel are only active in the editor during development, in the docker
+  image built by the compose file, or when `VITE_MCP_BRIDGE_URL` is set at build time.
+- The `/chat` and `/chat/models` routes call the address they are given: they only accept editor
+  pages, and the server must not be exposed on a public network.
 
-## Variables d'environnement
+## Environment variables
 
-Elles peuvent aussi être placées dans `mcp/.env`.
+They can also be placed in `mcp/.env`.
 
-| Variable | Défaut | Rôle |
+| Variable | Default | Purpose |
 |---|---|---|
-| `MCP_PORT` | `3333` | port du serveur |
-| `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket |
-| `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
-| `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | modèles Claude proposés, `identifiant=Libellé` séparés par des virgules (libellé facultatif) |
-| `CHAT_EFFORT` | `medium` | effort de réflexion des modèles Claude : `low`, `medium`, `high`, `xhigh` ou `max` |
-| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | adresse de l'API compatible OpenAI, sans `/chat/completions` |
-| `OPENAI_API_KEY` | aucune | clé de ce fournisseur. Facultative pour un serveur local |
-| `OPENAI_MODELS` | aucune | modèles proposés, même format que `ANTHROPIC_MODELS`. Sans elle, pas de fournisseur compatible OpenAI |
-| `OPENAI_LABEL` | `Compatible OpenAI` | nom du fournisseur dans le menu (OpenRouter, Ollama…) |
-| `OPENAI_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort`, pour les modèles qui l'acceptent |
-| `CHAT_MODEL` | le premier de la liste | modèle choisi par défaut dans le menu : `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, ou l'identifiant seul |
-| `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement | adresse du pont |
+| `MCP_PORT` | `3333` | server port |
+| `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
+| `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
+| `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
+| `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |
+| `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | Claude models offered, `id=Label` separated by commas (label optional) |
+| `CHAT_EFFORT` | `medium` | thinking effort of Claude models: `low`, `medium`, `high`, `xhigh` or `max` |
+| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | address of the OpenAI-compatible API, without `/chat/completions` |
+| `OPENAI_API_KEY` | none | key for that provider. Optional for a local server |
+| `OPENAI_MODELS` | none | models offered, same format as `ANTHROPIC_MODELS`. Without it, no OpenAI-compatible provider |
+| `OPENAI_LABEL` | `Compatible OpenAI` | provider name in the menu (OpenRouter, Ollama…) |
+| `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |
+| `CHAT_MODEL` | the first in the list | model selected by default in the menu: `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, or the id alone |
+| `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |
 
-## Limites du prototype
+## Prototype limits
 
-- L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
-- `auto_layout` hérite des limites de bpmn-auto-layout 1.3.0 : seul le premier participant d'une collaboration est rangé, les annotations et les flux de message ne sont pas placés.
+- The editor tab must be open for the AI to draw.
+- `auto_layout` inherits the limits of bpmn-auto-layout 1.3.0: only the first participant of a
+  collaboration is laid out, and annotations and message flows are not placed.
