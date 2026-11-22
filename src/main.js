@@ -215,9 +215,14 @@ function download(content, filename, type) {
 
 loadInitial()
 
-// Pont vers le serveur MCP (dossier mcp/) : actif en développement, ou quand
+// Pont vers le serveur MCP (dossier mcp/) et chat intégré : actifs en développement, ou quand
 // VITE_MCP_BRIDGE_URL est définie au moment du build.
 const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
 if (mcpBridgeUrl) {
-  import('./mcp-bridge.js').then(({ connectMcpBridge }) => connectMcpBridge(modeler, mcpBridgeUrl))
+  Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
+    const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
+    // Le chat intégré passe par le même serveur, route /chat.
+    const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
+    createChatPanel({ chatUrl, bridge })
+  })
 }

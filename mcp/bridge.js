@@ -40,6 +40,9 @@ export class EditorBridge {
   #onConnection(ws) {
     const client = { id: randomUUID().slice(0, 8), title: '', lastActive: Date.now() }
     this.clients.set(ws, client)
+    // L'onglet apprend son identifiant, que le chat intégré joint à ses messages
+    // pour que l'IA dessine dans l'onglet où l'on discute.
+    ws.send(JSON.stringify({ type: 'welcome', id: client.id }))
     this.log(`[bridge] onglet ${client.id} connecté (${this.clients.size} au total)`)
 
     ws.on('message', (raw) => {
@@ -82,17 +85,33 @@ export class EditorBridge {
     return best
   }
 
+  #socketById(id) {
+    for (const [ws, client] of this.clients) {
+      if (client.id === id && ws.readyState === ws.OPEN) return { ws, client }
+    }
+    return null
+  }
+
+  hasTab(id) {
+    return !!this.#socketById(id)
+  }
+
   status() {
     const active = this.#activeSocket()
     return { tabs: this.clients.size, activeTab: active?.client.id ?? null }
   }
 
-  // Exécute un outil dans l'onglet actif et renvoie son résultat.
-  call(tool, args) {
-    const target = this.#activeSocket()
+  // Exécute un outil dans un onglet et renvoie son résultat : l'onglet
+  // indiqué par tabId (chat intégré), sinon l'onglet actif (clients MCP).
+  call(tool, args, { tabId } = {}) {
+    const target = tabId ? this.#socketById(tabId) : this.#activeSocket()
     if (!target) {
       return Promise.reject(
-        new Error("Aucun éditeur BPMN connecté. Ouvrez l'éditeur dans le navigateur (npm run dev) puis réessayez."),
+        new Error(
+          tabId
+            ? "L'onglet de l'éditeur n'est plus relié au serveur."
+            : "Aucun éditeur BPMN connecté. Ouvrez l'éditeur dans le navigateur (npm run dev) puis réessayez.",
+        ),
       )
     }
     const id = randomUUID()
