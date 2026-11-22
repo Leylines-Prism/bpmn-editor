@@ -20,6 +20,9 @@ import 'diagram-js-minimap/assets/diagram-js-minimap.css'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
 import 'bpmn-js-color-picker/colors/color-picker.css'
 import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css'
+import '../design/leylines/tokens.css'
+import './theme/leylines.css'
+import { setupThemeToggle } from './theme/theme-toggle.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -104,7 +107,7 @@ async function loadInitial() {
 
 let saveTimer = null
 function setStatus(msg) {
-  document.getElementById('autosave-status').textContent = 'Auto-save: ' + msg
+  document.getElementById('autosave-status').textContent = 'Sauvegarde auto : ' + msg
 }
 
 modeler.on('commandStack.changed', () => {
@@ -197,7 +200,7 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
 // bascule vienne de ce bouton ou du contrôle intégré au canevas.
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
-  simButton.textContent = active ? '⏹ Arrêter Simulation' : '▶ Simulation'
+  simButton.textContent = active ? 'Arrêter la simulation' : 'Simulation'
   simButton.classList.toggle('active', !!active)
 })
 simButton.addEventListener('click', () => {
@@ -213,6 +216,7 @@ function download(content, filename, type) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000)
 }
 
+setupThemeToggle(document.getElementById('btn-theme'))
 loadInitial()
 
 // Pont vers le serveur MCP (dossier mcp/) et chat intégré : actifs en développement, ou quand
