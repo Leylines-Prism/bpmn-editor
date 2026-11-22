@@ -7,12 +7,17 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
+import { autoLayout } from './auto-layout.js'
+
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
 
+// Renvoie l'état du pont : tabId est l'identifiant que le serveur a donné à
+// cet onglet, null tant que le pont n'est pas relié.
 export function connectMcpBridge(modeler, url) {
   const tools = createTools(modeler)
   const badge = createBadge()
+  const state = { tabId: null }
   let retryDelay = RETRY_MIN_MS
   let ws = null
 
@@ -33,6 +38,10 @@ export function connectMcpBridge(modeler, url) {
       } catch {
         return
       }
+      if (msg.type === 'welcome') {
+        state.tabId = msg.id
+        return
+      }
       if (msg.type !== 'call') return
       const tool = tools[msg.tool]
       try {
@@ -46,6 +55,7 @@ export function connectMcpBridge(modeler, url) {
     })
 
     ws.addEventListener('close', () => {
+      state.tabId = null
       setBadge(badge, 'disconnected')
       setTimeout(connect, retryDelay)
       retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS)
@@ -64,6 +74,7 @@ export function connectMcpBridge(modeler, url) {
   })
 
   connect()
+  return state
 }
 
 // ── Indicateur dans la barre d'outils ──────────────────────────────────────
@@ -324,6 +335,42 @@ function createTools(modeler) {
         }
         return { updated }
       })
+    },
+
+    async auto_layout() {
+      try {
+        await autoLayout(modeler)
+      } catch (err) {
+        throw new Error(`Mise en page impossible, diagramme inchangé : ${err.message}`)
+      }
+      const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== canvas.getRootElement())
+      return {
+        laidOut: true,
+        shapes: elements.filter((e) => !e.waypoints).length,
+        connections: elements.filter((e) => e.waypoints).length,
+      }
+    },
+
+    async validate_diagram() {
+      const linting = modeler.get('linting', false)
+      if (!linting) throw new Error("La validation (bpmnlint) n'est pas chargée dans cet éditeur.")
+      const results = await linting.lint()
+      const issues = []
+      for (const [rule, reports] of Object.entries(results)) {
+        for (const report of reports) {
+          const element = elementRegistry.get(report.id)
+          const name = element ? getBusinessObject(element).name : undefined
+          issues.push({
+            id: report.id,
+            ...(name ? { name } : {}),
+            category: report.category,
+            rule,
+            message: report.message,
+          })
+        }
+      }
+      const count = (category) => issues.filter((i) => i.category === category).length
+      return { errors: count('error') + count('rule-error'), warnings: count('warn'), infos: count('info'), issues }
     },
 
     remove_elements({ ids }) {
