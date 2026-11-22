@@ -112,7 +112,7 @@ function setBadge(badge, state) {
 
 // ── Outils ─────────────────────────────────────────────────────────────────
 
-function createTools(modeler) {
+export function createTools(modeler) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
