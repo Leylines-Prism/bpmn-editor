@@ -6,6 +6,7 @@ import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 import BpmnColorPickerModule from 'bpmn-js-color-picker'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
+import GridModule from 'diagram-js-grid'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 
@@ -77,6 +78,7 @@ const modeler = new BpmnModeler({
     BpmnColorPickerModule,
     NativeCopyPasteModule,
     LintModule,
+    GridModule,
     TranslateModule,
   ],
 })
