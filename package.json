@@ -35,6 +35,6 @@
   },
   "devDependencies": {
     "bpmnlint-pack-config": "0.9.0",
-    "vite": "6.3.5"
+    "vite": "6.4.6"
   }
 }
