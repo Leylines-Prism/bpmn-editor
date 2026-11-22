@@ -2,6 +2,7 @@
 // sur l'éditeur, ou XML collé dans une fenêtre.
 
 import { layoutProcess } from 'bpmn-auto-layout'
+import { fitView } from './fit-view.js'
 
 // bpmn-auto-layout suit les listes incoming/outgoing des éléments, que beaucoup
 // d'outils n'écrivent pas. On les reconstruit à partir des flux de séquence.
@@ -58,14 +59,14 @@ export async function importDiagram(modeler, xml) {
       result = await modeler.importXML(await layoutWithoutDi(modeler, xml))
       laidOut = true
     }
-    modeler.get('canvas').zoom('fit-viewport')
+    fitView(modeler.get('canvas'))
     return { warnings: result.warnings || [], laidOut }
   } catch (err) {
     console.error('Import error:', err)
     if (previous) {
       try {
         await modeler.importXML(previous)
-        modeler.get('canvas').zoom('fit-viewport')
+        fitView(modeler.get('canvas'))
       } catch {}
     }
     throw new Error(explain(err))
