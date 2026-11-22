@@ -25,6 +25,7 @@ import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css'
 import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
+import { setupPanelToggle } from './panel-toggle.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -304,6 +305,11 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupPanelToggle({
+  button: document.getElementById('btn-properties'),
+  panel: document.getElementById('properties-panel'),
+  canvas: modeler.get('canvas'),
+})
 loadInitial()
 
 // Pont vers le serveur MCP (dossier mcp/) et chat intégré : actifs en développement, ou quand
