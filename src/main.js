@@ -5,6 +5,7 @@ import TokenSimulationModule from 'bpmn-js-token-simulation'
 import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 import BpmnColorPickerModule from 'bpmn-js-color-picker'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
+import TranslateModule from './i18n/translate.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -71,6 +72,7 @@ const modeler = new BpmnModeler({
     CreateAppendAnythingModule,
     BpmnColorPickerModule,
     NativeCopyPasteModule,
+    TranslateModule,
   ],
 })
 
