@@ -29,6 +29,10 @@
 
     #main { display: flex; flex: 1; overflow: hidden; }
     #canvas { flex: 1; position: relative; background: #fff; }
+    /* Le canevas est clair : ses éléments HTML (menu contextuel, saisie de libellé)
+       ne doivent pas hériter du texte clair du thème sombre */
+    #canvas { color: #1a1a1a; }
+    #canvas .djs-context-pad .entry:hover { color: #0066cc; }
     #properties-panel { width: 280px; border-left: 1px solid #0f3460; overflow-y: auto; background: #16213e; flex-shrink: 0; }
 
     #credit {
