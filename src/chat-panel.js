@@ -90,7 +90,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.textContent = 'Assistant'
+  toggle.textContent = 'Assistant IA'
   document.getElementById('btn-simulation').after(toggle)
 
   const log = panel.querySelector('#chat-log')
