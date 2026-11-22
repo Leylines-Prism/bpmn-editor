@@ -22,6 +22,9 @@ import 'diagram-js-minimap/assets/diagram-js-minimap.css'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
 import 'bpmn-js-color-picker/colors/color-picker.css'
 import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css'
+import '@fontsource/urbanist/400.css'
+import '@fontsource/urbanist/500.css'
+import '@fontsource/urbanist/600.css'
 import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
@@ -312,14 +315,23 @@ setupPanelToggle({
 })
 loadInitial()
 
-// Pont vers le serveur MCP (dossier mcp/) et chat intégré : actifs en développement, ou quand
-// VITE_MCP_BRIDGE_URL est définie au moment du build.
-const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
-if (mcpBridgeUrl) {
-  Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
-    const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
-    // Le chat intégré passe par le même serveur, route /chat.
-    const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
-    createChatPanel({ chatUrl, bridge })
+// Chat intégré, en deux modes :
+//   - en ligne (build « vite build --mode online ») : le chat tourne dans la page et
+//     appelle le fournisseur réglé dans Options. Pas de pont MCP.
+//   - serveur (développement, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
+//     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
+if (import.meta.env.MODE === 'online') {
+  Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
+    createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })
+} else {
+  const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+  if (mcpBridgeUrl) {
+    Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
+      // Le chat intégré passe par le même serveur, route /chat.
+      const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
+      createChatPanel({ mode: 'server', chatUrl, bridge })
+    })
+  }
 }
