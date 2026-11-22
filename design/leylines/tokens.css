@@ -1,0 +1,131 @@
+/* Leylines — tokens.css (généré depuis tokens.json, ne pas éditer à la main)
+   Clair par défaut ; sombre via prefers-color-scheme, forçable avec <html data-theme="light|dark">.
+   Police : <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600&display=swap" rel="stylesheet"> */
+:root {
+  color-scheme: light dark;
+  --leyline-orange: #FF7E1A;
+  --leyline-magenta: #D24E8E;
+  --leyline-sky: #2BB8FF;
+  --leyline-sky-deep: #1483C9;
+  --leyline-orange-deep: #D9620A;
+  --node-glow: #FF9A3D;
+  --node-glow-light: #FFC27A;
+  --node-glow-day: #FF9A3D;
+  --node-ice: #FFE9CF;
+  --node-ray: #FFB872;
+  --node-cool: #CFEFFF;
+  --night-950: #05070D;
+  --night-900: #080B14;
+  --night-850: #0B0F1A;
+  --night-800: #0C1120;
+  --night-700: #10182A;
+  --frost: #EAF0F7;
+  --white: #FFFFFF;
+  --mist: #ECEFF3;
+  --brand-ground: #FFFFFF;
+  --brand-card: #FFFFFF;
+  --wordmark-ink: #0C1120;
+  --icon-tile: #FFFFFF;
+  --icon-tile-edge: #ECEFF3;
+  --surface: #F5F7FA;
+  --surface-raised: #FFFFFF;
+  --surface-sunken: #ECEFF3;
+  --line: #ECEFF3;
+  --line-strong: #7A869A;
+  --ink: #0C1120;
+  --ink-muted: #3D4656;
+  --accent: #0F6FAD;
+  --on-accent: #FFFFFF;
+  --accent-soft: #E3F4FD;
+  --warm: #B04E08;
+  --magenta: #B5397A;
+  --focus-ring: #0F6FAD;
+  --font-sans: "Urbanist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-sm: 6px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 9999px;
+  --leyline: linear-gradient(135deg, #2BB8FF 0%, #D24E8E 50%, #FF7E1A 100%);
+  --glow-node: 0 0 16px rgba(255, 126, 26, 0.34);
+  --glow-cool: 0 0 16px rgba(43, 184, 255, 0.30);
+  --elevation-1: 0 1px 2px rgba(12, 17, 32, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --brand-ground: #080B14;
+    --brand-card: #0B0F1A;
+    --wordmark-ink: #EAF0F7;
+    --icon-tile: #0C1120;
+    --icon-tile-edge: #0C1120;
+    --surface: #080B14;
+    --surface-raised: #0C1120;
+    --surface-sunken: #05070D;
+    --line: #26304A;
+    --line-strong: #5A6684;
+    --ink: #EAF0F7;
+    --ink-muted: #9AA6B8;
+    --accent: #2BB8FF;
+    --on-accent: #0C1120;
+    --accent-soft: #0E2A40;
+    --warm: #FF7E1A;
+    --magenta: #E06BA3;
+    --focus-ring: #2BB8FF;
+    --glow-node: 0 0 24px rgba(255, 154, 61, 0.45);
+    --glow-cool: 0 0 24px rgba(43, 184, 255, 0.40);
+    --elevation-1: 0 1px 2px rgba(5, 7, 13, 0.6);
+  }
+}
+:root[data-theme="dark"] {
+  --brand-ground: #080B14;
+  --brand-card: #0B0F1A;
+  --wordmark-ink: #EAF0F7;
+  --icon-tile: #0C1120;
+  --icon-tile-edge: #0C1120;
+  --surface: #080B14;
+  --surface-raised: #0C1120;
+  --surface-sunken: #05070D;
+  --line: #26304A;
+  --line-strong: #5A6684;
+  --ink: #EAF0F7;
+  --ink-muted: #9AA6B8;
+  --accent: #2BB8FF;
+  --on-accent: #0C1120;
+  --accent-soft: #0E2A40;
+  --warm: #FF7E1A;
+  --magenta: #E06BA3;
+  --focus-ring: #2BB8FF;
+  --glow-node: 0 0 24px rgba(255, 154, 61, 0.45);
+  --glow-cool: 0 0 24px rgba(43, 184, 255, 0.40);
+  --elevation-1: 0 1px 2px rgba(5, 7, 13, 0.6);
+}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Base */
+body { margin: 0; background: var(--surface); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 24px; }
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+a { color: var(--accent); }
+
+/* Typographie */
+.t-display { font-family: var(--font-sans); font-size: 56px; line-height: 60px; font-weight: 600; letter-spacing: -0.02em; }
+.t-h1 { font-family: var(--font-sans); font-size: 40px; line-height: 48px; font-weight: 600; letter-spacing: -0.01em; }
+.t-h2 { font-family: var(--font-sans); font-size: 28px; line-height: 36px; font-weight: 600; }
+.t-h3 { font-family: var(--font-sans); font-size: 20px; line-height: 28px; font-weight: 600; }
+.t-body { font-family: var(--font-sans); font-size: 16px; line-height: 24px; font-weight: 400; }
+.t-body-sm { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+.t-label { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; }
+.t-caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.02em; }
+.t-code { font-family: var(--font-mono); font-size: 13px; line-height: 20px; font-weight: 400; }
+.t-caption, .t-label { color: var(--ink-muted); }
+
+/* Motif leyline (trait fin uniquement, jamais en fond) */
+.leyline-rule { height: 4px; border: 0; border-radius: var(--radius-pill); background: var(--leyline); }

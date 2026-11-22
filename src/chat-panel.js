@@ -46,7 +46,7 @@ export function createChatPanel({ chatUrl, bridge }) {
     <div id="chat-log" aria-live="polite"></div>
     <form id="chat-form">
       <textarea id="chat-input" placeholder="Décrivez le processus à dessiner, ou ce qu'il faut changer…"></textarea>
-      <button class="btn" type="submit" id="chat-send">Envoyer</button>
+      <button class="btn primary" type="submit" id="chat-send">Envoyer</button>
     </form>`
   document.getElementById('canvas').after(panel)
 
@@ -54,7 +54,7 @@ export function createChatPanel({ chatUrl, bridge }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.textContent = '💬 Assistant'
+  toggle.textContent = 'Assistant'
   document.getElementById('btn-simulation').after(toggle)
 
   const log = panel.querySelector('#chat-log')
