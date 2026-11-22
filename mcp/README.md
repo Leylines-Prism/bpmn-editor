@@ -34,8 +34,11 @@ Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion
                           ◀──WebSocket── outils exécutés dans l'onglet
 ```
 
-- Les clés d'API restent sur le serveur. Le navigateur ne reçoit que la liste des modèles (identifiant
-  et libellé), ni clé ni adresse de fournisseur, et le serveur refuse tout modèle absent de cette liste.
+- Les clés des variables d'environnement restent sur le serveur. Le navigateur ne reçoit que la liste
+  des modèles (identifiant et libellé), ni clé ni adresse de fournisseur, et le serveur refuse tout
+  modèle absent de cette liste.
+- Un fournisseur réglé dans la fenêtre Options (voir plus bas) part avec chaque message : adresse,
+  clé et modèle. Le serveur s'en sert pour cet appel, sans l'enregistrer ni l'écrire dans son journal.
 - La route `/chat` n'accepte que les pages de l'éditeur (même liste d'origines que le WebSocket).
 - Les conversations sont gardées en mémoire par le serveur (20 au plus) et perdues à son redémarrage.
 - Si Claude Opus ou Sonnet décline une demande, l'API la rejoue sur un modèle de repli
@@ -69,8 +72,23 @@ Pour un modèle local avec Ollama, pas de clé : `OPENAI_BASE_URL=http://localho
 `OPENAI_MODELS=qwen3:14b`. Le modèle doit savoir appeler des outils, et un petit modèle dessine moins
 bien qu'un grand.
 
-Sans aucun fournisseur, le serveur démarre quand même : les outils MCP marchent, le panneau indique
-que le chat n'est pas configuré.
+Sans aucun fournisseur, le serveur démarre quand même : les outils MCP marchent, et le panneau invite
+à régler un fournisseur dans la fenêtre Options.
+
+### Fenêtre Options
+
+Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisseur : Anthropic, OpenAI,
+Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse (préremplie pour
+Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
+fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
+Le « Modèle par défaut » choisit celui du menu.
+
+- Les réglages restent dans le navigateur. Les clés sont oubliées à la fermeture de l'onglet, sauf si
+  « Se souvenir des clés sur cet appareil » est coché. « Effacer les clés » les retire.
+- Les appels passent par le serveur (routes `/chat` et `/chat/models`) : l'adresse est vue depuis le
+  serveur. S'il tourne dans docker, Ollama sur la machine hôte se joint par
+  `http://host.docker.internal:11434/v1`.
+- Les modèles des variables d'environnement restent proposés, sous leur propre groupe.
 
 ### Dans un docker compose
 
@@ -127,6 +145,8 @@ Un appel qui échoue en cours de route est annulé en entier : le diagramme ne r
   `BPMN_EDITOR_ORIGINS` (par défaut `http://localhost:5173` et `http://127.0.0.1:5173`).
 - Le pont et le panneau de chat ne sont actifs dans l'éditeur qu'en développement, ou si `VITE_MCP_BRIDGE_URL` est définie au build.
   La version de production servie par nginx n'est pas modifiée.
+- Les routes `/chat` et `/chat/models` appellent l'adresse qu'on leur donne : elles n'acceptent que les
+  pages de l'éditeur, et le serveur ne doit pas être exposé sur un réseau public.
 
 ## Variables d'environnement
 

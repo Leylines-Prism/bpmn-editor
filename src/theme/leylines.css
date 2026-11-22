@@ -361,6 +361,58 @@ body #chat-model:disabled { opacity: 0.5; }
 #xml-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
 #xml-dialog .grow { flex: 1; }
 
+/* ── Fenêtre « Options de l'assistant » (src/options-dialog.js) ───────── */
+
+#options-dialog {
+  margin: auto; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--surface-raised); color: var(--ink);
+  box-shadow: var(--elevation-1); padding: var(--space-6);
+}
+#options-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#options-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
+#options-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#options-dialog .hint { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
+#options-dialog .providers { display: flex; flex-direction: column; gap: var(--space-2); }
+#options-dialog .provider {
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  padding: 0 var(--space-4); margin: 0; min-width: 0; background: var(--surface);
+}
+#options-dialog .provider.on { border-color: var(--line-strong); }
+/* Légende dans la carte : la case et le nom sur la première ligne. */
+#options-dialog legend { float: left; width: 100%; padding: var(--space-2) 0; font-weight: 600; }
+#options-dialog legend + * { clear: both; }
+#options-dialog legend label { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+#options-dialog .p-body { display: none; flex-direction: column; gap: var(--space-2); padding: 0 0 var(--space-3); }
+#options-dialog .provider.on .p-body { display: flex; }
+#options-dialog .field { display: flex; flex-direction: column; gap: var(--space-1); font-size: 13px; font-weight: 500; color: var(--ink-muted); }
+#options-dialog input[type="text"], #options-dialog input[type="url"], #options-dialog input[type="password"], #options-dialog select {
+  height: 32px; padding: 0 var(--space-2); min-width: 0;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink);
+  font-family: var(--font-sans); font-size: 14px;
+}
+#options-dialog input:focus-visible, #options-dialog select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; border-color: var(--accent); }
+#options-dialog input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; }
+#options-dialog .p-models {
+  display: flex; flex-direction: column; gap: 2px; max-height: 160px; overflow-y: auto;
+  color: var(--ink); font-weight: 400;
+}
+#options-dialog .p-models label { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+#options-dialog .p-add-row { display: flex; gap: var(--space-2); }
+#options-dialog .p-add-row input { flex: 1; }
+#options-dialog .p-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+#options-dialog .p-actions .btn { border-color: var(--line-strong); }
+#options-dialog .p-result { font-size: 13px; line-height: 18px; color: var(--ink-muted); flex-basis: 100%; }
+#options-dialog .p-result:empty { display: none; }
+#options-dialog .p-result.ok { color: var(--accent); }
+#options-dialog .p-result.failed { color: var(--magenta); }
+#options-dialog .keys-row, #options-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#options-dialog .keys-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; cursor: pointer; }
+#options-dialog .grow { flex: 1; }
+#chat-panel #chat-settings { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }
+#chat-panel #chat-settings:hover { color: var(--ink); }
+
 body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6px; }
 
 /* Barre étroite : le champ du nom de fichier tient lieu de titre, le titre

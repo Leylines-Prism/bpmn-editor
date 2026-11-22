@@ -48,6 +48,7 @@ export class ChatService {
   status() {
     return {
       enabled: this.enabled,
+      relay: true, // accepte aussi les fournisseurs réglés dans la fenêtre Options
       model: this.defaultKey,
       models: this.models.map(({ key, label, provider, providerLabel }) => ({ id: key, label, provider, providerLabel })),
     }
@@ -79,52 +80,49 @@ export class ChatService {
   //   { type: 'text', text }          morceau de la réponse
   //   { type: 'tool', name, ok, error? }  outil exécuté dans l'éditeur
   // Lève une erreur en cas d'échec. signal permet d'interrompre.
-  async send({ conversationId, tabId, model: modelKey, text, emit, signal }) {
-    if (!this.enabled) throw new Error("Le chat n'est pas configuré : aucun fournisseur de modèle n'est défini sur le serveur.")
-    const model = this.models.find((m) => m.key === (modelKey || this.defaultKey))
-    if (!model) throw new Error(`Modèle inconnu : ${modelKey}`)
+  //
+  // custom : fournisseur réglé dans la fenêtre Options de l'éditeur,
+  // { format, baseUrl, apiKey, model }. La clé sert à cet appel puis est oubliée.
+  async send({ conversationId, tabId, model: modelKey, custom, text, emit, signal }) {
+    let target
+    if (custom) {
+      target = { format: custom.format, id: custom.model, client: this.#customClient(custom) }
+    } else {
+      if (!this.enabled) throw new Error("Le chat n'est pas configuré : aucun fournisseur de modèle n'est défini sur le serveur.")
+      const model = this.models.find((m) => m.key === (modelKey || this.defaultKey))
+      if (!model) throw new Error(`Modèle inconnu : ${modelKey}`)
+      target = { format: model.provider, id: model.id, client: model.provider === 'openai' ? this.openai : this.anthropic }
+    }
     if (!this.bridge.hasTab(tabId)) throw new Error("Cet onglet n'est pas relié au serveur. Rechargez la page.")
 
-    const { id, conv } = this.#conversation(conversationId, model.provider)
+    const { id, conv } = this.#conversation(conversationId, target.format)
     if (conv.busy) throw new Error('Une réponse est déjà en cours dans cette conversation.')
     conv.busy = true
     emit({ type: 'conversation', id })
+    const common = {
+      model: target.id,
+      conv,
+      text,
+      toolSet: TOOL_SET,
+      executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
+      emit,
+      signal,
+      log: this.log,
+    }
     try {
-      if (model.provider === 'openai') await this.#sendOpenAI({ conv, model, tabId, text, emit, signal })
-      else await this.#sendAnthropic({ conv, model, tabId, text, emit, signal })
+      if (target.format === 'openai') {
+        await runOpenAITurn({ ...common, client: target.client, reasoningEffort: custom ? null : this.openaiEffort })
+      } else {
+        await runAnthropicTurn({ ...common, client: target.client, APIError: Anthropic.APIError, effort: this.effort })
+      }
     } finally {
       conv.busy = false
     }
   }
 
-  async #sendAnthropic({ conv, model, tabId, text, emit, signal }) {
-    await runAnthropicTurn({
-      client: this.anthropic,
-      APIError: Anthropic.APIError,
-      model: model.id,
-      effort: this.effort,
-      conv,
-      text,
-      toolSet: TOOL_SET,
-      executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
-      emit,
-      signal,
-      log: this.log,
-    })
-  }
-
-  async #sendOpenAI({ conv, model, tabId, text, emit, signal }) {
-    await runOpenAITurn({
-      client: this.openai,
-      model: model.id,
-      reasoningEffort: this.openaiEffort,
-      conv,
-      text,
-      toolSet: TOOL_SET,
-      executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
-      emit,
-      signal,
-      log: this.log,
-    })
+  // Client d'un appel, avec la clé reçue. Rien n'est gardé après la réponse.
+  #customClient({ format, baseUrl, apiKey }) {
+    if (format === 'anthropic') return new Anthropic({ apiKey: apiKey || null, authToken: null, baseURL: baseUrl })
+    return new OpenAICompatClient({ baseUrl, apiKey })
   }
 }
