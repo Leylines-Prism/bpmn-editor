@@ -102,6 +102,7 @@ function setBadge(badge, state) {
   }
   const [text, color] = states[state]
   badge.textContent = text
+  badge.dataset.state = state
   badge.style.color = color
   badge.title =
     state === 'connected'
