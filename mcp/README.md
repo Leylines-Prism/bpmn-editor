@@ -16,6 +16,7 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 - Si plusieurs onglets sont ouverts, c'est le dernier utilisé qui reçoit les appels des clients MCP. Le chat intégré, lui, dessine toujours dans l'onglet où l'on discute.
 - Sans onglet ouvert, les outils répondent par une erreur explicite.
 - Un badge « MCP » dans la barre d'outils indique si l'éditeur est relié au serveur.
+- Les outils, les consignes et la boucle du chat sont définis dans `src/ai/`, partagé avec l'éditeur : le serveur se lance depuis le dépôt complet, pas depuis le seul dossier `mcp/`.
 
 ## Chat intégré
 
