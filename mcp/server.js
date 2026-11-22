@@ -11,11 +11,12 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
 import Anthropic from '@anthropic-ai/sdk'
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
+import * as z from 'zod/v4'
 
 import { EditorBridge } from './bridge.js'
 import { ChatService } from './chat.js'
-import { OpenAICompatError } from './openai-compat.js'
-import { INSTRUCTIONS, TOOLS } from './tools.js'
+import { OpenAICompatError } from '../src/ai/openai-compat.js'
+import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
 try {
@@ -32,6 +33,7 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
 const log = (...args) => console.error(new Date().toLocaleTimeString('fr-FR'), ...args)
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
 const chat = new ChatService({ bridge, log })
+const TOOLS = buildTools(z)
 
 function buildMcpServer() {
   const server = new McpServer({ name: 'bpmn-editor', version: '0.1.0' }, { instructions: INSTRUCTIONS })
