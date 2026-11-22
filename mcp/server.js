@@ -2,16 +2,24 @@
 //
 //   POST /mcp     point d'entrée MCP (Streamable HTTP, sans session)
 //   WS   /bridge  connexion des onglets de l'éditeur
+//   POST /chat    chat intégré à l'éditeur (réponse en flux SSE)
 //   GET  /healthz état du serveur et nombre d'onglets connectés
 //
 // N'écoute que sur 127.0.0.1 : rien n'est exposé sur le réseau.
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import Anthropic from '@anthropic-ai/sdk'
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
 
 import { EditorBridge } from './bridge.js'
+import { ChatService } from './chat.js'
 import { INSTRUCTIONS, TOOLS } from './tools.js'
+
+// Variables d'environnement facultatives dans mcp/.env (exclu de git).
+try {
+  process.loadEnvFile(new URL('.env', import.meta.url))
+} catch {}
 
 const HOST = '127.0.0.1'
 const PORT = Number(process.env.MCP_PORT || 3333)
@@ -22,6 +30,7 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
 
 const log = (...args) => console.error(new Date().toLocaleTimeString('fr-FR'), ...args)
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
+const chat = new ChatService({ bridge, log })
 
 function buildMcpServer() {
   const server = new McpServer({ name: 'bpmn-editor', version: '0.1.0' }, { instructions: INSTRUCTIONS })
@@ -69,7 +78,69 @@ const methodNotAllowed = (req, res) =>
 app.get('/mcp', methodNotAllowed)
 app.delete('/mcp', methodNotAllowed)
 
-app.get('/healthz', (req, res) => res.json({ ok: true, ...bridge.status() }))
+app.get('/healthz', (req, res) => res.json({ ok: true, ...bridge.status(), chat: chat.status() }))
+
+// ── Chat intégré ───────────────────────────────────────────────────────────
+// Réservé aux pages de l'éditeur : chaque message consomme des crédits d'API.
+
+const ALLOWED_ORIGIN_SET = new Set(ALLOWED_ORIGINS)
+function chatCors(req, res, next) {
+  const origin = req.headers.origin
+  if (!origin || !ALLOWED_ORIGIN_SET.has(origin)) {
+    return res.status(403).json({ error: 'Origine non autorisée' })
+  }
+  res.set('Access-Control-Allow-Origin', origin)
+  res.set('Vary', 'Origin')
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.set('Access-Control-Max-Age', '600')
+    return res.sendStatus(204)
+  }
+  next()
+}
+app.options('/chat', chatCors)
+app.get('/chat', chatCors, (req, res) => res.json(chat.status()))
+
+app.post('/chat', chatCors, async (req, res) => {
+  const { conversationId, tabId, text } = req.body ?? {}
+  if (typeof text !== 'string' || !text.trim() || text.length > 20000 || typeof tabId !== 'string') {
+    return res.status(400).json({ error: 'Requête invalide' })
+  }
+  res.set({ 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
+  res.flushHeaders()
+  const emit = (event) => res.write(`data: ${JSON.stringify(event)}\n\n`)
+
+  // Le bouton « Arrêter » de l'éditeur coupe la requête : on interrompt l'appel en cours.
+  const abort = new AbortController()
+  res.on('close', () => abort.abort())
+
+  try {
+    await chat.send({
+      conversationId: typeof conversationId === 'string' ? conversationId : undefined,
+      tabId,
+      text: text.trim(),
+      emit,
+      signal: abort.signal,
+    })
+    emit({ type: 'done' })
+  } catch (err) {
+    if (!abort.signal.aborted) {
+      log('[chat] erreur :', err.message)
+      emit({ type: 'error', message: chatErrorMessage(err) })
+    }
+  }
+  res.end()
+})
+
+function chatErrorMessage(err) {
+  if (err instanceof Anthropic.AuthenticationError) return "Clé d'API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur."
+  if (err instanceof Anthropic.PermissionDeniedError) return "Cette clé d'API n'a pas accès à ce modèle."
+  if (err instanceof Anthropic.RateLimitError) return "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard."
+  if (err instanceof Anthropic.BadRequestError) return `Requête refusée par l'API : ${err.message}`
+  if (err instanceof Anthropic.APIError) return `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`
+  return err.message
+}
 
 const httpServer = app.listen(PORT, HOST, (err) => {
   if (err) {
@@ -78,5 +149,6 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
+  log(chat.enabled ? `Chat intégré actif (${chat.status().model})` : 'Chat intégré inactif : ANTHROPIC_API_KEY non définie')
 })
 httpServer.on('upgrade', (req, socket, head) => bridge.handleUpgrade(req, socket, head))

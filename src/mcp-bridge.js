@@ -12,9 +12,12 @@ import { autoLayout } from './auto-layout.js'
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
 
+// Renvoie l'état du pont : tabId est l'identifiant que le serveur a donné à
+// cet onglet, null tant que le pont n'est pas relié.
 export function connectMcpBridge(modeler, url) {
   const tools = createTools(modeler)
   const badge = createBadge()
+  const state = { tabId: null }
   let retryDelay = RETRY_MIN_MS
   let ws = null
 
@@ -35,6 +38,10 @@ export function connectMcpBridge(modeler, url) {
       } catch {
         return
       }
+      if (msg.type === 'welcome') {
+        state.tabId = msg.id
+        return
+      }
       if (msg.type !== 'call') return
       const tool = tools[msg.tool]
       try {
@@ -48,6 +55,7 @@ export function connectMcpBridge(modeler, url) {
     })
 
     ws.addEventListener('close', () => {
+      state.tabId = null
       setBadge(badge, 'disconnected')
       setTimeout(connect, retryDelay)
       retryDelay = Math.min(retryDelay * 2, RETRY_MAX_MS)
@@ -66,6 +74,7 @@ export function connectMcpBridge(modeler, url) {
   })
 
   connect()
+  return state
 }
 
 // ── Indicateur dans la barre d'outils ──────────────────────────────────────
