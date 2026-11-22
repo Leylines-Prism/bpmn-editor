@@ -7,6 +7,7 @@ import BpmnColorPickerModule from 'bpmn-js-color-picker'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
+import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import { layoutProcess } from 'bpmn-auto-layout'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
@@ -65,6 +66,9 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 </definitions>`
 
 const LS_KEY = 'bpmn-editor-autosave'
+const DEFAULT_NAME = 'diagramme'
+// Nom de base (sans extension) du fichier ouvert, repris à l'enregistrement.
+let baseName = DEFAULT_NAME
 
 const modeler = new BpmnModeler({
   container: '#canvas',
@@ -80,6 +84,7 @@ const modeler = new BpmnModeler({
     NativeCopyPasteModule,
     LintModule,
     GridModule,
+    CopyAsImageModule,
     TranslateModule,
   ],
 })
@@ -116,6 +121,7 @@ modeler.on('commandStack.changed', () => {
 document.getElementById('btn-new').addEventListener('click', async () => {
   if (!confirm('Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.')) return
   localStorage.removeItem(LS_KEY)
+  baseName = DEFAULT_NAME
   await modeler.importXML(EMPTY_DIAGRAM)
   modeler.get('canvas').zoom('fit-viewport')
   setStatus('Nouveau')
@@ -131,6 +137,7 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
   const xml = await file.text()
   try {
     await modeler.importXML(xml)
+    baseName = file.name.replace(/\.(bpmn|xml)$/i, '') || DEFAULT_NAME
     modeler.get('canvas').zoom('fit-viewport')
     setStatus('Fichier ouvert')
   } catch (err) {
@@ -141,12 +148,12 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
 
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
-  download(xml, 'diagramme.bpmn', 'application/xml')
+  download(xml, baseName + '.bpmn', 'application/xml')
 })
 
 document.getElementById('btn-svg').addEventListener('click', async () => {
   const { svg } = await modeler.saveSVG()
-  download(svg, 'diagramme.svg', 'image/svg+xml')
+  download(svg, baseName + '.svg', 'image/svg+xml')
 })
 
 document.getElementById('btn-png').addEventListener('click', async () => {
@@ -165,12 +172,7 @@ document.getElementById('btn-png').addEventListener('click', async () => {
     ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
     ctx.drawImage(img, 0, 0)
     URL.revokeObjectURL(url)
-    canvas.toBlob(b => {
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(b)
-      a.download = 'diagramme.png'
-      a.click()
-    }, 'image/png')
+    canvas.toBlob(b => download(b, baseName + '.png', 'image/png'), 'image/png')
   }
   img.onerror = () => {
     URL.revokeObjectURL(url)
@@ -207,28 +209,25 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
   }
 })
 
-let simActive = false
-document.getElementById('btn-simulation').addEventListener('click', () => {
-  const btn = document.getElementById('btn-simulation')
-  simActive = !simActive
-  if (simActive) {
-    btn.textContent = '⏹ Arrêter Simulation'
-    btn.classList.add('active')
-  } else {
-    btn.textContent = '▶ Simulation'
-    btn.classList.remove('active')
-  }
-  try {
-    modeler.get('eventBus').fire('tokenSimulation.toggleMode')
-  } catch(e) { console.warn('Simulation toggle:', e) }
+// Le bouton suit l'état réel de la simulation : on pilote le service de
+// l'extension, et l'événement qu'elle émet met à jour le libellé, que la
+// bascule vienne de ce bouton ou du contrôle intégré au canevas.
+const simButton = document.getElementById('btn-simulation')
+modeler.on('tokenSimulation.toggleMode', ({ active }) => {
+  simButton.textContent = active ? '⏹ Arrêter Simulation' : '▶ Simulation'
+  simButton.classList.toggle('active', !!active)
+})
+simButton.addEventListener('click', () => {
+  modeler.get('toggleMode').toggleMode()
 })
 
 function download(content, filename, type) {
   const a = document.createElement('a')
   const blob = content instanceof Blob ? content : new Blob([content], { type })
-  a.href = content instanceof Blob ? URL.createObjectURL(content) : URL.createObjectURL(blob)
+  a.href = URL.createObjectURL(blob)
   a.download = filename
   a.click()
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000)
 }
 
 loadInitial()
