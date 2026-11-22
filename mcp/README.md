@@ -25,12 +25,12 @@ MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSoc
 
 ## Built-in chat
 
-The "Assistant IA" button in the toolbar opens a chat panel to the right of the canvas. Describe a
+The "AI assistant" button in the toolbar opens a chat panel to the right of the canvas. Describe a
 process or a change, and the model draws it in **this tab** with the same tools as the MCP server.
-Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The "Modèle" menu, above the
+Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The "Model" menu, above the
 input, picks the model among those the server offers (it only shows with two models or more). The
 browser remembers the choice. Switching provider starts a new conversation, without touching the
-diagram. The "Arrêter" button stops the current answer. "Nouvelle discussion" starts over.
+diagram. The "Stop" button stops the current answer. "New chat" starts over.
 
 ```
 editor (chat panel) ──HTTP /chat──▶ server ──Claude API──────────────▶ Claude
@@ -81,13 +81,13 @@ up a provider in the Options window.
 ### Options window
 
 The "Options" button of the panel opens a window with one block per provider: Anthropic, OpenAI,
-Ollama and "Compatible OpenAI" (LiteLLM, LM Studio, vLLM…). For each one: the address (prefilled for
-Anthropic, OpenAI and Ollama), the key, and the models to offer. "Lister les modèles" asks the
-provider for them, "Tester" checks the address and the key. Neither button uses any credit. "Modèle
-par défaut" picks the one selected in the menu.
+Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address (prefilled for
+Anthropic, OpenAI and Ollama), the key, and the models to offer. "List models" asks the provider
+for them, "Test" checks the address and the key. Neither button uses any credit. "Default model"
+picks the one selected in the menu.
 
-- Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Se souvenir des
-  clés sur cet appareil" is checked. "Effacer les clés" removes them.
+- Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Remember keys on
+  this device" is checked. "Clear keys" removes them.
 - Calls go through the server (`/chat` and `/chat/models` routes): the address is reached from the
   server. When it runs in docker, Ollama on the host machine is reachable at
   `http://host.docker.internal:11434/v1`.
@@ -120,7 +120,7 @@ npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Then open http://localhost:5173. The badge switches to "MCP : connecté".
+Then open http://localhost:5173. The badge switches to "MCP: connected".
 
 For Claude Code, the `.mcp.json` file at the root already declares the server
 (`http://127.0.0.1:3333/mcp`).
@@ -136,7 +136,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
 | `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
 | `remove_elements` | removes shapes or connections |
-| `auto_layout` | tidies up the whole diagram, like the "Ranger" button. Clears the undo history |
+| `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. Clears the undo history |
 | `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
@@ -170,7 +170,7 @@ They can also be placed in `mcp/.env`.
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` | address of the OpenAI-compatible API, without `/chat/completions` |
 | `OPENAI_API_KEY` | none | key for that provider. Optional for a local server |
 | `OPENAI_MODELS` | none | models offered, same format as `ANTHROPIC_MODELS`. Without it, no OpenAI-compatible provider |
-| `OPENAI_LABEL` | `Compatible OpenAI` | provider name in the menu (OpenRouter, Ollama…) |
+| `OPENAI_LABEL` | `OpenAI-compatible` | provider name in the menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |
 | `CHAT_MODEL` | the first in the list | model selected by default in the menu: `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, or the id alone |
 | `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |

@@ -34,7 +34,7 @@ export function buildCatalog(env = process.env) {
   }
 
   if (env.ANTHROPIC_API_KEY) add('anthropic', 'Anthropic', parseModelList(env.ANTHROPIC_MODELS || DEFAULT_ANTHROPIC_MODELS))
-  if (env.OPENAI_MODELS) add('openai', env.OPENAI_LABEL || 'Compatible OpenAI', parseModelList(env.OPENAI_MODELS))
+  if (env.OPENAI_MODELS) add('openai', env.OPENAI_LABEL || 'OpenAI-compatible', parseModelList(env.OPENAI_MODELS))
 
   // CHAT_MODEL choisit le modèle par défaut, par sa clé ou par son identifiant.
   let defaultKey = models[0]?.key ?? null

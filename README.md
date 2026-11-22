@@ -24,7 +24,7 @@ docker compose up -d --build
 
 Then open http://localhost:8080. Two containers start: the editor, served by nginx, and the MCP
 server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`). The
-"MCP : connecté" badge shows in the toolbar.
+"MCP: connected" badge shows in the toolbar.
 
 - API keys: in `mcp/.env` (copy `mcp/.env.example`; the file is kept out of git and of the image),
   or entered in the Options window. Without a key, the editor and the MCP tools still work.
@@ -40,11 +40,11 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 
 - **File name**: the field on the left of the toolbar sets the name used when saving and for every
   export.
-- **Nouveau** (New) starts from an empty diagram.
-- **Ouvrir** (Open): "Fichier .bpmn ou .xml…" opens a file from disk, "Coller du XML…" opens a
-  diagram pasted as code. You can also drop a file onto the page.
-- **Exporter** (Export): .bpmn file, .xml file, "Code XML à copier…" (a window to copy or download
-  the code), then SVG image, PNG image and PDF.
+- **New** starts from an empty diagram.
+- **Open**: ".bpmn or .xml file…" opens a file from disk, "Paste XML…" opens a diagram pasted as
+  code. You can also drop a file onto the page.
+- **Export**: .bpmn file, .xml file, "XML code to copy…" (a window to copy or download the code),
+  then SVG image, PNG image and PDF document.
 - The current diagram is kept by the browser and restored when the page is opened again.
 
 ### Drawing
@@ -52,22 +52,25 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 - Tool palette on the left, context pad next to the selected element, copy and paste (including
   between tabs) and copying a selection as an image.
 - **Colors**: the brush in the context pad offers 18 colors, each with a pale fill and a dark,
-  readable stroke, plus "Couleur personnalisée…" to pick any color. The stroke is then computed to
+  readable stroke, plus "Custom color…" to pick any color. The stroke is then computed to
   stay readable.
 - **Text**: the "A" button in the context pad formats the element's label: bold, italic, underline,
-  size (10 to 24) and font (Sans serif, Serif, Monospace). "Texte par défaut" removes the
+  size (10 to 24) and font (Sans serif, Serif, Monospace). "Default text" removes the
   formatting. The style is saved in the .bpmn file as the BPMN standard defines it
   (`bpmndi:BPMNLabelStyle`). Underline does not show in the PDF export.
-- **Ranger** (Tidy up) rearranges the diagram layout.
+- **Tidy up** rearranges the diagram layout.
 - **Simulation** runs tokens through the process to check how it flows.
 - Automatic BPMN rule checking, with problems flagged on the canvas.
 - Grid, minimap and properties panel (hidden or shown with the button on the right).
 - **Theme**: light, dark, or automatic to follow the system.
+- **Language**: the EN/FR button switches the interface between English (default) and French. The
+  browser remembers the choice, and the diagram is kept.
 
 ### AI assistant
 
-The **Assistant IA** button opens the chat panel: describe a process and the assistant draws it.
-The "Modèle" menu picks the model, and the "Options" window sets up providers and keys.
+The **AI assistant** button opens the chat panel: describe a process and the assistant draws it, in
+the language you write in. The "Model" menu picks the model, and the "Options" window sets up
+providers and keys.
 
 - The input grows with its text. The button in its corner opens a large editor, handy to paste a
   long prompt or load one from a .txt or .md file. Ctrl+Enter sends.
@@ -77,8 +80,8 @@ The "Modèle" menu picks the model, and the "Options" window sets up providers a
 
 - Providers: Anthropic, OpenAI, Ollama and any OpenAI-compatible server, set up in the "Options"
   window of the assistant panel. Each visitor uses their own key and pays for their own calls.
-- The key stays in the browser: for the tab's session, or on the device if "Se souvenir des clés"
-  is checked. The site receives neither the key nor the diagram.
+- The key stays in the browser: for the tab's session, or on the device if "Remember keys on this
+  device" is checked. The site receives neither the key nor the diagram.
 - The provider must accept calls from a web page (CORS). Anthropic does. OpenAI does not always:
   the docker version avoids that block. Ollama must be started with `OLLAMA_ORIGINS` set to the
   site's address. A compatible server (LiteLLM…) must allow that address in its CORS settings.

@@ -63,11 +63,13 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 - Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
 - Grille, mini-carte et panneau des propriétés (masquable avec le bouton à droite).
 - **Thème** : clair, sombre ou automatique selon le système.
+- **Langue** : le bouton EN/FR passe l'interface de l'anglais (par défaut) au français. Le
+  navigateur retient le choix, et le diagramme est gardé.
 
 ### Assistant IA
 
 Le bouton **Assistant IA** ouvre le panneau de discussion : on décrit un processus, l'assistant le
-dessine. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
+dessine, dans la langue du message. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
 clés.
 
 - La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pratique
