@@ -2,7 +2,7 @@
 
 Ce serveur permet à une IA (Claude Code, Claude Desktop ou tout client MCP) de lire et de dessiner
 dans l'éditeur BPMN **ouvert dans le navigateur**. Les modifications apparaissent en direct sur le
-canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z.
+canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z, sauf `set_diagram_xml` et `auto_layout` qui rechargent tout le diagramme.
 
 ## Fonctionnement
 
@@ -42,6 +42,8 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
 | `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
 | `remove_elements` | supprime des formes ou des connexions |
+| `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Vide l'historique d'annulation |
+| `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
@@ -65,4 +67,5 @@ Un appel qui échoue en cours de route est annulé en entier : le diagramme ne r
 ## Limites du prototype
 
 - L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
-- Pas encore de mise en page automatique, de validation (bpmnlint) ni de chat intégré.
+- Pas encore de chat intégré.
+- `auto_layout` hérite des limites de bpmn-auto-layout 1.3.0 : seul le premier participant d'une collaboration est rangé, les annotations et les flux de message ne sont pas placés.

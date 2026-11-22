@@ -31,6 +31,8 @@ Méthode conseillée :
 2. Pour un enchaînement linéaire, add_shapes avec « after » : la forme est placée à droite de la précédente et reliée automatiquement.
 3. Pour les branches et les retours, add_shapes puis connect_shapes.
 4. Relire avec get_shapes pour vérifier.
+5. Si le dessin est confus, auto_layout le range (voir ses limites).
+6. Terminer par validate_diagram et corriger les erreurs signalées.
 
 Repères de taille : tâche 100×80, événement 36×36, passerelle 50×50. Les coordonnées x et y désignent le centre de la forme.
 Pour repartir de zéro ou importer un diagramme complet, utiliser set_diagram_xml.`
@@ -125,6 +127,25 @@ export const TOOLS = [
         )
         .min(1),
     },
+  },
+  {
+    name: 'auto_layout',
+    title: 'Ranger le diagramme',
+    description:
+      "Recalcule la position de toutes les formes et le tracé de toutes les connexions, comme le bouton « Ranger » de l'éditeur. " +
+      "Limites : seul le premier participant d'une collaboration est rangé, les sous-processus deviennent repliés, " +
+      'les annotations, groupes, associations et flux de message ne sont pas placés, les couleurs sont perdues. ' +
+      "Vide l'historique d'annulation de l'éditeur.",
+    inputSchema: {},
+  },
+  {
+    name: 'validate_diagram',
+    title: 'Valider le diagramme',
+    description:
+      'Vérifie le diagramme avec les règles recommandées de bpmnlint (élément isolé, événement de début ou de fin manquant, ' +
+      "élément sans libellé, passerelle superflue…). Renvoie le nombre d'erreurs, d'avertissements et la liste des problèmes " +
+      "avec l'id de l'élément concerné, la règle et le message (en anglais).",
+    inputSchema: {},
   },
   {
     name: 'remove_elements',
