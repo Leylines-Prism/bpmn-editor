@@ -220,16 +220,23 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   download(xml, baseName() + '.bpmn', 'application/xml')
 })
 
-// Menu Exporter : ouvert sous son bouton, refermé dès qu'un format est choisi.
-const exportMenu = document.getElementById('export-menu')
-exportMenu.addEventListener('beforetoggle', (e) => {
-  if (e.newState !== 'open') return
-  const r = document.getElementById('btn-export').getBoundingClientRect()
-  exportMenu.style.left = r.left + 'px'
-  exportMenu.style.top = (r.bottom + 4) + 'px'
-})
-exportMenu.addEventListener('click', (e) => {
-  if (e.target.closest('button')) exportMenu.hidePopover()
+// Menus Ouvrir et Exporter : ouverts sous leur bouton, refermés dès qu'une entrée est choisie.
+for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
+  const anchor = document.querySelector(`[popovertarget="${menu.id}"]`)
+  menu.addEventListener('beforetoggle', (e) => {
+    if (e.newState !== 'open') return
+    const r = anchor.getBoundingClientRect()
+    menu.style.left = r.left + 'px'
+    menu.style.top = (r.bottom + 4) + 'px'
+  })
+  menu.addEventListener('click', (e) => {
+    if (e.target.closest('button')) menu.hidePopover()
+  })
+}
+
+document.getElementById('btn-save-xml').addEventListener('click', async () => {
+  const { xml } = await modeler.saveXML({ format: true })
+  download(xml, baseName() + '.xml', 'application/xml')
 })
 
 setupXmlExport({
