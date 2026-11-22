@@ -438,3 +438,8 @@ body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 }
+
+/* ── Sélecteur de couleurs : 18 teintes sur 6 colonnes, puis la couleur libre ── */
+.djs-popup.color-picker .djs-popup-group { grid: auto-flow / repeat(6, 1fr); }
+.djs-popup.color-picker .djs-popup-group[data-group="custom"] { display: block; border-top: 1px solid var(--mist); padding-top: var(--space-1); margin-top: var(--space-1); }
+.djs-popup.color-picker .djs-popup-group[data-group="custom"] .entry { display: flex; align-items: center; gap: var(--space-2); }
