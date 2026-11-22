@@ -25,6 +25,7 @@ import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css'
 import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
+import { setupPanelToggle } from './panel-toggle.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -72,8 +73,34 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 
 const LS_KEY = 'bpmn-editor-autosave'
 const DEFAULT_NAME = 'diagramme'
-// Nom de base (sans extension) du fichier ouvert, repris à l'enregistrement.
-let baseName = DEFAULT_NAME
+const NAME_KEY = 'bpmn-editor-filename'
+
+// Nom de base (sans extension) de l'enregistrement et des exports. Il se règle
+// dans le champ de la barre d'outils, prérempli avec le nom du fichier ouvert,
+// et il est retenu avec la sauvegarde automatique.
+const nameInput = document.getElementById('file-name')
+
+function cleanName(value) {
+  return value
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, '') // caractères refusés dans un nom de fichier
+    .replace(/\.(bpmn|xml|svg|png|pdf)$/i, '')
+    .replace(/^[.\s]+|[.\s]+$/g, '')
+}
+function baseName() {
+  return cleanName(nameInput.value) || DEFAULT_NAME
+}
+function rememberName() {
+  try { localStorage.setItem(NAME_KEY, baseName()) } catch {}
+}
+function setBaseName(name) {
+  nameInput.value = cleanName(name) || DEFAULT_NAME
+  rememberName()
+}
+nameInput.addEventListener('input', rememberName)
+nameInput.addEventListener('change', () => { nameInput.value = baseName() })
+nameInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === 'Escape') nameInput.blur()
+})
 
 const modeler = new BpmnModeler({
   container: '#canvas',
@@ -96,6 +123,9 @@ const modeler = new BpmnModeler({
 
 async function loadInitial() {
   const saved = localStorage.getItem(LS_KEY)
+  let savedName = null
+  try { savedName = localStorage.getItem(NAME_KEY) } catch {}
+  nameInput.value = (saved && savedName && cleanName(savedName)) || DEFAULT_NAME
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
     modeler.get('canvas').zoom('fit-viewport')
@@ -112,21 +142,23 @@ function setStatus(msg) {
   document.getElementById('autosave-status').textContent = 'Sauvegarde auto : ' + msg
 }
 
+async function autosave({ quiet = false } = {}) {
+  try {
+    const { xml } = await modeler.saveXML({ format: true })
+    localStorage.setItem(LS_KEY, xml)
+    if (!quiet) setStatus(new Date().toLocaleTimeString())
+  } catch (e) { setStatus('erreur') }
+}
+
 modeler.on('commandStack.changed', () => {
   clearTimeout(saveTimer)
-  saveTimer = setTimeout(async () => {
-    try {
-      const { xml } = await modeler.saveXML({ format: true })
-      localStorage.setItem(LS_KEY, xml)
-      setStatus(new Date().toLocaleTimeString())
-    } catch (e) { setStatus('erreur') }
-  }, 1000)
+  saveTimer = setTimeout(autosave, 1000)
 })
 
 document.getElementById('btn-new').addEventListener('click', async () => {
   if (!confirm('Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.')) return
   localStorage.removeItem(LS_KEY)
-  baseName = DEFAULT_NAME
+  setBaseName(DEFAULT_NAME)
   await modeler.importXML(EMPTY_DIAGRAM)
   modeler.get('canvas').zoom('fit-viewport')
   setStatus('Nouveau')
@@ -141,8 +173,11 @@ document.getElementById('btn-open').addEventListener('click', () => {
 async function importAndReport(xml, fileName) {
   try {
     const { warnings, laidOut } = await importDiagram(modeler, xml)
-    if (fileName) baseName = fileName.replace(/\.(bpmn|xml)$/i, '') || DEFAULT_NAME
-    else baseName = DEFAULT_NAME
+    setBaseName(fileName ? fileName.replace(/\.(bpmn|xml)$/i, '') : DEFAULT_NAME)
+    // Le diagramme ouvert est sauvegardé tout de suite, avec son nom : un
+    // rechargement de la page le retrouve même sans modification.
+    clearTimeout(saveTimer)
+    await autosave({ quiet: true }) // garde le message d'import dans la barre
     let status = fileName ? 'Fichier ouvert' : 'XML importé'
     if (laidOut) status += ', rangé automatiquement (pas de partie graphique)'
     if (warnings.length) {
@@ -179,7 +214,7 @@ setupFileDrop({ onFile: importFile })
 
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
-  download(xml, baseName + '.bpmn', 'application/xml')
+  download(xml, baseName() + '.bpmn', 'application/xml')
 })
 
 // Menu Exporter : ouvert sous son bouton, refermé dès qu'un format est choisi.
@@ -196,7 +231,7 @@ exportMenu.addEventListener('click', (e) => {
 
 document.getElementById('btn-svg').addEventListener('click', async () => {
   const { svg } = await modeler.saveSVG()
-  download(svg, baseName + '.svg', 'image/svg+xml')
+  download(svg, baseName() + '.svg', 'image/svg+xml')
 })
 
 document.getElementById('btn-png').addEventListener('click', async () => {
@@ -215,7 +250,7 @@ document.getElementById('btn-png').addEventListener('click', async () => {
     ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
     ctx.drawImage(img, 0, 0)
     URL.revokeObjectURL(url)
-    canvas.toBlob(b => download(b, baseName + '.png', 'image/png'), 'image/png')
+    canvas.toBlob(b => download(b, baseName() + '.png', 'image/png'), 'image/png')
   }
   img.onerror = () => {
     URL.revokeObjectURL(url)
@@ -228,7 +263,7 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   const button = e.currentTarget
   button.disabled = true
   try {
-    download(await exportPdf(modeler), baseName + '.pdf', 'application/pdf')
+    download(await exportPdf(modeler), baseName() + '.pdf', 'application/pdf')
   } catch (err) {
     console.error('PDF export error:', err)
     alert('Export PDF impossible : ' + err.message)
@@ -270,6 +305,11 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupPanelToggle({
+  button: document.getElementById('btn-properties'),
+  panel: document.getElementById('properties-panel'),
+  canvas: modeler.get('canvas'),
+})
 loadInitial()
 
 // Pont vers le serveur MCP (dossier mcp/) et chat intégré : actifs en développement, ou quand

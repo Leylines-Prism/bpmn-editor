@@ -20,30 +20,73 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 ## Chat intégré
 
 Le bouton « 💬 Assistant » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
-On y décrit un processus ou une modification, et Claude la dessine dans **cet onglet** avec les mêmes
+On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
 outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
+Le menu « Modèle », au-dessus de la zone de saisie, choisit le modèle parmi ceux que le serveur propose
+(il n'apparaît qu'à partir de deux modèles). Le choix est retenu par le navigateur. Passer d'un
+fournisseur à l'autre ouvre une nouvelle discussion, sans toucher au diagramme.
 Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion » repart de zéro.
 
 ```
-éditeur (panneau de chat) ──HTTP /chat──▶ serveur ──API Claude──▶ Claude
+éditeur (panneau de chat) ──HTTP /chat──▶ serveur ──API Claude──────────────▶ Claude
+                                                  └─API compatible OpenAI──▶ OpenAI, OpenRouter, Ollama…
                           ◀──WebSocket── outils exécutés dans l'onglet
 ```
 
-- La clé d'API reste sur le serveur, le navigateur n'en voit jamais.
+- Les clés d'API restent sur le serveur. Le navigateur ne reçoit que la liste des modèles (identifiant
+  et libellé), ni clé ni adresse de fournisseur, et le serveur refuse tout modèle absent de cette liste.
 - La route `/chat` n'accepte que les pages de l'éditeur (même liste d'origines que le WebSocket).
 - Les conversations sont gardées en mémoire par le serveur (20 au plus) et perdues à son redémarrage.
-- Si Claude décline une demande, l'API la rejoue sur un modèle de repli (`fallbacks: "default"`).
+- Si Claude Opus ou Sonnet décline une demande, l'API la rejoue sur un modèle de repli
+  (`fallbacks: "default"`). Haiku n'a pas ce repli.
 - Chaque message consomme des crédits d'API : la clé de l'organisation à crédits inclus s'arrête
-  quand ils sont épuisés, une clé avec moyen de paiement est facturée à l'usage.
+  quand ils sont épuisés, une clé avec moyen de paiement est facturée à l'usage. Il en va de même chez
+  les fournisseurs compatibles OpenAI, sauf un modèle local (Ollama, LM Studio).
 
-Pour l'activer, créer `mcp/.env` (exclu de git) :
+### Configurer les fournisseurs
+
+Copier `mcp/.env.example` en `mcp/.env` (exclu de git) et remplir ce qui sert. Un fournisseur n'apparaît
+dans le menu que s'il est configuré. Les deux peuvent l'être en même temps.
+
+**Anthropic** : il suffit de la clé. Le menu propose alors Claude Opus 5.5, Sonnet 5.5 et Haiku 5.5.
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-Sans clé, le serveur démarre quand même : les outils MCP marchent, le panneau indique que le chat
-n'est pas configuré.
+**Compatible OpenAI** : tout service qui expose `/chat/completions` avec appels d'outils (`tools`).
+La liste des modèles est obligatoire, car elle dépend du service.
+
+```
+OPENAI_BASE_URL=https://openrouter.ai/api/v1
+OPENAI_API_KEY=sk-or-...
+OPENAI_MODELS=openai/gpt-5=GPT-5,mistralai/mistral-large=Mistral Large
+OPENAI_LABEL=OpenRouter
+```
+
+Pour un modèle local avec Ollama, pas de clé : `OPENAI_BASE_URL=http://localhost:11434/v1` et
+`OPENAI_MODELS=qwen3:14b`. Le modèle doit savoir appeler des outils, et un petit modèle dessine moins
+bien qu'un grand.
+
+Sans aucun fournisseur, le serveur démarre quand même : les outils MCP marchent, le panneau indique
+que le chat n'est pas configuré.
+
+### Dans un docker compose
+
+Les mêmes variables se passent par `environment`, les clés de préférence par un fichier `.env` à côté
+du compose, jamais écrites dans le compose lui-même :
+
+```yaml
+services:
+  bpmn-mcp:
+    environment:
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      CHAT_MODEL: anthropic:claude-sonnet-5-5
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODELS: ${OPENAI_MODELS:-}
+      OPENAI_LABEL: ${OPENAI_LABEL:-}
+```
 
 ## Lancer
 
@@ -92,9 +135,15 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket |
-| `ANTHROPIC_API_KEY` | aucune | clé d'API du chat intégré. Sans elle, le chat est inactif |
-| `CHAT_MODEL` | `claude-opus-5-5` | modèle du chat |
-| `CHAT_EFFORT` | `medium` | effort de réflexion : `low`, `medium`, `high`, `xhigh` ou `max` |
+| `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
+| `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | modèles Claude proposés, `identifiant=Libellé` séparés par des virgules (libellé facultatif) |
+| `CHAT_EFFORT` | `medium` | effort de réflexion des modèles Claude : `low`, `medium`, `high`, `xhigh` ou `max` |
+| `OPENAI_BASE_URL` | `https://api.openai.com/v1` | adresse de l'API compatible OpenAI, sans `/chat/completions` |
+| `OPENAI_API_KEY` | aucune | clé de ce fournisseur. Facultative pour un serveur local |
+| `OPENAI_MODELS` | aucune | modèles proposés, même format que `ANTHROPIC_MODELS`. Sans elle, pas de fournisseur compatible OpenAI |
+| `OPENAI_LABEL` | `Compatible OpenAI` | nom du fournisseur dans le menu (OpenRouter, Ollama…) |
+| `OPENAI_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort`, pour les modèles qui l'acceptent |
+| `CHAT_MODEL` | le premier de la liste | modèle choisi par défaut dans le menu : `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, ou l'identifiant seul |
 | `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement | adresse du pont |
 
 ## Limites du prototype
