@@ -140,6 +140,9 @@ body {
   color: var(--night-800);
 }
 #canvas .djs-context-pad .entry:hover { color: var(--leyline-sky-deep); }
+/* Menu contextuel aéré : 3 icônes par ligne, plus d'espace entre elles. */
+#canvas .djs-context-pad { width: 96px; }
+#canvas .djs-context-pad .entry { margin: 0 8px 8px 0; }
 /* Cadre de focus du canevas : visible au clavier seulement, dans l'arrondi de la carte */
 #canvas .djs-container svg:focus { outline: none; }
 #canvas .djs-container svg:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-md); }
