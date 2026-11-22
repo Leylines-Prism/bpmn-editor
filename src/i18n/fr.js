@@ -1,0 +1,366 @@
+// Traduction française de l'interface de bpmn-js et du panneau de propriétés.
+//
+// Les clés sont les textes anglais d'origine. Leur liste vient de
+// bpmn-js-i18n (translations/en.js, version 2.4.0), complétée par les textes
+// du panneau de propriétés et de la minicarte relevés dans le code des paquets.
+// La traduction française publiée dans bpmn-js-i18n est incomplète et souvent
+// fautive, d'où ce fichier écrit pour l'éditeur.
+//
+// Vocabulaire retenu : passerelle (gateway), couloir (lane), événement de
+// bordure (boundary event), réception et émission (catch et throw),
+// non interruptif (non-interrupting).
+
+// Titres du panneau de propriétés. Le panneau fabrique le type affiché
+// au-dessus du nom à partir du type BPMN : « Message Start Event »,
+// « Timer Boundary Event (Non Interrupting) », « Expanded Sub Process »…
+// Ces combinaisons sont trop nombreuses pour être écrites une à une.
+
+const PANEL_TYPES = {
+  'Process': 'Processus',
+  'Collaboration': 'Collaboration',
+  'Participant': 'Participant',
+  'Lane': 'Couloir',
+  'Task': 'Tâche',
+  'User Task': 'Tâche utilisateur',
+  'Service Task': 'Tâche de service',
+  'Script Task': 'Tâche de script',
+  'Send Task': "Tâche d'envoi",
+  'Receive Task': 'Tâche de réception',
+  'Manual Task': 'Tâche manuelle',
+  'Business Rule Task': 'Tâche de règle métier',
+  'Call Activity': "Activité d'appel",
+  'Transaction': 'Transaction',
+  'Expanded Sub Process': 'Sous-processus déplié',
+  'Collapsed Sub Process': 'Sous-processus replié',
+  'Event Sub Process': 'Sous-processus événementiel',
+  'Expanded Ad Hoc Sub Process': 'Sous-processus ad hoc déplié',
+  'Collapsed Ad Hoc Sub Process': 'Sous-processus ad hoc replié',
+  'Exclusive Gateway': 'Passerelle exclusive',
+  'Parallel Gateway': 'Passerelle parallèle',
+  'Inclusive Gateway': 'Passerelle inclusive',
+  'Complex Gateway': 'Passerelle complexe',
+  'Event Based Gateway': 'Passerelle basée sur les événements',
+  'Sequence Flow': 'Flux de séquence',
+  'Default Flow': 'Flux par défaut',
+  'Conditional Flow': 'Flux conditionnel',
+  'Message Flow': 'Flux de messages',
+  'Association': 'Association',
+  'Data Input Association': "Association d'entrée de données",
+  'Data Output Association': 'Association de sortie de données',
+  'Text Annotation': 'Annotation',
+  'Group': 'Groupe',
+  'Data Object Reference': 'Objet de données',
+  'Data Store Reference': 'Stock de données',
+  'Data Input': 'Entrée de données',
+  'Data Output': 'Sortie de données'
+}
+
+const EVENTS = {
+  'Start Event': 'Événement de début',
+  'End Event': 'Événement de fin',
+  'Intermediate Catch Event': 'Événement intermédiaire de réception',
+  'Intermediate Throw Event': "Événement intermédiaire d'émission",
+  'Boundary Event': 'Événement de bordure'
+}
+
+const EVENT_DEFINITIONS = {
+  'Message': 'de message',
+  'Timer': 'minuteur',
+  'Conditional': 'conditionnel',
+  'Signal': 'de signal',
+  'Error': "d'erreur",
+  'Escalation': "d'escalade",
+  'Compensate': 'de compensation',
+  'Cancel': "d'annulation",
+  'Link': 'de lien',
+  'Terminate': 'de terminaison'
+}
+
+for (const [ event, eventFr ] of Object.entries(EVENTS)) {
+  PANEL_TYPES[event] = eventFr
+
+  for (const [ definition, definitionFr ] of Object.entries(EVENT_DEFINITIONS)) {
+    const label = `${eventFr} ${definitionFr}`
+
+    PANEL_TYPES[`${definition} ${event}`] = label
+    PANEL_TYPES[`${definition} ${event} (Non Interrupting)`] = `${label} (non interruptif)`
+  }
+}
+
+PANEL_TYPES['Timer Intermediate Catch Event'] = 'Événement intermédiaire minuteur'
+PANEL_TYPES['Conditional Intermediate Catch Event'] = 'Événement intermédiaire conditionnel'
+
+export default {
+  ...PANEL_TYPES,
+
+  // Outils de la palette
+  'Activate create/remove space tool': "Activer l'outil d'ajout et de retrait d'espace",
+  'Activate global connect tool': "Activer l'outil de connexion",
+  'Activate hand tool': "Activer l'outil main",
+  'Activate lasso tool': "Activer l'outil lasso",
+  'Create data object reference': 'Créer un objet de données',
+  'Create data store reference': 'Créer un stock de données',
+  'Create end event': 'Créer un événement de fin',
+  'Create expanded sub-process': 'Créer un sous-processus déplié',
+  'Create gateway': 'Créer une passerelle',
+  'Create group': 'Créer un groupe',
+  'Create intermediate/boundary event': 'Créer un événement intermédiaire ou de bordure',
+  'Create pool/participant': 'Créer un pool ou participant',
+  'Create start event': 'Créer un événement de début',
+  'Create task': 'Créer une tâche',
+
+  // Menu contextuel
+  'Add lane above': 'Ajouter un couloir au-dessus',
+  'Add lane below': 'Ajouter un couloir en dessous',
+  'Add text annotation': 'Ajouter une annotation',
+  'Align elements': 'Aligner les éléments',
+  'Align elements bottom': 'Aligner en bas',
+  'Align elements center': 'Centrer horizontalement',
+  'Align elements left': 'Aligner à gauche',
+  'Align elements middle': 'Centrer verticalement',
+  'Align elements right': 'Aligner à droite',
+  'Align elements top': 'Aligner en haut',
+  'Append compensation activity': 'Ajouter une activité de compensation',
+  'Append conditional intermediate catch event': 'Ajouter un événement intermédiaire conditionnel',
+  'Append end event': 'Ajouter un événement de fin',
+  'Append gateway': 'Ajouter une passerelle',
+  'Append intermediate/boundary event': 'Ajouter un événement intermédiaire ou de bordure',
+  'Append message intermediate catch event': 'Ajouter un événement intermédiaire de réception de message',
+  'Append receive task': 'Ajouter une tâche de réception',
+  'Append signal intermediate catch event': 'Ajouter un événement intermédiaire de réception de signal',
+  'Append task': 'Ajouter une tâche',
+  'Append text annotation': 'Ajouter une annotation',
+  'Append timer intermediate catch event': 'Ajouter un événement intermédiaire minuteur',
+  'Change element': "Changer l'élément",
+  'Change type': 'Changer de type',
+  'Connect to other element': 'Relier à un autre élément',
+  'Connect using association': 'Relier par une association',
+  'Connect using data input association': "Relier par une association d'entrée de données",
+  'Connect using sequence/message flow or association': 'Relier par un flux de séquence, un flux de messages ou une association',
+  'Delete': 'Supprimer',
+  'Distribute elements horizontally': 'Répartir horizontalement',
+  'Distribute elements vertically': 'Répartir verticalement',
+  'Divide into three lanes': 'Diviser en trois couloirs',
+  'Divide into two lanes': 'Diviser en deux couloirs',
+  'Open {element}': 'Ouvrir {element}',
+  'Remove': 'Retirer',
+  'Search in diagram': 'Rechercher dans le diagramme',
+  'Toggle non-interrupting': 'Basculer interruptif ou non interruptif',
+
+  // Marqueurs d'activité
+  'Ad-hoc': 'Ad hoc',
+  'Collection': 'Collection',
+  'Loop': 'Boucle',
+  'Parallel multi-instance': 'Multi-instance parallèle',
+  'Participant multiplicity': 'Multiplicité du participant',
+  'Sequential multi-instance': 'Multi-instance séquentielle',
+
+  // Activités
+  'Ad-hoc sub-process': 'Sous-processus ad hoc',
+  'Ad-hoc sub-process (collapsed)': 'Sous-processus ad hoc (replié)',
+  'Ad-hoc sub-process (expanded)': 'Sous-processus ad hoc (déplié)',
+  'Business rule task': 'Tâche de règle métier',
+  'Call activity': "Activité d'appel",
+  'Event sub-process': 'Sous-processus événementiel',
+  'Manual task': 'Tâche manuelle',
+  'Receive task': 'Tâche de réception',
+  'Script task': 'Tâche de script',
+  'Send task': "Tâche d'envoi",
+  'Service task': 'Tâche de service',
+  'Sub-process': 'Sous-processus',
+  'Sub-process (collapsed)': 'Sous-processus (replié)',
+  'Sub-process (expanded)': 'Sous-processus (déplié)',
+  'Task': 'Tâche',
+  'Transaction': 'Transaction',
+  'User task': 'Tâche utilisateur',
+
+  // Passerelles
+  'Complex gateway': 'Passerelle complexe',
+  'Event-based gateway': 'Passerelle basée sur les événements',
+  'Event based instantiating Gateway': "Passerelle d'instanciation basée sur les événements",
+  'Exclusive gateway': 'Passerelle exclusive',
+  'Inclusive gateway': 'Passerelle inclusive',
+  'Parallel Event based instantiating Gateway': "Passerelle parallèle d'instanciation basée sur les événements",
+  'Parallel gateway': 'Passerelle parallèle',
+
+  // Flux
+  'Conditional flow': 'Flux conditionnel',
+  'Default flow': 'Flux par défaut',
+  'Sequence flow': 'Flux de séquence',
+
+  // Données et participants
+  'Data object reference': 'Objet de données',
+  'Data store reference': 'Stock de données',
+  'Empty pool/participant': 'Pool vide',
+  'Empty pool/participant (removes content)': 'Pool vide (supprime le contenu)',
+  'Expanded pool/participant': 'Pool déplié',
+
+  // Événements de début
+  'Start event': 'Événement de début',
+  'Compensation start event': 'Événement de début de compensation',
+  'Conditional start event': 'Événement de début conditionnel',
+  'Conditional start event (non-interrupting)': 'Événement de début conditionnel (non interruptif)',
+  'Error start event': "Événement de début d'erreur",
+  'Escalation start event': "Événement de début d'escalade",
+  'Escalation start event (non-interrupting)': "Événement de début d'escalade (non interruptif)",
+  'Message start event': 'Événement de début de message',
+  'Message start event (non-interrupting)': 'Événement de début de message (non interruptif)',
+  'Signal start event': 'Événement de début de signal',
+  'Signal start event (non-interrupting)': 'Événement de début de signal (non interruptif)',
+  'Timer start event': 'Événement de début minuteur',
+  'Timer start event (non-interrupting)': 'Événement de début minuteur (non interruptif)',
+
+  'Boundary event': 'Événement de bordure',
+
+  // Événements intermédiaires
+  'Intermediate throw event': "Événement intermédiaire d'émission",
+  'Compensation intermediate throw event': "Événement intermédiaire d'émission de compensation",
+  'Conditional intermediate catch event': 'Événement intermédiaire conditionnel',
+  'Escalation intermediate throw event': "Événement intermédiaire d'émission d'escalade",
+  'Link intermediate catch event': 'Événement intermédiaire de réception de lien',
+  'Link intermediate throw event': "Événement intermédiaire d'émission de lien",
+  'Message intermediate catch event': 'Événement intermédiaire de réception de message',
+  'Message intermediate throw event': "Événement intermédiaire d'émission de message",
+  'Signal intermediate catch event': 'Événement intermédiaire de réception de signal',
+  'Signal intermediate throw event': "Événement intermédiaire d'émission de signal",
+  'Timer intermediate catch event': 'Événement intermédiaire minuteur',
+
+  // Événements de bordure
+  'Cancel boundary event': "Événement de bordure d'annulation",
+  'Compensation boundary event': 'Événement de bordure de compensation',
+  'Conditional boundary event': 'Événement de bordure conditionnel',
+  'Conditional boundary event (non-interrupting)': 'Événement de bordure conditionnel (non interruptif)',
+  'Error boundary event': "Événement de bordure d'erreur",
+  'Escalation boundary event': "Événement de bordure d'escalade",
+  'Escalation boundary event (non-interrupting)': "Événement de bordure d'escalade (non interruptif)",
+  'Message boundary event': 'Événement de bordure de message',
+  'Message boundary event (non-interrupting)': 'Événement de bordure de message (non interruptif)',
+  'Signal boundary event': 'Événement de bordure de signal',
+  'Signal boundary event (non-interrupting)': 'Événement de bordure de signal (non interruptif)',
+  'Timer boundary event': 'Événement de bordure minuteur',
+  'Timer boundary event (non-interrupting)': 'Événement de bordure minuteur (non interruptif)',
+
+  // Événements de fin
+  'End event': 'Événement de fin',
+  'Cancel end event': "Événement de fin d'annulation",
+  'Compensation end event': 'Événement de fin de compensation',
+  'Error end event': "Événement de fin d'erreur",
+  'Escalation end event': "Événement de fin d'escalade",
+  'Message end event': 'Événement de fin de message',
+  'Signal end event': 'Événement de fin de signal',
+  'Terminate end event': 'Événement de fin de terminaison',
+
+  // Messages d'import et d'erreur
+  'already rendered {element}': '{element} déjà affiché',
+  'correcting missing bpmnElement on {plane} to {rootElement}': 'bpmnElement manquant sur {plane}, corrigé en {rootElement}',
+  'diagram not part of bpmn:Definitions': 'le diagramme ne fait pas partie de bpmn:Definitions',
+  'element required': 'élément requis',
+  'element {element} referenced by {referenced}#{property} not yet drawn': "l'élément {element} référencé par {referenced}#{property} n'est pas encore dessiné",
+  'failed to import {element}': "échec de l'import de {element}",
+  'flow elements must be children of pools/participants': 'les éléments de flux doivent être placés dans un pool ou participant',
+  'missing {semantic}#attachedToRef': '{semantic}#attachedToRef manquant',
+  'more than {count} child lanes': 'plus de {count} couloirs enfants',
+  'multiple DI elements defined for {element}': 'plusieurs éléments DI définis pour {element}',
+  'no bpmnElement referenced in {element}': 'aucun bpmnElement référencé dans {element}',
+  'no diagram to display': 'aucun diagramme à afficher',
+  'no parent for {element} in {parent}': 'aucun parent pour {element} dans {parent}',
+  'no plane for {element}': 'aucun plan pour {element}',
+  'no process or collaboration to display': 'aucun processus ni collaboration à afficher',
+  'no shape type specified': 'aucun type de forme indiqué',
+  'out of bounds release': 'relâché hors des limites',
+  'unknown di {di} for element {semantic}': 'DI {di} inconnu pour l\'élément {semantic}',
+  'unrecognized flowElement {element} in context {context}': 'flowElement {element} non reconnu dans le contexte {context}',
+  'unsupported bpmnElement for {plane}: {rootElement}': 'bpmnElement non pris en charge pour {plane} : {rootElement}',
+  '{semantic}#{side} Ref not specified': 'référence {semantic}#{side} non indiquée',
+
+  // Menus « Créer un élément » et « Ajouter un élément »
+  // (bpmn-js-create-append-anything)
+  'Append element': 'Ajouter un élément',
+  'Create element': 'Créer un élément',
+  'Data': 'Données',
+  'Events': 'Événements',
+  'Gateways': 'Passerelles',
+  'Participants': 'Participants',
+  'Sub-processes': 'Sous-processus',
+  'Tasks': 'Tâches',
+  'Templates': 'Modèles',
+
+  // Couleurs (bpmn-js-color-picker)
+  'Set color': 'Choisir la couleur',
+  'Default': 'Par défaut',
+  'Blue': 'Bleu',
+  'Green': 'Vert',
+  'Orange': 'Orange',
+  'Purple': 'Violet',
+  'Red': 'Rouge',
+
+  // Minicarte
+  'Close minimap': 'Fermer la minicarte',
+  'Open minimap': 'Ouvrir la minicarte',
+
+  // Panneau de propriétés : cadre général
+  '<empty>': '<vide>',
+  'Create': 'Créer',
+  'Create new list item': 'Ajouter un élément à la liste',
+  'Delete item': "Supprimer l'élément",
+  'Multiple elements are selected. Select a single element to edit its properties.': 'Plusieurs éléments sont sélectionnés. Sélectionnez-en un seul pour modifier ses propriétés.',
+  'Select an element to edit its properties.': 'Sélectionnez un élément pour modifier ses propriétés.',
+  'Toggle list item': "Déplier ou replier l'élément",
+  'Toggle section': 'Déplier ou replier la section',
+
+  // Panneau de propriétés : sections et champs
+  '<none>': '<aucun>',
+  'Activity reference': "Référence d'activité",
+  'Cancel remaining instances': 'Annuler les instances restantes',
+  'Code': 'Code',
+  'Compensation': 'Compensation',
+  'Completion': 'Achèvement',
+  'Completion condition': "Condition d'achèvement",
+  'Create new ...': 'Créer…',
+  'Cycle': 'Cycle',
+  'Date': 'Date',
+  'Documentation': 'Documentation',
+  'Documentation: Timer events': 'Documentation : événements minuteurs',
+  'Duration': 'Durée',
+  'Element documentation': "Documentation de l'élément",
+  'Error': 'Erreur',
+  'Escalation': 'Escalade',
+  'Executable': 'Exécutable',
+  'General': 'Général',
+  'Global error reference': "Référence d'erreur globale",
+  'Global escalation reference': "Référence d'escalade globale",
+  'Global message reference': 'Référence de message globale',
+  'Global signal reference': 'Référence de signal globale',
+  'ID': 'Identifiant',
+  'ID must be a valid QName.': "L'identifiant doit être un QName valide.",
+  'ID must be unique.': "L'identifiant doit être unique.",
+  'ID must not be empty.': "L'identifiant ne doit pas être vide.",
+  'ID must not contain prefix.': "L'identifiant ne doit pas contenir de préfixe.",
+  'ID must not contain spaces.': "L'identifiant ne doit pas contenir d'espace.",
+  'Link': 'Lien',
+  'Loop cardinality': 'Nombre de boucles',
+  'Message': 'Message',
+  'Multi-instance': 'Multi-instance',
+  'Name': 'Nom',
+  'Participant Name': 'Nom du participant',
+  'Process ID': 'Identifiant du processus',
+  'Process documentation': 'Documentation du processus',
+  'Process name': 'Nom du processus',
+  'Signal': 'Signal',
+  'Timer': 'Minuteur',
+  'Type': 'Type',
+  'Value': 'Valeur',
+  'Wait for completion': "Attendre l'achèvement",
+
+  // Panneau de propriétés : aide sur les minuteurs
+  '1 hour and 30 minutes': '1 heure et 30 minutes',
+  '14 days': '14 jours',
+  '15 seconds': '15 secondes',
+  'A cycle defined as ISO 8601 repeating intervals format.': 'Un cycle au format ISO 8601 des intervalles répétés.',
+  'A specific point in time defined as ISO 8601 combined date and time representation.': 'Un instant précis au format ISO 8601 de date et heure combinées.',
+  'A time duration defined as ISO 8601 durations format.': 'Une durée au format ISO 8601 des durées.',
+  'UTC plus 2 hours zone offset': 'UTC plus 2 heures de décalage',
+  'UTC time': 'Heure UTC',
+  'every 10 seconds, up to 5 times': 'toutes les 10 secondes, 5 fois au plus',
+  'every day, infinitely': 'chaque jour, sans fin'
+}
