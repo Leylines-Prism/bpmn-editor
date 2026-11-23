@@ -141,6 +141,14 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
+## Saved diagrams
+
+The "My diagrams" window of the editor can save diagrams on this server, besides the browser. The
+`/diagrams` routes list, read, save (`PUT`, BPMN XML body, 10 MB at most), rename and delete them.
+They only accept editor pages, like `/chat`. Each diagram is a `<id>.bpmn` file with a `<id>.json`
+file for its name and date, in `DIAGRAMS_DIR` (`mcp/data/diagrams` by default, excluded from git; the
+`diagrams` volume in docker).
+
 ## Security
 
 - The server only listens on `127.0.0.1`. In its docker container it listens on all of the
@@ -153,6 +161,8 @@ A call that fails halfway is undone entirely: the diagram is never left half cha
   image built by the compose file, or when `VITE_MCP_BRIDGE_URL` is set at build time.
 - The `/chat` and `/chat/models` routes call the address they are given: they only accept editor
   pages, and the server must not be exposed on a public network.
+- The `/diagrams` routes have no authentication either: anyone who reaches an editor page served by
+  the server can read and change the saved diagrams.
 
 ## Environment variables
 
@@ -173,6 +183,7 @@ They can also be placed in `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | provider name in the menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |
 | `CHAT_MODEL` | the first in the list | model selected by default in the menu: `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, or the id alone |
+| `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` in the docker image) | folder of the diagrams saved on the server |
 | `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |
 
 ## Prototype limits

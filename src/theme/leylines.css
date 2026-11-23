@@ -75,7 +75,7 @@ body {
 /* Nom du fichier, repris par l'enregistrement et les exports. Le pictogramme
    de document et l'extension en gris montrent que c'est un nom de fichier. */
 .file-name-field {
-  flex: 0 1 220px; min-width: 120px; height: 32px; margin-right: var(--space-2);
+  flex: 0 1 220px; min-width: 170px; height: 32px; margin-right: var(--space-2);
   display: flex; align-items: center; gap: 6px;
   padding: 0 var(--space-2);
   border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
@@ -117,6 +117,7 @@ body {
 [data-icon="play"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 5l12 7-12 7z'/%3E%3C/svg%3E"); }
 .btn.active[data-icon="play"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='6' width='12' height='12' rx='2'/%3E%3C/svg%3E"); }
 [data-icon="code"]   { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14'/%3E%3C/svg%3E"); }
+[data-icon="library"] { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M4 7v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7M4 7l1.5-3h13L20 7M9.5 11.5h5'/%3E%3C/svg%3E"); }
 [data-icon="pdf"]    { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h4'/%3E%3C/svg%3E"); }
 [data-icon="panel"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M15 4v16'/%3E%3C/svg%3E"); }
 [data-icon="theme"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 4a8 8 0 0 1 0 16z' fill='black'/%3E%3C/svg%3E"); }
@@ -521,3 +522,56 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .djs-popup.label-style .label-font-mono { font-family: "Courier New", Courier, monospace; }
 .djs-popup.label-style .entry-header { font-size: 12px; font-weight: 600; color: var(--night-800); opacity: 0.7; padding: 6px 2px 2px; }
 .djs-popup.label-style .djs-popup-group[data-group="reset"] { border-top: 1px solid var(--mist); margin-top: 6px; padding-top: 4px; }
+
+/* ── Fenêtre « Mes diagrammes » (src/diagram-library.js) ──────────────── */
+
+#library-dialog {
+  margin: auto; width: min(760px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
+  border: 1px solid var(--line); border-radius: var(--radius-lg);
+  background: var(--surface-raised); color: var(--ink);
+  box-shadow: var(--elevation-1); padding: var(--space-6);
+}
+#library-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#library-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
+#library-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#library-dialog .hint { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
+#library-dialog .library-save { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-4); }
+#library-dialog .field { display: flex; flex-direction: column; gap: var(--space-1); font-size: 13px; font-weight: 500; color: var(--ink-muted); }
+#library-dialog .library-save .field:first-child { flex: 1 1 260px; }
+#library-dialog input[type="text"] {
+  height: 32px; padding: 0 var(--space-2);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--ink);
+  font-family: var(--font-sans); font-size: 14px;
+}
+#library-dialog input[type="text"]:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; border-color: var(--accent); }
+#library-dialog .library-places { display: flex; gap: var(--space-3); height: 32px; align-items: center; color: var(--ink); font-size: 14px; }
+#library-dialog .library-places label { display: inline-flex; align-items: center; gap: var(--space-1); cursor: pointer; }
+#library-dialog .library-places label:has(input:disabled) { color: var(--ink-muted); cursor: default; }
+#library-dialog .library-link { font-size: 13px; color: var(--ink-muted); }
+#library-dialog .library-link:empty { display: none; }
+#library-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#library-dialog .grow { flex: 1; }
+#library-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
+#library-dialog .status.error { color: var(--magenta); }
+#library-dialog .status:empty { display: none; }
+#library-dialog .library-list { border-top: 1px solid var(--line); padding-top: var(--space-3); overflow: auto; max-height: 50vh; }
+#library-dialog .library-empty { color: var(--ink-muted); font-size: 14px; padding: var(--space-2) 0; }
+#library-dialog table { width: 100%; border-collapse: collapse; font-size: 14px; }
+#library-dialog th { text-align: left; font-size: 12px; font-weight: 600; color: var(--ink-muted); padding: 0 var(--space-2) var(--space-2); }
+#library-dialog td { padding: var(--space-1) var(--space-2); border-top: 1px solid var(--line); vertical-align: middle; }
+#library-dialog td.name { font-weight: 500; word-break: break-word; }
+#library-dialog td.name input { width: 100%; }
+#library-dialog td.where, #library-dialog td.date { color: var(--ink-muted); white-space: nowrap; font-size: 13px; }
+#library-dialog td.row-actions { white-space: nowrap; text-align: right; }
+#library-dialog td.row-actions .btn { height: 28px; padding: 0 var(--space-2); font-size: 13px; }
+#library-dialog tr.current td { background: var(--accent-soft); }
+#library-dialog tr.current td.name::after { content: ' •'; color: var(--accent); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+#library-dialog [hidden] { display: none !important; }
+
+/* Écran étroit : Ranger et Simulation passent en icône seule (infobulle au survol),
+   pour laisser la place au nom du fichier et aux boutons de droite. */
+@media (max-width: 1440px) {
+  #btn-layout, #btn-simulation { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+}

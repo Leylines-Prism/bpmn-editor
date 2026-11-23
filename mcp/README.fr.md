@@ -140,6 +140,15 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
+## Diagrammes enregistrés
+
+La fenêtre « Mes diagrammes » de l'éditeur peut enregistrer les diagrammes sur ce serveur, en plus du
+navigateur. Les routes `/diagrams` les listent, les lisent, les enregistrent (`PUT`, corps en XML
+BPMN, 10 Mo au plus), les renomment et les suppriment. Elles n'acceptent que les pages de l'éditeur,
+comme `/chat`. Chaque diagramme est un fichier `<id>.bpmn` accompagné de `<id>.json` pour son nom et
+sa date, dans `DIAGRAMS_DIR` (`mcp/data/diagrams` par défaut, exclu de git ; le volume `diagrams` en
+docker).
+
 ## Sécurité
 
 - Le serveur n'écoute que sur `127.0.0.1`. Dans son conteneur docker, il écoute sur toutes les
@@ -152,6 +161,8 @@ Un appel qui échoue en cours de route est annulé en entier : le diagramme ne r
   docker du compose, ou si `VITE_MCP_BRIDGE_URL` est définie au build.
 - Les routes `/chat` et `/chat/models` appellent l'adresse qu'on leur donne : elles n'acceptent que les
   pages de l'éditeur, et le serveur ne doit pas être exposé sur un réseau public.
+- Les routes `/diagrams` n'ont pas non plus d'authentification : quiconque atteint une page de l'éditeur
+  servie par le serveur peut lire et modifier les diagrammes enregistrés.
 
 ## Variables d'environnement
 
@@ -172,6 +183,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | nom du fournisseur dans le menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort`, pour les modèles qui l'acceptent |
 | `CHAT_MODEL` | le premier de la liste | modèle choisi par défaut dans le menu : `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, ou l'identifiant seul |
+| `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` dans l'image docker) | dossier des diagrammes enregistrés sur le serveur |
 | `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement, `/bridge` dans le compose | adresse du pont. Une adresse relative vise le site lui-même |
 
 ## Limites du prototype

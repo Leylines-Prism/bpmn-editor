@@ -32,6 +32,9 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 - Par défaut, le site n'est joignable que depuis la machine qui le fait tourner (`127.0.0.1`).
   `BPMN_PORT` change le port (8080 par défaut).
 - Ollama lancé sur la machine hôte se joint par `http://host.docker.internal:11434/v1`.
+- Les diagrammes enregistrés sur le serveur sont gardés dans le volume docker `diagrams`
+  (`/data/diagrams` dans le conteneur, un fichier `.bpmn` par diagramme). `docker compose down -v`
+  les supprime.
 - Le serveur n'a pas d'authentification : ne pas l'exposer sur un réseau public.
 
 ## Fonctions de l'éditeur
@@ -46,6 +49,11 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 - **Exporter** : fichier .bpmn, fichier .xml, « Code XML à copier… » (une fenêtre pour copier ou
   télécharger le code), puis image SVG, image PNG et PDF.
 - Le diagramme en cours est gardé par le navigateur et retrouvé à la réouverture de la page.
+- **Mes diagrammes** garde plusieurs diagrammes : on enregistre celui en cours sous un nom, puis on
+  peut les rouvrir, les renommer ou les supprimer. Ils sont enregistrés dans le navigateur (sur cet
+  appareil seulement), et dans la version docker aussi sur le serveur, où n'importe quel navigateur
+  qui y accède peut les ouvrir. Une fois un diagramme enregistré, **Ctrl+S** le met à jour.
+  « Enregistrer comme nouveau » en fait une copie.
 
 ### Dessin
 
@@ -88,4 +96,4 @@ clés.
   adresse dans son réglage CORS.
 - La page n'exécute aucun script tiers : une politique de sécurité du contenu (CSP) n'autorise que les
   scripts du site, et la police Urbanist est servie par le site.
-- Pas de serveur MCP dans cette version.
+- Pas de serveur MCP dans cette version. Mes diagrammes enregistre dans le navigateur seulement.

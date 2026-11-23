@@ -15,7 +15,10 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
 import * as z from 'zod/v4'
 
+import express from 'express'
+
 import { EditorBridge } from './bridge.js'
+import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
 import { ChatService } from './chat.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
@@ -114,7 +117,7 @@ function chatCors(req, res, next) {
   res.set('Access-Control-Allow-Origin', origin)
   res.set('Vary', 'Origin')
   if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
     res.set('Access-Control-Allow-Headers', 'Content-Type')
     res.set('Access-Control-Max-Age', '600')
     return res.sendStatus(204)
@@ -197,6 +200,53 @@ app.post('/chat', chatCors, async (req, res) => {
     }
   }
   res.end()
+})
+
+// ── Mes diagrammes, enregistrés sur le serveur ─────────────────────────────
+// Mêmes règles d'origine que le chat : seules les pages de l'éditeur y ont accès.
+
+const diagrams = new DiagramStore()
+const xmlBody = express.text({ type: ['application/xml', 'text/xml', 'text/plain'], limit: MAX_XML_BYTES })
+function checkId(req, res, next) {
+  if (!DiagramStore.validId(req.params.id)) return res.status(400).json({ error: 'Invalid id' })
+  next()
+}
+const failed = (res, err) => {
+  log('[diagrams] erreur :', err.message)
+  res.status(500).json({ error: 'Storage error' })
+}
+
+app.options('/diagrams', chatCors)
+app.options('/diagrams/:id', chatCors)
+app.get('/diagrams', chatCors, async (req, res) => {
+  try { res.json({ diagrams: await diagrams.list() }) } catch (err) { failed(res, err) }
+})
+app.get('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  try {
+    const item = await diagrams.get(req.params.id)
+    if (!item) return res.status(404).json({ error: 'Not found' })
+    res.json(item)
+  } catch (err) { failed(res, err) }
+})
+app.put('/diagrams/:id', chatCors, checkId, xmlBody, async (req, res) => {
+  const name = DiagramStore.cleanName(req.query.name)
+  if (!name || typeof req.body !== 'string' || !req.body.includes('<')) return res.status(400).json({ error: 'Invalid diagram' })
+  try { res.json(await diagrams.put(req.params.id, name, req.body)) } catch (err) { failed(res, err) }
+})
+app.patch('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  const name = DiagramStore.cleanName(req.body?.name)
+  if (!name) return res.status(400).json({ error: 'Invalid name' })
+  try {
+    const meta = await diagrams.rename(req.params.id, name)
+    if (!meta) return res.status(404).json({ error: 'Not found' })
+    res.json(meta)
+  } catch (err) { failed(res, err) }
+})
+app.delete('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  try {
+    await diagrams.remove(req.params.id)
+    res.json({ ok: true })
+  } catch (err) { failed(res, err) }
 })
 
 function chatErrorMessage(err, lang = 'en') {
