@@ -27,10 +27,9 @@ MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSoc
 
 The "AI assistant" button in the toolbar opens a chat panel to the right of the canvas. Describe a
 process or a change, and the model draws it in **this tab** with the same tools as the MCP server.
-Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The "Model" menu, above the
-input, picks the model among those the server offers (it only shows with two models or more). The
-browser remembers the choice. Switching provider starts a new conversation, without touching the
-diagram. The "Stop" button stops the current answer. "New chat" starts over.
+Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The model is picked in
+the Options window, among those the server offers and those of the providers set up there; the panel
+shows it above the input. Switching provider starts a new conversation, without touching the diagram. The "Stop" button stops the current answer. "New chat" starts over.
 
 ```
 editor (chat panel) ──HTTP /chat──▶ server ──Claude API──────────────▶ Claude
@@ -44,6 +43,8 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
   model. The server uses it for that call, without storing it or writing it to its log.
 - The `/chat` route only accepts editor pages (same list of origins as the WebSocket).
 - Conversations are kept in the server's memory (20 at most) and lost when it restarts.
+- Images and PDF files attached in the panel are sent with the message (34 MB at most per request,
+  with their own content type `application/vnd.bpmn-chat+json`), then passed on to the model.
 - If Claude Opus or Sonnet declines a request, the API replays it on a fallback model
   (`fallbacks: "default"`). Haiku has no fallback.
 - Each message uses API credits: a key from an organization with included credits stops when they
@@ -83,11 +84,12 @@ up a provider in the Options window.
 The "Options" button of the panel opens a window with one block per provider: Anthropic, OpenAI,
 Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address (prefilled for
 Anthropic, OpenAI and Ollama), the key, and the models to offer. "List models" asks the provider
-for them, "Test" checks the address and the key. Neither button uses any credit. "Default model"
-picks the one selected in the menu.
+for them, "Test" checks the address and the key. Neither button uses any credit. A provider's
+models are only offered once "Test" or "List models" has succeeded, and again after its address or
+key changes. "Assistant model" picks the model used by the chat.
 
 - Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Remember keys on
-  this device" is checked. "Clear keys" removes them.
+  your device" is checked. "Clear keys" removes them.
 - Calls go through the server (`/chat` and `/chat/models` routes): the address is reached from the
   server. When it runs in docker, Ollama on the host machine is reachable at
   `http://host.docker.internal:11434/v1`.
@@ -131,6 +133,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 |---|---|
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
+| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with the OpenAI format, the built-in assistant cannot receive it) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
@@ -141,10 +144,20 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
+## Saved diagrams
+
+The "My diagrams" window of the editor can save diagrams on this server, besides the browser. The
+`/diagrams` routes list, read, save (`PUT`, BPMN XML body, 10 MB at most), rename and delete them.
+They only accept editor pages, like `/chat`. Each diagram is a `<id>.bpmn` file with a `<id>.json`
+file for its name and date, in `DIAGRAMS_DIR` (`mcp/data/diagrams` by default, excluded from git; the
+`diagrams` volume in docker).
+
 ## Security
 
 - The server only listens on `127.0.0.1`. In its docker container it listens on all of the
   container's interfaces, but the site is only published on `127.0.0.1` of the host machine.
+- With `MCP_TOKEN` set, `/mcp` answers 401 to any request without `Authorization: Bearer <token>`.
+  The editor tab (`/bridge`) and the chat do not use it: they are limited to the editor origins.
 - MCP requests whose `Host` header is not local are rejected (DNS rebinding protection, provided by
   the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
 - Only editor pages can connect to the WebSocket: the origin must be listed in `BPMN_EDITOR_ORIGINS`
@@ -153,6 +166,8 @@ A call that fails halfway is undone entirely: the diagram is never left half cha
   image built by the compose file, or when `VITE_MCP_BRIDGE_URL` is set at build time.
 - The `/chat` and `/chat/models` routes call the address they are given: they only accept editor
   pages, and the server must not be exposed on a public network.
+- The `/diagrams` routes have no authentication either: anyone who reaches an editor page served by
+  the server can read and change the saved diagrams.
 
 ## Environment variables
 
@@ -162,6 +177,7 @@ They can also be placed in `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | server port |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
+| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
 | `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |
@@ -173,6 +189,7 @@ They can also be placed in `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | provider name in the menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |
 | `CHAT_MODEL` | the first in the list | model selected by default in the menu: `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, or the id alone |
+| `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` in the docker image) | folder of the diagrams saved on the server |
 | `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |
 
 ## Prototype limits

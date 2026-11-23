@@ -28,11 +28,15 @@ export const COLORS = [
   { label: T('Brown', 'Brun'), fill: '#D7CCC8', stroke: '#3E2723' },
 ]
 
-// Trait lisible pour un fond choisi librement : la même teinte, très assombrie.
+// Trait lisible pour un fond choisi librement : la même teinte, très assombrie
+// sur un fond clair, très éclaircie sur un fond foncé (sinon le texte ne se lit pas).
 export function strokeFor(hex) {
   const n = parseInt(hex.slice(1), 16)
-  const dark = (c) => Math.round(c * 0.3)
-  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(dark)
+  const rgb = [(n >> 16) & 255, (n >> 8) & 255, n & 255]
+  const lin = (c) => (c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  const lum = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2])
+  const shade = lum < 0.18 ? (c) => Math.round(c + (255 - c) * 0.88) : (c) => Math.round(c * 0.3)
+  const [r, g, b] = rgb.map(shade)
   return '#' + ((1 << 24) | (r << 16) | (g << 8) | b).toString(16).slice(1).toUpperCase()
 }
 

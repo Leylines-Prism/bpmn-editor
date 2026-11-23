@@ -12,7 +12,7 @@ Recommended method:
 1. Call get_shapes to learn the current diagram.
 2. For a linear sequence, add_shapes with "after": the shape is placed to the right of the previous one and connected automatically.
 3. For branches and loops back, add_shapes then connect_shapes.
-4. Read the diagram again with get_shapes to check.
+4. Read the diagram again with get_shapes to check. get_diagram_image shows how it actually looks.
 5. If the drawing is messy, auto_layout tidies it up (see its limits).
 6. Finish with validate_diagram and fix the reported errors.
 
@@ -53,6 +53,13 @@ export function buildTools(z) {
       name: 'get_diagram_xml',
       title: 'Read the BPMN XML',
       description: 'Returns the open diagram as BPMN 2.0 XML.',
+      inputSchema: {},
+    },
+    {
+      name: 'get_diagram_image',
+      title: 'See the diagram',
+      description:
+        'Returns a PNG image of the open diagram, as drawn on the canvas. Use it to check the layout visually (overlaps, crossing flows, readability), or to show the diagram to the user.',
       inputSchema: {},
     },
     {

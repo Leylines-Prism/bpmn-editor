@@ -1,0 +1,417 @@
+// « Mes diagrammes » : plusieurs diagrammes enregistrés, à rouvrir, renommer ou
+// supprimer. Dans le navigateur (IndexedDB) pour les deux versions, et sur le
+// serveur (dossier monté en volume) dans la version docker.
+//
+// Le diagramme ouvert peut être lié à un diagramme enregistré : « Enregistrer »
+// (ou Ctrl+S) met alors ce dernier à jour. Le lien est retenu par le navigateur.
+
+import { lang, T } from './i18n/lang.js'
+
+const LINK_KEY = 'bpmn-editor-library-link'
+const PLACES = {
+  browser: () => T('This browser', 'Ce navigateur'),
+  server: () => T('Server', 'Serveur'),
+}
+
+// ── Stockage dans le navigateur ─────────────────────────────────────────────
+
+function browserStore() {
+  let dbPromise = null
+  const open = () => {
+    dbPromise ??= new Promise((resolve, reject) => {
+      const req = indexedDB.open('bpmn-editor-library', 1)
+      req.onupgradeneeded = () => req.result.createObjectStore('diagrams', { keyPath: 'id' })
+      req.onsuccess = () => resolve(req.result)
+      req.onerror = () => reject(req.error)
+    })
+    dbPromise.catch(() => { dbPromise = null })
+    return dbPromise
+  }
+  const run = async (mode, fn) => {
+    const db = await open()
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction('diagrams', mode)
+      const req = fn(tx.objectStore('diagrams'))
+      tx.oncomplete = () => resolve(req?.result)
+      tx.onerror = () => reject(tx.error)
+      tx.onabort = () => reject(tx.error)
+    })
+  }
+  return {
+    place: 'browser',
+    async list() {
+      const all = (await run('readonly', (s) => s.getAll())) || []
+      return all.map(({ id, name, updatedAt, size }) => ({ id, name, updatedAt, size }))
+    },
+    get: (id) => run('readonly', (s) => s.get(id)),
+    async put(id, name, xml) {
+      const item = { id, name, xml, updatedAt: new Date().toISOString(), size: new Blob([xml]).size }
+      await run('readwrite', (s) => s.put(item))
+      return item
+    },
+    async rename(id, name) {
+      const item = await run('readonly', (s) => s.get(id))
+      if (!item) return null
+      item.name = name
+      item.updatedAt = new Date().toISOString()
+      await run('readwrite', (s) => s.put(item))
+      return item
+    },
+    remove: (id) => run('readwrite', (s) => s.delete(id)),
+  }
+}
+
+// ── Stockage sur le serveur (version docker, ou développement avec le serveur mcp/) ──
+
+function serverStore(baseUrl) {
+  const call = async (path, init) => {
+    const res = await fetch(baseUrl + path, init)
+    if (res.status === 404 && init?.method !== 'DELETE') return null
+    if (res.status === 413) throw new Error(T('diagram too large for the server', 'diagramme trop volumineux pour le serveur'))
+    if (!res.ok) throw new Error(T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
+    return res.json()
+  }
+  return {
+    place: 'server',
+    async list() {
+      const data = await call('')
+      return data?.diagrams || []
+    },
+    get: (id) => call('/' + id),
+    put: (id, name, xml) =>
+      call(`/${id}?name=${encodeURIComponent(name)}`, { method: 'PUT', headers: { 'Content-Type': 'application/xml' }, body: xml }),
+    rename: (id, name) =>
+      call('/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) }),
+    remove: (id) => call('/' + id, { method: 'DELETE' }),
+  }
+}
+
+// ── Fenêtre ─────────────────────────────────────────────────────────────────
+
+const newId = () =>
+  (crypto.randomUUID?.() || `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`).toLowerCase()
+
+const formatDate = (iso) => {
+  if (!iso) return ''
+  try {
+    return new Date(iso).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-GB', { dateStyle: 'short', timeStyle: 'short' })
+  } catch {
+    return iso
+  }
+}
+
+function readLink() {
+  try {
+    const link = JSON.parse(localStorage.getItem(LINK_KEY) || 'null')
+    if (link && PLACES[link.place] && typeof link.id === 'string') return link
+  } catch {}
+  return null
+}
+
+function writeLink(link) {
+  try {
+    if (link) localStorage.setItem(LINK_KEY, JSON.stringify(link))
+    else localStorage.removeItem(LINK_KEY)
+  } catch {}
+}
+
+// button : bouton qui ouvre la fenêtre. getXml() renvoie le XML du diagramme ouvert,
+// getName() et setName(name) lisent et changent le nom du fichier, openXml(xml, name)
+// ouvre un diagramme (renvoie un message d'erreur ou rien), setStatus(msg) écrit dans
+// la barre d'outils, isDirty()/markClean() suivent les modifications non enregistrées.
+// serverUrl : adresse de la route /diagrams du serveur, ou rien.
+export function setupDiagramLibrary({ button, getXml, getName, setName, openXml, setStatus, isDirty, markClean, serverUrl }) {
+  const stores = { browser: browserStore() }
+  if (serverUrl) stores.server = serverStore(serverUrl)
+  let serverOk = false
+  let link = readLink()
+  if (link && !stores[link.place]) link = null
+
+  const dialog = document.createElement('dialog')
+  dialog.id = 'library-dialog'
+  dialog.innerHTML = `
+    <form method="dialog">
+      <h2>${T('My diagrams', 'Mes diagrammes')}</h2>
+      <p class="hint" id="library-hint"></p>
+      <div class="library-save">
+        <label class="field">${T('Name', 'Nom')}
+          <input type="text" id="library-name" maxlength="120" spellcheck="false" autocomplete="off" />
+        </label>
+        <div class="field" id="library-place-field">${T('Save to', 'Enregistrer dans')}
+          <div class="library-places" role="radiogroup">
+            <label><input type="radio" name="library-place" value="browser" checked /> ${PLACES.browser()}</label>
+            <label><input type="radio" name="library-place" value="server" /> ${PLACES.server()}</label>
+          </div>
+        </div>
+      </div>
+      <p class="library-link" id="library-link"></p>
+      <div class="actions">
+        <button type="button" class="btn primary" data-icon="save" id="library-save">${T('Save', 'Enregistrer')}</button>
+        <button type="button" class="btn" id="library-save-new">${T('Save as new', 'Enregistrer comme nouveau')}</button>
+      </div>
+      <p class="status" id="library-status" role="status"></p>
+      <div class="library-list" id="library-list"></div>
+      <div class="actions">
+        <span class="grow"></span>
+        <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
+      </div>
+    </form>`
+  document.body.appendChild(dialog)
+
+  const $ = (sel) => dialog.querySelector(sel)
+  const nameField = $('#library-name')
+  const status = $('#library-status')
+  const listEl = $('#library-list')
+  const saveButton = $('#library-save')
+  const saveNewButton = $('#library-save-new')
+  const placeRadios = [...dialog.querySelectorAll('input[name="library-place"]')]
+  let rows = []
+
+  const say = (msg, error = false) => {
+    status.textContent = msg
+    status.classList.toggle('error', error)
+  }
+  const chosenPlace = () => placeRadios.find((r) => r.checked)?.value || 'browser'
+  const linkedRow = () => link && rows.find((r) => r.place === link.place && r.id === link.id)
+
+  function renderHeader() {
+    $('#library-hint').textContent = stores.server
+      ? T('Diagrams saved in your browser stay on your device. Diagrams saved on the server can be opened from any browser that reaches it.',
+          'Les diagrammes enregistrés dans votre navigateur restent sur votre appareil. Ceux enregistrés sur le serveur s\'ouvrent depuis n\'importe quel navigateur qui y accède.')
+      : T('Diagrams are saved in your browser, on your device only. Export a .bpmn file to keep a copy elsewhere.',
+          'Les diagrammes sont enregistrés dans votre navigateur, sur votre appareil seulement. Exportez un fichier .bpmn pour en garder une copie ailleurs.')
+    $('#library-place-field').hidden = !stores.server
+    const serverRadio = placeRadios.find((r) => r.value === 'server')
+    serverRadio.disabled = !serverOk
+    serverRadio.parentElement.title = serverOk ? '' : T('Server unreachable', 'Serveur injoignable')
+    if (!serverOk && serverRadio.checked) placeRadios[0].checked = true
+
+    const linked = linkedRow()
+    if (linked) {
+      $('#library-link').textContent = T(
+        `“Save” updates “${linked.name}” (${PLACES[linked.place]()}).`,
+        `« Enregistrer » met à jour « ${linked.name} » (${PLACES[linked.place]()}).`,
+      )
+      saveNewButton.hidden = false
+    } else {
+      $('#library-link').textContent = ''
+      saveNewButton.hidden = true
+    }
+  }
+
+  async function refresh() {
+    const found = []
+    let serverError = null
+    for (const store of Object.values(stores)) {
+      try {
+        for (const item of await store.list()) found.push({ ...item, place: store.place })
+        if (store.place === 'server') serverOk = true
+      } catch (err) {
+        if (store.place === 'server') {
+          serverOk = false
+          serverError = err
+        } else {
+          say(T(`Browser storage unavailable: ${err?.message || err}`, `Stockage du navigateur indisponible : ${err?.message || err}`), true)
+        }
+      }
+    }
+    rows = found.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''))
+    if (link && !linkedRow() && (link.place !== 'server' || serverOk)) {
+      link = null
+      writeLink(null)
+    }
+    renderHeader()
+    renderList(serverError)
+  }
+
+  function renderList(serverError) {
+    listEl.replaceChildren()
+    if (serverError) {
+      const p = document.createElement('p')
+      p.className = 'hint'
+      p.textContent = T('The server could not be reached: only the diagrams of your browser are listed.', 'Le serveur est injoignable : seuls les diagrammes de votre navigateur sont listés.')
+      listEl.append(p)
+    }
+    if (!rows.length) {
+      const p = document.createElement('p')
+      p.className = 'library-empty'
+      p.textContent = T('No saved diagram yet.', 'Aucun diagramme enregistré pour l\'instant.')
+      listEl.append(p)
+      return
+    }
+    const table = document.createElement('table')
+    table.innerHTML = `<thead><tr><th>${T('Name', 'Nom')}</th>${stores.server ? `<th>${T('Where', 'Où')}</th>` : ''}<th>${T('Modified', 'Modifié')}</th><th><span class="sr-only">${T('Actions', 'Actions')}</span></th></tr></thead>`
+    const body = document.createElement('tbody')
+    for (const row of rows) {
+      const tr = document.createElement('tr')
+      if (link && row.place === link.place && row.id === link.id) tr.className = 'current'
+      const nameCell = document.createElement('td')
+      nameCell.className = 'name'
+      nameCell.textContent = row.name
+      tr.append(nameCell)
+      if (stores.server) {
+        const where = document.createElement('td')
+        where.className = 'where'
+        where.textContent = PLACES[row.place]()
+        tr.append(where)
+      }
+      const date = document.createElement('td')
+      date.className = 'date'
+      date.textContent = formatDate(row.updatedAt)
+      tr.append(date)
+      const actions = document.createElement('td')
+      actions.className = 'row-actions'
+      const unreachable = row.place === 'server' && !serverOk
+      actions.append(
+        rowButton(T('Open', 'Ouvrir'), () => openRow(row), unreachable),
+        rowButton(T('Rename', 'Renommer'), () => startRename(row, nameCell), unreachable),
+        rowButton(T('Delete', 'Supprimer'), () => removeRow(row), unreachable),
+      )
+      tr.append(actions)
+      body.append(tr)
+    }
+    table.append(body)
+    listEl.append(table)
+  }
+
+  function rowButton(label, onClick, disabled) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'btn'
+    b.textContent = label
+    b.disabled = disabled
+    b.addEventListener('click', onClick)
+    return b
+  }
+
+  const cleanName = (value) => value.replace(/[\u0000-\u001f]/g, '').trim().slice(0, 120)
+
+  async function save({ asNew = false, quiet = false } = {}) {
+    const name = cleanName(quiet ? getName() : nameField.value) || getName()
+    const target = !asNew && link ? link : { place: chosenPlace(), id: newId() }
+    const store = stores[target.place]
+    try {
+      const xml = await getXml()
+      await store.put(target.id, name, xml)
+      link = target
+      writeLink(link)
+      if (name !== getName()) setName(name)
+      markClean()
+      const msg = T(`Saved: “${name}” (${PLACES[target.place]()})`, `Enregistré : « ${name} » (${PLACES[target.place]()})`)
+      setStatus(msg)
+      if (!quiet) {
+        say(msg)
+        await refresh()
+      }
+      return true
+    } catch (err) {
+      const msg = T(`Save failed: ${err?.message || err}`, `Échec de l'enregistrement : ${err?.message || err}`)
+      if (quiet) setStatus(msg)
+      else say(msg, true)
+      return false
+    }
+  }
+
+  async function openRow(row) {
+    if (isDirty() && !confirm(T('The current diagram has changes that are not saved in My diagrams. Open the other one anyway?', 'Le diagramme actuel a des modifications non enregistrées dans Mes diagrammes. Ouvrir l\'autre quand même ?'))) return
+    say('')
+    try {
+      const item = await stores[row.place].get(row.id)
+      if (!item) {
+        say(T('This diagram no longer exists.', 'Ce diagramme n\'existe plus.'), true)
+        return refresh()
+      }
+      const failure = await openXml(item.xml, item.name)
+      if (failure) return say(T(`Cannot open it: ${failure}`, `Ouverture impossible : ${failure}`), true)
+      link = { place: row.place, id: row.id }
+      writeLink(link)
+      markClean()
+      setStatus(T(`Opened: “${item.name}”`, `Ouvert : « ${item.name} »`))
+      dialog.close()
+    } catch (err) {
+      say(T(`Cannot open it: ${err?.message || err}`, `Ouverture impossible : ${err?.message || err}`), true)
+    }
+  }
+
+  function startRename(row, cell) {
+    const input = document.createElement('input')
+    input.type = 'text'
+    input.maxLength = 120
+    input.value = row.name
+    input.setAttribute('aria-label', T('New name', 'Nouveau nom'))
+    cell.replaceChildren(input)
+    input.focus()
+    input.select()
+    let done = false
+    const finish = async (keep) => {
+      if (done) return
+      done = true
+      const name = cleanName(input.value)
+      if (!keep || !name || name === row.name) return refresh()
+      try {
+        await stores[row.place].rename(row.id, name)
+        if (link && link.place === row.place && link.id === row.id) setName(name)
+        say(T(`Renamed: “${name}”`, `Renommé : « ${name} »`))
+      } catch (err) {
+        say(T(`Rename failed: ${err?.message || err}`, `Échec du renommage : ${err?.message || err}`), true)
+      }
+      refresh()
+    }
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); finish(true) }
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(false) }
+    })
+    input.addEventListener('blur', () => finish(true))
+  }
+
+  async function removeRow(row) {
+    if (!confirm(T(`Delete “${row.name}” from My diagrams? This cannot be undone.`, `Supprimer « ${row.name} » de Mes diagrammes ? C'est définitif.`))) return
+    try {
+      await stores[row.place].remove(row.id)
+      if (link && link.place === row.place && link.id === row.id) {
+        link = null
+        writeLink(null)
+      }
+      say(T(`Deleted: “${row.name}”`, `Supprimé : « ${row.name} »`))
+    } catch (err) {
+      say(T(`Delete failed: ${err?.message || err}`, `Échec de la suppression : ${err?.message || err}`), true)
+    }
+    refresh()
+  }
+
+  async function show() {
+    say('')
+    nameField.value = getName()
+    rows = []
+    await refresh()
+    if (!dialog.open) dialog.showModal()
+    nameField.focus()
+    nameField.select()
+  }
+
+  button.addEventListener('click', show)
+  saveButton.addEventListener('click', () => save())
+  saveNewButton.addEventListener('click', () => save({ asNew: true }))
+  nameField.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); save() }
+  })
+
+  // Ctrl+S : met à jour le diagramme lié, ou ouvre la fenêtre pour choisir.
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 's') {
+      e.preventDefault()
+      if (dialog.open) save()
+      else if (link) save({ quiet: true })
+      else show()
+    }
+  })
+
+  return {
+    // Le diagramme ouvert ne correspond plus à un diagramme enregistré
+    // (Nouveau, fichier ouvert depuis le disque, XML collé).
+    unlink() {
+      link = null
+      writeLink(null)
+    },
+  }
+}

@@ -35,6 +35,8 @@ import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { fitView } from './fit-view.js'
+import { setupDiagramLibrary } from './diagram-library.js'
+import { setupFeedback } from './feedback.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -162,7 +164,11 @@ async function autosave({ quiet = false } = {}) {
   } catch (e) { setStatus(T('error', 'erreur')) }
 }
 
+// Modifications non enregistrées dans « Mes diagrammes ».
+let dirty = false
+
 modeler.on('commandStack.changed', () => {
+  dirty = true
   clearTimeout(saveTimer)
   saveTimer = setTimeout(autosave, 1000)
 })
@@ -170,6 +176,8 @@ modeler.on('commandStack.changed', () => {
 document.getElementById('btn-new').addEventListener('click', async () => {
   if (!confirm(T('Create a new diagram? The current diagram will be lost if it has not been saved.', 'Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.'))) return
   localStorage.removeItem(LS_KEY)
+  library.unlink()
+  dirty = false
   setBaseName(DEFAULT_NAME)
   await modeler.importXML(EMPTY_DIAGRAM)
   fitView(modeler.get('canvas'))
@@ -185,6 +193,7 @@ document.getElementById('btn-open').addEventListener('click', () => {
 async function importAndReport(xml, fileName) {
   try {
     const { warnings, laidOut } = await importDiagram(modeler, xml)
+    library.unlink()
     setBaseName(fileName ? fileName.replace(/\.(bpmn|xml)$/i, '') : DEFAULT_NAME)
     // Le diagramme ouvert est sauvegardé tout de suite, avec son nom : un
     // rechargement de la page le retrouve même sans modification.
@@ -223,6 +232,28 @@ setupXmlDialog({
   onImport: (xml) => importAndReport(xml, null),
 })
 setupFileDrop({ onFile: importFile })
+
+// Adresse du serveur mcp/ (pont, chat, diagrammes) : en développement, dans l'image
+// docker (adresse relative « /bridge », relayée par nginx), ou VITE_MCP_BRIDGE_URL.
+// Pas de serveur dans la version en ligne.
+const configuredBridge = import.meta.env.MODE === 'online'
+  ? ''
+  : import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+const mcpBridgeUrl = configuredBridge.startsWith('/')
+  ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${configuredBridge}`
+  : configuredBridge
+
+const library = setupDiagramLibrary({
+  button: document.getElementById('btn-library'),
+  getXml: async () => (await modeler.saveXML({ format: true })).xml,
+  getName: baseName,
+  setName: setBaseName,
+  openXml: (xml, name) => importAndReport(xml, name),
+  setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
+  isDirty: () => dirty,
+  markClean: () => { dirty = false },
+  serverUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/diagrams') : null,
+})
 
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
@@ -337,27 +368,32 @@ setupPanelToggle({
   panel: document.getElementById('properties-panel'),
   canvas: modeler.get('canvas'),
 })
-loadInitial()
+loadInitial().then(() => { dirty = false })
 
 // Chat intégré, en deux modes :
 //   - en ligne (build « vite build --mode online ») : le chat tourne dans la page et
 //     appelle le fournisseur réglé dans Options. Pas de pont MCP.
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
+// Lien « Feedback », en bas du canevas (adresses réglées au build).
+setupFeedback({ container: document.getElementById('credit') })
+
 if (import.meta.env.MODE === 'online') {
+  // Mention de confidentialité, en bas du canevas.
+  import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('credit') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
     createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })
 } else {
-  // Une adresse relative (« /bridge », image docker) vise le site lui-même, relayé par nginx.
-  const configured = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
-  const mcpBridgeUrl = configured.startsWith('/') ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${configured}` : configured
   if (mcpBridgeUrl) {
-    Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
+    Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
       const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })
+      // Clic sur le badge MCP : adresse et configurations pour connecter un agent.
+      const mcpUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/mcp')
+      setupMcpConnect({ badge: bridge.badge, mcpUrl, infoUrl: chatUrl })
     })
   }
 }

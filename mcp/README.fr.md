@@ -25,9 +25,9 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 Le bouton « Assistant IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
 On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
 outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
-Le menu « Modèle », au-dessus de la zone de saisie, choisit le modèle parmi ceux que le serveur propose
-(il n'apparaît qu'à partir de deux modèles). Le choix est retenu par le navigateur. Passer d'un
-fournisseur à l'autre ouvre une nouvelle discussion, sans toucher au diagramme.
+Le modèle se choisit dans la fenêtre Options, parmi ceux que le serveur propose et ceux des fournisseurs
+réglés là ; le panneau l'affiche au-dessus de la zone de saisie. Passer d'un fournisseur à l'autre ouvre
+une nouvelle discussion, sans toucher au diagramme.
 Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion » repart de zéro.
 
 ```
@@ -43,6 +43,8 @@ Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion
   clé et modèle. Le serveur s'en sert pour cet appel, sans l'enregistrer ni l'écrire dans son journal.
 - La route `/chat` n'accepte que les pages de l'éditeur (même liste d'origines que le WebSocket).
 - Les conversations sont gardées en mémoire par le serveur (20 au plus) et perdues à son redémarrage.
+- Les images et PDF joints dans le panneau partent avec le message (34 Mo au plus par requête, avec
+  leur propre type de contenu `application/vnd.bpmn-chat+json`), puis sont transmis au modèle.
 - Si Claude Opus ou Sonnet décline une demande, l'API la rejoue sur un modèle de repli
   (`fallbacks: "default"`). Haiku n'a pas ce repli.
 - Chaque message consomme des crédits d'API : la clé de l'organisation à crédits inclus s'arrête
@@ -83,10 +85,12 @@ Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisse
 Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse (préremplie pour
 Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
 fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
-Le « Modèle par défaut » choisit celui du menu.
+Les modèles d'un fournisseur ne sont proposés qu'après la réussite de « Tester » ou « Lister les
+modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle de l'assistant » choisit le
+modèle du chat.
 
 - Les réglages restent dans le navigateur. Les clés sont oubliées à la fermeture de l'onglet, sauf si
-  « Se souvenir des clés sur cet appareil » est coché. « Effacer les clés » les retire.
+  « Se souvenir des clés sur votre appareil » est coché. « Effacer les clés » les retire.
 - Les appels passent par le serveur (routes `/chat` et `/chat/models`) : l'adresse est vue depuis le
   serveur. S'il tourne dans docker, Ollama sur la machine hôte se joint par
   `http://host.docker.internal:11434/v1`.
@@ -130,6 +134,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 |---|---|
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
+| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec le format OpenAI, l'assistant intégré ne peut pas la recevoir) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
@@ -140,10 +145,21 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
+## Diagrammes enregistrés
+
+La fenêtre « Mes diagrammes » de l'éditeur peut enregistrer les diagrammes sur ce serveur, en plus du
+navigateur. Les routes `/diagrams` les listent, les lisent, les enregistrent (`PUT`, corps en XML
+BPMN, 10 Mo au plus), les renomment et les suppriment. Elles n'acceptent que les pages de l'éditeur,
+comme `/chat`. Chaque diagramme est un fichier `<id>.bpmn` accompagné de `<id>.json` pour son nom et
+sa date, dans `DIAGRAMS_DIR` (`mcp/data/diagrams` par défaut, exclu de git ; le volume `diagrams` en
+docker).
+
 ## Sécurité
 
 - Le serveur n'écoute que sur `127.0.0.1`. Dans son conteneur docker, il écoute sur toutes les
   interfaces du conteneur, mais le site n'est publié que sur `127.0.0.1` de la machine hôte.
+- Avec `MCP_TOKEN`, `/mcp` répond 401 à toute requête sans `Authorization: Bearer <jeton>`. L'onglet
+  de l'éditeur (`/bridge`) et le chat ne l'utilisent pas : ils sont limités aux origines de l'éditeur.
 - Les requêtes MCP dont l'en-tête `Host` n'est pas local sont refusées (protection contre le DNS rebinding, fournie par le SDK).
   Dans docker, les noms acceptés sont ceux de `MCP_ALLOWED_HOSTS`.
 - Seules les pages de l'éditeur peuvent se connecter au WebSocket : l'origine doit figurer dans
@@ -152,6 +168,8 @@ Un appel qui échoue en cours de route est annulé en entier : le diagramme ne r
   docker du compose, ou si `VITE_MCP_BRIDGE_URL` est définie au build.
 - Les routes `/chat` et `/chat/models` appellent l'adresse qu'on leur donne : elles n'acceptent que les
   pages de l'éditeur, et le serveur ne doit pas être exposé sur un réseau public.
+- Les routes `/diagrams` n'ont pas non plus d'authentification : quiconque atteint une page de l'éditeur
+  servie par le serveur peut lire et modifier les diagrammes enregistrés.
 
 ## Variables d'environnement
 
@@ -161,6 +179,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` dans l'image docker) | adresse d'écoute |
+| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | noms d'hôte acceptés quand `MCP_HOST` n'est pas local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket et le chat |
 | `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
@@ -172,6 +191,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | nom du fournisseur dans le menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort`, pour les modèles qui l'acceptent |
 | `CHAT_MODEL` | le premier de la liste | modèle choisi par défaut dans le menu : `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, ou l'identifiant seul |
+| `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` dans l'image docker) | dossier des diagrammes enregistrés sur le serveur |
 | `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement, `/bridge` dans le compose | adresse du pont. Une adresse relative vise le site lui-même |
 
 ## Limites du prototype

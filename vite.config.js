@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
 // Politique de sécurité du contenu de la version en ligne : seuls les scripts du
 // site s'exécutent (le petit script du thème est autorisé par son empreinte).
@@ -34,8 +34,17 @@ function onlineCsp() {
   }
 }
 
+// Adresse mail du lien « Feedback » (FEEDBACK_EMAIL, dans .env ou l'environnement) :
+// rangée encodée dans le code, et non en clair, pour gêner les robots qui
+// ramassent les adresses. La page la décode au clic.
+function encodedEmail(mode) {
+  const email = (loadEnv(mode, process.cwd(), '').FEEDBACK_EMAIL || '').trim()
+  return email ? Buffer.from([...email].reverse().join(''), 'utf8').toString('base64') : ''
+}
+
 export default defineConfig(({ mode }) => ({
   plugins: mode === 'online' ? [onlineCsp()] : [],
+  define: { __FEEDBACK_EMAIL__: JSON.stringify(encodedEmail(mode)) },
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',

@@ -5,7 +5,8 @@ import { lang, setLang } from './lang.js'
 
 const FR = {
   'h1': { text: 'Éditeur BPMN' },
-  '#file-name': { 'aria-label': 'Nom du fichier', title: "Nom du fichier pour l'enregistrement et les exports (sans extension)" },
+  '#file-name-field': { title: "Nom du fichier pour l'enregistrement et les exports" },
+  '#file-name': { 'aria-label': 'Nom du fichier', placeholder: 'Nom du fichier' },
   '#btn-new': { text: 'Nouveau' },
   '#btn-open-menu': { text: 'Ouvrir' },
   '#btn-open': { text: 'Fichier .bpmn ou .xml…' },
@@ -17,7 +18,9 @@ const FR = {
   '#btn-svg': { text: 'Image SVG' },
   '#btn-png': { text: 'Image PNG' },
   '#btn-pdf': { text: 'Document PDF' },
-  '#btn-layout': { text: 'Ranger' },
+  '#btn-library': { text: 'Mes diagrammes', title: 'Enregistrer, rouvrir, renommer ou supprimer des diagrammes (Ctrl+S enregistre)' },
+  '#btn-layout': { text: 'Ranger', title: 'Ranger la disposition' },
+  '#btn-simulation': { title: 'Faire circuler des jetons dans le processus' },
   '#autosave-status': { text: 'Sauvegarde auto : —' },
   '#btn-properties': { title: 'Masquer le panneau Processus', 'aria-label': 'Masquer le panneau Processus' },
 }
