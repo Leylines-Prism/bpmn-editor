@@ -117,7 +117,9 @@ table says `mcp/.env`. Then run `docker compose up -d --build`.
 
 ## Online demo
 
-A demo runs at https://bpmn.leylines.fr (GitHub Pages).
+A demo runs at https://bpmn.leylines.fr (GitHub Pages). Its [user guide](https://bpmn.leylines.fr/help.html)
+explains how to draw, save, export and use the AI assistant. The Help (?) button in the toolbar opens it
+too.
 
 It is for a quick try only: each visitor enters their own API key, which stays in their browser.
 There is no agent connection (MCP) and no saving on a server, and some providers (OpenAI) refuse

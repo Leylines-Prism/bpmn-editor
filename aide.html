@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aide · Éditeur BPMN · Leylines</title>
+  <meta name="description" content="Guide de l'éditeur BPMN de Leylines : dessiner un processus, l'enregistrer, l'exporter, et le faire dessiner par un assistant IA." />
+  <link rel="alternate" hreflang="en" href="help.html" />
+  <link rel="icon" href="/design/leylines/assets/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-white.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-black.svg" media="(prefers-color-scheme: dark)" />
+  <link rel="apple-touch-icon" href="/design/leylines/assets/favicon-black-180.png" />
+  <script>
+    // Même thème que l'éditeur (clair, sombre ou automatique), appliqué avant le premier affichage
+    try { const t = localStorage.getItem('bpmn-editor-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t } catch {}
+  </script>
+  <link rel="stylesheet" href="/src/help/help.css" />
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="./" aria-label="Leylines, retour à l'éditeur">
+      <img class="only-light" src="/design/leylines/assets/leylines-logo-white.svg" alt="" />
+      <img class="only-dark" src="/design/leylines/assets/leylines-logo-transparent.svg" alt="" />
+    </a>
+    <span class="name">Éditeur BPMN · Aide</span>
+    <span class="grow"></span>
+    <a class="btn" href="help.html" hreflang="en" lang="en">English</a>
+    <a class="btn primary" href="./">Ouvrir l'éditeur</a>
+  </header>
+
+  <div class="layout">
+    <details class="toc" open>
+      <summary>Sommaire</summary>
+      <nav aria-label="Sommaire">
+        <p>Sommaire</p>
+        <ol>
+          <li><a href="#premiers-pas">Premiers pas</a></li>
+          <li><a href="#dessiner">Dessiner</a></li>
+          <li><a href="#proprietes">Panneau Processus</a></li>
+          <li><a href="#couleurs-texte">Couleurs et texte</a></li>
+          <li><a href="#verifier">Vérifier, ranger, simuler</a></li>
+          <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
+          <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
+          <li><a href="#assistant">Assistant IA</a></li>
+          <li><a href="#cles">Vos clés d'API</a></li>
+          <li><a href="#confidentialite">Confidentialité</a></li>
+          <li><a href="#docker">Version Docker et agents MCP</a></li>
+          <li><a href="#faq">Questions fréquentes</a></li>
+          <li><a href="#feedback">Donner votre avis</a></li>
+        </ol>
+      </nav>
+    </details>
+    <script>
+      // Sur un écran étroit, le sommaire commence replié
+      if (matchMedia('(max-width: 960px)').matches) document.querySelector('.toc').open = false
+    </script>
+
+    <main>
+      <div class="hero">
+        <h1>Guide de l'éditeur BPMN</h1>
+        <p class="lead">Un éditeur BPMN 2.0 gratuit, dans votre navigateur, sans compte ni installation. Vous dessinez vos processus à la main, ou vous les décrivez à un assistant IA qui les dessine pour vous.</p>
+        <div class="cta">
+          <a class="btn primary" href="./">Ouvrir l'éditeur</a>
+          <a class="btn" href="#assistant">Faire dessiner par l'IA</a>
+        </div>
+        <hr />
+      </div>
+
+      <section id="premiers-pas">
+        <h2>Premiers pas</h2>
+        <p>À la première ouverture, l'éditeur montre un petit processus : un début, une tâche et une fin. Vous pouvez partir de là, ou cliquer sur <span class="ui">Nouveau</span> pour repartir d'un diagramme vide.</p>
+        <figure><img src="/src/help/img/fr-editeur.webp" width="1440" height="820" alt="L'éditeur avec un processus de note de frais : la palette à gauche, le canevas, et le panneau de l'assistant IA ouvert à droite." loading="lazy" /><figcaption>L'éditeur, avec le panneau de l'assistant IA ouvert à droite. Le panneau Processus est masqué ici.</figcaption></figure>
+        <ol>
+          <li>Choisissez une forme dans la <strong>palette</strong>, à gauche du canevas, puis cliquez sur le canevas pour la poser.</li>
+          <li>Cliquez sur une forme : son <strong>menu contextuel</strong> apparaît à côté. Il ajoute l'élément suivant, déjà relié.</li>
+          <li>Double-cliquez sur une forme pour écrire son libellé.</li>
+          <li>Donnez un nom au fichier dans le champ à gauche de la barre d'outils. Il sert à l'enregistrement et à tous les exports.</li>
+        </ol>
+        <p>Votre travail est gardé dans le navigateur à chaque modification. En rouvrant la page, vous le retrouvez tel que vous l'avez laissé. La barre d'outils l'indique avec « Sauvegarde auto ».</p>
+        <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
+        <div class="note">Rien ne quitte votre navigateur tant que vous n'utilisez pas l'assistant IA. Il n'y a pas de compte, et le site ne reçoit pas vos diagrammes.</div>
+      </section>
+
+      <section id="dessiner">
+        <h2>Dessiner</h2>
+        <h3>La palette</h3>
+        <p>La palette, à gauche, propose les outils de sélection (main, lasso, espace, connexion) puis les formes : événements, tâches, passerelles, sous-processus, objets de données, piscines et couloirs. Le bouton <span class="ui">…</span> en bas de la palette ouvre la liste complète des éléments BPMN, avec une recherche par nom.</p>
+        <h3>Le menu contextuel</h3>
+        <p>Il apparaît à côté de l'élément sélectionné et permet de :</p>
+        <ul>
+          <li>ajouter l'élément suivant (tâche, passerelle, événement de fin…), déjà relié par un flux ;</li>
+          <li>tirer une connexion vers un autre élément ;</li>
+          <li>changer le type de l'élément (la clé à molette), par exemple une tâche en tâche utilisateur ;</li>
+          <li>mettre de la couleur (le pinceau) ou mettre en forme le texte (le bouton A) ;</li>
+          <li>supprimer l'élément (la corbeille).</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-menu-contextuel.webp" width="460" height="300" alt="Menu contextuel d'une tâche sélectionnée : éléments à ajouter, connexion, changement de type, couleur, texte et suppression." loading="lazy" /><figcaption>Le menu contextuel d'une tâche sélectionnée.</figcaption></figure>
+        <h3>Raccourcis clavier</h3>
+        <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd>, <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Annuler, rétablir</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Copier, coller, y compris d'un onglet à l'autre</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>C</kbd></td><td>Copier la sélection en image, à coller dans un document ou une présentation</td></tr>
+              <tr><td><kbd>Suppr</kbd></td><td>Supprimer la sélection</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Tout sélectionner</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td><td>Chercher un élément par son nom</td></tr>
+              <tr><td><kbd>E</kbd></td><td>Modifier le libellé de l'élément sélectionné</td></tr>
+              <tr><td><kbd>A</kbd>, <kbd>N</kbd></td><td>Ajouter un élément après la sélection, créer un élément</td></tr>
+              <tr><td><kbd>R</kbd></td><td>Changer le type de l'élément</td></tr>
+              <tr><td><kbd>H</kbd>, <kbd>L</kbd>, <kbd>S</kbd>, <kbd>C</kbd></td><td>Outils main, lasso, espace et connexion</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+molette</td><td>Zoomer</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Mettre à jour le diagramme dans Mes diagrammes</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>La <strong>mini-carte</strong>, en haut à droite du canevas, montre l'ensemble du diagramme. Cliquez dedans pour vous déplacer. La <strong>grille</strong> aide à aligner les formes, qui s'y accrochent.</p>
+      </section>
+
+      <section id="proprietes">
+        <h2>Panneau Processus</h2>
+        <p>Le panneau de droite montre les propriétés de l'élément sélectionné, ou du processus quand rien n'est sélectionné : nom, identifiant, documentation, et les réglages propres à chaque type (minuterie, message, condition d'un flux…).</p>
+        <ul>
+          <li>Le bouton tout à droite de la barre d'outils masque ou affiche le panneau.</li>
+          <li>Tirez la poignée sur son bord gauche pour l'élargir ou le rétrécir. Un double-clic sur la poignée revient à la largeur par défaut.</li>
+        </ul>
+      </section>
+
+      <section id="couleurs-texte">
+        <h2>Couleurs et texte</h2>
+        <h3>Couleurs</h3>
+        <p>Le <strong>pinceau</strong> du menu contextuel propose 18 couleurs, chacune avec un fond pâle et un trait foncé lisible. <span class="ui">Couleur personnalisée…</span> permet de choisir n'importe quelle teinte : le trait est alors calculé pour rester lisible, et un fond foncé reçoit un texte clair.</p>
+        <h3>Mise en forme du texte</h3>
+        <p>Le bouton <strong>A</strong> du menu contextuel met en forme le libellé : gras, italique, souligné, taille (de 10 à 24), police (sans serif, serif, monospace) et couleur. La couleur <span class="ui">Auto</span> prend le noir ou le blanc, le plus lisible sur le fond de l'élément. <span class="ui">Texte par défaut</span> retire toute la mise en forme.</p>
+        <p>Couleurs et styles sont enregistrés dans le fichier .bpmn selon la norme, et les autres outils bpmn.io les relisent. Le souligné n'apparaît pas dans l'export PDF.</p>
+      </section>
+
+      <section id="verifier">
+        <h2>Vérifier, ranger, simuler</h2>
+        <h3>Vérification automatique</h3>
+        <p>L'éditeur vérifie les règles de modélisation BPMN pendant que vous dessinez : élément isolé, processus sans début ni fin, passerelle mal reliée, élément sans libellé… Les problèmes sont signalés par une pastille sur l'élément concerné, et un compteur en bas à gauche du canevas les liste. Ce sont des conseils : le diagramme s'enregistre même s'il en reste.</p>
+        <h3>Ranger</h3>
+        <p>Le bouton <span class="ui">Ranger</span> (l'icône en forme de schéma, après Mes diagrammes) recalcule la disposition de tout le diagramme, de gauche à droite. C'est pratique après un import ou un diagramme dessiné par l'IA.</p>
+        <div class="note warn">Ranger déplace toutes les formes et efface l'historique d'annulation. L'éditeur vous demande de confirmer. Pour garder la version d'avant, enregistrez-la d'abord dans Mes diagrammes.</div>
+        <h3>Simulation</h3>
+        <p>Le bouton <span class="ui">Simulation</span> (l'icône lecture, à côté de Ranger) passe en mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Un journal montre les étapes parcourues. C'est un bon moyen de vérifier qu'un processus se termine bien dans tous les cas. Cliquez sur <span class="ui">Arrêter la simulation</span> pour revenir à l'édition.</p>
+        <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
+      </section>
+
+      <section id="enregistrer">
+        <h2>Enregistrer et Mes diagrammes</h2>
+        <h3>Sauvegarde automatique</h3>
+        <p>Le diagramme en cours est gardé dans votre navigateur une seconde après chaque modification. Il n'y a qu'un seul diagramme en cours : cliquer sur <span class="ui">Nouveau</span> ou ouvrir un fichier le remplace.</p>
+        <h3>Mes diagrammes</h3>
+        <p>Pour garder plusieurs diagrammes, ouvrez <span class="ui">Mes diagrammes</span>. Vous pouvez y enregistrer le diagramme en cours sous un nom, puis rouvrir, renommer ou supprimer vos diagrammes. Une fois un diagramme enregistré, <kbd>Ctrl</kbd>+<kbd>S</kbd> le met à jour. <span class="ui">Enregistrer comme nouveau</span> en fait une copie.</p>
+        <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre Mes diagrammes.</figcaption></figure>
+        <div class="note warn">Mes diagrammes est rangé dans ce navigateur, sur cet appareil. Il n'est pas synchronisé, et il disparaît si vous effacez les données du site ou si vous naviguez en mode privé. Pour garder un diagramme pour de bon, ou le passer à quelqu'un, exportez-le en fichier .bpmn.</div>
+      </section>
+
+      <section id="ouvrir-exporter">
+        <h2>Ouvrir, importer, exporter</h2>
+        <h3>Ouvrir</h3>
+        <ul>
+          <li><span class="ui">Ouvrir</span>, puis <span class="ui">Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
+          <li><span class="ui">Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
+          <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
+        </ul>
+        <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, l'éditeur la calcule à l'ouverture.</p>
+        <h3>Exporter</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Format</th><th>Pour quoi faire</th></tr></thead>
+            <tbody>
+              <tr><td>Fichier .bpmn</td><td>Garder le diagramme, le rouvrir ici ou dans un autre outil BPMN</td></tr>
+              <tr><td>Fichier .xml</td><td>Le même contenu, pour les outils qui attendent l'extension .xml</td></tr>
+              <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
+              <tr><td>Image SVG</td><td>Une image nette à toutes les tailles, pour le web ou un logiciel de dessin</td></tr>
+              <tr><td>Image PNG</td><td>Une image à coller dans un document, un e-mail ou une présentation</td></tr>
+              <tr><td>Document PDF</td><td>Imprimer ou envoyer le diagramme</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Tous les exports prennent le nom du fichier indiqué dans la barre d'outils.</p>
+      </section>
+
+      <section id="assistant">
+        <h2>Assistant IA</h2>
+        <p>Le bouton <span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le diagramme ouvert, le ranger et le vérifier. Vous retouchez ensuite à la main ce qu'il a fait, comme n'importe quel diagramme.</p>
+
+        <h3>1. Choisir un fournisseur</h3>
+        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec <strong>votre propre clé d'API</strong>. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Fournisseur</th><th>Ce qu'il faut savoir</th></tr></thead>
+            <tbody>
+              <tr><td>Anthropic (Claude)</td><td>Le plus simple dans cette version : créez une clé sur <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Les modèles Claude lisent aussi les images et les PDF.</td></tr>
+              <tr><td>OpenAI</td><td>Clé à créer sur <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI n'accepte pas toujours les appels faits depuis une page web : si « Tester » échoue, ce fournisseur ne marchera pas ici.</td></tr>
+              <tr><td>Ollama</td><td>Des modèles gratuits, sur votre propre ordinateur. Ollama doit être lancé avec la variable <code>OLLAMA_ORIGINS</code> réglée sur l'adresse de ce site (Options vous donne la valeur exacte). Choisissez un modèle qui sait appeler des outils.</td></tr>
+              <tr><td>Compatible OpenAI</td><td>LiteLLM, LM Studio, vLLM… Le serveur doit être en https (ou sur localhost) et autoriser l'adresse de ce site dans son réglage CORS.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Collez la clé, cliquez sur <span class="ui">Tester</span>, puis choisissez le modèle. Les modèles d'un fournisseur sont proposés une fois sa connexion testée. Le panneau affiche le modèle utilisé.</p>
+        <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options de l'assistant, avec le fournisseur Anthropic activé : adresse, clé, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options de l'assistant : Anthropic activé, en attente de la clé.</figcaption></figure>
+
+        <h3>2. Décrire le processus</h3>
+        <p>Écrivez comme vous l'expliqueriez à un collègue : qui fait quoi, dans quel ordre, avec quelles décisions. L'assistant répond dans la langue de votre message. Par exemple :</p>
+        <div class="note">« Dessine le traitement d'une note de frais. Le salarié la saisit, son manager la valide ou la refuse. Si elle dépasse 500 €, la comptabilité la valide aussi. Une fois validée, elle est remboursée sous 5 jours. Mets un couloir par acteur. »</div>
+        <p>Sous chaque réponse, de petites étiquettes montrent ce que l'assistant a fait sur le diagramme : lecture, ajout de formes, connexions, mise en page… Vous pouvez ensuite lui demander des retouches (« ajoute un rappel si le manager ne répond pas sous 3 jours »), ou les faire vous-même.</p>
+        <ul>
+          <li>La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pratique pour coller un long texte ou ouvrir un fichier .txt ou .md. <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoie.</li>
+          <li><span class="ui">Nouvelle discussion</span> repart de zéro. Le diagramme, lui, ne change pas.</li>
+          <li><span class="ui">Arrêter</span> interrompt une réponse en cours.</li>
+        </ul>
+
+        <h3>3. Partir d'une image ou d'un PDF</h3>
+        <p>Vous avez un schéma sur un tableau blanc, une capture d'un vieil outil, une procédure en PDF ? Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez à l'assistant de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF ne passent que chez OpenAI.</p>
+
+        <h3>Combien ça coûte</h3>
+        <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message envoie le diagramme en cours. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur.</p>
+      </section>
+
+      <section id="cles">
+        <h2>Vos clés d'API</h2>
+        <p>Votre clé ne passe jamais par ce site. Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
+            <tbody>
+              <tr><td>Décochée (par défaut)</td><td>Stockage de session de l'onglet</td><td>Elle s'efface à la fermeture de l'onglet</td></tr>
+              <tr><td>Cochée</td><td>Stockage local du navigateur</td><td>Elle reste jusqu'au clic sur <span class="ui">Effacer les clés</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Ce qui la protège : la page n'exécute aucun script venu d'ailleurs (une politique de sécurité du contenu l'interdit), et la clé n'est envoyée qu'au fournisseur choisi. En revanche, une extension de navigateur malveillante, ou quelqu'un qui utilise votre session, peut la lire.</p>
+        <div class="note warn">Sur un ordinateur partagé, laissez la case décochée et fermez l'onglet en partant. Préférez une clé créée pour l'occasion, avec une limite de dépense, que vous pourrez supprimer chez le fournisseur.</div>
+      </section>
+
+      <section id="confidentialite">
+        <h2>Confidentialité</h2>
+        <ul>
+          <li><strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés restent dans votre navigateur.</li>
+          <li><strong>Avec l'assistant IA</strong>, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>Comme tout hébergeur web, celui du site (GitHub Pages) garde des journaux techniques, comme votre adresse IP.</li>
+          <li>Pas de cookies, pas de mesure d'audience, pas de script tiers.</li>
+        </ul>
+        <p>Le lien <span class="ui">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
+      </section>
+
+      <section id="docker">
+        <h2>Version Docker et agents MCP</h2>
+        <p>Ce site est la version en ligne. L'éditeur existe aussi en version Docker, à installer sur votre machine ou votre réseau privé. Elle ajoute :</p>
+        <ul>
+          <li>des clés d'API rangées sur votre serveur, qui n'arrivent jamais au navigateur ;</li>
+          <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur ;</li>
+          <li>Mes diagrammes enregistré aussi sur le serveur, accessible depuis plusieurs navigateurs ;</li>
+          <li>un <strong>serveur MCP</strong> : un agent comme Claude Code ou Claude Desktop peut dessiner dans l'éditeur ouvert. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+        </ul>
+        <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">README du projet sur GitHub</a>.</p>
+      </section>
+
+      <section id="faq">
+        <h2>Questions fréquentes</h2>
+        <details class="faq">
+          <summary>Faut-il créer un compte ?</summary>
+          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé chez un fournisseur d'IA.</p>
+        </details>
+        <details class="faq">
+          <summary>Puis-je utiliser l'éditeur sans l'IA ?</summary>
+          <p>Oui. Tout l'éditeur marche sans clé : dessin, vérification, simulation, enregistrement et exports.</p>
+        </details>
+        <details class="faq">
+          <summary>Mes diagrammes ont disparu. Que s'est-il passé ?</summary>
+          <p>Ils sont rangés dans le navigateur. Ils ne s'affichent pas dans un autre navigateur, sur un autre appareil, en navigation privée, ni après un effacement des données du site. Exportez en .bpmn ce que vous voulez garder.</p>
+        </details>
+        <details class="faq">
+          <summary>« Tester » échoue avec OpenAI.</summary>
+          <p>OpenAI refuse parfois les appels faits directement depuis une page web. Utilisez Anthropic ou Ollama sur ce site, ou installez la version Docker, qui passe par son propre serveur.</p>
+        </details>
+        <details class="faq">
+          <summary>L'assistant a dessiné quelque chose d'inattendu.</summary>
+          <p>Annulez avec <kbd>Ctrl</kbd>+<kbd>Z</kbd>, ou demandez-lui la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
+        </details>
+        <details class="faq">
+          <summary>Puis-je ouvrir mes fichiers dans un autre outil BPMN ?</summary>
+          <p>Oui. Le fichier .bpmn suit la norme BPMN 2.0 et s'ouvre dans Camunda Modeler, Bizagi, Signavio et les autres outils compatibles.</p>
+        </details>
+        <details class="faq">
+          <summary>Ça marche sur téléphone ou tablette ?</summary>
+          <p>La page s'affiche, mais l'éditeur est fait pour un écran d'ordinateur, une souris et un clavier.</p>
+        </details>
+      </section>
+
+      <section id="feedback">
+        <h2>Donner votre avis</h2>
+        <p>Un bug, une idée, une question ? Le bouton <span class="ui">Votre avis</span>, en bas à droite du canevas, ou un clic sur le logo Leylines, vous dit où écrire. Vous pouvez aussi ouvrir un ticket sur <a href="https://github.com/Leylines-Prism/bpmn-editor/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+      </section>
+
+      <footer>
+        Éditeur BPMN par Leylines, construit sur <a href="https://bpmn.io" target="_blank" rel="noopener">bpmn.io</a>. Code source sur <a href="https://github.com/Leylines-Prism/bpmn-editor" target="_blank" rel="noopener">GitHub</a>.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>

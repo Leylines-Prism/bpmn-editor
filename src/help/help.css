@@ -1,0 +1,143 @@
+/* Page d'aide (aide.html et help.html) : texte long, charte Leylines, clair et sombre.
+   Toutes les valeurs viennent de design/leylines/tokens.css. */
+
+@import '@fontsource/urbanist/400.css';
+@import '@fontsource/urbanist/500.css';
+@import '@fontsource/urbanist/600.css';
+@import '../../design/leylines/tokens.css';
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  background: var(--surface); color: var(--ink);
+  font-family: var(--font-sans); font-size: 16px; line-height: 26px;
+}
+
+.only-dark { display: none !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .only-dark { display: block !important; }
+  :root:not([data-theme="light"]) .only-light { display: none !important; }
+}
+:root[data-theme="dark"] .only-dark { display: block !important; }
+:root[data-theme="dark"] .only-light { display: none !important; }
+
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, .btn:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+/* ── En-tête ─────────────────────────────────────────────────────────── */
+
+.top {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-raised); border-bottom: 1px solid var(--line);
+}
+/* La ligne de lumière, comme sous la barre de l'éditeur */
+.top::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: var(--leyline); pointer-events: none;
+}
+.logo { position: relative; display: block; width: 79px; height: 36px; flex-shrink: 0; }
+.logo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.top .name { font-size: 16px; font-weight: 600; white-space: nowrap; }
+.top .grow { flex: 1; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  height: 36px; padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  background: var(--surface-raised); color: var(--ink);
+  font: 500 14px/20px var(--font-sans); text-decoration: none; white-space: nowrap;
+}
+.btn:hover { background: var(--surface-sunken); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.08); }
+
+/* ── Mise en page : sommaire à gauche, texte à droite ────────────────── */
+
+.layout {
+  display: grid; grid-template-columns: 240px minmax(0, 720px);
+  gap: var(--space-12); justify-content: center;
+  padding: var(--space-8) var(--space-4) var(--space-16);
+}
+.toc { position: sticky; top: 88px; align-self: start; max-height: calc(100vh - 104px); overflow: auto; }
+.toc summary { display: none; }
+.toc p { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.02em; color: var(--ink-muted); text-transform: uppercase; margin-bottom: var(--space-2); }
+.toc ol { list-style: none; }
+.toc a {
+  display: block; padding: 4px var(--space-3);
+  border-left: 2px solid var(--line);
+  color: var(--ink); font-size: 14px; line-height: 20px; text-decoration: none;
+}
+.toc a:hover { border-left-color: var(--accent); background: var(--surface-sunken); }
+
+main { min-width: 0; }
+.hero h1 { font-size: 40px; line-height: 48px; font-weight: 600; letter-spacing: -0.01em; }
+.hero .lead { font-size: 18px; line-height: 28px; margin-top: var(--space-3); }
+.hero .cta { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-6); }
+.hero hr { margin-top: var(--space-8); height: 4px; border: 0; border-radius: var(--radius-pill); background: var(--leyline); }
+
+section { margin-top: var(--space-12); }
+h2 { font-size: 28px; line-height: 36px; font-weight: 600; margin-bottom: var(--space-4); }
+h3 { font-size: 20px; line-height: 28px; font-weight: 600; margin: var(--space-6) 0 var(--space-2); }
+p + p, p + ul, ul + p, p + ol, ol + p, p + table, table + p, .note + p, p + .note, ul + .note, ol + .note { margin-top: var(--space-3); }
+ul, ol { padding-left: var(--space-6); }
+li + li { margin-top: var(--space-1); }
+strong { font-weight: 600; }
+
+kbd, code {
+  font-family: var(--font-mono); font-size: 13px; line-height: 20px;
+  padding: 1px 6px; border-radius: var(--radius-sm);
+  background: var(--surface-sunken); border: 1px solid var(--line);
+}
+kbd { border-bottom-width: 2px; }
+.ui { font-weight: 600; }
+
+table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
+th, td { text-align: left; vertical-align: top; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line); }
+th { font-weight: 600; background: var(--surface-sunken); }
+.table-wrap { overflow-x: auto; margin: var(--space-3) 0; }
+
+.note {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line); border-left: 4px solid var(--accent);
+  border-radius: var(--radius-md); background: var(--surface-raised);
+}
+.note.warn { border-left-color: var(--warm); }
+
+details.faq { border-bottom: 1px solid var(--line); padding: var(--space-3) 0; }
+details.faq summary { cursor: pointer; font-weight: 600; }
+details.faq summary + * { margin-top: var(--space-2); }
+
+footer {
+  margin-top: var(--space-16); padding-top: var(--space-6); border-top: 1px solid var(--line);
+  font-size: 14px; line-height: 20px; color: var(--ink-muted);
+}
+
+/* ── Écrans étroits : le sommaire se replie au-dessus du texte ───────── */
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); padding-top: var(--space-6); }
+  .toc { position: static; max-height: none; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised); }
+  .toc summary { display: block; cursor: pointer; padding: var(--space-3) var(--space-4); font-weight: 600; }
+  .toc p { display: none; }
+  .toc ol { padding: 0 var(--space-4) var(--space-3); }
+}
+@media (max-width: 560px) {
+  .top { padding: var(--space-2) var(--space-4); gap: var(--space-2); }
+  .top .name { display: none; }
+  .hero h1 { font-size: 32px; line-height: 40px; }
+  html { scroll-padding-top: 72px; }
+}
+
+/* ── Captures d'écran ────────────────────────────────────────────────── */
+
+figure { margin: var(--space-4) 0; }
+figure img {
+  display: block; max-width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  box-shadow: var(--elevation-1);
+}
+figcaption { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }

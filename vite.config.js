@@ -51,6 +51,12 @@ export default defineConfig(({ mode }) => ({
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',
     rollupOptions: {
+      // Trois pages : l'éditeur, et la page d'aide en anglais et en français.
+      input: {
+        main: 'index.html',
+        help: 'help.html',
+        aide: 'aide.html',
+      },
       output: {
         manualChunks: {
           bpmn: ['bpmn-js'],
