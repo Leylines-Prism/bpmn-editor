@@ -73,6 +73,27 @@ utilisé : gardez-le ouvert.
 
 Un jeton facultatif protège cet accès : la même fenêtre en génère un et dit où le mettre.
 
+## Où sont gardées vos clés d'API
+
+**Dans la version Docker**, le plus sûr est `mcp/.env` : la clé reste sur le serveur et n'arrive
+jamais au navigateur. Une clé saisie dans la fenêtre Options de l'assistant est gardée dans le
+navigateur comme ci-dessous, puis envoyée à chaque message à votre serveur, qui la transmet au
+fournisseur sans l'enregistrer.
+
+**Dans le navigateur** (la démo en ligne, ou les clés saisies dans Options) :
+
+- La clé reste dans votre navigateur, pour ce site seulement. Les autres sites ne peuvent pas la lire.
+- « Se souvenir des clés sur votre appareil » décoché (par défaut) : la clé est gardée dans le
+  `sessionStorage` et disparaît à la fermeture de l'onglet.
+- Coché : la clé est gardée dans le `localStorage` et reste sur l'appareil jusqu'au clic sur
+  « Effacer les clés ».
+- Elle n'est pas chiffrée. La chiffrer dans le navigateur ne servirait à rien : la clé pour la
+  déchiffrer devrait être rangée juste à côté.
+- Ce qui la protège : la page n'exécute aucun script venu d'un autre site (politique de sécurité du
+  contenu, CSP), et la clé ne part que vers le fournisseur choisi.
+- La limite : une extension de navigateur malveillante, ou quelqu'un qui utilise votre session sur
+  l'ordinateur, peut la lire. Sur un ordinateur partagé, laissez la case décochée.
+
 ## Réglages
 
 Tous facultatifs. Mettez-les dans un fichier `.env` à côté de `docker-compose.yml` (git l'ignore),

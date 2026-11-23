@@ -71,6 +71,25 @@ Code, Claude Desktop, Cursor or VS Code. The agent draws in the editor tab used 
 
 An optional token protects this access: the same window generates one and tells you where to put it.
 
+## Where your API keys are kept
+
+**In the Docker version**, the safest place is `mcp/.env`: the key stays on the server and never
+reaches the browser. A key typed in the assistant's Options window is kept in the browser as below,
+then sent with each message to your server, which passes it on to the provider without storing it.
+
+**In the browser** (the online demo, or keys typed in Options):
+
+- The key stays in your browser, for this site only. Other sites cannot read it.
+- "Remember keys on your device" unchecked (the default): the key is kept in `sessionStorage` and
+  is gone when you close the tab.
+- Checked: the key is kept in `localStorage` and stays on the device until you click "Clear keys".
+- It is not encrypted. Encrypting it in the browser would not help: the key to decrypt it would have
+  to be stored right next to it.
+- What protects it: the page runs no script from another site (Content Security Policy), and the key
+  is only sent to the provider you chose.
+- The limit: a malicious browser extension, or someone using your session on the computer, can read
+  it. On a shared computer, leave the box unchecked.
+
 ## Settings
 
 All optional. Put them in a `.env` file next to `docker-compose.yml` (git ignores it), unless the
