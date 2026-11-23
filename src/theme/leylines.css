@@ -618,3 +618,19 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #mcp-connect-dialog ol.steps > li > * + * { margin-top: var(--space-2); }
 #mcp-connect-dialog ol.steps > li::marker { font-weight: 600; }
 #mcp-connect-dialog ol.steps.single { list-style: none; padding-left: 0; }
+#mcp-connect-dialog .agent-choice { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+#mcp-connect-dialog .agent-choice label {
+  display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer;
+  padding: 6px 14px 6px 10px; border: 1px solid var(--line-strong); border-radius: 999px;
+  font-size: 14px; color: var(--ink); background: var(--surface);
+}
+#mcp-connect-dialog .agent-choice input { accent-color: var(--accent); margin: 0; }
+#mcp-connect-dialog .agent-choice label:has(input:checked) { border-color: var(--accent); background: var(--node-cool, #E3F4FD); font-weight: 600; }
+#mcp-connect-dialog .agent-choice label:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#mcp-connect-dialog .agent-panel { display: flex; flex-direction: column; gap: var(--space-2); }
+#mcp-connect-dialog details { border-top: 1px solid var(--line); padding-top: var(--space-3); margin-top: var(--space-2); }
+#mcp-connect-dialog details > * + * { margin-top: var(--space-2); }
+#mcp-connect-dialog summary { cursor: pointer; font-size: 14px; line-height: 20px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: var(--space-2); }
+#mcp-connect-dialog summary::-webkit-details-marker { display: none; }
+#mcp-connect-dialog summary::before { content: ''; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform 0.15s; }
+#mcp-connect-dialog details[open] > summary::before { transform: rotate(45deg); }
