@@ -60,6 +60,7 @@ export function setupPrivacy({ container }) {
                  'Une petite mesure, <strong>sans cookie</strong>, avec Umami, pour savoir si le site sert. <strong>Votre adresse IP n\'est pas enregistrée.</strong>')}</p>
           <dl class="pv-table">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>
           <ul class="pv-facts">
+            <li>${T('Set up following the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent.', "Réglée selon les recommandations de la CNIL pour une mesure d'audience exemptée de consentement.")}</li>
             <li>${T('Never the content of your diagrams, messages or keys.', 'Jamais le contenu de vos diagrammes, messages ou clés.')}</li>
             <li>${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés par un identifiant haché, renouvelé chaque mois.')}</li>
             <li>${T('Kept 25 months at most, never shared.', 'Conservé 25 mois au plus, jamais partagé.')}</li>
