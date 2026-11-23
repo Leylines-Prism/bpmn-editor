@@ -375,6 +375,8 @@ loadInitial().then(() => { dirty = false })
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 if (import.meta.env.MODE === 'online') {
+  // Mention de confidentialité, en bas du canevas.
+  import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('credit') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
     createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })
