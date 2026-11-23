@@ -55,7 +55,8 @@ export class EditorBridge {
       if (msg.type === 'hello' || msg.type === 'active') {
         client.lastActive = Date.now()
         if (typeof msg.title === 'string') client.title = msg.title
-      } else if (msg.type === 'result' && this.pending.has(msg.id)) {
+      } else if (msg.type === 'result' && this.pending.get(msg.id)?.ws === ws) {
+        // Seul l'onglet qui a reçu l'appel peut y répondre.
         const { resolve, reject, timer } = this.pending.get(msg.id)
         clearTimeout(timer)
         this.pending.delete(msg.id)
