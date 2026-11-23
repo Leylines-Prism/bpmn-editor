@@ -5,6 +5,7 @@
 import { PROVIDERS } from './ai/providers.js'
 import { forgetKeys, providerLabel, saveSettings, userModels } from './ai-settings.js'
 import { T } from './i18n/lang.js'
+import { trackOnce } from './analytics.js'
 
 const HINTS = {
   online: {
@@ -166,6 +167,8 @@ export function createOptionsDialog({ mode, test, onSave }) {
     try {
       const models = await test(conn)
       draft.providers[id].verified = true
+      // Fournisseur réellement connecté : seulement son type, jamais la clé ni l'adresse.
+      trackOnce('fournisseur-connecte', { fournisseur: id })
       if (fill) {
         const current = draft.providers[id].models
         const on = new Set(current.filter((m) => m.on).map((m) => m.id))

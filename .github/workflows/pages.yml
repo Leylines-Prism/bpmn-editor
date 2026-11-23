@@ -4,7 +4,8 @@
 # diagrammes dans son navigateur et utilise sa propre clé d'API.
 #
 # Réglages facultatifs, dans Settings > Secrets and variables > Actions (jamais dans le dépôt) :
-#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH
+#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH,
+#               VITE_UMAMI_URL et VITE_UMAMI_WEBSITE_ID (mesure d'audience, voir src/analytics.js)
 #   secret    : FEEDBACK_EMAIL
 # Prérequis : Settings > Pages > Source réglé sur « GitHub Actions ».
 
@@ -45,6 +46,8 @@ jobs:
           VITE_SITE_HOST: ${{ vars.VITE_SITE_HOST || 'GitHub Pages' }}
           VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
           VITE_CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
+          VITE_UMAMI_URL: ${{ vars.VITE_UMAMI_URL }}
+          VITE_UMAMI_WEBSITE_ID: ${{ vars.VITE_UMAMI_WEBSITE_ID }}
           FEEDBACK_EMAIL: ${{ secrets.FEEDBACK_EMAIL }}
       - uses: actions/upload-pages-artifact@v3
         with:
