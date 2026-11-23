@@ -762,3 +762,23 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 @media (prefers-reduced-motion: reduce) {
   .panel-resizer::before { transition: none; }
 }
+
+/* Boutons de la barre d'outils et de l'en-tête de l'assistant : un contour fin
+   et un fond légèrement relevé montrent qu'ils se cliquent, sans alourdir la barre. */
+#toolbar > .btn:not(#btn-chat),
+#chat-panel header .btn {
+  border-color: var(--line-strong);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 0 var(--line);
+}
+#toolbar > .btn:not(#btn-chat):hover,
+#chat-panel header .btn:hover {
+  background: var(--surface-sunken);
+  border-color: var(--ink-muted);
+}
+#toolbar > .btn:not(#btn-chat):active,
+#chat-panel header .btn:active { box-shadow: none; transform: translateY(1px); }
+#toolbar > .btn.active:not(#btn-chat) { background: var(--accent-soft); border-color: var(--accent); }
+#chat-panel header #chat-settings,
+#chat-panel header #chat-reset { color: var(--ink); }
+#chat-panel header { gap: var(--space-2); }
