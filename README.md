@@ -64,7 +64,9 @@ MCP_ALLOWED_HOSTS=bpmn.example.com
 and allow WebSocket upgrades on `/bridge`.
 
 The server has no login. Put `MCP_TOKEN=a-long-random-value` in `mcp/.env` so that MCP clients must
-send `Authorization: Bearer <token>`: the settings in the window then include that header. The editor
+send `Authorization: Bearer <token>`, then restart the server. The "Generate a token" button of the
+window draws one at random and fills it into the `mcp/.env` line and the settings to copy; the page
+cannot write `mcp/.env` itself. The editor
 pages and saved diagrams stay open to anyone who reaches the site, so keep it on a trusted network or
 behind a proxy that asks for a login.
 

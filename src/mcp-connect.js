@@ -29,7 +29,17 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
       <h3>${T('MCP server address', 'Adresse du serveur MCP')}</h3>
       ${code('mcp-url')}
       <p class="warn" id="mcp-exposed" hidden></p>
+      <h3>${T('Token (optional)', 'Jeton (facultatif)')}</h3>
       <p class="hint" id="mcp-auth"></p>
+      <div class="token-row">
+        <input type="text" id="mcp-token" spellcheck="false" autocomplete="off" placeholder="${T('Paste the token, or generate one', 'Collez le jeton, ou générez-en un')}" aria-label="${T('MCP token', 'Jeton MCP')}" />
+        <button type="button" class="btn" id="mcp-token-generate">${T('Generate a token', 'Générer un jeton')}</button>
+      </div>
+      <div id="mcp-env-block" hidden>
+        <p class="hint">${T('Add this line to mcp/.env (the same file as the API keys), then restart the server: docker compose up -d, or npm start in mcp/.',
+                          'Ajoutez cette ligne à mcp/.env (le même fichier que les clés d\'API), puis relancez le serveur : docker compose up -d, ou npm start dans mcp/.')}</p>
+        ${code('mcp-env')}
+      </div>
       <h3>Claude Code</h3>
       ${code('mcp-claude-code')}
       <h3>Claude Desktop</h3>
@@ -63,12 +73,18 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
       .replace(/\[\s+([^\[\]{}]*?)\s+\]/g, (_, inner) => `[${inner.split(/,\s+/).join(', ')}]`)
       .replace(/\{\s+("[^"{}]+": "[^"{}]*")\s+\}/g, '{ $1 }')
 
-  function fill(auth) {
-    const header = auth ? { Authorization: 'Bearer <MCP_TOKEN>' } : null
+  const tokenInput = $('#mcp-token')
+  let serverAuth = false
+
+  function fill() {
+    const token = tokenInput.value.trim()
+    const auth = serverAuth || !!token
+    const value = token || '<MCP_TOKEN>'
+    const header = auth ? { Authorization: `Bearer ${value}` } : null
     set('mcp-url', mcpUrl)
     set(
       'mcp-claude-code',
-      `claude mcp add --transport http bpmn-editor ${mcpUrl}` + (auth ? ' --header "Authorization: Bearer <MCP_TOKEN>"' : ''),
+      `claude mcp add --transport http bpmn-editor ${mcpUrl}` + (auth ? ` --header "Authorization: Bearer ${value}"` : ''),
     )
     set(
       'mcp-claude-desktop',
@@ -76,7 +92,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
         mcpServers: {
           'bpmn-editor': {
             command: 'npx',
-            args: ['-y', 'mcp-remote', mcpUrl, ...(auth ? ['--header', 'Authorization: Bearer <MCP_TOKEN>'] : [])],
+            args: ['-y', 'mcp-remote', mcpUrl, ...(auth ? ['--header', `Authorization: Bearer ${value}`] : [])],
           },
         },
       }),
@@ -86,11 +102,14 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
       compact({ mcpServers: { 'bpmn-editor': { type: 'http', url: mcpUrl, ...(header ? { headers: header } : {}) } } }),
     )
 
-    $('#mcp-auth').textContent = auth
-      ? T('This server asks for a token: replace <MCP_TOKEN> with the value of MCP_TOKEN set on the server.',
-          'Ce serveur demande un jeton : remplacez <MCP_TOKEN> par la valeur de MCP_TOKEN réglée sur le serveur.')
-      : T('No token is asked. Set MCP_TOKEN on the server to require one from MCP clients.',
-          'Aucun jeton n\'est demandé. Réglez MCP_TOKEN sur le serveur pour en exiger un des clients MCP.')
+    $('#mcp-auth').textContent = serverAuth
+      ? T('This server asks for a token (MCP_TOKEN in mcp/.env). Paste it here to fill in the settings below.',
+          'Ce serveur demande un jeton (MCP_TOKEN dans mcp/.env). Collez-le ici pour remplir les réglages ci-dessous.')
+      : T('This server asks for no token. Generate one to require it from MCP clients: the settings below are filled in with it.',
+          'Ce serveur ne demande pas de jeton. Générez-en un pour l\'exiger des clients MCP : les réglages ci-dessous sont remplis avec lui.')
+    // La ligne pour mcp/.env n'est utile que pour un nouveau jeton.
+    $('#mcp-env-block').hidden = !token || serverAuth
+    set('mcp-env', `MCP_TOKEN=${token}`)
 
     const host = new URL(mcpUrl, location.href).hostname
     const exposed = !LOCAL.includes(host)
@@ -107,12 +126,11 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
 
   async function show() {
     $('#mcp-copy-status').textContent = ''
-    let auth = false
     try {
       const res = await fetch(infoUrl)
-      if (res.ok) auth = !!(await res.json()).mcpAuth
+      if (res.ok) serverAuth = !!(await res.json()).mcpAuth
     } catch {}
-    fill(auth)
+    fill()
     dialog.showModal()
   }
 
@@ -132,6 +150,15 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
       status.textContent = T('Automatic copy failed: the text is selected, press Ctrl+C.', 'Copie automatique impossible : le texte est sélectionné, faites Ctrl+C.')
     }
   })
+
+  // Jeton tiré au hasard dans le navigateur (32 octets, en hexadécimal). Il n'est envoyé
+  // nulle part : la page ne peut pas écrire mcp/.env, il faut y coller la ligne.
+  $('#mcp-token-generate').addEventListener('click', () => {
+    const bytes = crypto.getRandomValues(new Uint8Array(32))
+    tokenInput.value = [...bytes].map((n) => n.toString(16).padStart(2, '0')).join('')
+    fill()
+  })
+  tokenInput.addEventListener('input', fill)
 
   badge.addEventListener('click', show)
 }
