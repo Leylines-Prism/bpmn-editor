@@ -73,7 +73,7 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
       icon: feedback.startsWith('https://github.com/') ? 'github' : 'idea',
       title: T('Report a bug or suggest an idea', 'Signaler un bug ou proposer une idée'),
       detail: feedback.startsWith('https://github.com/')
-        ? T('On GitHub, where everyone can see what has already been reported. It needs a free GitHub account.', 'Sur GitHub, où chacun voit ce qui a déjà été signalé. Il faut un compte GitHub, gratuit.')
+        ? T('Open an issue on GitHub.', 'Ouvrir un ticket sur GitHub.')
         : new URL(feedback).hostname,
     })
   }
