@@ -166,9 +166,16 @@ body {
   color: var(--night-800);
 }
 #canvas .djs-context-pad .entry:hover { color: var(--leyline-sky-deep); }
-/* Menu contextuel aéré : 3 icônes par ligne, plus d'espace entre elles. */
-#canvas .djs-context-pad { width: 96px; }
-#canvas .djs-context-pad .entry { margin: 0 8px 8px 0; }
+/* Menu contextuel : chaque groupe d'icônes sur une grille régulière de 4 colonnes,
+   cellules de même taille, icônes centrées. */
+#canvas .djs-context-pad { width: auto; }
+#canvas .djs-context-pad .group { display: grid; grid-template-columns: repeat(4, 24px); gap: 6px; margin-bottom: 6px; }
+#canvas .djs-context-pad .entry {
+  width: 24px; height: 24px; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; line-height: 1;
+}
+#canvas .djs-context-pad .entry > svg { width: 20px; height: 20px; display: block; }
 /* Cadre de focus du canevas : visible au clavier seulement, dans l'arrondi de la carte */
 #canvas .djs-container svg:focus { outline: none; }
 #canvas .djs-container svg:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-md); }
