@@ -380,11 +380,14 @@ if (import.meta.env.MODE === 'online') {
   })
 } else {
   if (mcpBridgeUrl) {
-    Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
+    Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
       const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })
+      // Clic sur le badge MCP : adresse et configurations pour connecter un agent.
+      const mcpUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/mcp')
+      setupMcpConnect({ badge: bridge.badge, mcpUrl, infoUrl: chatUrl })
     })
   }
 }
