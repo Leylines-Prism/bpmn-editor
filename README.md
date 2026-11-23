@@ -124,6 +124,26 @@ provider's models are offered once its connection has been tested. The panel sho
   up to 5 MB (large ones are scaled down), PDF files up to 20 MB. Claude models read both. With
   OpenAI-compatible providers, images depend on the model, and PDF files are only sent to OpenAI.
 
+### Feedback link
+
+A "Feedback" link at the bottom of the canvas says where to send feedback. Two build-time settings,
+read by Vite (`npm run dev`, `npm run build`, `npm run build:online`) and by docker compose, from a
+`.env` file at the root of the repository, which git ignores:
+
+| Setting | What it does | Default |
+|---|---|---|
+| `VITE_FEEDBACK_URL` | Where feedback goes (`https://…` or `mailto:…`). `none` removes it. | The GitHub Issues of this repository |
+| `VITE_CONTACT_URL` | How to reach the author: a LinkedIn profile, a page or `mailto:…`. | None |
+
+With one address, the link opens it. With both, a small window offers the two. For example:
+
+```
+VITE_CONTACT_URL=https://www.linkedin.com/in/your-profile
+```
+
+Then rebuild: `docker compose up -d --build`, or `npm run build`. Avoid a personal e-mail address on
+a public site: it draws spam.
+
 ## Online version
 
 - Providers: Anthropic, OpenAI, Ollama and any OpenAI-compatible server, set up in the "Options"

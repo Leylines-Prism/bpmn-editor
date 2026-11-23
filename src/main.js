@@ -36,6 +36,7 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { fitView } from './fit-view.js'
 import { setupDiagramLibrary } from './diagram-library.js'
+import { setupFeedback } from './feedback.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -374,6 +375,9 @@ loadInitial().then(() => { dirty = false })
 //     appelle le fournisseur réglé dans Options. Pas de pont MCP.
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
+// Lien « Feedback », en bas du canevas (adresses réglées au build).
+setupFeedback({ container: document.getElementById('credit') })
+
 if (import.meta.env.MODE === 'online') {
   // Mention de confidentialité, en bas du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('credit') }))
