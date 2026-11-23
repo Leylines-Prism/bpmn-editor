@@ -98,14 +98,14 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
   const button = document.createElement('button')
   button.type = 'button'
   button.id = 'feedback-button'
-  button.innerHTML = `${BUBBLE}<span>${T('Feedback', 'Feedback')}</span>`
+  button.innerHTML = `${BUBBLE}<span>${T('Feedback', 'Votre avis')}</span>`
   container.append(button)
 
   const dialog = document.createElement('dialog')
   dialog.id = 'feedback-dialog'
   dialog.innerHTML = `
     <form method="dialog">
-      <h2>${T('Feedback', 'Feedback')}</h2>
+      <h2>${T('Feedback', 'Votre avis')}</h2>
       <p class="hint">${T('A bug, an idea, a question? Your feedback helps improve the editor.', 'Un bug, une idée, une question ? Vos retours aident à améliorer l\'éditeur.')}</p>
       ${choices
         .map((c) => {

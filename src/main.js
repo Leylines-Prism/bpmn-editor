@@ -386,7 +386,7 @@ const feedback = setupFeedback({ container: document.getElementById('canvas') })
 // Le logo de la barre ouvre aussi la fenêtre Feedback.
 const brandLogo = document.querySelector('.brand-logo')
 if (feedback && brandLogo) {
-  Object.assign(brandLogo, { tabIndex: 0, title: T('Feedback', 'Feedback') })
+  Object.assign(brandLogo, { tabIndex: 0, title: T('Feedback', 'Votre avis') })
   brandLogo.setAttribute('role', 'button')
   brandLogo.setAttribute('aria-label', T('Leylines: send feedback', 'Leylines : donner votre avis'))
   brandLogo.classList.add('clickable')
