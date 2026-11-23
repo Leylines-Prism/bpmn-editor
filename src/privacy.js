@@ -29,10 +29,10 @@ export function setupPrivacy({ container }) {
       <h2>${T('Privacy', 'Confidentialité')}</h2>
       <ul>
         <li>${analyticsHost
-          ? T('<strong>Your work stays with you.</strong> Your diagrams, your settings and your API keys stay in your browser, on your device. They are never sent to us.',
-              "<strong>Votre travail reste chez vous.</strong> Vos diagrammes, vos réglages et vos clés d'API restent dans votre navigateur, sur votre appareil. Ils ne nous sont jamais envoyés.")
-          : T('<strong>Nothing is sent to us.</strong> This site has no server of its own behind the page: your diagrams, your settings and your API keys stay in your browser, on your device.',
-              "<strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés d'API restent dans votre navigateur, sur votre appareil.")}</li>
+          ? T(`<strong>Your work stays with you.</strong> Your diagrams, your settings and your API keys stay in your browser, on your device. They are never sent to us or to the host of this site${host ? ` (${esc(host)})` : ''}.`,
+              `<strong>Votre travail reste chez vous.</strong> Vos diagrammes, vos réglages et vos clés d'API restent dans votre navigateur, sur votre appareil. Ils ne sont jamais envoyés, ni à nous ni à l'hébergeur du site${host ? ` (${esc(host)})` : ''}.`)
+          : T(`<strong>Nothing is sent to us.</strong> This site has no server of its own behind the page: your diagrams, your settings and your API keys stay in your browser, on your device, and the host of this site${host ? ` (${esc(host)})` : ''} never receives them.`,
+              `<strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés d'API restent dans votre navigateur, sur votre appareil, et l'hébergeur du site${host ? ` (${esc(host)})` : ''} ne les reçoit jamais.`)}</li>
         <li>${T('<strong>With the AI assistant</strong>, your messages, the diagram and your API key go straight from your browser to the AI provider you chose (Anthropic, OpenAI…), which applies its own terms and privacy policy and bills you for the calls.',
                 "<strong>Avec l'assistant IA</strong>, vos messages, le diagramme et votre clé d'API partent directement de votre navigateur vers le fournisseur d'IA choisi (Anthropic, OpenAI…), qui applique ses propres conditions et sa politique de confidentialité, et vous facture les appels.")}</li>
         <li>${hostText}</li>

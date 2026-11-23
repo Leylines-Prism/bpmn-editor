@@ -22,9 +22,15 @@ const HINTS = {
   },
 }
 
+// Nom de l'hébergeur de la version en ligne (VITE_SITE_HOST, par exemple « GitHub Pages »).
+const SITE_HOST = (import.meta.env.VITE_SITE_HOST || '').trim()
+
 const PRIVACY = {
   online:
-    T('Your keys and settings stay in your browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. This site receives neither your keys nor your diagrams.', 'Vos clés et vos réglages restent dans votre navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. Ce site ne reçoit ni vos clés ni vos diagrammes.'),
+    T('Your keys and settings stay in your browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. ', 'Vos clés et vos réglages restent dans votre navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. ') +
+    (SITE_HOST
+      ? T(`Neither this site nor its host (${SITE_HOST}) receives your keys or your diagrams.`, `Ni ce site ni son hébergeur (${SITE_HOST}) ne reçoivent vos clés ou vos diagrammes.`)
+      : T('Neither this site nor its host receives your keys or your diagrams.', 'Ni ce site ni son hébergeur ne reçoivent vos clés ou vos diagrammes.')),
   server:
     T('Your keys and settings stay in your browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés et vos réglages restent dans votre navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
 }
