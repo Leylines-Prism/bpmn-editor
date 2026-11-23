@@ -1,14 +1,16 @@
 import { createHash } from 'node:crypto'
 import { defineConfig, loadEnv } from 'vite'
 
-// Politique de sécurité du contenu de la version en ligne : seuls les scripts du
-// site s'exécutent (le petit script du thème est autorisé par son empreinte).
-// Les connexions restent ouvertes en https, et vers localhost pour Ollama, car
-// l'adresse du fournisseur est libre. La clé du visiteur est protégée par
-// l'absence de script tiers.
-function onlineCsp() {
+// Politique de sécurité du contenu, posée au build dans chaque page : seuls les scripts
+// du site s'exécutent (le petit script du thème est autorisé par son empreinte).
+// connectSrc dit où la page peut se connecter :
+//   - version en ligne : en https, et vers localhost pour Ollama, car l'adresse du
+//     fournisseur est libre. La clé du visiteur est protégée par l'absence de script tiers.
+//   - version serveur (image docker) : le site lui-même seulement, car tout passe par le
+//     serveur (pont, chat, diagrammes), plus l'adresse de VITE_MCP_BRIDGE_URL si elle est absolue.
+function csp(connectSrc) {
   return {
-    name: 'online-csp',
+    name: 'csp',
     apply: 'build',
     transformIndexHtml: {
       order: 'post',
@@ -22,7 +24,7 @@ function onlineCsp() {
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: blob:",
           "font-src 'self' data:",
-          "connect-src 'self' https: http://localhost:* http://127.0.0.1:*",
+          `connect-src ${connectSrc}`,
           "worker-src 'self' blob:",
           "object-src 'none'",
           "base-uri 'self'",
@@ -32,6 +34,22 @@ function onlineCsp() {
       },
     },
   }
+}
+
+const ONLINE_CONNECT = "'self' https: http://localhost:* http://127.0.0.1:*"
+
+// Version serveur : le site, plus le serveur MCP s'il est à une autre adresse (ws:// et http://).
+function serverConnect(mode) {
+  const bridge = (process.env.VITE_MCP_BRIDGE_URL || loadEnv(mode, process.cwd(), 'VITE_').VITE_MCP_BRIDGE_URL || '').trim()
+  const sources = ["'self'"]
+  try {
+    if (bridge && !bridge.startsWith('/')) {
+      const url = new URL(bridge)
+      const http = url.protocol === 'wss:' ? 'https:' : 'http:'
+      sources.push(`${url.protocol}//${url.host}`, `${http}//${url.host}`)
+    }
+  } catch {}
+  return sources.join(' ')
 }
 
 // Adresse mail du lien « Feedback » (FEEDBACK_EMAIL, dans .env ou l'environnement) :
@@ -45,7 +63,7 @@ function encodedEmail(mode) {
 export default defineConfig(({ mode }) => ({
   // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
   base: process.env.BASE_PATH || '/',
-  plugins: mode === 'online' ? [onlineCsp()] : [],
+  plugins: [csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode))],
   define: { __FEEDBACK_EMAIL__: JSON.stringify(encodedEmail(mode)) },
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
