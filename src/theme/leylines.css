@@ -705,7 +705,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #feedback-dialog .choice {
   display: flex; flex-direction: column; gap: 2px; padding: var(--space-3) var(--space-4);
   border: 1px solid var(--line-strong); border-radius: var(--radius-md);
-  color: var(--ink); text-decoration: none;
+  color: var(--ink); text-decoration: none; background: none; font: inherit; text-align: left; cursor: pointer;
 }
 #feedback-dialog .choice:hover { border-color: var(--accent); }
 #feedback-dialog .choice:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
