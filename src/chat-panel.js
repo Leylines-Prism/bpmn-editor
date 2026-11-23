@@ -48,22 +48,9 @@ const CSS = `
 #chat-input:disabled { opacity: 0.5; }
 #chat-options { display: flex; align-items: center; gap: 6px; padding: 6px 8px 0; font-size: 12px; color: #9ca3af; }
 #chat-options[hidden] { display: none; }
-#chat-model { flex: 1; min-width: 0; height: 26px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; }
+#chat-model-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 `
 
-const MODEL_STORAGE_KEY = 'bpmn-editor-chat-model'
-function readStoredModel() {
-  try {
-    return localStorage.getItem(MODEL_STORAGE_KEY)
-  } catch {
-    return null
-  }
-}
-function storeModel(value) {
-  try {
-    localStorage.setItem(MODEL_STORAGE_KEY, value)
-  } catch {}
-}
 
 // mode : « server » ou « online ». En mode server : chatUrl et bridge (pont MCP).
 // En mode online : tools, les outils exécutés sur le bpmn-js de la page.
@@ -83,8 +70,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, keys and models', 'Fournisseurs, clés et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-options" hidden>
-      <label for="chat-model">${T('Model', 'Modèle')}</label>
-      <select id="chat-model"></select>
+      <span id="chat-model-name"></span>
     </div>
     <form id="chat-form">
       <div class="chat-input-wrap">
@@ -129,18 +115,19 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const input = panel.querySelector('#chat-input')
   const sendButton = panel.querySelector('#chat-send')
   const modelBar = panel.querySelector('#chat-options')
-  const modelSelect = panel.querySelector('#chat-model')
+  const modelName = panel.querySelector('#chat-model-name')
 
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
   let settings = loadSettings()
   let serverModels = [] // { id, label, provider, providerLabel }, envoyés par le serveur
   let models = [] // serverModels puis modèles de la fenêtre Options
+  let currentId = '' // modèle de l'assistant, choisi dans la fenêtre Options
   // Discussion en cours : sur le serveur ({ id }) ou dans la page ({ messages }).
   // kind « server:anthropic », « local:openai »… : l'historique ne passe pas d'un format à l'autre.
   let conversation = null
 
-  const currentModel = () => models.find((m) => m.id === modelSelect.value)
+  const currentModel = () => models.find((m) => m.id === currentId)
   const kindOf = (m) => `${mode === 'online' ? 'local' : 'server'}:${m.source === 'user' ? m.format : m.provider}`
 
   const options = createOptionsDialog({
@@ -148,10 +135,17 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     test: testConnection,
     onSave(saved) {
       settings = saved
+      const before = currentModel()
       fillModels()
-      if (saved.defaultModel && models.some((m) => m.id === saved.defaultModel)) {
-        modelSelect.value = saved.defaultModel
-        storeModel(saved.defaultModel)
+      const model = currentModel()
+      // Un historique ne passe pas d'un format d'API à l'autre.
+      if (conversation && model && before?.id !== model.id) {
+        if (conversation.kind !== kindOf(model)) {
+          conversation = null
+          add('notice', T(`Different provider: the chat starts over with ${model.label}. The diagram does not change.`, `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`))
+        } else {
+          add('notice', T(`The next messages will go to ${model.label}.`, `Les prochains messages iront à ${model.label}.`))
+        }
       }
       announce()
       input.focus()
@@ -182,33 +176,16 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     return data.models
   }
 
-  // Remplit le menu, groupé par fournisseur. Garde le choix précédent s'il existe encore.
+  // Modèles disponibles : ceux du serveur, puis ceux des fournisseurs testés dans
+  // Options. Le modèle de l'assistant se choisit dans Options ; le panneau l'affiche.
   function fillModels() {
     models = [...serverModels.map((m) => ({ ...m, source: 'server' })), ...userModels(settings)]
-    modelSelect.replaceChildren()
-    const groups = new Map()
-    for (const m of models) {
-      let group = groups.get(m.provider)
-      if (!group) {
-        group = document.createElement('optgroup')
-        group.label = m.providerLabel || m.provider
-        groups.set(m.provider, group)
-        modelSelect.append(group)
-      }
-      const option = document.createElement('option')
-      option.value = m.id
-      option.textContent = m.label
-      group.append(option)
-    }
-    // Un seul fournisseur : les groupes n'apportent rien.
-    if (groups.size === 1) {
-      const [group] = groups.values()
-      modelSelect.replaceChildren(...group.children)
-    }
-    const stored = readStoredModel()
-    const fallback = models.some((m) => m.id === settings.defaultModel) ? settings.defaultModel : serverDefault || models[0]?.id || ''
-    modelSelect.value = models.some((m) => m.id === stored) ? stored : fallback
-    modelBar.hidden = models.length < 2
+    const has = (id) => id && models.some((m) => m.id === id)
+    currentId = has(settings.defaultModel) ? settings.defaultModel : has(serverDefault) ? serverDefault : models[0]?.id || ''
+    const model = currentModel()
+    modelName.textContent = model ? T(`Model: ${model.label}`, `Modèle : ${model.label}`) + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
+    modelName.title = T('Change it in Options', 'À changer dans Options')
+    modelBar.hidden = !model
   }
   let serverDefault = null
 
@@ -237,7 +214,6 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   function setBusy(busy) {
     sendButton.textContent = busy ? T('Stop', 'Arrêter') : T('Send', 'Envoyer')
     input.disabled = busy
-    modelSelect.disabled = busy
   }
 
   // À l'ouverture : en mode server, demande au serveur ses modèles.
@@ -279,20 +255,6 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     log.replaceChildren()
     checked = false
     checkServer()
-  })
-
-  modelSelect.addEventListener('change', () => {
-    storeModel(modelSelect.value)
-    const model = currentModel()
-    if (!model) return
-    // Un historique ne passe pas d'un format d'API à l'autre.
-    if (conversation && conversation.kind !== kindOf(model)) {
-      conversation = null
-      add('notice', T(`Different provider: the chat starts over with ${model.label}. The diagram does not change.`, `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`))
-    } else if (conversation) {
-      add('notice', T(`The next messages will go to ${model.label}.`, `Les prochains messages iront à ${model.label}.`))
-    }
-    input.focus()
   })
 
   // Zone de saisie : grandit avec le texte jusqu'à la moitié du panneau.

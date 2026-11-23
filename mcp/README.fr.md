@@ -25,9 +25,9 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 Le bouton « Assistant IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
 On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
 outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
-Le menu « Modèle », au-dessus de la zone de saisie, choisit le modèle parmi ceux que le serveur propose
-(il n'apparaît qu'à partir de deux modèles). Le choix est retenu par le navigateur. Passer d'un
-fournisseur à l'autre ouvre une nouvelle discussion, sans toucher au diagramme.
+Le modèle se choisit dans la fenêtre Options, parmi ceux que le serveur propose et ceux des fournisseurs
+réglés là ; le panneau l'affiche au-dessus de la zone de saisie. Passer d'un fournisseur à l'autre ouvre
+une nouvelle discussion, sans toucher au diagramme.
 Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion » repart de zéro.
 
 ```
@@ -83,7 +83,9 @@ Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisse
 Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse (préremplie pour
 Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
 fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
-Le « Modèle par défaut » choisit celui du menu.
+Les modèles d'un fournisseur ne sont proposés qu'après la réussite de « Tester » ou « Lister les
+modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle de l'assistant » choisit le
+modèle du chat.
 
 - Les réglages restent dans le navigateur. Les clés sont oubliées à la fermeture de l'onglet, sauf si
   « Se souvenir des clés sur cet appareil » est coché. « Effacer les clés » les retire.
