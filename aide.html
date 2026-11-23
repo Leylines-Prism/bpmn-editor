@@ -78,7 +78,7 @@
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification. En rouvrant la page, vous le retrouvez tel que vous l'avez laissé. La barre d'outils l'indique avec « Sauvegarde auto ».</p>
         <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
-        <div class="note">Rien ne quitte votre navigateur tant que vous n'utilisez pas l'assistant IA. Il n'y a pas de compte, et le site ne reçoit pas vos diagrammes.</div>
+        <div class="note">Il n'y a pas de compte. Vos diagrammes ne quittent pas votre navigateur, sauf vers le fournisseur d'IA si vous utilisez l'assistant : ni ce site ni son hébergeur ne les reçoivent. Le site mesure seulement son audience, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
       </section>
 
       <section id="dessiner">
@@ -224,7 +224,7 @@
 
       <section id="cles">
         <h2>Vos clés d'API</h2>
-        <p>Votre clé ne passe jamais par ce site. Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
+        <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
@@ -241,10 +241,11 @@
       <section id="confidentialite">
         <h2>Confidentialité</h2>
         <ul>
-          <li><strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés restent dans votre navigateur.</li>
+          <li><strong>Votre travail reste chez vous.</strong> Vos diagrammes, vos réglages et vos clés restent dans votre navigateur. Ils ne sont jamais envoyés, ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
           <li><strong>Avec l'assistant IA</strong>, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Comme tout hébergeur web, celui du site (GitHub Pages) garde des journaux techniques, comme votre adresse IP.</li>
-          <li>Pas de cookies, pas de mesure d'audience, pas de script tiers.</li>
+          <li><strong>Une petite mesure d'audience, sans cookie</strong>, avec Umami, pour savoir si le site sert. L'adresse IP n'est pas enregistrée : elle sert seulement à déduire le pays, la région et la ville. Sont enregistrés la visite (page, site d'origine, balises de campagne), l'appareil tel que le navigateur le décrit, et quelques actions sans leur contenu : diagramme créé, ouvert ou exporté (le format), assistant ouvert ou utilisé, fournisseur connecté (son type), temps actif par tranche. Conservation : 25 mois au plus. Le réglage « Do Not Track » ou « Global Privacy Control » du navigateur la désactive. Le détail complet est dans la fenêtre Confidentialité de l'éditeur.</li>
+          <li>Pas de script tiers.</li>
         </ul>
         <p>Le lien <span class="ui">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
       </section>
