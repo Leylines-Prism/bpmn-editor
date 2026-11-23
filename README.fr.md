@@ -123,7 +123,9 @@ sauf si le tableau indique `mcp/.env`. Puis lancez `docker compose up -d --build
 
 ## Démo en ligne
 
-Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages).
+Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages). Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
+explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de la
+barre d'outils l'ouvre aussi.
 
 Elle sert juste à essayer : chaque visiteur saisit sa propre clé d'API, qui reste dans son
 navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et certains
