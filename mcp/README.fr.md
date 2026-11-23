@@ -99,7 +99,7 @@ modèle du chat.
 ### Dans un docker compose
 
 Le fichier `docker-compose.yml` à la racine du dépôt lance l'éditeur et ce serveur (voir le
-[README principal](../README.fr.md#version-docker)). Le serveur lit `mcp/.env` s'il existe. Les
+[README principal](../README.fr.md#le-lancer-avec-docker)). Le serveur lit `mcp/.env` s'il existe. Les
 variables peuvent aussi se passer par `environment`, les clés de préférence par un fichier `.env`
 à côté du compose, jamais écrites dans le compose lui-même :
 
@@ -110,6 +110,30 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CHAT_MODEL: anthropic:claude-sonnet-5-5
 ```
+
+### Derrière un nom de domaine
+
+Par défaut, le compose ne publie le site que sur `127.0.0.1` de la machine hôte. Pour le servir sous
+un nom de domaine ou depuis une autre machine, régler ces variables dans un fichier `.env` à côté de
+`docker-compose.yml` :
+
+| Variable | Exemple | Rôle |
+|---|---|---|
+| `BPMN_EDITOR_ORIGINS` | `https://bpmn.example.com` | adresses des pages de l'éditeur, avec `http://` ou `https://`, séparées par des virgules. Le WebSocket et le chat n'acceptent qu'elles |
+| `MCP_ALLOWED_HOSTS` | `bpmn.example.com` | noms d'hôte qu'utilisent les clients MCP |
+| `BPMN_BIND` | `0.0.0.0` | interface où le site écoute (`127.0.0.1` par défaut). Utile seulement si le proxy tourne sur une autre machine |
+
+| Installation | Adresse MCP |
+|---|---|
+| docker sur cette machine | `http://localhost:8080/mcp` (ou le port réglé dans `BPMN_PORT`) |
+| développement (`npm run dev` et `mcp/`) | `http://127.0.0.1:3333/mcp` |
+| docker derrière un nom de domaine ou un proxy inverse | `https://votre-domaine/mcp` |
+
+Le proxy inverse doit transmettre l'en-tête `Host`, accepter le passage en WebSocket sur `/bridge`, et
+ne pas retenir les réponses de `/mcp` et `/chat` (Caddy fait tout cela par défaut). Régler `MCP_TOKEN`
+pour que les clients MCP doivent envoyer `Authorization: Bearer <jeton>`. Les pages de l'éditeur et
+les diagrammes enregistrés restent ouverts à quiconque joint le site : placer une connexion devant au
+niveau du proxy, comme dans le [README principal](../README.fr.md#le-servir-en-https).
 
 ## Lancer
 
