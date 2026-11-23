@@ -66,8 +66,9 @@ MCP_ALLOWED_HOSTS=bpmn.example.com
 l'en-tête `Host` et accepter le passage en WebSocket sur `/bridge`.
 
 Le serveur n'a pas de connexion. Mettre `MCP_TOKEN=une-longue-valeur-aléatoire` dans `mcp/.env` pour
-que les clients MCP doivent envoyer `Authorization: Bearer <jeton>` : les réglages de la fenêtre
-incluent alors cet en-tête. Les pages de l'éditeur et les diagrammes enregistrés restent ouverts à
+que les clients MCP doivent envoyer `Authorization: Bearer <jeton>`, puis relancer le serveur. Le
+bouton « Générer un jeton » de la fenêtre en tire un au hasard et le place dans la ligne pour
+`mcp/.env` et dans les réglages à copier ; la page ne peut pas écrire `mcp/.env` elle-même. Les pages de l'éditeur et les diagrammes enregistrés restent ouverts à
 quiconque joint le site : le garder sur un réseau de confiance ou derrière un proxy qui demande une
 connexion.
 
