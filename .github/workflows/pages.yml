@@ -4,7 +4,7 @@
 # diagrammes dans son navigateur et utilise sa propre clé d'API.
 #
 # Réglages facultatifs, dans Settings > Secrets and variables > Actions (jamais dans le dépôt) :
-#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL
+#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH
 #   secret    : FEEDBACK_EMAIL
 # Prérequis : Settings > Pages > Source réglé sur « GitHub Actions ».
 
@@ -39,7 +39,9 @@ jobs:
       - run: npm ci
       - run: npm run build:online
         env:
-          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          # Le site vit à la racine de son domaine (bpmn.leylines.fr). Sans domaine personnalisé,
+          # régler la variable BASE_PATH sur /<nom-du-dépôt>/ (configure-pages ne suit pas le domaine).
+          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
           VITE_SITE_HOST: ${{ vars.VITE_SITE_HOST || 'GitHub Pages' }}
           VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
           VITE_CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
