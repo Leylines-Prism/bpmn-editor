@@ -23,13 +23,18 @@
     <input id="file-name" type="text" value="diagramme" maxlength="120" spellcheck="false" autocomplete="off"
       aria-label="Nom du fichier" title="Nom du fichier pour l'enregistrement et les exports (sans extension)" />
     <button class="btn" id="btn-new" data-icon="new">Nouveau</button>
-    <button class="btn" id="btn-open" data-icon="open">Ouvrir</button>
-    <button class="btn" id="btn-import-xml" data-icon="code">Importer XML</button>
+    <button class="btn" id="btn-open-menu" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Ouvrir</button>
+    <div id="open-menu" class="menu" popover role="menu">
+      <button class="btn" id="btn-open" data-icon="open" role="menuitem">Fichier .bpmn ou .xml…</button>
+      <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Coller du XML…</button>
+    </div>
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <div class="sep"></div>
-    <button class="btn" id="btn-save" data-icon="save">Enregistrer .bpmn</button>
-    <button class="btn" id="btn-export" data-icon="image" popovertarget="export-menu" aria-haspopup="menu">Exporter</button>
+    <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Exporter</button>
     <div id="export-menu" class="menu" popover role="menu">
+      <button class="btn" id="btn-save" data-icon="save" role="menuitem">Fichier .bpmn</button>
+      <button class="btn" id="btn-save-xml" data-icon="save" role="menuitem">Fichier .xml</button>
+      <button class="btn" id="btn-xml" data-icon="code" role="menuitem">Code XML à copier…</button>
+      <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-svg" data-icon="image" role="menuitem">Image SVG</button>
       <button class="btn" id="btn-png" data-icon="image" role="menuitem">Image PNG</button>
       <button class="btn" id="btn-pdf" data-icon="pdf" role="menuitem">Document PDF</button>

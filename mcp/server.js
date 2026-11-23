@@ -144,7 +144,7 @@ app.post('/chat/models', chatCors, async (req, res) => {
 
 app.post('/chat', chatCors, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
-  if (typeof text !== 'string' || !text.trim() || text.length > 20000 || typeof tabId !== 'string') {
+  if (typeof text !== 'string' || !text.trim() || text.length > 100000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: 'Requête invalide' })
   }
   const custom = req.body.custom === undefined ? null : readCustom(req.body.custom, { needModel: true })

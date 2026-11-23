@@ -94,7 +94,18 @@ body {
 [data-icon="pdf"]    { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z'/%3E%3Cpath d='M14 3v5h5M9 13h6M9 17h4'/%3E%3C/svg%3E"); }
 [data-icon="panel"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Cpath d='M15 4v16'/%3E%3C/svg%3E"); }
 [data-icon="theme"]  { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8'/%3E%3Cpath d='M12 4a8 8 0 0 1 0 16z' fill='black'/%3E%3C/svg%3E"); }
-#btn-chat            { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H10l-5 4V6a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
+#btn-chat            { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='8' width='16' height='12' rx='3'/%3E%3Cpath d='M12 8V5M2 13v3M22 13v3M9.5 16.5h5'/%3E%3Ccircle cx='12' cy='4' r='1'/%3E%3Ccircle cx='9' cy='12.5' r='1' fill='black'/%3E%3Ccircle cx='15' cy='12.5' r='1' fill='black'/%3E%3C/svg%3E"); }
+
+/* Bouton Assistant IA : il ressort par un fin trait leyline (ciel, magenta,
+   orange) autour du bouton, sans halo : le seul nœud lumineux reste le badge MCP. */
+#toolbar #btn-chat {
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
+  font-weight: 600;
+}
+#toolbar #btn-chat:hover { background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box; }
+#toolbar #btn-chat.active { background: linear-gradient(var(--accent-soft), var(--accent-soft)) padding-box, var(--leyline) border-box; }
+#toolbar #btn-chat::before { width: 18px; height: 18px; }
 
 /* Indicateur du serveur MCP : le seul nœud lumineux de l'interface, quand
    une IA est branchée. Les couleurs posées en ligne par le pont sont remplacées. */
@@ -129,6 +140,9 @@ body {
   color: var(--night-800);
 }
 #canvas .djs-context-pad .entry:hover { color: var(--leyline-sky-deep); }
+/* Menu contextuel aéré : 3 icônes par ligne, plus d'espace entre elles. */
+#canvas .djs-context-pad { width: 96px; }
+#canvas .djs-context-pad .entry { margin: 0 8px 8px 0; }
 /* Cadre de focus du canevas : visible au clavier seulement, dans l'arrondi de la carte */
 #canvas .djs-container svg:focus { outline: none; }
 #canvas .djs-container svg:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-md); }
@@ -326,40 +340,43 @@ body #chat-model:disabled { opacity: 0.5; }
   .btn { transition: none; }
 }
 
-/* ── Menu Exporter ────────────────────────────────────────────────────── */
+/* ── Menus Ouvrir et Exporter ─────────────────────────────────────────── */
 
-#export-menu {
+#toolbar .menu {
   position: fixed; inset: auto; margin: 0;
   flex-direction: column; align-items: stretch; gap: 2px; min-width: 180px;
   padding: var(--space-1); border: 1px solid var(--line); border-radius: var(--radius-md);
   background: var(--surface-raised); color: var(--ink); box-shadow: var(--elevation-1);
 }
-#export-menu:popover-open { display: flex; }
-#export-menu .btn { justify-content: flex-start; }
+#toolbar .menu:popover-open { display: flex; }
+#toolbar .menu .btn { justify-content: flex-start; }
+#toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
 
 /* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
 
-#xml-dialog {
+#xml-dialog, #xml-export-dialog, #chat-editor {
   margin: auto; width: min(720px, calc(100vw - 32px));
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: var(--surface-raised); color: var(--ink);
   box-shadow: var(--elevation-1); padding: var(--space-6);
 }
-#xml-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
-#xml-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
-#xml-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
-#xml-dialog .hint { color: var(--ink-muted); font-size: 13px; }
-#xml-dialog textarea {
+#xml-dialog::backdrop, #xml-export-dialog::backdrop, #chat-editor::backdrop { background: rgba(5, 8, 18, 0.45); }
+#xml-dialog form, #xml-export-dialog form, #chat-editor form { display: flex; flex-direction: column; gap: var(--space-3); }
+#xml-dialog h2, #xml-export-dialog h2, #chat-editor h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#xml-dialog .hint, #xml-export-dialog .hint { color: var(--ink-muted); font-size: 13px; }
+#xml-dialog textarea, #xml-export-dialog textarea {
   width: 100%; height: 320px; resize: vertical;
   padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
   background: var(--surface); color: var(--ink);
   font-family: var(--font-mono); font-size: 12px; line-height: 18px;
 }
-#xml-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
-#xml-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
-#xml-dialog .error:empty { display: none; }
-#xml-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
-#xml-dialog .grow { flex: 1; }
+#xml-dialog textarea:focus-visible, #xml-export-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#xml-dialog .error, #xml-export-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
+#xml-dialog .error:empty, #xml-export-dialog .error:empty { display: none; }
+#xml-dialog .actions, #xml-export-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#xml-dialog .grow, #xml-export-dialog .grow { flex: 1; }
+#xml-export-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
+#xml-export-dialog .status:empty { display: none; }
 
 /* ── Fenêtre « Options de l'assistant » (src/options-dialog.js) ───────── */
 
@@ -424,3 +441,33 @@ body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6
     clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
   }
 }
+
+/* ── Sélecteur de couleurs : 18 teintes sur 6 colonnes, puis la couleur libre ── */
+.djs-popup.color-picker .djs-popup-group { grid: auto-flow / repeat(6, 1fr); }
+.djs-popup.color-picker .djs-popup-group[data-group="custom"] { display: block; border-top: 1px solid var(--mist); padding-top: var(--space-1); margin-top: var(--space-1); }
+.djs-popup.color-picker .djs-popup-group[data-group="custom"] .entry { display: flex; align-items: center; gap: var(--space-2); }
+
+/* Zone de saisie du chat : grandit avec le texte, bouton d'agrandissement dans le coin. */
+#chat-panel .chat-input-wrap { position: relative; flex: 1; display: flex; min-width: 0; }
+body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: hidden; }
+#chat-panel #chat-expand {
+  position: absolute; top: 4px; right: 4px; width: 26px; height: 26px;
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--ink-muted); cursor: pointer;
+}
+#chat-panel #chat-expand:hover { background: var(--surface-raised); color: var(--ink); }
+#chat-panel #chat-expand:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+
+/* Grand éditeur de message */
+#chat-editor { width: min(900px, calc(100vw - 32px)); }
+#chat-editor textarea {
+  width: 100%; height: min(60vh, 560px); resize: vertical;
+  padding: var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--line-strong);
+  background: var(--surface); color: var(--ink);
+  font-family: var(--font-sans); font-size: 14px; line-height: 20px;
+}
+#chat-editor textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent); }
+#chat-editor .chat-editor-actions { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+#chat-editor .chat-editor-count { flex: 1; color: var(--ink-muted); font-size: 12px; }
+#chat-editor .chat-editor-count.too-long { color: var(--magenta); }
+#chat-editor #chat-editor-send { background: var(--accent); color: var(--on-accent); }

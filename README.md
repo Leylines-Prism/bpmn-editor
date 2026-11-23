@@ -14,6 +14,38 @@
 
 Le serveur et l'assistant sont décrits dans [mcp/README.md](mcp/README.md).
 
+## Fonctions de l'éditeur
+
+### Fichiers
+
+- **Nom du fichier** : le champ à gauche de la barre d'outils donne le nom utilisé pour
+  l'enregistrement et tous les exports.
+- **Nouveau** repart d'un diagramme vide.
+- **Ouvrir** : « Fichier .bpmn ou .xml… » ouvre un fichier du disque, « Coller du XML… » ouvre un
+  diagramme collé sous forme de code. On peut aussi glisser un fichier sur la page.
+- **Exporter** : fichier .bpmn, fichier .xml, « Code XML à copier… » (une fenêtre pour copier ou
+  télécharger le code), puis image SVG, image PNG et PDF.
+- Le diagramme en cours est gardé par le navigateur et retrouvé à la réouverture de la page.
+
+### Dessin
+
+- Palette d'outils à gauche, menu contextuel à côté de l'élément sélectionné, copier-coller
+  (y compris entre onglets) et copie d'une sélection en image.
+- **Couleurs** : le pinceau du menu contextuel propose 18 couleurs, avec un fond pâle et un trait
+  foncé lisible, et « Couleur personnalisée… » pour choisir n'importe quelle teinte. Le trait est
+  alors calculé pour rester lisible.
+- **Ranger** remet en ordre la disposition du diagramme.
+- **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
+- Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
+- Grille, mini-carte et panneau des propriétés (masquable avec le bouton à droite).
+- **Thème** : clair, sombre ou automatique selon le système.
+
+### Assistant IA
+
+Le bouton **Assistant IA** ouvre le panneau de discussion : on décrit un processus, l'assistant le
+dessine. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
+clés. Voir les deux versions ci-dessus et [mcp/README.md](mcp/README.md).
+
 ## Version en ligne
 
 - Fournisseurs : Anthropic, OpenAI, Ollama et tout serveur compatible OpenAI, réglés dans la fenêtre
