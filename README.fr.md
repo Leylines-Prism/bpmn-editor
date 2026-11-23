@@ -98,9 +98,14 @@ connexion.
   foncé lisible, et « Couleur personnalisée… » pour choisir n'importe quelle teinte. Le trait est
   alors calculé pour rester lisible.
 - **Texte** : le bouton « A » du menu contextuel met en forme le libellé de l'élément : gras,
-  italique, souligné, taille (10 à 24) et police (Sans serif, Serif, Monospace). « Texte par
-  défaut » retire la mise en forme. Le style est enregistré dans le .bpmn selon la norme BPMN
-  (`bpmndi:BPMNLabelStyle`). Le souligné n'apparaît pas dans l'export PDF.
+  italique, souligné, taille (10 à 24), police (Sans serif, Serif, Monospace) et couleur. La
+  couleur se choisit parmi les teintes du pinceau, le noir ou le blanc, une couleur libre, ou
+  « Auto », qui prend le noir ou le blanc, le plus lisible sur le fond de l'élément. « Texte
+  par défaut » retire la mise en forme et la couleur. Le style est enregistré dans le .bpmn
+  selon la norme BPMN (`bpmndi:BPMNLabelStyle`), et la couleur en `color:color` sur le
+  libellé (BPMN in Color), que les autres outils bpmn.io lisent aussi. Le souligné
+  n'apparaît pas dans l'export PDF. Avec le pinceau, un fond libre foncé reçoit maintenant
+  de lui-même un texte clair.
 - **Ranger** remet en ordre la disposition du diagramme.
 - **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
 - Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
