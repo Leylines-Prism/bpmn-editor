@@ -130,6 +130,27 @@ affiche le modèle utilisé.
   modèles Claude lisent les deux. Avec les fournisseurs compatibles OpenAI, les images dépendent du
   modèle, et les PDF ne partent que vers OpenAI.
 
+### Lien Feedback
+
+Un lien « Feedback » en bas du canevas dit où envoyer un retour. Deux réglages de build, lus par Vite
+(`npm run dev`, `npm run build`, `npm run build:online`) et par docker compose, dans un fichier
+`.env` à la racine du dépôt, que git ignore :
+
+| Réglage | Rôle | Par défaut |
+|---|---|---|
+| `VITE_FEEDBACK_URL` | Où vont les retours (`https://…` ou `mailto:…`). `none` le retire. | Les Issues GitHub de ce dépôt |
+| `VITE_CONTACT_URL` | Comment joindre l'auteur : un profil LinkedIn, une page ou `mailto:…`. | Aucun |
+
+Avec une seule adresse, le lien l'ouvre. Avec les deux, une petite fenêtre propose les deux. Par
+exemple :
+
+```
+VITE_CONTACT_URL=https://www.linkedin.com/in/votre-profil
+```
+
+Puis reconstruisez : `docker compose up -d --build`, ou `npm run build`. Évitez une adresse mail
+personnelle sur un site public : elle attire le spam.
+
 ## Version en ligne
 
 - Fournisseurs : Anthropic, OpenAI, Ollama et tout serveur compatible OpenAI, réglés dans la fenêtre
