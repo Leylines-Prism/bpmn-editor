@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Éditeur BPMN · Leylines</title>
+  <title>BPMN Editor · Leylines</title>
   <link rel="icon" href="/design/leylines/assets/favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-white.svg" media="(prefers-color-scheme: light)" />
   <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-black.svg" media="(prefers-color-scheme: dark)" />
@@ -11,40 +11,45 @@
   <script>
     // Applique le thème choisi avant le premier affichage, sans clignotement
     try { const t = localStorage.getItem('bpmn-editor-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t } catch {}
+    // Langue de l'interface (anglais par défaut) : les textes sont traduits par src/i18n/static-texts.js
+    try { if (localStorage.getItem('bpmn-editor-lang') === 'fr') document.documentElement.lang = 'fr' } catch {}
   </script>
 </head>
 <body>
   <div id="toolbar">
     <div class="brand">
-      <img class="only-light" src="/design/leylines/assets/leylines-icon-square-white.svg" alt="Leylines" />
-      <img class="only-dark" src="/design/leylines/assets/leylines-icon-square-black.svg" alt="Leylines" />
-      <h1>Éditeur BPMN</h1>
+      <span class="brand-logo" role="img" aria-label="Leylines">
+        <img class="only-light" src="/design/leylines/assets/leylines-logo-white.svg" alt="" />
+        <img class="only-dark" src="/design/leylines/assets/leylines-logo-transparent.svg" alt="" />
+      </span>
+      <h1>BPMN Editor</h1>
     </div>
-    <input id="file-name" type="text" value="diagramme" maxlength="120" spellcheck="false" autocomplete="off"
-      aria-label="Nom du fichier" title="Nom du fichier pour l'enregistrement et les exports (sans extension)" />
-    <button class="btn" id="btn-new" data-icon="new">Nouveau</button>
-    <button class="btn" id="btn-open-menu" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Ouvrir</button>
+    <input id="file-name" type="text" value="diagram" maxlength="120" spellcheck="false" autocomplete="off"
+      aria-label="File name" title="File name used when saving and exporting (without extension)" />
+    <button class="btn" id="btn-new" data-icon="new">New</button>
+    <button class="btn" id="btn-open-menu" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
     <div id="open-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-open" data-icon="open" role="menuitem">Fichier .bpmn ou .xml…</button>
-      <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Coller du XML…</button>
+      <button class="btn" id="btn-open" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
+      <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Paste XML…</button>
     </div>
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Exporter</button>
+    <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-save" data-icon="save" role="menuitem">Fichier .bpmn</button>
-      <button class="btn" id="btn-save-xml" data-icon="save" role="menuitem">Fichier .xml</button>
-      <button class="btn" id="btn-xml" data-icon="code" role="menuitem">Code XML à copier…</button>
+      <button class="btn" id="btn-save" data-icon="save" role="menuitem">.bpmn file</button>
+      <button class="btn" id="btn-save-xml" data-icon="save" role="menuitem">.xml file</button>
+      <button class="btn" id="btn-xml" data-icon="code" role="menuitem">XML code to copy…</button>
       <div class="menu-sep" role="separator"></div>
-      <button class="btn" id="btn-svg" data-icon="image" role="menuitem">Image SVG</button>
-      <button class="btn" id="btn-png" data-icon="image" role="menuitem">Image PNG</button>
-      <button class="btn" id="btn-pdf" data-icon="pdf" role="menuitem">Document PDF</button>
+      <button class="btn" id="btn-svg" data-icon="image" role="menuitem">SVG image</button>
+      <button class="btn" id="btn-png" data-icon="image" role="menuitem">PNG image</button>
+      <button class="btn" id="btn-pdf" data-icon="pdf" role="menuitem">PDF document</button>
     </div>
     <div class="sep"></div>
-    <button class="btn" id="btn-layout" data-icon="layout">Ranger</button>
+    <button class="btn" id="btn-layout" data-icon="layout">Tidy up</button>
     <button class="btn" id="btn-simulation" data-icon="play">Simulation</button>
-    <span id="autosave-status">Sauvegarde auto : —</span>
-    <button class="btn icon-only" id="btn-properties" data-icon="panel" aria-controls="properties-panel" aria-expanded="true" title="Masquer le panneau Processus" aria-label="Masquer le panneau Processus"></button>
-    <button class="btn icon-only" id="btn-theme" data-icon="theme" title="Thème : auto" aria-label="Thème : auto"></button>
+    <span id="autosave-status">Autosave: —</span>
+    <button class="btn icon-only" id="btn-properties" data-icon="panel" aria-controls="properties-panel" aria-expanded="true" title="Hide the Process panel" aria-label="Hide the Process panel"></button>
+    <button class="btn" id="btn-lang" title="Langue : français" aria-label="Switch to French">FR</button>
+    <button class="btn icon-only" id="btn-theme" data-icon="theme" title="Theme: auto" aria-label="Theme: auto"></button>
   </div>
   <div id="main">
     <div id="canvas">

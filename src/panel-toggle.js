@@ -2,6 +2,8 @@
 // Le panneau se replie vers la droite et le canevas reprend la place libérée.
 // L'état est retenu dans ce navigateur.
 
+import { T } from './i18n/lang.js'
+
 const KEY = 'bpmn-editor-properties-hidden'
 
 function readHidden() {
@@ -17,7 +19,7 @@ export function setupPanelToggle({ button, panel, canvas }) {
     panel.inert = hidden
     button.classList.toggle('active', !hidden)
     button.setAttribute('aria-expanded', String(!hidden))
-    const label = hidden ? 'Afficher le panneau Processus' : 'Masquer le panneau Processus'
+    const label = hidden ? T('Show the Process panel', 'Afficher le panneau Processus') : T('Hide the Process panel', 'Masquer le panneau Processus')
     button.title = label
     button.setAttribute('aria-label', label)
   }

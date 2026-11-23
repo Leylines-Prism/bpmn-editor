@@ -3,6 +3,7 @@
 
 import { layoutProcess } from 'bpmn-auto-layout'
 import { fitView } from './fit-view.js'
+import { T } from './i18n/lang.js'
 
 // bpmn-auto-layout suit les listes incoming/outgoing des éléments, que beaucoup
 // d'outils n'écrivent pas. On les reconstruit à partir des flux de séquence.
@@ -34,7 +35,7 @@ function explain(err) {
     return 'le texte n\'est pas du XML BPMN lisible (' + msg.split('\n')[0] + ')'
   }
   if (/failed to parse document as <bpmn:Definitions>/i.test(msg)) {
-    return 'le document n\'est pas un diagramme BPMN 2.0 (élément racine <definitions> attendu)'
+    return T('the document is not a BPMN 2.0 diagram (root element <definitions> expected)', 'le document n\'est pas un diagramme BPMN 2.0 (élément racine <definitions> attendu)')
   }
   return msg
 }
@@ -80,15 +81,15 @@ export function setupXmlDialog({ openButton, fileInput, onImport }) {
   dialog.id = 'xml-dialog'
   dialog.innerHTML = `
     <form method="dialog">
-      <h2>Importer du XML BPMN</h2>
-      <p class="hint">Colle le XML d'un diagramme BPMN 2.0, ou choisis un fichier .bpmn ou .xml. Tu peux aussi déposer un fichier directement sur l'éditeur.</p>
+      <h2>${T('Import BPMN XML', 'Importer du XML BPMN')}</h2>
+      <p class="hint">${T('Paste the XML of a BPMN 2.0 diagram, or choose a .bpmn or .xml file. You can also drop a file straight onto the editor.', 'Colle le XML d\'un diagramme BPMN 2.0, ou choisis un fichier .bpmn ou .xml. Tu peux aussi déposer un fichier directement sur l\'éditeur.')}</p>
       <textarea id="xml-text" spellcheck="false" placeholder="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; …&gt;"></textarea>
       <p class="error" id="xml-error" role="alert"></p>
       <div class="actions">
-        <button type="button" class="btn" data-icon="open" id="xml-file">Choisir un fichier…</button>
+        <button type="button" class="btn" data-icon="open" id="xml-file">${T('Choose a file…', 'Choisir un fichier…')}</button>
         <span class="grow"></span>
-        <button type="button" class="btn" id="xml-cancel">Annuler</button>
-        <button type="button" class="btn primary" id="xml-import">Importer</button>
+        <button type="button" class="btn" id="xml-cancel">${T('Cancel', 'Annuler')}</button>
+        <button type="button" class="btn primary" id="xml-import">${T('Import', 'Importer')}</button>
       </div>
     </form>`
   document.body.appendChild(dialog)
@@ -113,7 +114,7 @@ export function setupXmlDialog({ openButton, fileInput, onImport }) {
     const failure = await onImport(text.value, null)
     importBtn.disabled = false
     if (failure) {
-      error.textContent = 'Import impossible : ' + failure
+      error.textContent = T('Import failed: ', 'Import impossible : ') + failure
     } else {
       text.value = ''
       dialog.close()
@@ -129,15 +130,15 @@ export function setupXmlExport({ openButton, getXml, download }) {
   dialog.id = 'xml-export-dialog'
   dialog.innerHTML = `
     <form method="dialog">
-      <h2>Exporter le XML BPMN</h2>
-      <p class="hint">Le XML BPMN 2.0 du diagramme, à copier dans un autre outil ou à enregistrer en fichier .xml.</p>
+      <h2>${T('Export BPMN XML', 'Exporter le XML BPMN')}</h2>
+      <p class="hint">${T('The diagram as BPMN 2.0 XML, to copy into another tool or save as an .xml file.', 'Le XML BPMN 2.0 du diagramme, à copier dans un autre outil ou à enregistrer en fichier .xml.')}</p>
       <textarea id="xml-export-text" spellcheck="false" readonly></textarea>
       <p class="status" id="xml-export-status" role="status"></p>
       <div class="actions">
-        <button type="button" class="btn" data-icon="save" id="xml-export-download">Télécharger .xml</button>
+        <button type="button" class="btn" data-icon="save" id="xml-export-download">${T('Download .xml', 'Télécharger .xml')}</button>
         <span class="grow"></span>
-        <button type="button" class="btn" id="xml-export-close">Fermer</button>
-        <button type="button" class="btn primary" id="xml-export-copy">Copier</button>
+        <button type="button" class="btn" id="xml-export-close">${T('Close', 'Fermer')}</button>
+        <button type="button" class="btn primary" id="xml-export-copy">${T('Copy', 'Copier')}</button>
       </div>
     </form>`
   document.body.appendChild(dialog)
@@ -156,12 +157,12 @@ export function setupXmlExport({ openButton, getXml, download }) {
   dialog.querySelector('#xml-export-copy').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(text.value)
-      status.textContent = 'XML copié dans le presse-papiers.'
+      status.textContent = T('XML copied to the clipboard.', 'XML copié dans le presse-papiers.')
     } catch {
       // Presse-papiers refusé : on sélectionne le texte pour un Ctrl+C.
       text.focus()
       text.select()
-      status.textContent = 'Copie automatique impossible : le texte est sélectionné, faites Ctrl+C.'
+      status.textContent = T('Automatic copy failed: the text is selected, press Ctrl+C.', 'Copie automatique impossible : le texte est sélectionné, faites Ctrl+C.')
     }
   })
 }

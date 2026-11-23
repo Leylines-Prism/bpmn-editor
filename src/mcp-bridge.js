@@ -9,6 +9,7 @@ import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
 import { fitView } from './fit-view.js'
+import { T } from './i18n/lang.js'
 
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
@@ -46,7 +47,7 @@ export function connectMcpBridge(modeler, url) {
       if (msg.type !== 'call') return
       const tool = tools[msg.tool]
       try {
-        if (!tool) throw new Error(`Outil inconnu : ${msg.tool}`)
+        if (!tool) throw new Error(`Unknown tool: ${msg.tool}`)
         const data = await tool(msg.args || {})
         send({ type: 'result', id: msg.id, ok: true, data })
       } catch (err) {
@@ -97,9 +98,9 @@ function createBadge() {
 
 function setBadge(badge, state) {
   const states = {
-    connecting: ['MCP : connexion…', '#888'],
-    connected: ['MCP : connecté', '#4ade80'],
-    disconnected: ['MCP : hors ligne', '#888'],
+    connecting: [T('MCP: connecting…', 'MCP : connexion…'), '#888'],
+    connected: [T('MCP: connected', 'MCP : connecté'), '#4ade80'],
+    disconnected: [T('MCP: offline', 'MCP : hors ligne'), '#888'],
   }
   const [text, color] = states[state]
   badge.textContent = text
@@ -107,8 +108,8 @@ function setBadge(badge, state) {
   badge.style.color = color
   badge.title =
     state === 'connected'
-      ? 'Une IA peut lire et modifier ce diagramme par le serveur MCP'
-      : 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start'
+      ? T('An AI can read and edit this diagram through the MCP server', 'Une IA peut lire et modifier ce diagramme par le serveur MCP')
+      : T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
 }
 
 // ── Outils ─────────────────────────────────────────────────────────────────
@@ -152,7 +153,7 @@ export function createTools(modeler) {
   function getElement(id) {
     const element = elementRegistry.get(id)
     if (!element || element.type === 'label' || element === canvas.getRootElement()) {
-      throw new Error(`Élément introuvable : ${id}`)
+      throw new Error(`Element not found: ${id}`)
     }
     return element
   }
@@ -196,7 +197,7 @@ export function createTools(modeler) {
     try {
       return elementFactory.createShape(attrs)
     } catch (err) {
-      throw new Error(`Type BPMN invalide « ${spec.type} » : ${err.message}`)
+      throw new Error(`Invalid BPMN type "${spec.type}": ${err.message}`)
     }
   }
 
@@ -258,10 +259,10 @@ export function createTools(modeler) {
       try {
         ;({ rootElement: definitions } = await modeler.get('moddle').fromXML(xml, 'bpmn:Definitions'))
       } catch (err) {
-        throw new Error(`XML BPMN illisible, diagramme inchangé : ${err.message}`)
+        throw new Error(`Unreadable BPMN XML, diagram unchanged: ${err.message}`)
       }
       if (!definitions.diagrams?.some((d) => d.plane?.bpmnElement)) {
-        throw new Error('Le XML ne contient aucun diagramme dessiné (BPMNDiagram avec BPMNPlane), diagramme inchangé.')
+        throw new Error('The XML contains no drawn diagram (BPMNDiagram with a BPMNPlane), diagram unchanged.')
       }
       const { warnings } = await modeler.importXML(xml)
       fitView(canvas)
@@ -288,7 +289,7 @@ export function createTools(modeler) {
             const position =
               spec.x !== undefined && spec.y !== undefined ? { x: spec.x, y: spec.y } : nextFreePosition(parent, shape)
             if (!bpmnRules.canCreate(shape, parent, null, position)) {
-              throw new Error(`Impossible de placer ${shape.type} dans ${parent.id}`)
+              throw new Error(`Cannot place ${shape.type} in ${parent.id}`)
             }
             element = modeling.createShape(shape, position, parent)
           }
@@ -311,7 +312,7 @@ export function createTools(modeler) {
           const target = getElement(spec.target)
           const connection = modeling.connect(source, target)
           if (!connection) {
-            throw new Error(`Connexion interdite par les règles BPMN : ${spec.source} → ${spec.target}`)
+            throw new Error(`Connection not allowed by the BPMN rules: ${spec.source} → ${spec.target}`)
           }
           if (spec.name) modeling.updateLabel(connection, spec.name)
           created.push(describe(connection))
@@ -329,7 +330,7 @@ export function createTools(modeler) {
             const target = { type: withPrefix(spec.type || element.type) }
             if (spec.eventDefinition) target.eventDefinitionType = withPrefix(spec.eventDefinition)
             const replaced = bpmnReplace.replaceElement(element, target)
-            if (!replaced) throw new Error(`Remplacement impossible pour ${spec.id}`)
+            if (!replaced) throw new Error(`Cannot replace ${spec.id}`)
             element = replaced
           }
           if (spec.name !== undefined) modeling.updateLabel(element, spec.name)
@@ -343,7 +344,7 @@ export function createTools(modeler) {
       try {
         await autoLayout(modeler)
       } catch (err) {
-        throw new Error(`Mise en page impossible, diagramme inchangé : ${err.message}`)
+        throw new Error(`Layout failed, diagram unchanged: ${err.message}`)
       }
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== canvas.getRootElement())
       return {
@@ -355,7 +356,7 @@ export function createTools(modeler) {
 
     async validate_diagram() {
       const linting = modeler.get('linting', false)
-      if (!linting) throw new Error("La validation (bpmnlint) n'est pas chargée dans cet éditeur.")
+      if (!linting) throw new Error('Validation (bpmnlint) is not loaded in this editor.')
       const results = await linting.lint()
       const issues = []
       for (const [rule, reports] of Object.entries(results)) {

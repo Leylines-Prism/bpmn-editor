@@ -1,3 +1,5 @@
+import { T } from './i18n/lang.js'
+
 // Palette élargie du sélecteur de couleurs (pinceau du menu contextuel).
 //
 // bpmn-js-color-picker ne propose que 6 couleurs. On lui passe ici 18 teintes
@@ -6,24 +8,24 @@
 
 // fill : fond de la forme, stroke : contour et texte (contraste ≥ 4.5:1 sur le fond).
 export const COLORS = [
-  { label: 'Par défaut', fill: undefined, stroke: undefined },
-  { label: 'Gris', fill: '#E0E0E0', stroke: '#424242' },
-  { label: 'Bleu', fill: '#BBDEFB', stroke: '#0D4372' },
-  { label: 'Ciel', fill: '#B3E5FC', stroke: '#01579B' },
-  { label: 'Cyan', fill: '#B2EBF2', stroke: '#005662' },
-  { label: 'Turquoise', fill: '#B2DFDB', stroke: '#004D40' },
-  { label: 'Vert', fill: '#C8E6C9', stroke: '#205022' },
-  { label: 'Vert clair', fill: '#DCEDC8', stroke: '#33691E' },
-  { label: 'Citron', fill: '#F0F4C3', stroke: '#5F5A00' },
-  { label: 'Jaune', fill: '#FFF9C4', stroke: '#6B5D00' },
-  { label: 'Ambre', fill: '#FFECB3', stroke: '#714800' },
-  { label: 'Orange', fill: '#FFE0B2', stroke: '#6B3C00' },
-  { label: 'Corail', fill: '#FFCCBC', stroke: '#8A2B0E' },
-  { label: 'Rouge', fill: '#FFCDD2', stroke: '#831311' },
-  { label: 'Rose', fill: '#F8BBD0', stroke: '#880E4F' },
-  { label: 'Violet', fill: '#E1BEE7', stroke: '#5B176D' },
-  { label: 'Indigo', fill: '#C5CAE9', stroke: '#1A237E' },
-  { label: 'Brun', fill: '#D7CCC8', stroke: '#3E2723' },
+  { label: T('Default', 'Par défaut'), fill: undefined, stroke: undefined },
+  { label: T('Grey', 'Gris'), fill: '#E0E0E0', stroke: '#424242' },
+  { label: T('Blue', 'Bleu'), fill: '#BBDEFB', stroke: '#0D4372' },
+  { label: T('Sky', 'Ciel'), fill: '#B3E5FC', stroke: '#01579B' },
+  { label: T('Cyan', 'Cyan'), fill: '#B2EBF2', stroke: '#005662' },
+  { label: T('Teal', 'Turquoise'), fill: '#B2DFDB', stroke: '#004D40' },
+  { label: T('Green', 'Vert'), fill: '#C8E6C9', stroke: '#205022' },
+  { label: T('Light green', 'Vert clair'), fill: '#DCEDC8', stroke: '#33691E' },
+  { label: T('Lime', 'Citron'), fill: '#F0F4C3', stroke: '#5F5A00' },
+  { label: T('Yellow', 'Jaune'), fill: '#FFF9C4', stroke: '#6B5D00' },
+  { label: T('Amber', 'Ambre'), fill: '#FFECB3', stroke: '#714800' },
+  { label: T('Orange', 'Orange'), fill: '#FFE0B2', stroke: '#6B3C00' },
+  { label: T('Coral', 'Corail'), fill: '#FFCCBC', stroke: '#8A2B0E' },
+  { label: T('Red', 'Rouge'), fill: '#FFCDD2', stroke: '#831311' },
+  { label: T('Pink', 'Rose'), fill: '#F8BBD0', stroke: '#880E4F' },
+  { label: T('Purple', 'Violet'), fill: '#E1BEE7', stroke: '#5B176D' },
+  { label: T('Indigo', 'Indigo'), fill: '#C5CAE9', stroke: '#1A237E' },
+  { label: T('Brown', 'Brun'), fill: '#D7CCC8', stroke: '#3E2723' },
 ]
 
 // Trait lisible pour un fond choisi librement : la même teinte, très assombrie.
@@ -46,8 +48,8 @@ function CustomColorProvider(popupMenu, modeling) {
   popupMenu.registerProvider('color-picker', this)
   this.getPopupMenuEntries = (elements) => ({
     'custom-color': {
-      title: 'Couleur personnalisée…',
-      label: 'Couleur personnalisée…',
+      title: T('Custom color…', 'Couleur personnalisée…'),
+      label: T('Custom color…', 'Couleur personnalisée…'),
       imageHtml: RAINBOW,
       group: { id: 'custom' },
       action() {

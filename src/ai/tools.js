@@ -5,29 +5,29 @@
 // Ce module n'importe rien : chacun lui passe sa propre copie de zod (v4),
 // pour que les schémas soient ceux de la bibliothèque qui les lira.
 
-export const INSTRUCTIONS = `Ce serveur pilote un éditeur BPMN (bpmn-js) ouvert dans le navigateur de l'utilisateur.
-Toutes les modifications apparaissent en direct sur son canevas et peuvent être annulées avec Ctrl+Z.
+export const INSTRUCTIONS = `This server drives a BPMN editor (bpmn-js) open in the user's browser.
+Every change shows up live on their canvas and can be undone with Ctrl+Z.
 
-Méthode conseillée :
-1. Appeler get_shapes pour connaître le diagramme actuel.
-2. Pour un enchaînement linéaire, add_shapes avec « after » : la forme est placée à droite de la précédente et reliée automatiquement.
-3. Pour les branches et les retours, add_shapes puis connect_shapes.
-4. Relire avec get_shapes pour vérifier.
-5. Si le dessin est confus, auto_layout le range (voir ses limites).
-6. Terminer par validate_diagram et corriger les erreurs signalées.
+Recommended method:
+1. Call get_shapes to learn the current diagram.
+2. For a linear sequence, add_shapes with "after": the shape is placed to the right of the previous one and connected automatically.
+3. For branches and loops back, add_shapes then connect_shapes.
+4. Read the diagram again with get_shapes to check.
+5. If the drawing is messy, auto_layout tidies it up (see its limits).
+6. Finish with validate_diagram and fix the reported errors.
 
-Repères de taille : tâche 100×80, événement 36×36, passerelle 50×50. Les coordonnées x et y désignent le centre de la forme.
-Pour repartir de zéro ou importer un diagramme complet, utiliser set_diagram_xml.`
+Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates are the centre of the shape.
+To start from scratch or import a complete diagram, use set_diagram_xml.`
 
 // Renvoie la liste des outils, décrits avec le zod fourni : buildTools(z).
 export function buildTools(z) {
-  const elementId = z.string().min(1).describe("Identifiant d'un élément du diagramme, tel que renvoyé par get_shapes")
+  const elementId = z.string().min(1).describe('Id of a diagram element, as returned by get_shapes')
 
   const bpmnType = z
     .string()
     .min(1)
     .describe(
-      'Type BPMN, avec ou sans préfixe « bpmn: ». Exemples : StartEvent, EndEvent, IntermediateThrowEvent, ' +
+      'BPMN type, with or without the "bpmn:" prefix. Examples: StartEvent, EndEvent, IntermediateThrowEvent, ' +
         'IntermediateCatchEvent, Task, UserTask, ServiceTask, ScriptTask, ManualTask, SendTask, ReceiveTask, ' +
         'BusinessRuleTask, SubProcess, CallActivity, ExclusiveGateway, ParallelGateway, InclusiveGateway, ' +
         'EventBasedGateway, DataObjectReference, DataStoreReference, TextAnnotation, Participant',
@@ -36,7 +36,7 @@ export function buildTools(z) {
   const eventDefinition = z
     .string()
     .describe(
-      'Pour un événement seulement : type de définition, par exemple TimerEventDefinition, MessageEventDefinition, ' +
+      'For an event only: definition type, for example TimerEventDefinition, MessageEventDefinition, ' +
         'SignalEventDefinition, ErrorEventDefinition, EscalationEventDefinition, ConditionalEventDefinition, ' +
         'TerminateEventDefinition',
     )
@@ -44,33 +44,33 @@ export function buildTools(z) {
   return [
     {
       name: 'get_shapes',
-      title: 'Lire les éléments du diagramme',
+      title: 'Read the diagram elements',
       description:
-        'Liste les éléments du diagramme ouvert : formes (id, type, nom, position, parent, flux entrants et sortants) et connexions (id, type, nom, source, cible).',
+        'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows) and connections (id, type, name, source, target).',
       inputSchema: {},
     },
     {
       name: 'get_diagram_xml',
-      title: 'Lire le XML BPMN',
-      description: 'Renvoie le diagramme ouvert au format BPMN 2.0 XML.',
+      title: 'Read the BPMN XML',
+      description: 'Returns the open diagram as BPMN 2.0 XML.',
       inputSchema: {},
     },
     {
       name: 'set_diagram_xml',
-      title: 'Remplacer le diagramme',
+      title: 'Replace the diagram',
       description:
-        "Remplace tout le diagramme ouvert par le XML BPMN 2.0 fourni. Attention : vide l'historique d'annulation de l'éditeur.",
+        "Replaces the whole open diagram with the given BPMN 2.0 XML. Warning: clears the editor's undo history.",
       inputSchema: {
-        xml: z.string().min(1).describe('Document BPMN 2.0 XML complet, avec sa partie graphique (BPMNDiagram)'),
+        xml: z.string().min(1).describe('Complete BPMN 2.0 XML document, with its diagram layout (BPMNDiagram)'),
       },
     },
     {
       name: 'add_shapes',
-      title: 'Ajouter des formes',
+      title: 'Add shapes',
       description:
-        "Ajoute une ou plusieurs formes. Avec « after », la forme est placée à droite de l'élément indiqué et reliée à lui. " +
-        'Avec x et y, elle est placée à cette position sans connexion. Sans aucun des deux, elle est placée à droite du diagramme. ' +
-        "Renvoie l'id créé pour chaque forme, et pour chaque « key » fournie.",
+        'Adds one or more shapes. With "after", the shape is placed to the right of the given element and connected to it. ' +
+        'With x and y, it is placed at that position without a connection. With neither, it is placed to the right of the diagram. ' +
+        'Returns the id created for each shape, and for each "key" given.',
       inputSchema: {
         shapes: z
           .array(
@@ -78,19 +78,19 @@ export function buildTools(z) {
               key: z
                 .string()
                 .optional()
-                .describe('Nom local libre, utilisable dans « after » des formes suivantes du même appel'),
+                .describe('Free local name, usable in "after" of later shapes in the same call'),
               type: bpmnType,
-              name: z.string().optional().describe('Libellé affiché'),
+              name: z.string().optional().describe('Displayed label'),
               eventDefinition: eventDefinition.optional(),
               after: z
                 .string()
                 .optional()
-                .describe("Id d'un élément existant, ou « key » d'une forme précédente de cet appel"),
+                .describe('Id of an existing element, or "key" of an earlier shape in this call'),
               x: z.number().optional(),
               y: z.number().optional(),
               parent: elementId
                 .optional()
-                .describe('Participant ou sous-processus qui contiendra la forme. Par défaut : le processus principal'),
+                .describe('Participant or subprocess that will contain the shape. Default: the main process'),
             }),
           )
           .min(1),
@@ -98,17 +98,17 @@ export function buildTools(z) {
     },
     {
       name: 'connect_shapes',
-      title: 'Relier des formes',
+      title: 'Connect shapes',
       description:
-        'Crée des connexions entre formes existantes. Le type est choisi selon les règles BPMN : flux de séquence dans un même processus, ' +
-        "flux de message entre participants, association vers une annotation. Renvoie l'id de chaque connexion.",
+        'Creates connections between existing shapes. The type follows the BPMN rules: sequence flow within a process, ' +
+        'message flow between participants, association to an annotation. Returns the id of each connection.',
       inputSchema: {
         connections: z
           .array(
             z.object({
               source: elementId,
               target: elementId,
-              name: z.string().optional().describe('Libellé de la connexion, par exemple « Oui » après une passerelle'),
+              name: z.string().optional().describe('Connection label, for example "Yes" after a gateway'),
             }),
           )
           .min(1),
@@ -116,15 +116,15 @@ export function buildTools(z) {
     },
     {
       name: 'update_elements',
-      title: 'Modifier des éléments',
+      title: 'Update elements',
       description:
-        'Renomme des éléments ou change leur type (par exemple Task vers UserTask). Un changement de type peut produire un nouvel id, renvoyé dans le résultat.',
+        'Renames elements or changes their type (for example Task to UserTask). A type change can produce a new id, returned in the result.',
       inputSchema: {
         elements: z
           .array(
             z.object({
               id: elementId,
-              name: z.string().optional().describe('Nouveau libellé. Chaîne vide pour effacer'),
+              name: z.string().optional().describe('New label. Empty string to clear it'),
               type: bpmnType.optional(),
               eventDefinition: eventDefinition.optional(),
             }),
@@ -134,27 +134,27 @@ export function buildTools(z) {
     },
     {
       name: 'auto_layout',
-      title: 'Ranger le diagramme',
+      title: 'Tidy up the diagram',
       description:
-        "Recalcule la position de toutes les formes et le tracé de toutes les connexions, comme le bouton « Ranger » de l'éditeur. " +
-        "Limites : seul le premier participant d'une collaboration est rangé, les sous-processus deviennent repliés, " +
-        'les annotations, groupes, associations et flux de message ne sont pas placés, les couleurs sont perdues. ' +
-        "Vide l'historique d'annulation de l'éditeur.",
+        'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
+        'Limits: only the first participant of a collaboration is laid out, subprocesses become collapsed, ' +
+        'annotations, groups, associations and message flows are not placed, colors are lost. ' +
+        "Clears the editor's undo history.",
       inputSchema: {},
     },
     {
       name: 'validate_diagram',
-      title: 'Valider le diagramme',
+      title: 'Validate the diagram',
       description:
-        'Vérifie le diagramme avec les règles recommandées de bpmnlint (élément isolé, événement de début ou de fin manquant, ' +
-        "élément sans libellé, passerelle superflue…). Renvoie le nombre d'erreurs, d'avertissements et la liste des problèmes " +
-        "avec l'id de l'élément concerné, la règle et le message (en anglais).",
+        'Checks the diagram with the recommended bpmnlint rules (isolated element, missing start or end event, ' +
+        'element without a label, superfluous gateway…). Returns the number of errors and warnings and the list of problems ' +
+        'with the id of the element concerned, the rule and the message.',
       inputSchema: {},
     },
     {
       name: 'remove_elements',
-      title: 'Supprimer des éléments',
-      description: 'Supprime des formes ou des connexions. Supprimer une forme supprime aussi ses connexions.',
+      title: 'Remove elements',
+      description: 'Removes shapes or connections. Removing a shape also removes its connections.',
       inputSchema: {
         ids: z.array(elementId).min(1),
       },

@@ -5,12 +5,15 @@ import TokenSimulationModule from 'bpmn-js-token-simulation'
 import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 import BpmnColorPickerModule from 'bpmn-js-color-picker'
 import { COLORS, CustomColorModule } from './color-palette.js'
+import { LabelStyleModule } from './label-style.js'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
 import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
+import { lang, T } from './i18n/lang.js'
+import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
 import { exportPdf } from './export-pdf.js'
@@ -29,6 +32,7 @@ import '@fontsource/urbanist/600.css'
 import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
+import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { fitView } from './fit-view.js'
 
@@ -40,14 +44,14 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   targetNamespace="http://bpmn.io/schema/bpmn">
   <process id="Process_1" isExecutable="false">
-    <startEvent id="StartEvent_1" name="Début">
+    <startEvent id="StartEvent_1" name="${T('Start', 'Début')}">
       <outgoing>Flow_1</outgoing>
     </startEvent>
-    <task id="Task_1" name="Tâche">
+    <task id="Task_1" name="${T('Task', 'Tâche')}">
       <incoming>Flow_1</incoming>
       <outgoing>Flow_2</outgoing>
     </task>
-    <endEvent id="EndEvent_1" name="Fin">
+    <endEvent id="EndEvent_1" name="${T('End', 'Fin')}">
       <incoming>Flow_2</incoming>
     </endEvent>
     <sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_1"/>
@@ -77,7 +81,7 @@ const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 </definitions>`
 
 const LS_KEY = 'bpmn-editor-autosave'
-const DEFAULT_NAME = 'diagramme'
+const DEFAULT_NAME = T('diagram', 'diagramme')
 const NAME_KEY = 'bpmn-editor-filename'
 
 // Nom de base (sans extension) de l'enregistrement et des exports. Il se règle
@@ -120,11 +124,12 @@ const modeler = new BpmnModeler({
     CreateAppendAnythingModule,
     BpmnColorPickerModule,
     CustomColorModule,
+    LabelStyleModule,
     NativeCopyPasteModule,
     LintModule,
     GridModule,
     CopyAsImageModule,
-    TranslateModule,
+    ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
 
@@ -136,7 +141,7 @@ async function loadInitial() {
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
     fitView(modeler.get('canvas'))
-    setStatus(saved ? 'Reprise auto-save' : 'Nouveau diagramme')
+    setStatus(saved ? T('restored', 'Reprise auto-save') : T('New diagram', 'Nouveau diagramme'))
   } catch (e) {
     console.error('Import error:', e)
     await modeler.importXML(EMPTY_DIAGRAM)
@@ -146,7 +151,7 @@ async function loadInitial() {
 
 let saveTimer = null
 function setStatus(msg) {
-  document.getElementById('autosave-status').textContent = 'Sauvegarde auto : ' + msg
+  document.getElementById('autosave-status').textContent = T('Autosave: ', 'Sauvegarde auto : ') + msg
 }
 
 async function autosave({ quiet = false } = {}) {
@@ -154,7 +159,7 @@ async function autosave({ quiet = false } = {}) {
     const { xml } = await modeler.saveXML({ format: true })
     localStorage.setItem(LS_KEY, xml)
     if (!quiet) setStatus(new Date().toLocaleTimeString())
-  } catch (e) { setStatus('erreur') }
+  } catch (e) { setStatus(T('error', 'erreur')) }
 }
 
 modeler.on('commandStack.changed', () => {
@@ -163,12 +168,12 @@ modeler.on('commandStack.changed', () => {
 })
 
 document.getElementById('btn-new').addEventListener('click', async () => {
-  if (!confirm('Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.')) return
+  if (!confirm(T('Create a new diagram? The current diagram will be lost if it has not been saved.', 'Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.'))) return
   localStorage.removeItem(LS_KEY)
   setBaseName(DEFAULT_NAME)
   await modeler.importXML(EMPTY_DIAGRAM)
   fitView(modeler.get('canvas'))
-  setStatus('Nouveau')
+  setStatus(T('New', 'Nouveau'))
 })
 
 document.getElementById('btn-open').addEventListener('click', () => {
@@ -185,10 +190,10 @@ async function importAndReport(xml, fileName) {
     // rechargement de la page le retrouve même sans modification.
     clearTimeout(saveTimer)
     await autosave({ quiet: true }) // garde le message d'import dans la barre
-    let status = fileName ? 'Fichier ouvert' : 'XML importé'
-    if (laidOut) status += ', rangé automatiquement (pas de partie graphique)'
+    let status = fileName ? T('File opened', 'Fichier ouvert') : T('XML imported', 'XML importé')
+    if (laidOut) status += T(', laid out automatically (no diagram layout in the file)', ', rangé automatiquement (pas de partie graphique)')
     if (warnings.length) {
-      status += ', ' + warnings.length + (warnings.length > 1 ? ' avertissements' : ' avertissement') + ' (voir la console)'
+      status += ', ' + warnings.length + (warnings.length > 1 ? T(' warnings', ' avertissements') : T(' warning', ' avertissement')) + T(' (see the console)', ' (voir la console)')
       console.warn('Avertissements d\'import :', warnings)
     }
     setStatus(status)
@@ -199,7 +204,7 @@ async function importAndReport(xml, fileName) {
 
 async function importFile(file) {
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
-    alert('Format non pris en charge : choisis un fichier .bpmn ou .xml.')
+    alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisis un fichier .bpmn ou .xml.'))
     return
   }
   const failure = await importAndReport(await file.text(), file.name)
@@ -274,7 +279,7 @@ document.getElementById('btn-png').addEventListener('click', async () => {
   }
   img.onerror = () => {
     URL.revokeObjectURL(url)
-    alert('Export PNG indisponible, utilise Export SVG.')
+    alert(T('PNG export unavailable, use the SVG export.', 'Export PNG indisponible, utilise Export SVG.'))
   }
   img.src = url
 })
@@ -286,20 +291,20 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
     download(await exportPdf(modeler), baseName() + '.pdf', 'application/pdf')
   } catch (err) {
     console.error('PDF export error:', err)
-    alert('Export PDF impossible : ' + err.message)
+    alert(T('PDF export failed: ', 'Export PDF impossible : ') + err.message)
   } finally {
     button.disabled = false
   }
 })
 
 document.getElementById('btn-layout').addEventListener('click', async () => {
-  if (!confirm('Ranger le diagramme automatiquement ? Toutes les positions seront recalculées et l\'historique d\'annulation sera effacé.')) return
+  if (!confirm(T('Tidy up the diagram automatically? All positions will be recalculated and the undo history will be cleared.', 'Ranger le diagramme automatiquement ? Toutes les positions seront recalculées et l\'historique d\'annulation sera effacé.'))) return
   try {
     await autoLayout(modeler)
-    setStatus('Diagramme rangé')
+    setStatus(T('Diagram tidied up', 'Diagramme rangé'))
   } catch (err) {
     console.error('Layout error:', err)
-    alert('Mise en page impossible : ' + err.message)
+    alert(T('Layout failed: ', 'Mise en page impossible : ') + err.message)
   }
 })
 
@@ -308,7 +313,7 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
 // bascule vienne de ce bouton ou du contrôle intégré au canevas.
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
-  simButton.textContent = active ? 'Arrêter la simulation' : 'Simulation'
+  simButton.textContent = active ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
   simButton.classList.toggle('active', !!active)
 })
 simButton.addEventListener('click', () => {
@@ -325,6 +330,8 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
+setupBrandLogo()
 setupPanelToggle({
   button: document.getElementById('btn-properties'),
   panel: document.getElementById('properties-panel'),
@@ -335,14 +342,16 @@ loadInitial()
 // Chat intégré, en deux modes :
 //   - en ligne (build « vite build --mode online ») : le chat tourne dans la page et
 //     appelle le fournisseur réglé dans Options. Pas de pont MCP.
-//   - serveur (développement, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
+//   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 if (import.meta.env.MODE === 'online') {
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
     createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })
 } else {
-  const mcpBridgeUrl = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+  // Une adresse relative (« /bridge », image docker) vise le site lui-même, relayé par nginx.
+  const configured = import.meta.env.VITE_MCP_BRIDGE_URL || (import.meta.env.DEV ? 'ws://127.0.0.1:3333/bridge' : '')
+  const mcpBridgeUrl = configured.startsWith('/') ? `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}${configured}` : configured
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ connectMcpBridge }, { createChatPanel }]) => {
       const bridge = connectMcpBridge(modeler, mcpBridgeUrl)

@@ -13,16 +13,17 @@ import { describeProviderError } from './ai/errors.js'
 import { listModels } from './ai/providers.js'
 import { connectionFor, loadSettings, userModels } from './ai-settings.js'
 import { createOptionsDialog } from './options-dialog.js'
+import { lang, num, T } from './i18n/lang.js'
 
 const TOOL_LABELS = {
-  get_shapes: 'lecture du diagramme',
-  get_diagram_xml: 'lecture du XML',
-  set_diagram_xml: 'remplacement du diagramme',
-  add_shapes: 'ajout de formes',
-  connect_shapes: 'connexions',
-  update_elements: 'modification',
-  remove_elements: 'suppression',
-  auto_layout: 'mise en page',
+  get_shapes: T('reading the diagram', 'lecture du diagramme'),
+  get_diagram_xml: T('reading the XML', 'lecture du XML'),
+  set_diagram_xml: T('replacing the diagram', 'remplacement du diagramme'),
+  add_shapes: T('adding shapes', 'ajout de formes'),
+  connect_shapes: T('connections', 'connexions'),
+  update_elements: T('changes', 'modification'),
+  remove_elements: T('removal', 'suppression'),
+  auto_layout: T('layout', 'mise en page'),
   validate_diagram: 'validation',
 }
 
@@ -79,29 +80,29 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span>Assistant IA</span><button class="btn" type="button" id="chat-settings" title="Fournisseurs, clés et modèles">Options</button><button class="btn" type="button" id="chat-reset">Nouvelle discussion</button></header>
+    <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, keys and models', 'Fournisseurs, clés et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-options" hidden>
-      <label for="chat-model">Modèle</label>
+      <label for="chat-model">${T('Model', 'Modèle')}</label>
       <select id="chat-model"></select>
     </div>
     <form id="chat-form">
       <div class="chat-input-wrap">
-        <textarea id="chat-input" placeholder="Décrivez le processus à dessiner, ou ce qu'il faut changer…"></textarea>
-        <button type="button" id="chat-expand" title="Agrandir la zone de saisie" aria-label="Agrandir la zone de saisie">${EXPAND_ICON}</button>
+        <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change…', 'Décrivez le processus à dessiner, ou ce qu\'il faut changer…')}"></textarea>
+        <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
       </div>
-      <button class="btn primary" type="submit" id="chat-send">Envoyer</button>
+      <button class="btn primary" type="submit" id="chat-send">${T('Send', 'Envoyer')}</button>
     </form>
     <dialog id="chat-editor">
       <form method="dialog">
-        <h2>Message à l'assistant</h2>
-        <textarea id="chat-editor-text" placeholder="Collez ou écrivez un long message. Ctrl+Entrée pour envoyer."></textarea>
+        <h2>${T('Message to the assistant', "Message à l'assistant")}</h2>
+        <textarea id="chat-editor-text" placeholder="${T('Paste or write a long message. Ctrl+Enter to send.', 'Collez ou écrivez un long message. Ctrl+Entrée pour envoyer.')}"></textarea>
         <div class="chat-editor-actions">
-          <button class="btn" type="button" id="chat-editor-file">Ouvrir un fichier texte…</button>
+          <button class="btn" type="button" id="chat-editor-file">${T('Open a text file…', 'Ouvrir un fichier texte…')}</button>
           <input type="file" id="chat-editor-input" accept=".txt,.md,.markdown,text/plain,text/markdown" hidden>
           <span class="chat-editor-count" aria-live="polite"></span>
-          <button class="btn" type="submit" value="close">Fermer</button>
-          <button class="btn primary" type="submit" value="send" id="chat-editor-send">Envoyer</button>
+          <button class="btn" type="submit" value="close">${T('Close', 'Fermer')}</button>
+          <button class="btn primary" type="submit" value="send" id="chat-editor-send">${T('Send', 'Envoyer')}</button>
         </div>
       </form>
     </dialog>`
@@ -111,7 +112,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.textContent = 'Assistant IA'
+  toggle.textContent = T('AI assistant', 'Assistant IA')
   document.getElementById('btn-simulation').after(toggle)
 
   const log = panel.querySelector('#chat-log')
@@ -154,7 +155,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       try {
         return await listModels({ ...conn, browser: true, signal: AbortSignal.timeout(15000) })
       } catch (err) {
-        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin }))
+        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       }
     }
     let res
@@ -162,13 +163,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       res = await fetch(`${chatUrl}/models`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(conn),
+        body: JSON.stringify({ ...conn, lang }),
       })
     } catch {
-      throw new Error('Serveur injoignable. Lancez-le avec : cd mcp && npm start')
+      throw new Error(T('Server unreachable. Start it with: cd mcp && npm start', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start'))
     }
     const data = await res.json().catch(() => ({}))
-    if (!res.ok || data.error) throw new Error(data.error || `le serveur a répondu ${res.status}`)
+    if (!res.ok || data.error) throw new Error(data.error || T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
     return data.models
   }
 
@@ -208,11 +209,11 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add(
         'notice',
         mode === 'online'
-          ? 'Pour commencer, ouvrez Options et activez un fournisseur : Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.'
-          : "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur.",
+          ? T('To start, open Options and turn on a provider: Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
+          : T('Chat is not set up: open Options to set up a provider, or add ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
-      add('notice', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`).classList.add('welcome')
+      add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z, except the automatic layout.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)).classList.add('welcome')
     }
   }
   function add(kind, text = '') {
@@ -225,7 +226,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   function setBusy(busy) {
-    sendButton.textContent = busy ? 'Arrêter' : 'Envoyer'
+    sendButton.textContent = busy ? T('Stop', 'Arrêter') : T('Send', 'Envoyer')
     input.disabled = busy
     modelSelect.disabled = busy
   }
@@ -248,7 +249,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     } catch {
       checked = false
       fillModels()
-      add('notice', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start')
+      add('notice', T('Server unreachable. Start it with: cd mcp && npm start', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start'))
     }
   }
 
@@ -278,9 +279,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     // Un historique ne passe pas d'un format d'API à l'autre.
     if (conversation && conversation.kind !== kindOf(model)) {
       conversation = null
-      add('notice', `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`)
+      add('notice', T(`Different provider: the chat starts over with ${model.label}. The diagram does not change.`, `Autre fournisseur : la discussion repart de zéro avec ${model.label}. Le diagramme, lui, ne change pas.`))
     } else if (conversation) {
-      add('notice', `Les prochains messages iront à ${model.label}.`)
+      add('notice', T(`The next messages will go to ${model.label}.`, `Les prochains messages iront à ${model.label}.`))
     }
     input.focus()
   })
@@ -302,7 +303,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const editorCount = panel.querySelector('.chat-editor-count')
   const countChars = () => {
     const n = editorText.value.length
-    editorCount.textContent = n ? `${n.toLocaleString('fr-FR')} caractère${n > 1 ? 's' : ''}${n > MAX_MESSAGE ? ` : trop long, ${MAX_MESSAGE.toLocaleString('fr-FR')} au plus` : ''}` : ''
+    editorCount.textContent = n
+      ? T(`${num(n)} character${n > 1 ? 's' : ''}`, `${num(n)} caractère${n > 1 ? 's' : ''}`) +
+        (n > MAX_MESSAGE ? T(`: too long, ${num(MAX_MESSAGE)} at most`, ` : trop long, ${num(MAX_MESSAGE)} au plus`) : '')
+      : ''
     editorCount.classList.toggle('too-long', n > MAX_MESSAGE)
   }
   panel.querySelector('#chat-expand').addEventListener('click', () => {
@@ -325,7 +329,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     editorFile.value = ''
     if (!file) return
     if (file.size > MAX_MESSAGE * 4) {
-      editorCount.textContent = 'Fichier trop volumineux.'
+      editorCount.textContent = T('File too large.', 'Fichier trop volumineux.')
       return
     }
     const text = await file.text()
@@ -357,15 +361,15 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const text = input.value.trim()
     if (!text) return
     if (text.length > MAX_MESSAGE) {
-      add('error', `Message trop long : ${MAX_MESSAGE.toLocaleString('fr-FR')} caractères au plus.`)
+      add('error', T(`Message too long: ${num(MAX_MESSAGE)} characters at most.`, `Message trop long : ${num(MAX_MESSAGE)} caractères au plus.`))
       return
     }
     if (!currentModel()) {
-      add('error', 'Aucun modèle disponible : ouvrez Options pour régler un fournisseur.')
+      add('error', T('No model available: open Options to set up a provider.', 'Aucun modèle disponible : ouvrez Options pour régler un fournisseur.'))
       return
     }
     if (mode !== 'online' && !bridge.tabId) {
-      add('error', "L'éditeur n'est pas relié au serveur (badge MCP hors ligne).")
+      add('error', T('The editor is not connected to the server (MCP badge offline).', "L'éditeur n'est pas relié au serveur (badge MCP hors ligne)."))
       return
     }
     input.value = ''
@@ -398,7 +402,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
 
     const model = currentModel()
     const handle = (event) => {
-      if (event.type === 'text') statusText = 'rédige'
+      if (event.type === 'text') statusText = T('writing', 'rédige')
       if (event.type === 'conversation') {
         conversation = { kind: kindOf(model), id: event.id }
       } else if (event.type === 'text') {
@@ -426,10 +430,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         tools.append(chip)
       } else if (event.type === 'status') {
         const label = TOOL_LABELS[event.tool] || event.tool
-        if (event.phase === 'thinking') statusText = 'réflexion'
+        if (event.phase === 'thinking') statusText = T('thinking', 'réflexion')
         else if (event.phase === 'preparing')
-          statusText = `prépare : ${label}` + (event.size ? ` (${(event.size / 1024).toFixed(1)} Ko)` : '')
-        else if (event.phase === 'running') statusText = `exécute : ${label}`
+          statusText = T(`preparing: ${label}`, `prépare : ${label}`) + (event.size ? ` (${(event.size / 1024).toFixed(1)} ${T('KB', 'Ko')})` : '')
+        else if (event.phase === 'running') statusText = T(`running: ${label}`, `exécute : ${label}`)
         renderStatus()
       } else if (event.type === 'error') {
         failed = true
@@ -444,14 +448,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       else await sendServer({ conn, model, text, handle, signal: controller.signal })
     } catch (err) {
       failed = true
-      if (controller.signal.aborted) add('notice', 'Réponse interrompue.')
-      else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin }))
-      else add('error', `Échec de l'envoi : ${err.message}`)
+      if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
+      else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
+      else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
     } finally {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
-      if (!gotText && !failed) add('notice', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle.")
+      if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null
       setBusy(false)
       input.focus()
@@ -460,7 +464,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
 
   // Version docker : le serveur fait la boucle et renvoie un flux SSE.
   async function sendServer({ conn, model, text, handle, signal }) {
-    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text }
+    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text, lang }
     if (conn) body.custom = conn
     else body.model = model.id
     const res = await fetch(chatUrl, {
@@ -469,7 +473,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       body: JSON.stringify(body),
       signal,
     })
-    if (!res.ok) throw new Error(`le serveur a répondu ${res.status}`)
+    if (!res.ok) throw new Error(T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
     // Flux SSE : des blocs « data: {json} » séparés par une ligne vide.
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
     let buffer = ''
@@ -504,12 +508,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       toolSet: engine.toolSet,
       executeTool: async (name, args) => {
         const tool = tools[name]
-        if (!tool) throw new Error(`Outil inconnu : ${name}`)
+        if (!tool) throw new Error(`Unknown tool: ${name}`)
         return tool(args)
       },
       emit: handle,
       signal,
       log: (...args) => console.warn(...args),
+      lang,
     }
     if (conn.format === 'anthropic') {
       const client = new engine.Anthropic({ apiKey: conn.apiKey, authToken: null, baseURL: conn.baseUrl, dangerouslyAllowBrowser: true })

@@ -1,0 +1,52 @@
+// Textes de index.html, écrits en anglais dans la page : traduits ici quand
+// l'interface est en français. Bouton EN/FR de la barre d'outils.
+
+import { lang, setLang } from './lang.js'
+
+const FR = {
+  'h1': { text: 'Éditeur BPMN' },
+  '#file-name': { 'aria-label': 'Nom du fichier', title: "Nom du fichier pour l'enregistrement et les exports (sans extension)" },
+  '#btn-new': { text: 'Nouveau' },
+  '#btn-open-menu': { text: 'Ouvrir' },
+  '#btn-open': { text: 'Fichier .bpmn ou .xml…' },
+  '#btn-import-xml': { text: 'Coller du XML…' },
+  '#btn-export': { text: 'Exporter' },
+  '#btn-save': { text: 'Fichier .bpmn' },
+  '#btn-save-xml': { text: 'Fichier .xml' },
+  '#btn-xml': { text: 'Code XML à copier…' },
+  '#btn-svg': { text: 'Image SVG' },
+  '#btn-png': { text: 'Image PNG' },
+  '#btn-pdf': { text: 'Document PDF' },
+  '#btn-layout': { text: 'Ranger' },
+  '#autosave-status': { text: 'Sauvegarde auto : —' },
+  '#btn-properties': { title: 'Masquer le panneau Processus', 'aria-label': 'Masquer le panneau Processus' },
+}
+
+export function applyStaticTexts(save) {
+  document.documentElement.lang = lang
+  if (lang === 'fr') {
+    document.title = 'Éditeur BPMN · Leylines'
+    for (const [selector, attrs] of Object.entries(FR)) {
+      const el = document.querySelector(selector)
+      if (!el) continue
+      for (const [name, value] of Object.entries(attrs)) {
+        if (name === 'text') el.textContent = value
+        else el.setAttribute(name, value)
+      }
+    }
+  }
+
+  // Bouton de langue : il affiche l'autre langue, et son infobulle est écrite dans celle-ci.
+  const button = document.getElementById('btn-lang')
+  if (!button) return
+  const other = lang === 'fr' ? 'en' : 'fr'
+  button.textContent = other.toUpperCase()
+  button.title = other === 'fr' ? 'Passer en français' : 'Switch to English'
+  button.setAttribute('aria-label', button.title)
+  button.setAttribute('lang', other)
+  button.addEventListener('click', async () => {
+    try { await save?.() } catch {}
+    setLang(other)
+    location.reload()
+  })
+}

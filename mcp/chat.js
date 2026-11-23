@@ -83,20 +83,21 @@ export class ChatService {
   //
   // custom : fournisseur réglé dans la fenêtre Options de l'éditeur,
   // { format, baseUrl, apiKey, model }. La clé sert à cet appel puis est oubliée.
-  async send({ conversationId, tabId, model: modelKey, custom, text, emit, signal }) {
+  async send({ conversationId, tabId, model: modelKey, custom, text, emit, signal, lang = 'en' }) {
+    const T = (en, fr) => (lang === 'fr' ? fr : en)
     let target
     if (custom) {
       target = { format: custom.format, id: custom.model, client: this.#customClient(custom) }
     } else {
-      if (!this.enabled) throw new Error("Le chat n'est pas configuré : aucun fournisseur de modèle n'est défini sur le serveur.")
+      if (!this.enabled) throw new Error(T('Chat is not set up: no model provider is defined on the server.', "Le chat n'est pas configuré : aucun fournisseur de modèle n'est défini sur le serveur."))
       const model = this.models.find((m) => m.key === (modelKey || this.defaultKey))
-      if (!model) throw new Error(`Modèle inconnu : ${modelKey}`)
+      if (!model) throw new Error(T(`Unknown model: ${modelKey}`, `Modèle inconnu : ${modelKey}`))
       target = { format: model.provider, id: model.id, client: model.provider === 'openai' ? this.openai : this.anthropic }
     }
-    if (!this.bridge.hasTab(tabId)) throw new Error("Cet onglet n'est pas relié au serveur. Rechargez la page.")
+    if (!this.bridge.hasTab(tabId)) throw new Error(T('This tab is not connected to the server. Reload the page.', "Cet onglet n'est pas relié au serveur. Rechargez la page."))
 
     const { id, conv } = this.#conversation(conversationId, target.format)
-    if (conv.busy) throw new Error('Une réponse est déjà en cours dans cette conversation.')
+    if (conv.busy) throw new Error(T('A reply is already in progress in this conversation.', 'Une réponse est déjà en cours dans cette conversation.'))
     conv.busy = true
     emit({ type: 'conversation', id })
     const common = {
@@ -108,6 +109,7 @@ export class ChatService {
       emit,
       signal,
       log: this.log,
+      lang,
     }
     try {
       if (target.format === 'openai') {
