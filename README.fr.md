@@ -140,7 +140,7 @@ affiche le modèle utilisé.
 
 ### Lien Feedback
 
-Un lien « Feedback » en bas du canevas dit où envoyer un retour. Deux réglages de build, lus par Vite
+Un bouton « Feedback » en bas à droite du canevas, et un clic sur le logo Leylines, ouvrent une petite fenêtre qui dit où envoyer un retour. Deux réglages de build, lus par Vite
 (`npm run dev`, `npm run build`, `npm run build:online`) et par docker compose, dans un fichier
 `.env` à la racine du dépôt, que git ignore :
 
@@ -150,7 +150,7 @@ Un lien « Feedback » en bas du canevas dit où envoyer un retour. Deux réglag
 | `VITE_CONTACT_URL` | Comment joindre l'auteur : un profil LinkedIn ou une page (`https://…`). | Aucun |
 | `FEEDBACK_EMAIL` | Une adresse mail. Elle est rangée encodée dans le code de la page, et le lien `mailto:` n'est construit qu'au clic, ce qui écarte la plupart des robots qui ramassent les adresses. | Aucune |
 
-Avec un seul choix, le lien l'ouvre. Avec plusieurs, une petite fenêtre les propose. Par exemple :
+La fenêtre montre une carte pour chaque adresse réglée. Par exemple :
 
 ```
 VITE_CONTACT_URL=https://www.linkedin.com/in/votre-profil
