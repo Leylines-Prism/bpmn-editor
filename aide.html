@@ -86,15 +86,20 @@
         <h3>La palette</h3>
         <p>La palette, à gauche, propose les outils de sélection (main, lasso, espace, connexion) puis les formes : événements, tâches, passerelles, sous-processus, objets de données, piscines et couloirs. Le bouton <span class="ui">…</span> en bas de la palette ouvre la liste complète des éléments BPMN, avec une recherche par nom.</p>
         <h3>Le menu contextuel</h3>
-        <p>Il apparaît à côté de l'élément sélectionné. Depuis ce menu, vous pouvez :</p>
+        <p>Quand vous sélectionnez un élément, une série de boutons apparaît à côté de lui. Leur liste dépend du type de l'élément. Pour une tâche, on trouve :</p>
         <ul>
-          <li>ajouter l'élément suivant (tâche, passerelle, événement de fin…), déjà relié par un flux,</li>
-          <li>tirer une connexion vers un autre élément,</li>
-          <li>changer le type de l'élément (la clé à molette), par exemple une tâche en tâche utilisateur,</li>
-          <li>mettre de la couleur (le pinceau) ou mettre en forme le texte (le bouton A),</li>
-          <li>supprimer l'élément (la corbeille).</li>
+          <li><strong>Première ligne :</strong> ajouter un événement de fin, une passerelle, une tâche ou un événement intermédiaire. Le nouvel élément est posé à droite et déjà relié par un flux.</li>
+          <li><span class="ui">Ajouter une annotation</span> (le crochet en pointillé) pose un commentaire relié à l'élément.</li>
+          <li><span class="ui">Ajouter un élément</span> (les trois points) ouvre la liste complète des éléments qui peuvent suivre, rangés par famille (tâches, passerelles, sous-processus, événements, données), avec un champ de recherche.</li>
+          <li><span class="ui">Relier à un autre élément</span> (la flèche oblique) : cliquez dessus, puis sur l'élément cible pour tracer un flux.</li>
+          <li><span class="ui">Changer l'élément</span> (la clé à molette) transforme l'élément sans le redessiner : ses liens et son libellé sont conservés. Voir le détail ci-dessous.</li>
+          <li><span class="ui">Supprimer</span> (la corbeille) retire l'élément et ses flux.</li>
+          <li><span class="ui">Choisir la couleur</span> (le pinceau) et <span class="ui">Mise en forme du texte</span> (le bouton A) sont décrits dans <a href="#couleurs-texte">Couleurs et texte</a>.</li>
         </ul>
         <figure><img src="/src/help/img/fr-menu-contextuel.webp" width="460" height="300" alt="Menu contextuel d'une tâche sélectionnée : éléments à ajouter, connexion, changement de type, couleur, texte et suppression." loading="lazy" /><figcaption>Le menu contextuel d'une tâche sélectionnée.</figcaption></figure>
+        <h3>Changer l'élément</h3>
+        <p>La clé à molette ouvre la fenêtre <span class="ui">Changer l'élément</span>. Elle liste les types compatibles avec l'élément choisi : une tâche peut devenir tâche utilisateur, tâche de service, activité d'appel ou sous-processus, un événement de début peut devenir événement de début de message ou de minuteur, etc. Tapez quelques lettres dans le champ de recherche pour filtrer la liste, puis cliquez sur un type ou validez avec <kbd>Entrée</kbd>. La touche <kbd>R</kbd> ouvre la même fenêtre au clavier.</p>
+        <p>Pour une tâche ou un sous-processus, les icônes en haut à droite de la fenêtre ajoutent un marqueur sans changer le type : multi-instance parallèle (trois traits verticaux), multi-instance séquentielle (trois traits horizontaux) et boucle (la flèche circulaire). Un second clic retire le marqueur. Le nombre de boucles et la condition d'achèvement se règlent ensuite dans le <a href="#proprietes">panneau Processus</a>.</p>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -116,7 +121,14 @@
             </tbody>
           </table>
         </div>
-        <p>La mini-carte, en haut à droite du canevas, montre l'ensemble du diagramme. Cliquez dedans pour vous déplacer. La grille aide à aligner les formes, qui s'y accrochent.</p>
+        <h3>La minicarte</h3>
+        <p>La minicarte affiche le diagramme entier en réduction, en haut à droite du canevas. Elle est repliée à l'ouverture de l'éditeur : cliquez sur <span class="ui">Ouvrir la minicarte</span> pour la déplier, puis sur <span class="ui">Fermer la minicarte</span> pour la replier.</p>
+        <ul>
+          <li>Le cadre orange représente la partie du diagramme visible à l'écran. Faites-le glisser pour vous déplacer.</li>
+          <li>Un clic ailleurs dans la minicarte centre la vue sur ce point.</li>
+          <li><kbd>Ctrl</kbd>+molette au-dessus de la minicarte zoome sur le canevas.</li>
+        </ul>
+        <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
       </section>
 
       <section id="proprietes">
