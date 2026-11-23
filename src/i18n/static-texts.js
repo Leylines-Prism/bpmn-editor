@@ -22,6 +22,7 @@ const FR = {
   '#btn-layout': { text: 'Ranger', title: 'Ranger la disposition' },
   '#btn-simulation': { title: 'Faire circuler des jetons dans le processus' },
   '#autosave-status': { text: 'Sauvegarde auto : —' },
+  '#btn-help': { href: 'aide.html', title: "Aide : comment utiliser l'éditeur", 'aria-label': 'Aide' },
   '#btn-properties': { title: 'Masquer le panneau Processus', 'aria-label': 'Masquer le panneau Processus' },
 }
 
