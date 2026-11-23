@@ -1,0 +1,59 @@
+# Publie la version en ligne sur GitHub Pages à chaque fusion sur main.
+#
+# Site statique : pas de serveur MCP, pas d'enregistrement serveur. Chaque visiteur garde ses
+# diagrammes dans son navigateur et utilise sa propre clé d'API.
+#
+# Réglages facultatifs, dans Settings > Secrets and variables > Actions (jamais dans le dépôt) :
+#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL
+#   secret    : FEEDBACK_EMAIL
+# Prérequis : Settings > Pages > Source réglé sur « GitHub Actions ».
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - id: pages
+        uses: actions/configure-pages@v5
+      # npm ci : exactement les versions du package-lock.json.
+      - run: npm ci
+      - run: npm run build:online
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          VITE_SITE_HOST: ${{ vars.VITE_SITE_HOST || 'GitHub Pages' }}
+          VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
+          VITE_CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
+          FEEDBACK_EMAIL: ${{ secrets.FEEDBACK_EMAIL }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-online
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

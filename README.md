@@ -8,15 +8,21 @@ A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the 
 
 | | Docker version (self-hosted) | Online version |
 |---|---|---|
-| Run | `docker compose up -d --build`, or for development `npm run dev` plus the server in `mcp/` | `npm run dev:online`, or `npm run build:online` (`dist-online/` folder) |
+| Run | `docker compose up -d --build`, or for development `npm run dev` plus the server in `mcp/` | GitHub Pages (see below), or `npm run dev:online`, or `npm run build:online` (`dist-online/` folder) |
 | Where the assistant runs | on the `mcp/` server, which runs the tools in the editor tab | in the page itself |
 | Providers | environment variables, or the Options window | the Options window |
 | API key | on the server, or entered in Options and relayed without being stored | in the visitor's browser, sent straight to the provider |
 | MCP server for Claude Code and other clients | yes | no |
+| Can be exposed on the Internet | **no**, keep it on your machine or a private network | yes, it is a static site |
 
 The server and the assistant are described in [mcp/README.md](mcp/README.md).
 
 ## Docker version
+
+> **Do not expose this version on the Internet without authentication.** It is made for yourself, on
+> your machine or a private network (VPN, tailnet). Its server has no accounts: anyone who reaches it
+> can use the server's API keys, read and delete every saved diagram, make the server call addresses
+> on your network, and drive the editor. For a public site, use the [online version](#online-version).
 
 ```
 docker compose up -d --build
@@ -163,3 +169,15 @@ to your personal one: it can be filtered, or dropped if it draws spam.
   diagram and the key go straight to the chosen AI provider, which applies its own rules. The host of
   the site keeps technical logs, such as the IP address. Set `VITE_SITE_HOST` at build time to name
   the host (for example `VITE_SITE_HOST="GitHub Pages" npm run build:online`).
+
+### Publish the online version
+
+The online version is a static site, published on GitHub Pages by the workflow
+[.github/workflows/pages.yml](.github/workflows/pages.yml) each time a change lands on `main`.
+
+- Once, in the repository: Settings > Pages > Source: "GitHub Actions".
+- Optional build settings, in Settings > Secrets and variables > Actions, never in the repository:
+  the variables `VITE_SITE_HOST` ("GitHub Pages" by default), `VITE_FEEDBACK_URL` and
+  `VITE_CONTACT_URL`, and the secret `FEEDBACK_EMAIL`.
+- The site is built for its address on Pages (`/bpmn-editor/`). Elsewhere, `BASE_PATH` sets the
+  path, and `npm run build:online` produces the `dist-online/` folder to put on any static host.

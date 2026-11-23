@@ -8,15 +8,22 @@
 
 | | Version docker (auto-hébergée) | Version en ligne |
 |---|---|---|
-| Lancer | `docker compose up -d --build`, ou en développement `npm run dev` et le serveur du dossier `mcp/` | `npm run dev:online`, ou `npm run build:online` (dossier `dist-online/`) |
+| Lancer | `docker compose up -d --build`, ou en développement `npm run dev` et le serveur du dossier `mcp/` | GitHub Pages (voir plus bas), ou `npm run dev:online`, ou `npm run build:online` (dossier `dist-online/`) |
 | Où tourne l'assistant | sur le serveur `mcp/`, qui exécute les outils dans l'onglet | dans la page elle-même |
 | Fournisseurs | variables d'environnement, ou fenêtre Options | fenêtre Options |
 | Clé d'API | sur le serveur, ou saisie dans Options et relayée sans être enregistrée | dans le navigateur du visiteur, envoyée directement au fournisseur |
 | Serveur MCP pour Claude Code et autres clients | oui | non |
+| Peut être exposée sur Internet | **non**, à garder sur sa machine ou un réseau privé | oui, c'est un site statique |
 
 Le serveur et l'assistant sont décrits dans [mcp/README.fr.md](mcp/README.fr.md).
 
 ## Version docker
+
+> **Ne pas exposer cette version sur Internet sans authentification.** Elle est faite pour soi, sur sa
+> machine ou un réseau privé (VPN, tailnet). Son serveur n'a pas de comptes : quiconque l'atteint peut
+> utiliser les clés d'API du serveur, lire et supprimer tous les diagrammes enregistrés, faire appeler
+> par le serveur des adresses de votre réseau, et piloter l'éditeur. Pour un site public, utilisez la
+> [version en ligne](#version-en-ligne).
 
 ```
 docker compose up -d --build
@@ -171,3 +178,16 @@ alias) à votre adresse personnelle : on peut la filtrer, ou la supprimer si ell
   propres règles. L'hébergeur du site garde des journaux techniques, comme l'adresse IP. Régler
   `VITE_SITE_HOST` au build pour nommer l'hébergeur (par exemple
   `VITE_SITE_HOST="GitHub Pages" npm run build:online`).
+
+### Publier la version en ligne
+
+La version en ligne est un site statique, publié sur GitHub Pages par le workflow
+[.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque modification arrivée sur `main`.
+
+- Une fois, dans le dépôt : Settings > Pages > Source : « GitHub Actions ».
+- Réglages de build facultatifs, dans Settings > Secrets and variables > Actions, jamais dans le
+  dépôt : les variables `VITE_SITE_HOST` (« GitHub Pages » par défaut), `VITE_FEEDBACK_URL` et
+  `VITE_CONTACT_URL`, et le secret `FEEDBACK_EMAIL`.
+- Le site est construit pour son adresse sur Pages (`/bpmn-editor/`). Ailleurs, `BASE_PATH` règle le
+  chemin, et `npm run build:online` produit le dossier `dist-online/` à poser sur n'importe quel
+  hébergeur statique.
