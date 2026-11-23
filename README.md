@@ -123,8 +123,7 @@ It is for a quick try only: each visitor enters their own API key, which stays i
 There is no agent connection (MCP) and no saving on a server, and some providers (OpenAI) refuse
 calls from a web page. The "Privacy" link on the page says what leaves the browser.
 
-The demo measures its audience without cookies, with a self-hosted [Umami](https://umami.is)
-instance: visits, referrers and a few actions (assistant opened or used, provider connected, diagram
+The demo measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and

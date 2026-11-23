@@ -130,7 +130,7 @@ navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur,
 fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
 dit ce qui sort du navigateur.
 
-La démo mesure son audience sans cookie, avec une instance [Umami](https://umami.is) auto-hébergée :
+La démo mesure son audience sans cookie, avec [Umami](https://umami.is) :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
 créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
