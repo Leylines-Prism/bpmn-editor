@@ -133,7 +133,7 @@ provider's models are offered once its connection has been tested. The panel sho
 
 ### Feedback link
 
-A "Feedback" link at the bottom of the canvas says where to send feedback. Two build-time settings,
+A "Feedback" button at the bottom right of the canvas, and a click on the Leylines logo, open a small window that says where to send feedback. Two build-time settings,
 read by Vite (`npm run dev`, `npm run build`, `npm run build:online`) and by docker compose, from a
 `.env` file at the root of the repository, which git ignores:
 
@@ -143,7 +143,7 @@ read by Vite (`npm run dev`, `npm run build`, `npm run build:online`) and by doc
 | `VITE_CONTACT_URL` | How to reach the author: a LinkedIn profile or a page (`https://…`). | None |
 | `FEEDBACK_EMAIL` | An e-mail address. It is stored encoded in the page code, and the `mailto:` link is only built on click, which keeps most address-harvesting robots away. | None |
 
-With one choice, the link opens it. With more, a small window offers them. For example:
+The window shows one card for each address that is set. For example:
 
 ```
 VITE_CONTACT_URL=https://www.linkedin.com/in/your-profile

@@ -1,4 +1,4 @@
-// Lien « Feedback » en bas du canevas : où envoyer un retour, et comment joindre
+// Bouton « Feedback » en bas du canevas : où envoyer un retour, et comment joindre
 // l'auteur. Les adresses se règlent au build (aucune n'est écrite en dur pour une
 // personne) :
 //   VITE_FEEDBACK_URL : les retours. Par défaut, les Issues GitHub du dépôt ;
@@ -6,8 +6,8 @@
 //   VITE_CONTACT_URL  : un contact (profil LinkedIn, page…). Aucun par défaut.
 //   FEEDBACK_EMAIL    : une adresse mail. Aucune par défaut. vite.config.js la range
 //                       encodée dans le code ; le lien mailto n'est construit qu'au clic.
-// S'il n'y a qu'un choix, le lien l'ouvre directement ; sinon, une petite fenêtre
-// les propose.
+// Le bouton « Feedback » (et le logo de la barre) ouvre une petite fenêtre qui
+// propose les choix réglés.
 
 import { T } from './i18n/lang.js'
 
@@ -25,6 +25,7 @@ const ICONS = {
   idea: svg('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/>', false),
   link: svg('<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>', false),
 }
+const BUBBLE = svg('<path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/>', false)
 const CHEVRON = svg('<path d="m9 6 6 6-6 6"/>', false)
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -93,25 +94,11 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
     const email = decodeEmail(encodedEmail)
     if (email) location.href = `mailto:${email}?subject=${encodeURIComponent('BPMN editor')}`
   }
-  const label = T('Feedback', 'Feedback')
-  container.append(document.createTextNode(' · '))
-
-  // Un seul choix : un simple lien.
-  if (choices.length === 1) {
-    const [choice] = choices
-    const link = document.createElement(choice.email ? 'button' : 'a')
-    link.id = 'feedback-link'
-    link.textContent = label
-    if (choice.email) Object.assign(link, { type: 'button', onclick: openEmail })
-    else Object.assign(link, { href: choice.url, target: '_blank', rel: 'noopener' })
-    container.append(link)
-    return
-  }
-
+  // Bouton « Feedback » bien visible, en bas à droite du canevas.
   const button = document.createElement('button')
   button.type = 'button'
-  button.id = 'feedback-link'
-  button.textContent = label
+  button.id = 'feedback-button'
+  button.innerHTML = `${BUBBLE}<span>${T('Feedback', 'Feedback')}</span>`
   container.append(button)
 
   const dialog = document.createElement('dialog')
@@ -134,11 +121,13 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
       </div>
     </form>`
   document.body.append(dialog)
-  button.addEventListener('click', () => dialog.showModal())
+  const open = () => { if (!dialog.open) dialog.showModal() }
+  button.addEventListener('click', open)
   dialog.addEventListener('click', (e) => {
     const choice = e.target.closest('.choice')
     if (!choice) return
     if (choice.hasAttribute('data-email')) openEmail()
     dialog.close()
   })
+  return { open }
 }
