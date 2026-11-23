@@ -17,7 +17,7 @@ RUN npm run build
 # ── Stage 2 : serve statique ───────────────────────────────────────────────
 # Image officielle épinglée (version et empreinte). nginx tourne sans root : utilisateur nginx
 # (uid 101), port 8080 dans le conteneur, fichier pid et caches dans des dossiers à lui.
-FROM nginx:1.30.7-alpine3.24@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3
+FROM nginx:1.31.9-alpine3.24@sha256:fb4658584bd9a916ffb6f6e365f97c25cfdb2923801f551ea08356e695f14ff7
 RUN sed -i -e '/^user /d' -e 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.conf \
  && chown -R nginx:nginx /var/cache/nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
