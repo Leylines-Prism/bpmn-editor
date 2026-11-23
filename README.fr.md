@@ -130,10 +130,19 @@ navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur,
 fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
 dit ce qui sort du navigateur.
 
+La démo mesure son audience sans cookie, avec une instance [Umami](https://umami.is) auto-hébergée :
+visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
+créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
+elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
+messages ni les clés. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
+`localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
+Docker ni `npm run dev` ne mesurent quoi que ce soit.
+
 ## Développement
 
 `npm install`, puis `npm run dev` pour l'éditeur, et `npm start` dans `mcp/` pour le serveur.
 Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
 `npm run build:online` construit la démo en site statique dans `dist-online/` (`BASE_PATH` règle son
-chemin). Elle est publiée par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
+chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
+d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Elle est publiée par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
