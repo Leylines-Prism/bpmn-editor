@@ -1,7 +1,7 @@
 # ── Stage 1 : build ────────────────────────────────────────────────────────
 # Tourne sur la plateforme de la machine de construction : le résultat est fait de fichiers
 # statiques, identiques pour amd64 et arm64, inutile d'émuler l'autre plateforme.
-FROM --platform=$BUILDPLATFORM node:22-alpine AS builder
+FROM --platform=$BUILDPLATFORM node:22.23.5-alpine3.24@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 # npm ci : exactement les versions du package-lock.json.
@@ -15,10 +15,15 @@ ENV VITE_MCP_BRIDGE_URL=$VITE_MCP_BRIDGE_URL
 RUN npm run build
 
 # ── Stage 2 : serve statique ───────────────────────────────────────────────
-FROM nginx:1.27-alpine
+# Image officielle épinglée (version et empreinte). nginx tourne sans root : utilisateur nginx
+# (uid 101), port 8080 dans le conteneur, fichier pid et caches dans des dossiers à lui.
+FROM nginx:1.30.7-alpine3.24@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3
+RUN sed -i -e '/^user /d' -e 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.conf \
+ && chown -R nginx:nginx /var/cache/nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY nginx-headers.conf /etc/nginx/snippets/headers.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
-EXPOSE 80
+USER nginx
+EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost/healthz || exit 1
+  CMD wget -qO- http://localhost:8080/healthz || exit 1
