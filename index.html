@@ -24,8 +24,12 @@
       </span>
       <h1>BPMN Editor</h1>
     </div>
-    <input id="file-name" type="text" value="diagram" maxlength="120" spellcheck="false" autocomplete="off"
-      aria-label="File name" title="File name used when saving and exporting (without extension)" />
+    <label class="file-name-field" id="file-name-field" title="File name used when saving and exporting">
+      <span class="file-name-icon" aria-hidden="true"></span>
+      <input id="file-name" type="text" value="diagram" maxlength="120" spellcheck="false" autocomplete="off"
+        aria-label="File name" placeholder="File name" />
+      <span class="file-name-ext" aria-hidden="true">.bpmn</span>
+    </label>
     <button class="btn" id="btn-new" data-icon="new">New</button>
     <button class="btn" id="btn-open-menu" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
     <div id="open-menu" class="menu" popover role="menu">

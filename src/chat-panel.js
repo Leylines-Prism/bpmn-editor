@@ -113,7 +113,16 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.id = 'btn-chat'
   toggle.type = 'button'
   toggle.textContent = T('AI assistant', 'Assistant IA')
-  document.getElementById('btn-simulation').after(toggle)
+  // À droite de la barre, juste après le badge MCP (version docker), ou en tête
+  // du groupe de droite quand il n'y a pas de badge (version en ligne).
+  const badge = document.getElementById('mcp-status')
+  const autosave = document.getElementById('autosave-status')
+  if (badge) badge.after(toggle)
+  else if (autosave) {
+    autosave.before(toggle)
+    toggle.classList.add('push-right')
+    autosave.style.marginLeft = '8px'
+  } else document.getElementById('btn-simulation').after(toggle)
 
   const log = panel.querySelector('#chat-log')
   const form = panel.querySelector('#chat-form')
