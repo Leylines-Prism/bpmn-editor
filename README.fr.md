@@ -189,6 +189,7 @@ La version en ligne est un site statique, publié sur GitHub Pages par le workfl
 - Réglages de build facultatifs, dans Settings > Secrets and variables > Actions, jamais dans le
   dépôt : les variables `VITE_SITE_HOST` (« GitHub Pages » par défaut), `VITE_FEEDBACK_URL` et
   `VITE_CONTACT_URL`, et le secret `FEEDBACK_EMAIL`.
-- Le site est construit pour son adresse sur Pages (`/bpmn-editor/`). Ailleurs, `BASE_PATH` règle le
+- Le site est construit pour la racine de son domaine personnalisé. Sans domaine, régler la
+  variable `BASE_PATH` sur `/bpmn-editor/`. Ailleurs, `BASE_PATH` règle le
   chemin, et `npm run build:online` produit le dossier `dist-online/` à poser sur n'importe quel
   hébergeur statique.
