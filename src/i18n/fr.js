@@ -342,6 +342,7 @@ export default {
   'Message': 'Message',
   'Multi-instance': 'Multi-instance',
   'Name': 'Nom',
+  'Participant ID': 'Identifiant du participant',
   'Participant Name': 'Nom du participant',
   'Process ID': 'Identifiant du processus',
   'Process documentation': 'Documentation du processus',
