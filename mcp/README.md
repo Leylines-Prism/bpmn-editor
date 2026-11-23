@@ -87,7 +87,7 @@ models are only offered once "Test" or "List models" has succeeded, and again af
 key changes. "Assistant model" picks the model used by the chat.
 
 - Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Remember keys on
-  this device" is checked. "Clear keys" removes them.
+  your device" is checked. "Clear keys" removes them.
 - Calls go through the server (`/chat` and `/chat/models` routes): the address is reached from the
   server. When it runs in docker, Ollama on the host machine is reachable at
   `http://host.docker.internal:11434/v1`.

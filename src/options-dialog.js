@@ -23,9 +23,9 @@ const HINTS = {
 
 const PRIVACY = {
   online:
-    T('Your keys and settings stay in this browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. This site receives neither your keys nor your diagrams.', 'Vos clés et vos réglages restent dans ce navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. Ce site ne reçoit ni vos clés ni vos diagrammes.'),
+    T('Your keys and settings stay in your browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. This site receives neither your keys nor your diagrams.', 'Vos clés et vos réglages restent dans votre navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. Ce site ne reçoit ni vos clés ni vos diagrammes.'),
   server:
-    T('Your keys and settings stay in this browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés et vos réglages restent dans ce navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
+    T('Your keys and settings stay in your browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés et vos réglages restent dans votre navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
 }
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -68,7 +68,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       </div>
       <label class="field default-model"><span>${T('Assistant model', 'Modèle de l\'assistant')}</span><select id="options-default"></select></label>
       <div class="keys-row">
-        <label><input type="checkbox" id="options-remember" /> ${T('Remember keys on this device', 'Se souvenir des clés sur cet appareil')}</label>
+        <label><input type="checkbox" id="options-remember" /> ${T('Remember keys on your device', 'Se souvenir des clés sur votre appareil')}</label>
         <span class="grow"></span>
         <button type="button" class="btn" id="options-forget">${T('Clear keys', 'Effacer les clés')}</button>
       </div>

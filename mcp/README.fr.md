@@ -88,7 +88,7 @@ modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle
 modèle du chat.
 
 - Les réglages restent dans le navigateur. Les clés sont oubliées à la fermeture de l'onglet, sauf si
-  « Se souvenir des clés sur cet appareil » est coché. « Effacer les clés » les retire.
+  « Se souvenir des clés sur votre appareil » est coché. « Effacer les clés » les retire.
 - Les appels passent par le serveur (routes `/chat` et `/chat/models`) : l'adresse est vue depuis le
   serveur. S'il tourne dans docker, Ollama sur la machine hôte se joint par
   `http://host.docker.internal:11434/v1`.

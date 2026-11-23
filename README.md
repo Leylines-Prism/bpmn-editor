@@ -120,7 +120,7 @@ provider's models are offered once its connection has been tested. The panel sho
 
 - Providers: Anthropic, OpenAI, Ollama and any OpenAI-compatible server, set up in the "Options"
   window of the assistant panel. Each visitor uses their own key and pays for their own calls.
-- The key stays in the browser: for the tab's session, or on the device if "Remember keys on this
+- The key stays in the browser: for the tab's session, or on the device if "Remember keys on your
   device" is checked. The site receives neither the key nor the diagram.
 - The provider must accept calls from a web page (CORS). Anthropic does. OpenAI does not always:
   the docker version avoids that block. Ollama must be started with `OLLAMA_ORIGINS` set to the

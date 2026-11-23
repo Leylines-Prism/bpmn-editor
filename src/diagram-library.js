@@ -176,10 +176,10 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
 
   function renderHeader() {
     $('#library-hint').textContent = stores.server
-      ? T('Diagrams saved in this browser stay on this device. Diagrams saved on the server can be opened from any browser that reaches it.',
-          'Les diagrammes enregistrés dans ce navigateur restent sur cet appareil. Ceux enregistrés sur le serveur s\'ouvrent depuis n\'importe quel navigateur qui y accède.')
-      : T('Diagrams are saved in this browser, on this device only. Export a .bpmn file to keep a copy elsewhere.',
-          'Les diagrammes sont enregistrés dans ce navigateur, sur cet appareil seulement. Exportez un fichier .bpmn pour en garder une copie ailleurs.')
+      ? T('Diagrams saved in your browser stay on your device. Diagrams saved on the server can be opened from any browser that reaches it.',
+          'Les diagrammes enregistrés dans votre navigateur restent sur votre appareil. Ceux enregistrés sur le serveur s\'ouvrent depuis n\'importe quel navigateur qui y accède.')
+      : T('Diagrams are saved in your browser, on your device only. Export a .bpmn file to keep a copy elsewhere.',
+          'Les diagrammes sont enregistrés dans votre navigateur, sur votre appareil seulement. Exportez un fichier .bpmn pour en garder une copie ailleurs.')
     $('#library-place-field').hidden = !stores.server
     const serverRadio = placeRadios.find((r) => r.value === 'server')
     serverRadio.disabled = !serverOk
@@ -229,7 +229,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     if (serverError) {
       const p = document.createElement('p')
       p.className = 'hint'
-      p.textContent = T('The server could not be reached: only the diagrams of this browser are listed.', 'Le serveur est injoignable : seuls les diagrammes de ce navigateur sont listés.')
+      p.textContent = T('The server could not be reached: only the diagrams of your browser are listed.', 'Le serveur est injoignable : seuls les diagrammes de votre navigateur sont listés.')
       listEl.append(p)
     }
     if (!rows.length) {
