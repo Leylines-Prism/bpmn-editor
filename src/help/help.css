@@ -87,8 +87,14 @@ main { min-width: 0; }
 .hero hr { margin-top: var(--space-8); height: 4px; border: 0; border-radius: var(--radius-pill); background: var(--leyline); }
 
 section { margin-top: var(--space-12); }
-h2 { font-size: 28px; line-height: 36px; font-weight: 600; margin-bottom: var(--space-4); }
-h3 { font-size: 20px; line-height: 28px; font-weight: 600; margin: var(--space-6) 0 var(--space-2); }
+/* Deux niveaux bien distincts : le H2 porte la ligne de lumière sur toute la largeur du texte,
+   le H3, plus petit, une barre d'accent à gauche. */
+h2 { font-size: 30px; line-height: 38px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: var(--space-4); }
+h2::after { content: ''; display: block; height: 2px; margin-top: 8px; border-radius: var(--radius-pill); background: var(--leyline); }
+h3 {
+  font-size: 18px; line-height: 26px; font-weight: 600; margin: var(--space-6) 0 var(--space-2);
+  padding-left: 12px; border-left: 3px solid var(--accent);
+}
 p + p, p + ul, ul + p, p + ol, ol + p, p + table, table + p, .note + p, p + .note, ul + .note, ol + .note { margin-top: var(--space-3); }
 ul, ol { padding-left: var(--space-6); }
 li + li { margin-top: var(--space-1); }
