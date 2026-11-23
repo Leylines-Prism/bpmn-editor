@@ -19,6 +19,7 @@ import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
   get_diagram_xml: T('reading the XML', 'lecture du XML'),
+  get_diagram_image: T('looking at the diagram', 'coup d\'œil au diagramme'),
   set_diagram_xml: T('replacing the diagram', 'remplacement du diagramme'),
   add_shapes: T('adding shapes', 'ajout de formes'),
   connect_shapes: T('connections', 'connexions'),

@@ -134,6 +134,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 |---|---|
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
+| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec le format OpenAI, l'assistant intégré ne peut pas la recevoir) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |

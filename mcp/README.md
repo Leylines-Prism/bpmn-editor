@@ -133,6 +133,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 |---|---|
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
+| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with the OpenAI format, the built-in assistant cannot receive it) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |

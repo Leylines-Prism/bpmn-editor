@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
+import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
 
@@ -251,6 +252,11 @@ export function createTools(modeler) {
     async get_diagram_xml() {
       const { xml } = await modeler.saveXML({ format: true })
       return xml
+    },
+
+    // { image: { mediaType, data (base64), width, height } }
+    get_diagram_image() {
+      return renderDiagramPng(modeler)
     },
 
     async set_diagram_xml({ xml }) {

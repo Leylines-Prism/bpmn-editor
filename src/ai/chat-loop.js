@@ -9,6 +9,7 @@
 // Une conversation est un objet { messages } que la boucle met à jour.
 
 import { INSTRUCTIONS, buildTools } from './tools.js'
+import { imageCaption, isImageResult } from './image-result.js'
 import { anthropicUserContent, openaiUserContent } from './attachments.js'
 
 export const MAX_STEPS = 30 // appels successifs au modèle pour un seul message
@@ -63,13 +64,27 @@ function toolError(name, content, emit, log) {
 }
 
 // Valide les arguments puis exécute l'outil. Renvoie { content, isError }.
-export async function runTool({ toolSet, name, input, executeTool, emit, log = console.error }) {
+// images : le format sait-il recevoir une image en résultat d'outil (API Claude) ?
+export async function runTool({ toolSet, name, input, executeTool, emit, log = console.error, images = false }) {
   const validator = toolSet.validators[name]
   if (!validator) return toolError(name, `Outil inconnu : ${name}`, emit, log)
   const parsed = validator.safeParse(input)
   if (!parsed.success) return toolError(name, `Arguments invalides : ${toolSet.z.prettifyError(parsed.error)}`, emit, log)
   try {
     const data = await executeTool(name, parsed.data)
+    if (isImageResult(data)) {
+      if (!images) {
+        return toolError(name, 'This provider cannot receive images from tools: read the diagram with get_shapes instead.', emit, log)
+      }
+      emit({ type: 'tool', name, ok: true })
+      return {
+        content: [
+          { type: 'image', source: { type: 'base64', media_type: data.image.mediaType, data: data.image.data } },
+          { type: 'text', text: imageCaption(data.image) },
+        ],
+        isError: false,
+      }
+    }
     emit({ type: 'tool', name, ok: true })
     return { content: typeof data === 'string' ? data : JSON.stringify(data), isError: false }
   } catch (err) {
@@ -163,7 +178,7 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
     const results = []
     for (const use of toolUses) {
       emit({ type: 'status', phase: 'running', tool: use.name })
-      const { content, isError } = await runTool({ toolSet, name: use.name, input: use.input, executeTool, emit, log })
+      const { content, isError } = await runTool({ toolSet, name: use.name, input: use.input, executeTool, emit, log, images: true })
       results.push({ type: 'tool_result', tool_use_id: use.id, content, ...(isError ? { is_error: true } : {}) })
     }
     messages.push({ role: 'assistant', content: message.content }, { role: 'user', content: results })

@@ -25,6 +25,7 @@ import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
+import { imageCaption, isImageResult } from '../src/ai/image-result.js'
 import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
@@ -60,6 +61,14 @@ function buildMcpServer() {
       async (args) => {
         try {
           const data = await bridge.call(tool.name, args ?? {})
+          if (isImageResult(data)) {
+            return {
+              content: [
+                { type: 'image', data: data.image.data, mimeType: data.image.mediaType },
+                { type: 'text', text: imageCaption(data.image) },
+              ],
+            }
+          }
           const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
           return { content: [{ type: 'text', text }] }
         } catch (err) {
