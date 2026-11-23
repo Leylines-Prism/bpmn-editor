@@ -39,6 +39,7 @@ import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDiagramLibrary } from './diagram-library.js'
 import { setupFeedback } from './feedback.js'
+import { setupAnalytics, track } from './analytics.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -184,6 +185,7 @@ document.getElementById('btn-new').addEventListener('click', async () => {
   await modeler.importXML(EMPTY_DIAGRAM)
   fitView(modeler.get('canvas'))
   setStatus(T('New', 'Nouveau'))
+  track('nouveau-diagramme')
 })
 
 document.getElementById('btn-open').addEventListener('click', () => {
@@ -220,6 +222,7 @@ async function importFile(file) {
   }
   const failure = await importAndReport(await file.text(), file.name)
   if (failure) alert('Import impossible : ' + failure)
+  else track('fichier-ouvert', { source: 'fichier' })
 }
 
 document.getElementById('file-input').addEventListener('change', async (e) => {
@@ -231,7 +234,11 @@ document.getElementById('file-input').addEventListener('change', async (e) => {
 setupXmlDialog({
   openButton: document.getElementById('btn-import-xml'),
   fileInput: document.getElementById('file-input'),
-  onImport: (xml) => importAndReport(xml, null),
+  onImport: async (xml) => {
+    const failure = await importAndReport(xml, null)
+    if (!failure) track('fichier-ouvert', { source: 'xml' })
+    return failure
+  },
 })
 setupFileDrop({ onFile: importFile })
 
@@ -260,6 +267,7 @@ const library = setupDiagramLibrary({
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
   download(xml, baseName() + '.bpmn', 'application/xml')
+  track('export', { format: 'bpmn' })
 })
 
 // Menus Ouvrir et Exporter : ouverts sous leur bouton, refermés dès qu'une entrée est choisie.
@@ -279,17 +287,22 @@ for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
 document.getElementById('btn-save-xml').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
   download(xml, baseName() + '.xml', 'application/xml')
+  track('export', { format: 'xml' })
 })
 
 setupXmlExport({
   openButton: document.getElementById('btn-xml'),
   getXml: async () => (await modeler.saveXML({ format: true })).xml,
-  download: (xml) => download(xml, baseName() + '.xml', 'application/xml'),
+  download: (xml) => {
+    download(xml, baseName() + '.xml', 'application/xml')
+    track('export', { format: 'xml' })
+  },
 })
 
 document.getElementById('btn-svg').addEventListener('click', async () => {
   const { svg } = await modeler.saveSVG()
   download(svg, baseName() + '.svg', 'image/svg+xml')
+  track('export', { format: 'svg' })
 })
 
 document.getElementById('btn-png').addEventListener('click', async () => {
@@ -308,7 +321,10 @@ document.getElementById('btn-png').addEventListener('click', async () => {
     ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
     ctx.drawImage(img, 0, 0)
     URL.revokeObjectURL(url)
-    canvas.toBlob(b => download(b, baseName() + '.png', 'image/png'), 'image/png')
+    canvas.toBlob((b) => {
+      download(b, baseName() + '.png', 'image/png')
+      track('export', { format: 'png' })
+    }, 'image/png')
   }
   img.onerror = () => {
     URL.revokeObjectURL(url)
@@ -322,6 +338,7 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   button.disabled = true
   try {
     download(await exportPdf(modeler), baseName() + '.pdf', 'application/pdf')
+    track('export', { format: 'pdf' })
   } catch (err) {
     console.error('PDF export error:', err)
     alert(T('PDF export failed: ', 'Export PDF impossible : ') + err.message)
@@ -399,6 +416,8 @@ if (feedback && brandLogo) {
 }
 
 if (import.meta.env.MODE === 'online') {
+  // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js).
+  setupAnalytics()
   // Mention de confidentialité, en bas du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('credit') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
