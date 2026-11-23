@@ -131,3 +131,13 @@ footer {
   .hero h1 { font-size: 32px; line-height: 40px; }
   html { scroll-padding-top: 72px; }
 }
+
+/* ── Captures d'écran ────────────────────────────────────────────────── */
+
+figure { margin: var(--space-4) 0; }
+figure img {
+  display: block; max-width: 100%; height: auto;
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  box-shadow: var(--elevation-1);
+}
+figcaption { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }

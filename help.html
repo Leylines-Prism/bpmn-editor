@@ -69,6 +69,7 @@
       <section id="getting-started">
         <h2>Getting started</h2>
         <p>The first time you open it, the editor shows a small process: a start, a task and an end. Build from there, or click <span class="ui">New</span> to start from an empty diagram.</p>
+        <figure><img src="/src/help/img/en-editeur.webp" width="1440" height="820" alt="The editor with an expense claim process: the palette on the left, the canvas, and the AI assistant panel open on the right." loading="lazy" /><figcaption>The editor, with the AI assistant panel open on the right. The Process panel is hidden here.</figcaption></figure>
         <ol>
           <li>Pick a shape in the <strong>palette</strong>, left of the canvas, then click the canvas to place it.</li>
           <li>Click a shape: its <strong>context menu</strong> appears next to it. It appends the next element, already connected.</li>
@@ -93,6 +94,7 @@
           <li>add color (the brush) or format the text (the A button);</li>
           <li>delete the element (the bin).</li>
         </ul>
+        <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
         <h3>Keyboard shortcuts</h3>
         <p>On a Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -140,10 +142,11 @@
         <h3>Automatic checks</h3>
         <p>The editor checks BPMN modeling rules while you draw: disconnected element, process with no start or end, badly connected gateway, element without a label… Issues are flagged with a badge on the element, and a counter at the bottom left of the canvas lists them. They are advice: the diagram saves even if some remain.</p>
         <h3>Tidy up</h3>
-        <p>The <span class="ui">Tidy up</span> button recomputes the layout of the whole diagram, from left to right. Handy after an import or a diagram drawn by the AI.</p>
+        <p>The <span class="ui">Tidy up</span> button (the diagram icon, after My diagrams) recomputes the layout of the whole diagram, from left to right. Handy after an import or a diagram drawn by the AI.</p>
         <div class="note warn">Tidy up moves every shape and clears the undo history. The editor asks you to confirm. To keep the previous version, save it in My diagrams first.</div>
         <h3>Simulation</h3>
-        <p>The <span class="ui">Simulation</span> button switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. It is a good way to check that a process ends properly in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
+        <p>The <span class="ui">Simulation</span> button (the play icon, next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. It is a good way to check that a process ends properly in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
+        <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
       </section>
 
       <section id="saving">
@@ -152,6 +155,7 @@
         <p>The current diagram is kept in your browser one second after each change. There is only one current diagram: clicking <span class="ui">New</span> or opening a file replaces it.</p>
         <h3>My diagrams</h3>
         <p>To keep several diagrams, open <span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
+        <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="470" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The My diagrams window.</figcaption></figure>
         <div class="note warn">My diagrams lives in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a diagram for good, or share it, export it as a .bpmn file.</div>
       </section>
 
@@ -199,6 +203,7 @@
           </table>
         </div>
         <p>Paste the key, click <span class="ui">Test</span>, then choose the model. A provider's models are offered once its connection is tested. The panel shows which model is in use.</p>
+        <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Assistant options window with the Anthropic provider turned on: address, key, models, Test and List models buttons." loading="lazy" /><figcaption>Assistant options: Anthropic turned on, waiting for the key.</figcaption></figure>
 
         <h3>2. Describe the process</h3>
         <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The assistant answers in the language of your message. For example:</p>
