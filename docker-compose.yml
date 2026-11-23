@@ -1,5 +1,11 @@
 # Version auto-hébergée : l'éditeur et son serveur MCP.
 #
+# ⚠ À NE PAS EXPOSER SUR INTERNET SANS AUTHENTIFICATION.
+# Cette version est faite pour soi : sur sa machine, ou sur un réseau privé (VPN, tailnet).
+# Son serveur n'a pas de comptes : quiconque l'atteint peut utiliser les clés d'API du serveur,
+# lire et supprimer tous les diagrammes enregistrés, faire appeler par le serveur des adresses
+# de votre réseau, et piloter l'éditeur. Pour un site public, utilisez la version en ligne (voir le README).
+#
 #   docker compose up -d --build
 #   puis ouvrir http://localhost:8080
 #
