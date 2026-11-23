@@ -139,8 +139,52 @@
 
       <section id="checking">
         <h2>Check, tidy up, simulate</h2>
-        <h3>Automatic checks</h3>
-        <p>The editor checks BPMN modeling rules while you draw: disconnected element, process with no start or end, badly connected gateway, element without a label… Issues are flagged with a badge on the element, and a counter at the bottom left of the canvas lists them. They are advice: the diagram saves even if some remain.</p>
+        <h3>BPMN correctness checks</h3>
+        <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint</a>. It checks the diagram while you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice: the diagram saves even if some remain.</p>
+        <ul>
+          <li>A badge on the element flags an issue: red for an error, orange for a warning.</li>
+          <li>Hover the badge to read the message. The rule name follows in brackets, for example <code>no-implicit-end</code>.</li>
+          <li>Click that name to open the rule's explanation, with a wrong and a right example.</li>
+          <li>The counter at the bottom left of the canvas shows the number of errors and warnings. Click it to hide or show the badges.</li>
+        </ul>
+        <details class="faq">
+          <summary>The 27 rules checked, with their explanation</summary>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Rule</th><th>What it checks</th><th>Level</th></tr></thead>
+              <tbody>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/start-event-required.md" target="_blank" rel="noopener"><code>start-event-required</code></a></td><td>Every process and subprocess has a start event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/end-event-required.md" target="_blank" rel="noopener"><code>end-event-required</code></a></td><td>Every process and subprocess has an end event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-start.md" target="_blank" rel="noopener"><code>no-implicit-start</code></a></td><td>No element starts the process in place of a start event (element with no incoming flow).</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-end.md" target="_blank" rel="noopener"><code>no-implicit-end</code></a></td><td>No element ends the process in place of an end event (element with no outgoing flow).</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-disconnected.md" target="_blank" rel="noopener"><code>no-disconnected</code></a></td><td>Every element is connected to the rest of the process.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/label-required.md" target="_blank" rel="noopener"><code>label-required</code></a></td><td>Tasks, events and gateways have a label.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/conditional-flows.md" target="_blank" rel="noopener"><code>conditional-flows</code></a></td><td>A flow leaving a conditional split has a condition, unless it is the default flow.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-split.md" target="_blank" rel="noopener"><code>no-implicit-split</code></a></td><td>A task does not split into several unconditional flows: add a parallel gateway.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/fake-join.md" target="_blank" rel="noopener"><code>fake-join</code></a></td><td>A task does not receive several incoming flows: add a joining gateway.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-gateway-join-fork.md" target="_blank" rel="noopener"><code>no-gateway-join-fork</code></a></td><td>A gateway does not both join and split.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-gateway.md" target="_blank" rel="noopener"><code>superfluous-gateway</code></a></td><td>A gateway with a single incoming and a single outgoing flow does nothing.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-label.md" target="_blank" rel="noopener"><code>superfluous-label</code></a></td><td>A plain flow, without a condition or a splitting gateway, needs no label.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-termination.md" target="_blank" rel="noopener"><code>superfluous-termination</code></a></td><td>A terminate end event is superfluous when it is the only end of the process.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-multi-instance-termination.md" target="_blank" rel="noopener"><code>no-multi-instance-termination</code></a></td><td>In a multi-instance subprocess, a terminate end only stops the current instance, not the others.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-duplicate-sequence-flows.md" target="_blank" rel="noopener"><code>no-duplicate-sequence-flows</code></a></td><td>No two identical flows connect the same elements.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-overlapping-elements.md" target="_blank" rel="noopener"><code>no-overlapping-elements</code></a></td><td>Shapes do not overlap and stay inside their container.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-inclusive-gateway.md" target="_blank" rel="noopener"><code>no-inclusive-gateway</code></a></td><td>The inclusive gateway is discouraged: it is hard to read.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-complex-gateway.md" target="_blank" rel="noopener"><code>no-complex-gateway</code></a></td><td>The complex gateway is discouraged.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-based-gateway.md" target="_blank" rel="noopener"><code>event-based-gateway</code></a></td><td>An event-based gateway has at least two outgoing flows, none of them conditional.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-blank-start-event.md" target="_blank" rel="noopener"><code>single-blank-start-event</code></a></td><td>A process has at most one untyped start event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-event-definition.md" target="_blank" rel="noopener"><code>single-event-definition</code></a></td><td>An event has only one type (message, timer, signal…).</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/sub-process-blank-start-event.md" target="_blank" rel="noopener"><code>sub-process-blank-start-event</code></a></td><td>A subprocess starts with an untyped start event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-sub-process-typed-start-event.md" target="_blank" rel="noopener"><code>event-sub-process-typed-start-event</code></a></td><td>An event subprocess starts with a typed start event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/ad-hoc-sub-process.md" target="_blank" rel="noopener"><code>ad-hoc-sub-process</code></a></td><td>An ad hoc subprocess contains no start or end event.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/link-event.md" target="_blank" rel="noopener"><code>link-event</code></a></td><td>Link events come in pairs (throw and catch) with the same name.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Messages, signals, errors and escalations have a unique name and are used somewhere.</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Every process element has a shape on the diagram.</td><td>Error</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+        <p>To go further: the <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">documentation of every rule</a> and the OMG <a href="https://www.omg.org/spec/BPMN/2.0.2/" target="_blank" rel="noopener">BPMN 2.0.2 standard</a>.</p>
         <h3>Tidy up</h3>
         <p>The <span class="ui">Tidy up</span> button (the diagram icon, after My diagrams) recomputes the layout of the whole diagram, from left to right. Handy after an import or a diagram drawn by the AI.</p>
         <div class="note warn">Tidy up moves every shape and clears the undo history. The editor asks you to confirm. To keep the previous version, save it in My diagrams first.</div>
