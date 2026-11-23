@@ -1,7 +1,7 @@
 # ── Stage 1 : build ────────────────────────────────────────────────────────
 # Tourne sur la plateforme de la machine de construction : le résultat est fait de fichiers
 # statiques, identiques pour amd64 et arm64, inutile d'émuler l'autre plateforme.
-FROM --platform=$BUILDPLATFORM node:22.23.5-alpine3.24@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS builder
+FROM --platform=$BUILDPLATFORM node:26.13.1-alpine3.24@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 # npm ci : exactement les versions du package-lock.json.
