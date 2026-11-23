@@ -121,11 +121,36 @@
 
       <section id="properties">
         <h2>Process panel</h2>
-        <p>The right-hand panel shows the properties of the selected element, or of the process when nothing is selected: name, ID, documentation, and the settings of each type (timer, message, flow condition…).</p>
+        <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
+        <h3>Show and hide the panel</h3>
         <ul>
-          <li>The button at the far right of the toolbar hides or shows the panel.</li>
-          <li>Drag the handle on its left edge to make it wider or narrower. Double-click the handle to go back to the default width.</li>
+          <li>The button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
+          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, move to the handle with <kbd>Tab</kbd> and use the left and right arrows. Double-click the handle to go back to the default width.</li>
         </ul>
+        <h3>Name, ID and Executable</h3>
+        <p>Every element has the <span class="ui">General</span> group.</p>
+        <ul>
+          <li><span class="ui">Name</span> is the label shown on the diagram. Changing it here is the same as double-clicking the shape.</li>
+          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. It is not shown on the diagram. The file uses it to link elements together (a flow to its task, a pool to its process), and execution engines use it to identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
+          <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
+        </ul>
+        <p>For a pool, the General group holds the name and ID of the pool, then the name and ID of the process it contains, with its Executable box. This is where you find the process settings once the diagram has pools.</p>
+        <h3>Other groups</h3>
+        <p>Fields are sorted into groups. Click a group title to collapse or expand it. A dot to the right of the title means the group already holds values.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Group</th><th>Shown for</th><th>Content</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>All elements</td><td>Free text describing the element, saved in the file. A pool has two fields, one for itself and one for its process.</td></tr>
+              <tr><td>Message, Signal, Error, Escalation</td><td>Events of that type (and receive or send tasks for Message)</td><td>The message, signal, error or escalation used, picked from a list shared by the whole diagram. Two events with the same reference point to the same message.</td></tr>
+              <tr><td>Timer</td><td>Timer events</td><td>The type (date, duration or cycle) and the value in ISO 8601 format, for example <code>PT1H</code> for one hour.</td></tr>
+              <tr><td>Link</td><td>Link events</td><td>The link name. A throw event jumps to the catch event with the same name.</td></tr>
+              <tr><td>Compensation</td><td>Compensation events</td><td>The activity to compensate, and whether to wait for the compensation to complete.</td></tr>
+              <tr><td>Multi-instance</td><td>Activities marked as multi-instance</td><td>The loop cardinality and the completion condition.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
       </section>
 
       <section id="colors-text">

@@ -121,11 +121,36 @@
 
       <section id="proprietes">
         <h2>Panneau Processus</h2>
-        <p>Le panneau de droite montre les propriétés de l'élément sélectionné, ou du processus quand rien n'est sélectionné : nom, identifiant, documentation, et les réglages propres à chaque type (minuterie, message, condition d'un flux…).</p>
+        <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des piscines. Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
+        <h3>Afficher et masquer le panneau</h3>
         <ul>
-          <li>Le bouton tout à droite de la barre d'outils masque ou affiche le panneau.</li>
-          <li>Tirez la poignée sur son bord gauche pour l'élargir ou le rétrécir. Un double-clic sur la poignée revient à la largeur par défaut.</li>
+          <li>Le bouton tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
+          <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, placez-vous sur la poignée avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic sur la poignée rétablit la largeur par défaut.</li>
         </ul>
+        <h3>Nom, Identifiant et Exécutable</h3>
+        <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
+        <ul>
+          <li><span class="ui">Nom</span> est le libellé affiché sur le diagramme. Le modifier ici revient à double-cliquer sur la forme.</li>
+          <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Il n'apparaît pas sur le diagramme. Le fichier s'en sert pour relier les éléments entre eux (un flux vers sa tâche, une piscine vers son processus), et les moteurs d'exécution s'en servent pour désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
+          <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un diagramme de documentation ou d'analyse, elle peut rester décochée.</li>
+        </ul>
+        <p>Pour une piscine, le groupe Général réunit le nom et l'identifiant de la piscine, puis le nom et l'identifiant du processus qu'elle contient, avec sa case Exécutable. C'est là que vous retrouvez les réglages du processus dès que le diagramme a des piscines.</p>
+        <h3>Les autres groupes</h3>
+        <p>Les champs sont rangés par groupes. Cliquez sur le titre d'un groupe pour le replier ou le déplier. Un point à droite du titre signale que le groupe contient déjà des valeurs.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte libre qui décrit l'élément, enregistré dans le fichier. Une piscine a deux champs, l'un pour elle-même, l'autre pour son processus.</td></tr>
+              <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune au diagramme. Deux événements qui partagent la même référence désignent le même message.</td></tr>
+              <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
+              <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
+              <tr><td>Compensation</td><td>Les événements de compensation</td><td>L'activité à compenser, et s'il faut attendre la fin de la compensation.</td></tr>
+              <tr><td>Multi-instance</td><td>Les activités marquées multi-instance</td><td>Le nombre de boucles et la condition d'achèvement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
       </section>
 
       <section id="couleurs-texte">
