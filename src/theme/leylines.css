@@ -274,7 +274,7 @@ body {
 /* ── Panneau de propriétés : suit le thème clair ou sombre ───────────── */
 
 #properties-panel {
-  width: 300px; flex-shrink: 0; overflow-y: auto;
+  width: var(--properties-width, 300px); flex-shrink: 0; overflow-y: auto;
   background: var(--surface-raised);
   border: 1px solid var(--line); border-radius: var(--radius-md);
   box-shadow: var(--elevation-1);
@@ -289,7 +289,7 @@ body.properties-hidden #properties-panel {
   opacity: 0; border-width: 0; box-shadow: none; overflow: hidden;
 }
 /* Le contenu garde sa largeur pendant le repli, au lieu de se tasser */
-#properties-panel > * { min-width: 298px; }
+#properties-panel > * { min-width: calc(var(--properties-width, 300px) - 2px); }
 body.properties-instant #properties-panel { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   #properties-panel { transition: none; }
@@ -331,7 +331,7 @@ body.properties-instant #properties-panel { transition: none; }
 /* ── Assistant IA (panneau créé par src/chat-panel.js) ───────────────── */
 
 body #chat-panel {
-  width: 360px; background: var(--surface-raised);
+  width: var(--chat-width, 360px); background: var(--surface-raised);
   border: 1px solid var(--line); border-radius: var(--radius-md);
   box-shadow: var(--elevation-1); overflow: hidden;
 }
@@ -727,3 +727,25 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 }
 #feedback-dialog .actions { display: flex; align-items: center; }
 #feedback-dialog .grow { flex: 1; }
+
+/* ── Poignées de largeur des panneaux (src/panel-resize.js) ── */
+
+.panel-resizer {
+  flex: none; width: 12px; margin: 0 calc(-1 * var(--space-2) / 2 - 6px);
+  position: relative; z-index: 5; cursor: col-resize; touch-action: none;
+  display: flex; align-items: center; justify-content: center; outline: none;
+}
+.panel-resizer[hidden] { display: none; }
+.panel-resizer::before {
+  content: ''; width: 4px; height: 40px; border-radius: var(--radius-pill);
+  background: var(--line-strong); opacity: 0.55; transition: opacity 0.15s, background 0.15s, height 0.15s;
+}
+.panel-resizer:hover::before, .panel-resizer:focus-visible::before, body.panel-resizing .panel-resizer::before {
+  opacity: 1; background: var(--accent); height: 64px;
+}
+body.panel-resizing { cursor: col-resize; user-select: none; }
+body.panel-resizing #properties-panel, body.panel-resizing #chat-panel { transition: none; }
+body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .panel-resizer::before { transition: none; }
+}
