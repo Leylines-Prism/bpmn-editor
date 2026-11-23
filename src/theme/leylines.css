@@ -64,7 +64,8 @@ body {
 .btn.primary:hover { background: var(--accent); filter: brightness(1.08); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 
-.sep { width: 1px; height: 20px; background: var(--line); margin: 0 var(--space-1); }
+/* Sépare le groupe fichiers (Nouveau, Ouvrir, Exporter) des outils (Ranger, Simulation). */
+.sep { width: 1px; height: 24px; flex-shrink: 0; background: var(--line-strong); margin: 0 var(--space-3); }
 .btn.icon-only { width: 32px; padding: 0; justify-content: center; }
 
 #autosave-status { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted); margin-left: auto; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
