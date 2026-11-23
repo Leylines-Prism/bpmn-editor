@@ -95,9 +95,13 @@ behind a proxy that asks for a login.
   readable stroke, plus "Custom color…" to pick any color. The stroke is then computed to
   stay readable.
 - **Text**: the "A" button in the context pad formats the element's label: bold, italic, underline,
-  size (10 to 24) and font (Sans serif, Serif, Monospace). "Default text" removes the
-  formatting. The style is saved in the .bpmn file as the BPMN standard defines it
-  (`bpmndi:BPMNLabelStyle`). Underline does not show in the PDF export.
+  size (10 to 24), font (Sans serif, Serif, Monospace) and color. The color comes from the
+  brush hues, black or white, any custom color, or "Auto", which picks black or white,
+  whichever reads best on the element's fill. "Default text" removes the formatting and the
+  color. The style is saved in the .bpmn file as the BPMN standard defines it
+  (`bpmndi:BPMNLabelStyle`), and the color as `color:color` on the label (BPMN in Color),
+  which other bpmn.io tools read too. Underline does not show in the PDF export. With the
+  brush, a dark custom fill now gets a light text on its own.
 - **Tidy up** rearranges the diagram layout.
 - **Simulation** runs tokens through the process to check how it flows.
 - Automatic BPMN rule checking, with problems flagged on the canvas.

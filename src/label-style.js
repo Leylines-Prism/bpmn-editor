@@ -1,4 +1,4 @@
-// Mise en forme du texte des libellés : gras, italique, souligné, taille, police.
+// Mise en forme du texte des libellés : gras, italique, souligné, taille, police, couleur.
 //
 // Le format BPMN le prévoit : chaque libellé (bpmndi:BPMNLabel) peut pointer vers
 // un style (bpmndi:BPMNLabelStyle) rangé dans le diagramme, qui porte une police
@@ -8,12 +8,13 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
+import { COLORS } from './color-palette.js'
 
 // Polices proposées : leurs équivalents existent dans les PDF (Helvetica, Times, Courier).
 export const FONTS = [
-  { id: 'sans', label: 'Sans serif', name: 'Arial', family: 'Arial, Helvetica, sans-serif' },
+  { id: 'sans', label: 'Sans', name: 'Arial', family: 'Arial, Helvetica, sans-serif' },
   { id: 'serif', label: 'Serif', name: 'Times New Roman', family: '"Times New Roman", Times, serif' },
-  { id: 'mono', label: 'Monospace', name: 'Courier New', family: '"Courier New", Courier, monospace' },
+  { id: 'mono', label: 'Mono', name: 'Courier New', family: '"Courier New", Courier, monospace' },
 ]
 export const SIZES = [
   { size: 10, label: T('Small', 'Petit') },
@@ -36,6 +37,39 @@ export function fontOf(element) {
   for (const p of PROPS) if (font[p] !== undefined && font[p] !== false) result[p] = font[p]
   return Object.keys(result).length ? result : null
 }
+
+// Couleur du texte : l'attribut standard color:color du libellé (BPMN in Color),
+// que bpmn-js dessine lui-même. null si elle n'est pas réglée.
+export function textColorOf(element) {
+  return targetOf(element)?.di?.label?.get('color:color') || null
+}
+
+// Fond de la forme, pour choisir un texte lisible (noir ou blanc).
+function fillOf(element) {
+  const di = targetOf(element)?.di
+  return di?.get('color:background-color') || di?.get('bioc:fill') || '#FFFFFF'
+}
+
+// Luminance relative (WCAG) d'une couleur #RRGGBB.
+export function luminance(hex) {
+  const n = parseInt(String(hex).replace('#', '').slice(0, 6), 16)
+  if (Number.isNaN(n)) return 1
+  const lin = (c) => (c /= 255) <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255)
+}
+
+// Noir ou blanc, celui qui contraste le plus avec ce fond.
+export function readableOn(fill) {
+  const l = luminance(fill)
+  return (l + 0.05) / 0.05 >= 1.05 / (l + 0.05) ? '#000000' : '#FFFFFF'
+}
+
+// Couleurs proposées pour le texte : noir, blanc, puis les traits de la palette du pinceau.
+const TEXT_COLORS = [
+  { label: T('Black', 'Noir'), color: '#000000' },
+  { label: T('White', 'Blanc'), color: '#FFFFFF' },
+  ...COLORS.filter((c) => c.stroke).map((c) => ({ label: c.label, color: c.stroke })),
+]
 
 // Style SVG correspondant, pour le moteur de texte de diagram-js.
 function styleOf(font) {
@@ -147,7 +181,53 @@ SetLabelFontHandler.prototype.revert = function (context) {
   return changed
 }
 
+// context.colors : une couleur (ou null pour la retirer) par élément.
+function SetLabelColorHandler(bpmnFactory) {
+  this._bpmnFactory = bpmnFactory
+}
+SetLabelColorHandler.$inject = ['bpmnFactory']
+
+SetLabelColorHandler.prototype.execute = function (context) {
+  const changed = []
+  context.previous = []
+  context.elements.forEach((element, i) => {
+    const target = targetOf(element)
+    const di = target.di
+    const color = context.colors[i] || undefined
+    context.previous.push({ di, hadLabel: !!di.label, color: di.label?.get('color:color') })
+    if (!di.label) {
+      if (!color) return
+      di.label = this._bpmnFactory.create('bpmndi:BPMNLabel')
+      di.label.$parent = di
+    }
+    di.label.set('color:color', color)
+    changed.push(target)
+    if (target.label) changed.push(target.label)
+  })
+  return changed
+}
+
+SetLabelColorHandler.prototype.revert = function (context) {
+  const changed = []
+  context.elements.forEach((element, i) => {
+    const target = targetOf(element)
+    const { di, hadLabel, color } = context.previous[i]
+    if (!hadLabel) di.label = undefined
+    else di.label.set('color:color', color)
+    changed.push(target)
+    if (target.label) changed.push(target.label)
+  })
+  return changed
+}
+
 // ── Menu « Mise en forme du texte » ─────────────────────────────────────────
+
+const swatch = (color) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${color}" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><text x="12" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="${readableOn(color)}">A</text></svg>`
+
+const AUTO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FFFFFF" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><path d="M2.75 21.25 21.25 2.75V18a3.25 3.25 0 0 1-3.25 3.25Z" fill="#0C1120"/><text x="8.5" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#000">A</text><text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#FFF">A</text></svg>`
+
+const CUSTOM_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><defs><linearGradient id="text-color-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0D4372"/><stop offset="0.5" stop-color="#880E4F"/><stop offset="1" stop-color="#714800"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="4" fill="url(#text-color-gradient)" stroke="rgba(12,17,32,0.35)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`
 
 const TEXT_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
   <path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/>
@@ -169,8 +249,31 @@ LabelStylePopupProvider.prototype._apply = function (elements, update) {
   this._commandStack.execute('element.setLabelFont', { elements, font: font && Object.keys(font).length ? font : null })
 }
 
+// color : une couleur, 'auto' (noir ou blanc selon le fond de chaque élément) ou null.
+LabelStylePopupProvider.prototype._applyColor = function (elements, color) {
+  const colors = elements.map((e) => (color === 'auto' ? readableOn(fillOf(e)) : color))
+  this._commandStack.execute('element.setLabelColor', { elements, colors })
+}
+
+// Sélecteur de couleur du système, pour une couleur libre.
+LabelStylePopupProvider.prototype._pickColor = function (elements) {
+  const input = document.createElement('input')
+  input.type = 'color'
+  const current = textColorOf(elements[0])
+  input.value = /^#[0-9a-f]{6}$/i.test(current || '') ? current : '#000000'
+  input.style.cssText = 'position:fixed;opacity:0;pointer-events:none;left:50%;top:50%'
+  document.body.append(input)
+  input.addEventListener('change', () => {
+    this._applyColor(elements, input.value.toUpperCase())
+    input.remove()
+  })
+  input.addEventListener('blur', () => setTimeout(() => input.remove(), 1000))
+  input.click()
+}
+
 LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
   const font = fontOf(elements[0]) || {}
+  const color = (textColorOf(elements[0]) || '').toUpperCase()
   // Le choix en cours est surligné (classe is-active), pas coché.
   const cls = (on, extra) => [on ? 'is-active' : '', extra].filter(Boolean).join(' ')
   const entries = {}
@@ -202,11 +305,39 @@ LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
       action: () => this._apply(elements, { name: f.name }),
     }
   }
+  const colorGroup = { id: 'color', name: T('Color', 'Couleur') }
+  TEXT_COLORS.forEach((c, i) => {
+    entries[`label-color-${i}`] = {
+      title: c.label,
+      imageHtml: swatch(c.color),
+      className: cls(color === c.color),
+      group: colorGroup,
+      action: () => this._applyColor(elements, c.color),
+    }
+  })
+  const colorMore = { id: 'color-more' }
+  entries['label-color-auto'] = {
+    label: 'Auto',
+    title: T('Black or white, whichever reads best on the fill', 'Noir ou blanc, le plus lisible sur le fond'),
+    imageHtml: AUTO_ICON,
+    group: colorMore,
+    action: () => this._applyColor(elements, 'auto'),
+  }
+  entries['label-color-custom'] = {
+    label: T('Custom…', 'Autre…'),
+    title: T('Custom color…', 'Couleur personnalisée…'),
+    imageHtml: CUSTOM_ICON,
+    className: cls(color && !TEXT_COLORS.some((c) => c.color === color)),
+    group: colorMore,
+    action: () => this._pickColor(elements),
+  }
   entries['label-reset'] = {
     label: T('Default text', 'Texte par défaut'),
-    title: T('Remove formatting', 'Retirer la mise en forme'),
+    title: T('Remove formatting and color', 'Retirer la mise en forme et la couleur'),
     group: { id: 'reset' },
-    action: () => this._apply(elements, null),
+    action: () => {
+      this._commandStack.execute('label-style.reset', { elements })
+    },
   }
   return entries
 }
@@ -238,6 +369,16 @@ LabelStylePopupProvider.prototype.getMultiElementContextPadEntries = function (e
 
 function registerCommand(commandStack, eventBus, elementRegistry) {
   commandStack.registerHandler('element.setLabelFont', SetLabelFontHandler)
+  commandStack.registerHandler('element.setLabelColor', SetLabelColorHandler)
+  // « Texte par défaut » : police et couleur retirées en une seule étape d'annulation.
+  commandStack.registerHandler('label-style.reset', function () {
+    this.preExecute = ({ elements }) => {
+      commandStack.execute('element.setLabelColor', { elements, colors: elements.map(() => null) })
+      commandStack.execute('element.setLabelFont', { elements, font: null })
+    }
+    this.execute = () => []
+    this.revert = () => []
+  })
 
   // À l'enregistrement, seuls les styles encore utilisés sont écrits. La liste
   // complète est remise ensuite, pour que Ctrl+Z puisse les retrouver.

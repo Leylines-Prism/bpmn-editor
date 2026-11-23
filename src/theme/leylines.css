@@ -527,6 +527,14 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .djs-popup.label-style .label-font-serif { font-family: "Times New Roman", Times, serif; }
 .djs-popup.label-style .label-font-mono { font-family: "Courier New", Courier, monospace; }
 .djs-popup.label-style .entry-header { font-size: 12px; font-weight: 600; color: var(--night-800); opacity: 0.7; padding: 6px 2px 2px; }
+.djs-popup.label-style .djs-popup-results { max-height: min(560px, calc(100vh - 120px)); }
+.djs-popup.label-style .djs-popup-group[data-group="font"] { display: grid; grid: auto-flow / repeat(3, 1fr); gap: 4px; }
+.djs-popup.label-style .djs-popup-group[data-group="font"] .entry { justify-content: center; text-align: center; padding: 4px 0; border: 1px solid var(--mist); border-radius: var(--radius-sm); }
+.djs-popup.label-style .djs-popup-group[data-group="color"] { display: grid; grid: auto-flow / repeat(7, 1fr); gap: 2px; }
+.djs-popup.label-style .djs-popup-group[data-group="color"] .entry { justify-content: center; padding: 2px 0; border: 1px solid transparent; border-radius: var(--radius-sm); }
+.djs-popup.label-style .djs-popup-group[data-group="color-more"] { display: grid; grid: auto-flow / repeat(2, 1fr); gap: 4px; margin-top: 4px; }
+.djs-popup.label-style .djs-popup-group[data-group="color-more"] .entry { display: flex; align-items: center; gap: var(--space-2); padding: 2px 4px; border: 1px solid var(--mist); border-radius: var(--radius-sm); }
+.djs-popup.label-style .djs-popup-group[data-group^="color"] img, .djs-popup.label-style .djs-popup-group[data-group^="color"] svg { width: 22px; height: 22px; display: block; }
 .djs-popup.label-style .djs-popup-group[data-group="reset"] { border-top: 1px solid var(--mist); margin-top: 6px; padding-top: 4px; }
 
 /* ── Fenêtre « Mes diagrammes » (src/diagram-library.js) ──────────────── */
