@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Help · BPMN Editor · Leylines</title>
+  <meta name="description" content="Guide to the Leylines BPMN editor: draw a process, save it, export it, and have an AI assistant draw it for you." />
+  <link rel="alternate" hreflang="fr" href="aide.html" />
+  <link rel="icon" href="/design/leylines/assets/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-white.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-black.svg" media="(prefers-color-scheme: dark)" />
+  <link rel="apple-touch-icon" href="/design/leylines/assets/favicon-black-180.png" />
+  <script>
+    // Même thème que l'éditeur (clair, sombre ou automatique), appliqué avant le premier affichage
+    try { const t = localStorage.getItem('bpmn-editor-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t } catch {}
+  </script>
+  <link rel="stylesheet" href="/src/help/help.css" />
+</head>
+<body>
+  <header class="top">
+    <a class="logo" href="./" aria-label="Leylines, back to the editor">
+      <img class="only-light" src="/design/leylines/assets/leylines-logo-white.svg" alt="" />
+      <img class="only-dark" src="/design/leylines/assets/leylines-logo-transparent.svg" alt="" />
+    </a>
+    <span class="name">BPMN Editor · Help</span>
+    <span class="grow"></span>
+    <a class="btn" href="aide.html" hreflang="fr" lang="fr">Français</a>
+    <a class="btn primary" href="./">Open the editor</a>
+  </header>
+
+  <div class="layout">
+    <details class="toc" open>
+      <summary>Contents</summary>
+      <nav aria-label="Contents">
+        <p>Contents</p>
+        <ol>
+          <li><a href="#getting-started">Getting started</a></li>
+          <li><a href="#drawing">Drawing</a></li>
+          <li><a href="#properties">Process panel</a></li>
+          <li><a href="#colors-text">Colors and text</a></li>
+          <li><a href="#checking">Check, tidy up, simulate</a></li>
+          <li><a href="#saving">Saving and My diagrams</a></li>
+          <li><a href="#open-export">Open, import, export</a></li>
+          <li><a href="#assistant">AI assistant</a></li>
+          <li><a href="#keys">Your API keys</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#docker">Docker version and MCP agents</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#feedback">Send feedback</a></li>
+        </ol>
+      </nav>
+    </details>
+    <script>
+      // Sur un écran étroit, le sommaire commence replié
+      if (matchMedia('(max-width: 960px)').matches) document.querySelector('.toc').open = false
+    </script>
+
+    <main>
+      <div class="hero">
+        <h1>BPMN Editor guide</h1>
+        <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Draw your processes by hand, or describe them to an AI assistant that draws them for you.</p>
+        <div class="cta">
+          <a class="btn primary" href="./">Open the editor</a>
+          <a class="btn" href="#assistant">Let the AI draw</a>
+        </div>
+        <hr />
+      </div>
+
+      <section id="getting-started">
+        <h2>Getting started</h2>
+        <p>The first time you open it, the editor shows a small process: a start, a task and an end. Build from there, or click <span class="ui">New</span> to start from an empty diagram.</p>
+        <ol>
+          <li>Pick a shape in the <strong>palette</strong>, left of the canvas, then click the canvas to place it.</li>
+          <li>Click a shape: its <strong>context menu</strong> appears next to it. It appends the next element, already connected.</li>
+          <li>Double-click a shape to type its label.</li>
+          <li>Name the file in the field on the left of the toolbar. That name is used when saving and for every export.</li>
+        </ol>
+        <p>Your work is kept in the browser after every change. Reopen the page and you find it as you left it. The toolbar shows this as "Autosave".</p>
+        <p>The <span class="ui">FR</span> or <span class="ui">EN</span> button switches the interface language, and the round button next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <div class="note">Nothing leaves your browser unless you use the AI assistant. There is no account, and the site does not receive your diagrams.</div>
+      </section>
+
+      <section id="drawing">
+        <h2>Drawing</h2>
+        <h3>The palette</h3>
+        <p>The palette on the left holds the selection tools (hand, lasso, space, connect) and then the shapes: events, tasks, gateways, subprocesses, data objects, pools and lanes. The <span class="ui">…</span> button at the bottom of the palette opens the full list of BPMN elements, with a search by name.</p>
+        <h3>The context menu</h3>
+        <p>It appears next to the selected element and lets you:</p>
+        <ul>
+          <li>append the next element (task, gateway, end event…), already connected by a flow;</li>
+          <li>draw a connection to another element;</li>
+          <li>change the element's type (the wrench), for example a task into a user task;</li>
+          <li>add color (the brush) or format the text (the A button);</li>
+          <li>delete the element (the bin).</li>
+        </ul>
+        <h3>Keyboard shortcuts</h3>
+        <p>On a Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd>, <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Undo, redo</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd>, <kbd>Ctrl</kbd>+<kbd>V</kbd></td><td>Copy, paste, also between browser tabs</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd></td><td>Copy the selection as an image, to paste into a document or a slide</td></tr>
+              <tr><td><kbd>Delete</kbd></td><td>Delete the selection</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>A</kbd></td><td>Select all</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>F</kbd></td><td>Find an element by name</td></tr>
+              <tr><td><kbd>E</kbd></td><td>Edit the label of the selected element</td></tr>
+              <tr><td><kbd>A</kbd>, <kbd>N</kbd></td><td>Append an element after the selection, create an element</td></tr>
+              <tr><td><kbd>R</kbd></td><td>Change the element's type</td></tr>
+              <tr><td><kbd>H</kbd>, <kbd>L</kbd>, <kbd>S</kbd>, <kbd>C</kbd></td><td>Hand, lasso, space and connect tools</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+scroll</td><td>Zoom</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Update the diagram in My diagrams</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The <strong>minimap</strong>, top right of the canvas, shows the whole diagram. Click in it to move around. The <strong>grid</strong> helps you line shapes up, and they snap to it.</p>
+      </section>
+
+      <section id="properties">
+        <h2>Process panel</h2>
+        <p>The right-hand panel shows the properties of the selected element, or of the process when nothing is selected: name, ID, documentation, and the settings of each type (timer, message, flow condition…).</p>
+        <ul>
+          <li>The button at the far right of the toolbar hides or shows the panel.</li>
+          <li>Drag the handle on its left edge to make it wider or narrower. Double-click the handle to go back to the default width.</li>
+        </ul>
+      </section>
+
+      <section id="colors-text">
+        <h2>Colors and text</h2>
+        <h3>Colors</h3>
+        <p>The <strong>brush</strong> in the context menu offers 18 colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> lets you pick any shade: the stroke is then computed to stay readable, and a dark fill gets light text.</p>
+        <h3>Text formatting</h3>
+        <p>The <strong>A</strong> button in the context menu formats the label: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
+        <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export.</p>
+      </section>
+
+      <section id="checking">
+        <h2>Check, tidy up, simulate</h2>
+        <h3>Automatic checks</h3>
+        <p>The editor checks BPMN modeling rules while you draw: disconnected element, process with no start or end, badly connected gateway, element without a label… Issues are flagged with a badge on the element, and a counter at the bottom left of the canvas lists them. They are advice: the diagram saves even if some remain.</p>
+        <h3>Tidy up</h3>
+        <p>The <span class="ui">Tidy up</span> button recomputes the layout of the whole diagram, from left to right. Handy after an import or a diagram drawn by the AI.</p>
+        <div class="note warn">Tidy up moves every shape and clears the undo history. The editor asks you to confirm. To keep the previous version, save it in My diagrams first.</div>
+        <h3>Simulation</h3>
+        <p>The <span class="ui">Simulation</span> button switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. It is a good way to check that a process ends properly in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
+      </section>
+
+      <section id="saving">
+        <h2>Saving and My diagrams</h2>
+        <h3>Autosave</h3>
+        <p>The current diagram is kept in your browser one second after each change. There is only one current diagram: clicking <span class="ui">New</span> or opening a file replaces it.</p>
+        <h3>My diagrams</h3>
+        <p>To keep several diagrams, open <span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
+        <div class="note warn">My diagrams lives in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a diagram for good, or share it, export it as a .bpmn file.</div>
+      </section>
+
+      <section id="open-export">
+        <h2>Open, import, export</h2>
+        <h3>Open</h3>
+        <ul>
+          <li><span class="ui">Open</span>, then <span class="ui">.bpmn or .xml file…</span>, opens a file from your disk.</li>
+          <li><span class="ui">Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
+          <li>You can also drop a .bpmn file onto the page.</li>
+        </ul>
+        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no diagram layout, the editor computes one when it opens.</p>
+        <h3>Export</h3>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Format</th><th>Use it to</th></tr></thead>
+            <tbody>
+              <tr><td>.bpmn file</td><td>Keep the diagram, reopen it here or in another BPMN tool</td></tr>
+              <tr><td>.xml file</td><td>The same content, for tools that expect the .xml extension</td></tr>
+              <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
+              <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
+              <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
+              <tr><td>PDF document</td><td>Print or send the diagram</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Every export uses the file name shown in the toolbar.</p>
+      </section>
+
+      <section id="assistant">
+        <h2>AI assistant</h2>
+        <p>The <span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. Then you touch up its work by hand, like any other diagram.</p>
+
+        <h3>1. Choose a provider</h3>
+        <p>The assistant uses an AI model from the provider of your choice, with <strong>your own API key</strong>. Open <span class="ui">Options</span> in the assistant panel:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Provider</th><th>What to know</th></tr></thead>
+            <tbody>
+              <tr><td>Anthropic (Claude)</td><td>The simplest in this version: create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
+              <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI does not always accept calls made from a web page: if "Test" fails, this provider will not work here.</td></tr>
+              <tr><td>Ollama</td><td>Free models, on your own computer. Ollama must be started with the <code>OLLAMA_ORIGINS</code> variable set to this site's address (Options gives you the exact value). Pick a model that supports tool calls.</td></tr>
+              <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… The server must use https (or localhost) and allow this site's address in its CORS setting.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Paste the key, click <span class="ui">Test</span>, then choose the model. A provider's models are offered once its connection is tested. The panel shows which model is in use.</p>
+
+        <h3>2. Describe the process</h3>
+        <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The assistant answers in the language of your message. For example:</p>
+        <div class="note">"Draw the expense claim process. The employee enters the claim, their manager approves or rejects it. Above €500, accounting approves it too. Once approved, it is paid within 5 days. Use one lane per role."</div>
+        <p>Under each answer, small tags show what the assistant did to the diagram: reading, adding shapes, connections, layout… Then ask it for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself.</p>
+        <ul>
+          <li>The input box grows with the text. The button in its corner opens a large editor, handy to paste long text or open a .txt or .md file. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends.</li>
+          <li><span class="ui">New chat</span> starts over. The diagram does not change.</li>
+          <li><span class="ui">Stop</span> interrupts an answer in progress.</li>
+        </ul>
+
+        <h3>3. Start from an image or a PDF</h3>
+        <p>Got a whiteboard sketch, a screenshot from an old tool, a procedure in a PDF? Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs only work with OpenAI.</p>
+
+        <h3>What it costs</h3>
+        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends the current diagram. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
+      </section>
+
+      <section id="keys">
+        <h2>Your API keys</h2>
+        <p>Your key never goes through this site. It stays in your browser and goes straight to the chosen provider with each message. Where it is kept depends on the <span class="ui">Remember keys on your device</span> box in Options:</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Box</th><th>Where the key is</th><th>Until when</th></tr></thead>
+            <tbody>
+              <tr><td>Unchecked (default)</td><td>The tab's session storage</td><td>Erased when you close the tab</td></tr>
+              <tr><td>Checked</td><td>The browser's local storage</td><td>Kept until you click <span class="ui">Clear keys</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>What protects it: the page runs no script from anywhere else (a content security policy forbids it), and the key is only sent to the chosen provider. However, a malicious browser extension, or someone using your session, can read it.</p>
+        <div class="note warn">On a shared computer, leave the box unchecked and close the tab when you leave. Prefer a key created for the purpose, with a spending limit, that you can delete at the provider.</div>
+      </section>
+
+      <section id="privacy">
+        <h2>Privacy</h2>
+        <ul>
+          <li><strong>Nothing is sent to us.</strong> This site has no server of its own behind the page: your diagrams, settings and keys stay in your browser.</li>
+          <li><strong>With the AI assistant</strong>, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>Like any web host, this site's host (GitHub Pages) keeps technical logs, such as your IP address.</li>
+          <li>No cookies, no analytics, no third-party scripts.</li>
+        </ul>
+        <p>The <span class="ui">Privacy</span> link at the bottom of the canvas repeats these points in the editor.</p>
+      </section>
+
+      <section id="docker">
+        <h2>Docker version and MCP agents</h2>
+        <p>This site is the online version. The editor also comes as a Docker version, to install on your machine or private network. It adds:</p>
+        <ul>
+          <li>API keys stored on your server, which never reach the browser;</li>
+          <li>every provider, OpenAI included, with no browser blocking;</li>
+          <li>My diagrams also saved on the server, available from several browsers;</li>
+          <li>an <strong>MCP server</strong>: an agent such as Claude Code or Claude Desktop can draw in the open editor. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
+        </ul>
+        <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">project README on GitHub</a>.</p>
+      </section>
+
+      <section id="faq">
+        <h2>FAQ</h2>
+        <details class="faq">
+          <summary>Do I need an account?</summary>
+          <p>No. The editor works without an account. Only the AI assistant needs a key from an AI provider.</p>
+        </details>
+        <details class="faq">
+          <summary>Can I use the editor without AI?</summary>
+          <p>Yes. The whole editor works without a key: drawing, checks, simulation, saving and exports.</p>
+        </details>
+        <details class="faq">
+          <summary>My diagrams are gone. What happened?</summary>
+          <p>They are stored in the browser. They do not show in another browser, on another device, in private mode, or after the site's data is cleared. Export what you want to keep as .bpmn.</p>
+        </details>
+        <details class="faq">
+          <summary>"Test" fails with OpenAI.</summary>
+          <p>OpenAI sometimes refuses calls made directly from a web page. Use Anthropic or Ollama on this site, or install the Docker version, which goes through its own server.</p>
+        </details>
+        <details class="faq">
+          <summary>The assistant drew something unexpected.</summary>
+          <p>Undo with <kbd>Ctrl</kbd>+<kbd>Z</kbd>, or ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>
+        </details>
+        <details class="faq">
+          <summary>Can I open my files in another BPMN tool?</summary>
+          <p>Yes. The .bpmn file follows the BPMN 2.0 standard and opens in Camunda Modeler, Bizagi, Signavio and other compatible tools.</p>
+        </details>
+        <details class="faq">
+          <summary>Does it work on a phone or tablet?</summary>
+          <p>The page displays, but the editor is made for a computer screen, a mouse and a keyboard.</p>
+        </details>
+      </section>
+
+      <section id="feedback">
+        <h2>Send feedback</h2>
+        <p>A bug, an idea, a question? The <span class="ui">Feedback</span> button, bottom right of the canvas, or a click on the Leylines logo, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-editor/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+      </section>
+
+      <footer>
+        BPMN Editor by Leylines, built on <a href="https://bpmn.io" target="_blank" rel="noopener">bpmn.io</a>. Source code on <a href="https://github.com/Leylines-Prism/bpmn-editor" target="_blank" rel="noopener">GitHub</a>.
+      </footer>
+    </main>
+  </div>
+</body>
+</html>
