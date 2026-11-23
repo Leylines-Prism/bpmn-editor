@@ -341,9 +341,11 @@ body.properties-instant #properties-panel { transition: none; }
 
 /* ── Assistant IA (panneau créé par src/chat-panel.js) ───────────────── */
 
+/* Même fin trait leyline (ciel, magenta, orange) que le bouton Assistant IA qui l'ouvre. */
 body #chat-panel {
-  width: var(--chat-width, 360px); background: var(--surface-raised);
-  border: 1px solid var(--line); border-radius: var(--radius-md);
+  width: var(--chat-width, 360px);
+  border: 1.5px solid transparent; border-radius: var(--radius-md);
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
   box-shadow: var(--elevation-1); overflow: hidden;
 }
 body #chat-panel header {
