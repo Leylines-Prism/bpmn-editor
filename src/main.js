@@ -418,8 +418,8 @@ if (feedback && brandLogo) {
 if (import.meta.env.MODE === 'online') {
   // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js).
   setupAnalytics()
-  // Mention de confidentialité, en bas du canevas.
-  import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('credit') }))
+  // Bouton « Confidentialité », en bas à droite du canevas.
+  import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
     createChatPanel({ mode: 'online', tools: createTools(modeler) })
   })

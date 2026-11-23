@@ -78,7 +78,7 @@
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification. En rouvrant la page, vous le retrouvez tel que vous l'avez laissé. La barre d'outils l'indique avec « Sauvegarde auto ».</p>
         <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
-        <div class="note">Rien ne quitte votre navigateur tant que vous n'utilisez pas l'assistant IA. Il n'y a pas de compte, et le site ne reçoit pas vos diagrammes.</div>
+        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Seul le fournisseur d'IA les reçoit, si vous utilisez l'assistant ; ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
       </section>
 
       <section id="dessiner">
@@ -152,7 +152,7 @@
       <section id="enregistrer">
         <h2>Enregistrer et Mes diagrammes</h2>
         <h3>Sauvegarde automatique</h3>
-        <p>Le diagramme en cours est gardé dans votre navigateur une seconde après chaque modification. Il n'y a qu'un seul diagramme en cours : cliquer sur <span class="ui">Nouveau</span> ou ouvrir un fichier le remplace.</p>
+        <p>Le diagramme en cours est gardé dans votre navigateur une seconde après chaque modification. L'heure affichée à côté de « Sauvegarde auto » est celle du dernier enregistrement. Il n'y a qu'un seul diagramme en cours : cliquer sur <span class="ui">Nouveau</span> ou ouvrir un fichier le remplace.</p>
         <h3>Mes diagrammes</h3>
         <p>Pour garder plusieurs diagrammes, ouvrez <span class="ui">Mes diagrammes</span>. Vous pouvez y enregistrer le diagramme en cours sous un nom, puis rouvrir, renommer ou supprimer vos diagrammes. Une fois un diagramme enregistré, <kbd>Ctrl</kbd>+<kbd>S</kbd> le met à jour. <span class="ui">Enregistrer comme nouveau</span> en fait une copie.</p>
         <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre Mes diagrammes.</figcaption></figure>
@@ -224,7 +224,7 @@
 
       <section id="cles">
         <h2>Vos clés d'API</h2>
-        <p>Votre clé ne passe jamais par ce site. Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
+        <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
@@ -241,10 +241,11 @@
       <section id="confidentialite">
         <h2>Confidentialité</h2>
         <ul>
-          <li><strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés restent dans votre navigateur.</li>
+          <li><strong>Vos données.</strong> Vos diagrammes, vos réglages et vos clés restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
           <li><strong>Avec l'assistant IA</strong>, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Comme tout hébergeur web, celui du site (GitHub Pages) garde des journaux techniques, comme votre adresse IP.</li>
-          <li>Pas de cookies, pas de mesure d'audience, pas de script tiers.</li>
+          <li><strong>Mesure d'audience.</strong> Le site mesure sa fréquentation avec Umami, sans cookie, conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement. L'adresse IP n'est pas enregistrée ; elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation de l'assistant, type de fournisseur connecté, temps d'utilisation par tranche). Les données sont conservées 25 mois au maximum. Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
+          <li>Pas de script tiers.</li>
         </ul>
         <p>Le lien <span class="ui">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
       </section>

@@ -138,7 +138,8 @@ créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est c
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
 messages ni les clés. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
 `localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
-Docker ni `npm run dev` ne mesurent quoi que ce soit.
+Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
+CNIL pour les mesures d'audience exemptées de consentement.
 
 ## Développement
 
