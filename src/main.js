@@ -382,7 +382,19 @@ loadInitial().then(() => { dirty = false })
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 // Lien « Feedback », en bas du canevas (adresses réglées au build).
-setupFeedback({ container: document.getElementById('credit') })
+const feedback = setupFeedback({ container: document.getElementById('canvas') })
+// Le logo de la barre ouvre aussi la fenêtre Feedback.
+const brandLogo = document.querySelector('.brand-logo')
+if (feedback && brandLogo) {
+  Object.assign(brandLogo, { tabIndex: 0, title: T('Feedback', 'Feedback') })
+  brandLogo.setAttribute('role', 'button')
+  brandLogo.setAttribute('aria-label', T('Leylines: send feedback', 'Leylines : donner votre avis'))
+  brandLogo.classList.add('clickable')
+  brandLogo.addEventListener('click', feedback.open)
+  brandLogo.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); feedback.open() }
+  })
+}
 
 if (import.meta.env.MODE === 'online') {
   // Mention de confidentialité, en bas du canevas.

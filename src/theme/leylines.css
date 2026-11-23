@@ -264,9 +264,20 @@ body {
 }
 #credit a { color: inherit; text-decoration: none; }
 #credit a:hover { text-decoration: underline; }
-#feedback-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-decoration: none; }
-#feedback-link:hover { text-decoration: underline; }
-#feedback-link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
+#feedback-button {
+  position: absolute; right: 16px; bottom: 56px; z-index: 100;
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  padding: 8px 16px 8px 12px; border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink);
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 20px; cursor: pointer;
+  box-shadow: var(--elevation-1); transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+#feedback-button svg { width: 18px; height: 18px; }
+#feedback-button:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+#feedback-button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { #feedback-button { transition: none; transform: none !important; } }
+.brand-logo.clickable { cursor: pointer; border-radius: var(--radius-sm); }
+.brand-logo.clickable:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 #privacy-link { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 #privacy-link:hover { text-decoration: underline; }
 #privacy-link:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 2px; }
