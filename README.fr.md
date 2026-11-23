@@ -133,3 +133,9 @@ affiche le modèle utilisé.
 - La page n'exécute aucun script tiers : une politique de sécurité du contenu (CSP) n'autorise que les
   scripts du site, et la police Urbanist est servie par le site.
 - Pas de serveur MCP dans cette version. Mes diagrammes enregistre dans le navigateur seulement.
+- Confidentialité : un lien « Confidentialité » en bas du canevas dit ce qui quitte le navigateur. Rien
+  n'est envoyé au site : diagrammes, réglages et clés restent dans le navigateur. Avec l'assistant, les
+  messages, le diagramme et la clé partent directement chez le fournisseur d'IA choisi, qui applique ses
+  propres règles. L'hébergeur du site garde des journaux techniques, comme l'adresse IP. Régler
+  `VITE_SITE_HOST` au build pour nommer l'hébergeur (par exemple
+  `VITE_SITE_HOST="GitHub Pages" npm run build:online`).

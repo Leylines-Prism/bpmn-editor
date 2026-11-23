@@ -128,3 +128,8 @@ provider's models are offered once its connection has been tested. The panel sho
 - The page runs no third-party script: a Content Security Policy (CSP) only allows the site's own
   scripts, and the Urbanist font is served by the site.
 - No MCP server in this version. My diagrams saves in the browser only.
+- Privacy: a "Privacy" link at the bottom of the canvas says what leaves the browser. Nothing is sent
+  to the site: diagrams, settings and keys stay in the browser. With the assistant, messages, the
+  diagram and the key go straight to the chosen AI provider, which applies its own rules. The host of
+  the site keeps technical logs, such as the IP address. Set `VITE_SITE_HOST` at build time to name
+  the host (for example `VITE_SITE_HOST="GitHub Pages" npm run build:online`).
