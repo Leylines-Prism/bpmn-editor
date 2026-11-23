@@ -112,8 +112,9 @@ connexion.
 ### Assistant IA
 
 Le bouton **Assistant IA** ouvre le panneau de discussion : on décrit un processus, l'assistant le
-dessine, dans la langue du message. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
-clés.
+dessine, dans la langue du message. La fenêtre « Options » règle les fournisseurs et les clés, et
+choisit le modèle : les modèles d'un fournisseur sont proposés une fois sa connexion testée. Le panneau
+affiche le modèle utilisé.
 
 - La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pratique
   pour coller un long prompt ou l'ouvrir depuis un fichier .txt ou .md. Ctrl+Entrée envoie.

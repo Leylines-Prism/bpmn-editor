@@ -109,8 +109,8 @@ behind a proxy that asks for a login.
 ### AI assistant
 
 The **AI assistant** button opens the chat panel: describe a process and the assistant draws it, in
-the language you write in. The "Model" menu picks the model, and the "Options" window sets up
-providers and keys.
+the language you write in. The "Options" window sets up providers and keys and picks the model: a
+provider's models are offered once its connection has been tested. The panel shows the model in use.
 
 - The input grows with its text. The button in its corner opens a large editor, handy to paste a
   long prompt or load one from a .txt or .md file. Ctrl+Enter sends.

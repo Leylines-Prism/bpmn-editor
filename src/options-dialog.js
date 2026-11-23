@@ -41,7 +41,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
   dialog.innerHTML = `
     <form method="dialog">
       <h2 id="options-title">${T('Assistant options', "Options de l'assistant")}</h2>
-      <p class="hint">${T('Turn on one or more providers, paste the key if needed, then pick the default model.', 'Activez un ou plusieurs fournisseurs, collez la clé si besoin, puis choisissez le modèle par défaut.')}</p>
+      <p class="hint">${T('Turn on one or more providers, paste the key if needed and test the connection: their models then appear in the menu below, where you pick the model of the assistant.', 'Activez un ou plusieurs fournisseurs, collez la clé si besoin et testez la connexion : leurs modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
       <p class="hint" id="options-server" hidden></p>
       <div class="providers">
         ${PROVIDERS.map(
@@ -66,7 +66,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
         </fieldset>`,
         ).join('')}
       </div>
-      <label class="field default-model"><span>${T('Default model', 'Modèle par défaut')}</span><select id="options-default"></select></label>
+      <label class="field default-model"><span>${T('Assistant model', 'Modèle de l\'assistant')}</span><select id="options-default"></select></label>
       <div class="keys-row">
         <label><input type="checkbox" id="options-remember" /> ${T('Remember keys on this device', 'Se souvenir des clés sur cet appareil')}</label>
         <span class="grow"></span>
@@ -116,7 +116,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
   }
 
   function renderDefault() {
-    const options = [...serverModels.map((m) => ({ ...m, providerLabel: `${m.providerLabel} (serveur)` })), ...userModels(draft)]
+    const options = [...serverModels.map((m) => ({ ...m, providerLabel: `${m.providerLabel} ${T('(server)', '(serveur)')}` })), ...userModels(draft)]
     defaultSelect.replaceChildren()
     const groups = new Map()
     for (const m of options) {
@@ -129,7 +129,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       }
       group.append(new Option(m.label, m.id))
     }
-    if (!options.length) defaultSelect.append(new Option(T('No model available', 'Aucun modèle disponible'), ''))
+    if (!options.length) defaultSelect.append(new Option(T('No model yet: turn on a provider and test its connection', 'Aucun modèle pour l\'instant : activez un fournisseur et testez sa connexion'), ''))
     defaultSelect.value = options.some((m) => m.id === draft.defaultModel) ? draft.defaultModel : options[0]?.id || ''
     defaultSelect.disabled = !options.length
   }
@@ -143,8 +143,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
     const label = el.querySelector('.p-label')
     if (label) label.value = s.label
     el.classList.toggle('on', s.enabled)
-    el.querySelector('.p-result').textContent = ''
-    el.querySelector('.p-result').className = 'p-result'
+    showStatus(id)
     renderModels(id)
   }
 
@@ -160,13 +159,14 @@ export function createOptionsDialog({ mode, test, onSave }) {
     const result = el.querySelector('.p-result')
     const conn = connection(id)
     const def = PROVIDERS.find((p) => p.id === id)
-    if (!conn.baseUrl) return showResult(result, false, "Indiquez d'abord l'adresse.")
+    if (!conn.baseUrl) return showResult(result, false, T('Enter the address first.', "Indiquez d'abord l'adresse."))
     if (def.needsKey && !conn.apiKey) return showResult(result, false, T('Paste the key first.', "Collez d'abord la clé."))
     const buttons = el.querySelectorAll('.p-test, .p-list')
     buttons.forEach((b) => (b.disabled = true))
     showResult(result, null, T('Connecting…', 'Connexion…'))
     try {
       const models = await test(conn)
+      draft.providers[id].verified = true
       if (fill) {
         const current = draft.providers[id].models
         const on = new Set(current.filter((m) => m.on).map((m) => m.id))
@@ -174,16 +174,29 @@ export function createOptionsDialog({ mode, test, onSave }) {
         const kept = current.filter((m) => m.on && !models.some((x) => x.id === m.id))
         draft.providers[id].models = [...kept, ...models.map((m) => ({ ...m, on: on.has(m.id) }))]
         renderModels(id)
-        renderDefault()
         showResult(result, true, T(`${models.length} model${models.length > 1 ? 's' : ''} received: tick the ones to offer.`, `${models.length} modèle${models.length > 1 ? 's' : ''} reçu${models.length > 1 ? 's' : ''} : cochez ceux à proposer.`))
       } else {
         showResult(result, true, T(`Connected: ${models.length} model${models.length > 1 ? 's' : ''} available.`, `Connexion réussie : ${models.length} modèle${models.length > 1 ? 's' : ''} disponible${models.length > 1 ? 's' : ''}.`))
       }
+      renderDefault()
     } catch (err) {
+      draft.providers[id].verified = false
+      renderDefault()
       showResult(result, false, err.message)
     } finally {
       buttons.forEach((b) => (b.disabled = false))
     }
+  }
+
+  // État d'un bloc activé : connexion déjà testée, ou test à faire avant que ses modèles
+  // soient proposés.
+  function showStatus(id) {
+    const el = blocks.get(id)
+    const s = draft.providers[id]
+    const result = el.querySelector('.p-result')
+    if (!s.enabled) return showResult(result, null, '')
+    if (s.verified) showResult(result, true, T('Connection tested.', 'Connexion testée.'))
+    else showResult(result, null, T('Test the connection to offer its models.', 'Testez la connexion pour proposer ses modèles.'))
   }
 
   function showResult(el, ok, text) {
@@ -195,11 +208,17 @@ export function createOptionsDialog({ mode, test, onSave }) {
     el.querySelector('.p-enabled').addEventListener('change', (e) => {
       read(id)
       el.classList.toggle('on', e.target.checked)
+      showStatus(id)
       renderDefault()
     })
     for (const input of el.querySelectorAll('.p-url, .p-key, .p-label')) {
       input.addEventListener('input', () => {
         read(id)
+        // Autre adresse ou autre clé : la connexion est à tester de nouveau.
+        if (!input.classList.contains('p-label') && draft.providers[id].verified) {
+          draft.providers[id].verified = false
+          showStatus(id)
+        }
         renderDefault()
       })
     }

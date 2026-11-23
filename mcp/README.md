@@ -27,10 +27,9 @@ MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSoc
 
 The "AI assistant" button in the toolbar opens a chat panel to the right of the canvas. Describe a
 process or a change, and the model draws it in **this tab** with the same tools as the MCP server.
-Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The "Model" menu, above the
-input, picks the model among those the server offers (it only shows with two models or more). The
-browser remembers the choice. Switching provider starts a new conversation, without touching the
-diagram. The "Stop" button stops the current answer. "New chat" starts over.
+Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The model is picked in
+the Options window, among those the server offers and those of the providers set up there; the panel
+shows it above the input. Switching provider starts a new conversation, without touching the diagram. The "Stop" button stops the current answer. "New chat" starts over.
 
 ```
 editor (chat panel) ──HTTP /chat──▶ server ──Claude API──────────────▶ Claude
@@ -83,8 +82,9 @@ up a provider in the Options window.
 The "Options" button of the panel opens a window with one block per provider: Anthropic, OpenAI,
 Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address (prefilled for
 Anthropic, OpenAI and Ollama), the key, and the models to offer. "List models" asks the provider
-for them, "Test" checks the address and the key. Neither button uses any credit. "Default model"
-picks the one selected in the menu.
+for them, "Test" checks the address and the key. Neither button uses any credit. A provider's
+models are only offered once "Test" or "List models" has succeeded, and again after its address or
+key changes. "Assistant model" picks the model used by the chat.
 
 - Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Remember keys on
   this device" is checked. "Clear keys" removes them.
