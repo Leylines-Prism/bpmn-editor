@@ -7,6 +7,7 @@
 // (ou, en version docker, vers le serveur qui relaie l'appel).
 
 import { PROVIDERS } from './ai/providers.js'
+import { T } from './i18n/lang.js'
 
 const SETTINGS_KEY = 'bpmn-editor-ai-settings'
 const KEYS_KEY = 'bpmn-editor-ai-keys'
@@ -96,7 +97,9 @@ export function isUsable(providerId, settings) {
 }
 
 export const providerLabel = (providerId, settings) =>
-  settings.providers[providerId]?.label?.trim() || PROVIDERS.find((p) => p.id === providerId)?.label || providerId
+  settings.providers[providerId]?.label?.trim() ||
+  (providerId === 'compat' ? T('OpenAI-compatible', 'Compatible OpenAI') : PROVIDERS.find((p) => p.id === providerId)?.label) ||
+  providerId
 
 // Modèles cochés des blocs utilisables, pour le menu du panneau.
 export function userModels(settings) {

@@ -5,7 +5,9 @@
 //   POST /chat    chat intégré à l'éditeur (réponse en flux SSE)
 //   GET  /healthz état du serveur et nombre d'onglets connectés
 //
-// N'écoute que sur 127.0.0.1 : rien n'est exposé sur le réseau.
+// N'écoute que sur 127.0.0.1 : rien n'est exposé sur le réseau. Dans le conteneur docker,
+// MCP_HOST=0.0.0.0 le rend joignable par nginx, et MCP_ALLOWED_HOSTS limite les noms
+// d'hôte acceptés (protection contre le DNS rebinding).
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
@@ -25,7 +27,12 @@ try {
   process.loadEnvFile(new URL('.env', import.meta.url))
 } catch {}
 
-const HOST = '127.0.0.1'
+const HOST = process.env.MCP_HOST || '127.0.0.1'
+const LOCAL_HOSTS = ['127.0.0.1', 'localhost', '::1']
+const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean)
 const PORT = Number(process.env.MCP_PORT || 3333)
 const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',')
@@ -58,7 +65,10 @@ function buildMcpServer() {
   return server
 }
 
-const app = createMcpExpressApp({ host: HOST })
+// Hors de 127.0.0.1, les noms d'hôte acceptés sont ceux de MCP_ALLOWED_HOSTS, ou localhost par défaut.
+const app = createMcpExpressApp(
+  LOCAL_HOSTS.includes(HOST) ? { host: HOST } : { host: HOST, allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1'] },
+)
 
 app.post('/mcp', async (req, res) => {
   const server = buildMcpServer()
@@ -73,13 +83,13 @@ app.post('/mcp', async (req, res) => {
   } catch (err) {
     log('[mcp] erreur de traitement :', err)
     if (!res.headersSent) {
-      res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Erreur interne' }, id: null })
+      res.status(500).json({ jsonrpc: '2.0', error: { code: -32603, message: 'Internal error' }, id: null })
     }
   }
 })
 
 const methodNotAllowed = (req, res) =>
-  res.status(405).json({ jsonrpc: '2.0', error: { code: -32000, message: 'Méthode non autorisée' }, id: null })
+  res.status(405).json({ jsonrpc: '2.0', error: { code: -32000, message: 'Method not allowed' }, id: null })
 app.get('/mcp', methodNotAllowed)
 app.delete('/mcp', methodNotAllowed)
 
@@ -89,10 +99,17 @@ app.get('/healthz', (req, res) => res.json({ ok: true, ...bridge.status(), chat:
 // Réservé aux pages de l'éditeur : chaque message consomme des crédits d'API.
 
 const ALLOWED_ORIGIN_SET = new Set(ALLOWED_ORIGINS)
+
+// Langue des messages renvoyés à l'éditeur : celle de son interface (« lang » du corps), anglais par défaut.
+const langOf = (req) => (req.body?.lang === 'fr' ? 'fr' : 'en')
+const T = (req, en, fr) => (langOf(req) === 'fr' ? fr : en)
 function chatCors(req, res, next) {
   const origin = req.headers.origin
+  // Image docker : l'éditeur et le serveur partagent une adresse, et le navigateur
+  // n'envoie pas d'en-tête Origin pour une lecture (GET) sur le même site.
+  if (!origin && req.headers['sec-fetch-site'] === 'same-origin') return next()
   if (!origin || !ALLOWED_ORIGIN_SET.has(origin)) {
-    return res.status(403).json({ error: 'Origine non autorisée' })
+    return res.status(403).json({ error: 'Origin not allowed' })
   }
   res.set('Access-Control-Allow-Origin', origin)
   res.set('Vary', 'Origin')
@@ -133,25 +150,25 @@ function readCustom(value, { needModel }) {
 // Bouton « Tester » ou « Lister » de la fenêtre Options, relayé par le serveur.
 app.post('/chat/models', chatCors, async (req, res) => {
   const custom = readCustom(req.body, { needModel: false })
-  if (!custom) return res.status(400).json({ error: 'Réglages invalides' })
+  if (!custom) return res.status(400).json({ error: T(req, 'Invalid settings', 'Réglages invalides') })
   try {
     const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000) })
     res.json({ models })
   } catch (err) {
-    res.json({ error: describeProviderError(err, { label: custom.label, providerId: custom.provider }) })
+    res.json({ error: describeProviderError(err, { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })
   }
 })
 
 app.post('/chat', chatCors, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
   if (typeof text !== 'string' || !text.trim() || text.length > 100000 || typeof tabId !== 'string') {
-    return res.status(400).json({ error: 'Requête invalide' })
+    return res.status(400).json({ error: T(req, 'Invalid request', 'Requête invalide') })
   }
   const custom = req.body.custom === undefined ? null : readCustom(req.body.custom, { needModel: true })
-  if (req.body.custom !== undefined && !custom) return res.status(400).json({ error: 'Réglages du fournisseur invalides' })
+  if (req.body.custom !== undefined && !custom) return res.status(400).json({ error: T(req, 'Invalid provider settings', 'Réglages du fournisseur invalides') })
   // Sinon, seuls les modèles configurés sur le serveur sont acceptés.
   if (!custom && model !== undefined && (typeof model !== 'string' || !chat.hasModel(model))) {
-    return res.status(400).json({ error: 'Modèle inconnu' })
+    return res.status(400).json({ error: T(req, 'Unknown model', 'Modèle inconnu') })
   }
   res.set({ 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
   res.flushHeaders()
@@ -170,29 +187,31 @@ app.post('/chat', chatCors, async (req, res) => {
       text: text.trim(),
       emit,
       signal: abort.signal,
+      lang: langOf(req),
     })
     emit({ type: 'done' })
   } catch (err) {
     if (!abort.signal.aborted) {
       log('[chat] erreur :', err.message)
-      emit({ type: 'error', message: custom ? describeProviderError(err, { label: custom.label, providerId: custom.provider }) : chatErrorMessage(err) })
+      emit({ type: 'error', message: custom ? describeProviderError(err, { label: custom.label, providerId: custom.provider, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
     }
   }
   res.end()
 })
 
-function chatErrorMessage(err) {
-  if (err instanceof Anthropic.AuthenticationError) return "Clé d'API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur."
-  if (err instanceof Anthropic.PermissionDeniedError) return "Cette clé d'API n'a pas accès à ce modèle."
-  if (err instanceof Anthropic.RateLimitError) return "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard."
-  if (err instanceof Anthropic.BadRequestError) return `Requête refusée par l'API : ${err.message}`
-  if (err instanceof Anthropic.APIError) return `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`
+function chatErrorMessage(err, lang = 'en') {
+  const T = (en, fr) => (lang === 'fr' ? fr : en)
+  if (err instanceof Anthropic.AuthenticationError) return T('API key rejected. Check ANTHROPIC_API_KEY on the server.', "Clé d'API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur.")
+  if (err instanceof Anthropic.PermissionDeniedError) return T('This API key has no access to this model.', "Cette clé d'API n'a pas accès à ce modèle.")
+  if (err instanceof Anthropic.RateLimitError) return T('API usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard.")
+  if (err instanceof Anthropic.BadRequestError) return T(`Request rejected by the API: ${err.message}`, `Requête refusée par l'API : ${err.message}`)
+  if (err instanceof Anthropic.APIError) return T(`API error (${err.status ?? 'network'}): ${err.message}`, `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`)
   if (err instanceof OpenAICompatError) {
-    if (err.status === 401 || err.status === 403) return 'Clé refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.'
-    if (err.status === 404) return `Modèle ou adresse introuvable chez le fournisseur compatible OpenAI. Vérifiez OPENAI_BASE_URL et OPENAI_MODELS (${err.message}).`
-    if (err.status === 429) return "Limite d'utilisation du fournisseur atteinte, ou crédits épuisés. Réessayez plus tard."
-    if (err.status === null) return `Fournisseur compatible OpenAI injoignable. Vérifiez OPENAI_BASE_URL (${err.message}).`
-    return `Erreur du fournisseur compatible OpenAI (${err.status}) : ${err.message}`
+    if (err.status === 401 || err.status === 403) return T('Key rejected by the OpenAI-compatible provider. Check OPENAI_API_KEY on the server.', 'Clé refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.')
+    if (err.status === 404) return T(`Model or address not found at the OpenAI-compatible provider. Check OPENAI_BASE_URL and OPENAI_MODELS (${err.message}).`, `Modèle ou adresse introuvable chez le fournisseur compatible OpenAI. Vérifiez OPENAI_BASE_URL et OPENAI_MODELS (${err.message}).`)
+    if (err.status === 429) return T('Provider usage limit reached, or credits used up. Try again later.', "Limite d'utilisation du fournisseur atteinte, ou crédits épuisés. Réessayez plus tard.")
+    if (err.status === null) return T(`OpenAI-compatible provider unreachable. Check OPENAI_BASE_URL (${err.message}).`, `Fournisseur compatible OpenAI injoignable. Vérifiez OPENAI_BASE_URL (${err.message}).`)
+    return T(`OpenAI-compatible provider error (${err.status}): ${err.message}`, `Erreur du fournisseur compatible OpenAI (${err.status}) : ${err.message}`)
   }
   return err.message
 }

@@ -15,13 +15,14 @@ const MAX_JSON_RETRIES = 2
 
 export const CHAT_SYSTEM = `${INSTRUCTIONS}
 
-Tu es l'assistant intégré à cet éditeur BPMN. L'utilisateur voit le canevas à côté de la discussion :
-chaque outil que tu appelles modifie son diagramme sous ses yeux.
-- Réponds en français, brièvement. Ne recopie pas le XML ni la liste des formes dans ta réponse.
-- Avant de modifier un diagramme existant, lis-le avec get_shapes.
-- Quand tu as fini de dessiner, valide avec validate_diagram et corrige ce qui peut l'être.
-- Pour une demande floue, dessine une première version raisonnable plutôt que de poser des questions.
-- Pour un grand schéma, procède en plusieurs appels de 10 à 15 formes : l'utilisateur voit le dessin avancer.`
+You are the assistant built into this BPMN editor. The user sees the canvas next to the chat:
+each tool you call changes their diagram before their eyes.
+- Reply briefly, in the language of the user's message. Do not copy the XML or the list of shapes into your reply.
+- Name new elements in the language of the user's message.
+- Before changing an existing diagram, read it with get_shapes.
+- When you have finished drawing, check it with validate_diagram and fix what can be fixed.
+- For a vague request, draw a reasonable first version rather than asking questions.
+- For a large diagram, work in several calls of 10 to 15 shapes: the user sees the drawing progress.`
 
 // Prépare les outils pour les deux formats d'API, avec le zod fourni.
 export function createToolSet(z) {
@@ -77,7 +78,8 @@ export async function runTool({ toolSet, name, input, executeTool, emit, log = c
 
 // Un tour avec l'API Claude. client : instance du SDK Anthropic ;
 // APIError : sa classe d'erreur (Anthropic.APIError), pour reconnaître les erreurs de l'API.
-export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, toolSet, executeTool, emit, signal, log = console.error }) {
+export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+  const T = (en, fr) => (lang === 'fr' ? fr : en)
   // On travaille sur une copie, et on n'enregistre que des étapes complètes :
   // une interruption ne laisse jamais un appel d'outil sans résultat.
   const before = conv.messages
@@ -142,18 +144,18 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
     if (message.stop_reason === 'refusal') {
       // La demande est retirée de l'historique pour ne pas bloquer la suite.
       conv.messages = before
-      throw new Error('La demande a été refusée par le modèle.')
+      throw new Error(T('The model declined the request.', 'La demande a été refusée par le modèle.'))
     }
 
     const toolUses = message.content.filter((b) => b.type === 'tool_use')
     if (message.stop_reason === 'max_tokens' && toolUses.length) {
       // Arguments tronqués : on n'exécute rien et on n'enregistre pas cette étape.
-      throw new Error("Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois.")
+      throw new Error(T('Reply cut off: the tool call exceeded the maximum length. Ask for a smaller diagram, in several steps.', "Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois."))
     }
     if (toolUses.length === 0 || message.stop_reason !== 'tool_use') {
       messages.push({ role: 'assistant', content: message.content })
       conv.messages = messages.slice()
-      if (message.stop_reason === 'max_tokens') throw new Error('Réponse interrompue : longueur maximale atteinte.')
+      if (message.stop_reason === 'max_tokens') throw new Error(T('Reply cut off: maximum length reached.', 'Réponse interrompue : longueur maximale atteinte.'))
       return
     }
 
@@ -166,12 +168,13 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
     messages.push({ role: 'assistant', content: message.content }, { role: 'user', content: results })
     conv.messages = messages.slice()
   }
-  throw new Error(`Arrêt après ${MAX_STEPS} étapes sans réponse finale.`)
+  throw new Error(T(`Stopped after ${MAX_STEPS} steps without a final answer.`, `Arrêt après ${MAX_STEPS} étapes sans réponse finale.`))
 }
 
 // Même boucle pour une API compatible OpenAI (/chat/completions avec outils).
 // client : OpenAICompatClient.
-export async function runOpenAITurn({ client, model, reasoningEffort = null, conv, text, toolSet, executeTool, emit, signal, log = console.error }) {
+export async function runOpenAITurn({ client, model, reasoningEffort = null, conv, text, toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+  const T = (en, fr) => (lang === 'fr' ? fr : en)
   const before = conv.messages
   const messages = [...before, { role: 'user', content: text }]
   conv.messages = messages.slice()
@@ -205,17 +208,17 @@ export async function runOpenAITurn({ client, model, reasoningEffort = null, con
 
     if (result.finishReason === 'content_filter') {
       conv.messages = before
-      throw new Error('La demande a été refusée par le filtre du fournisseur.')
+      throw new Error(T("The request was blocked by the provider's filter.", 'La demande a été refusée par le filtre du fournisseur.'))
     }
     if (result.finishReason === 'length' && result.toolCalls.length) {
-      throw new Error("Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois.")
+      throw new Error(T('Reply cut off: the tool call exceeded the maximum length. Ask for a smaller diagram, in several steps.', "Réponse interrompue : l'appel d'outil dépassait la longueur maximale. Demandez un schéma plus petit, en plusieurs fois."))
     }
     // Certains serveurs (Ollama notamment) terminent par « stop » même avec
     // des appels d'outils : on se fie à leur présence, pas à finish_reason.
     if (result.toolCalls.length === 0) {
       messages.push({ role: 'assistant', content: result.content })
       conv.messages = messages.slice()
-      if (result.finishReason === 'length') throw new Error('Réponse interrompue : longueur maximale atteinte.')
+      if (result.finishReason === 'length') throw new Error(T('Reply cut off: maximum length reached.', 'Réponse interrompue : longueur maximale atteinte.'))
       return
     }
 
@@ -242,5 +245,5 @@ export async function runOpenAITurn({ client, model, reasoningEffort = null, con
     messages.push(assistant, ...results)
     conv.messages = messages.slice()
   }
-  throw new Error(`Arrêt après ${MAX_STEPS} étapes sans réponse finale.`)
+  throw new Error(T(`Stopped after ${MAX_STEPS} steps without a final answer.`, `Arrêt après ${MAX_STEPS} étapes sans réponse finale.`))
 }

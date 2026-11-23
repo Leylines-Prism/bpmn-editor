@@ -1,60 +1,90 @@
 # bpmn-editor
 
-Éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus qu'on lui décrit.
+**English** | [Français](README.fr.md)
 
-## Deux façons de l'utiliser
+A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you describe.
 
-| | Version docker (auto-hébergée) | Version en ligne |
+## Two ways to use it
+
+| | Docker version (self-hosted) | Online version |
 |---|---|---|
-| Lancer | `npm run dev` et le serveur du dossier `mcp/` | `npm run dev:online`, ou `npm run build:online` (dossier `dist-online/`) |
-| Où tourne l'assistant | sur le serveur `mcp/`, qui exécute les outils dans l'onglet | dans la page elle-même |
-| Fournisseurs | variables d'environnement, ou fenêtre Options | fenêtre Options |
-| Clé d'API | sur le serveur, ou saisie dans Options et relayée sans être enregistrée | dans le navigateur du visiteur, envoyée directement au fournisseur |
-| Serveur MCP pour Claude Code et autres clients | oui | non |
+| Run | `docker compose up -d --build`, or for development `npm run dev` plus the server in `mcp/` | `npm run dev:online`, or `npm run build:online` (`dist-online/` folder) |
+| Where the assistant runs | on the `mcp/` server, which runs the tools in the editor tab | in the page itself |
+| Providers | environment variables, or the Options window | the Options window |
+| API key | on the server, or entered in Options and relayed without being stored | in the visitor's browser, sent straight to the provider |
+| MCP server for Claude Code and other clients | yes | no |
 
-Le serveur et l'assistant sont décrits dans [mcp/README.md](mcp/README.md).
+The server and the assistant are described in [mcp/README.md](mcp/README.md).
 
-## Fonctions de l'éditeur
+## Docker version
 
-### Fichiers
+```
+docker compose up -d --build
+```
 
-- **Nom du fichier** : le champ à gauche de la barre d'outils donne le nom utilisé pour
-  l'enregistrement et tous les exports.
-- **Nouveau** repart d'un diagramme vide.
-- **Ouvrir** : « Fichier .bpmn ou .xml… » ouvre un fichier du disque, « Coller du XML… » ouvre un
-  diagramme collé sous forme de code. On peut aussi glisser un fichier sur la page.
-- **Exporter** : fichier .bpmn, fichier .xml, « Code XML à copier… » (une fenêtre pour copier ou
-  télécharger le code), puis image SVG, image PNG et PDF.
-- Le diagramme en cours est gardé par le navigateur et retrouvé à la réouverture de la page.
+Then open http://localhost:8080. Two containers start: the editor, served by nginx, and the MCP
+server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`). The
+"MCP: connected" badge shows in the toolbar.
 
-### Dessin
+- API keys: in `mcp/.env` (copy `mcp/.env.example`; the file is kept out of git and of the image),
+  or entered in the Options window. Without a key, the editor and the MCP tools still work.
+- MCP clients (Claude Code…): `http://localhost:8080/mcp`.
+- By default, the site can only be reached from the machine running it (`127.0.0.1`).
+  `BPMN_PORT` changes the port (8080 by default).
+- Ollama running on the host machine is reachable at `http://host.docker.internal:11434/v1`.
+- The server has no authentication: do not expose it on a public network.
 
-- Palette d'outils à gauche, menu contextuel à côté de l'élément sélectionné, copier-coller
-  (y compris entre onglets) et copie d'une sélection en image.
-- **Couleurs** : le pinceau du menu contextuel propose 18 couleurs, avec un fond pâle et un trait
-  foncé lisible, et « Couleur personnalisée… » pour choisir n'importe quelle teinte. Le trait est
-  alors calculé pour rester lisible.
-- **Ranger** remet en ordre la disposition du diagramme.
-- **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
-- Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
-- Grille, mini-carte et panneau des propriétés (masquable avec le bouton à droite).
-- **Thème** : clair, sombre ou automatique selon le système.
+## Editor features
 
-### Assistant IA
+### Files
 
-Le bouton **Assistant IA** ouvre le panneau de discussion : on décrit un processus, l'assistant le
-dessine. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
-clés. Voir les deux versions ci-dessus et [mcp/README.md](mcp/README.md).
+- **File name**: the field on the left of the toolbar sets the name used when saving and for every
+  export.
+- **New** starts from an empty diagram.
+- **Open**: ".bpmn or .xml file…" opens a file from disk, "Paste XML…" opens a diagram pasted as
+  code. You can also drop a file onto the page.
+- **Export**: .bpmn file, .xml file, "XML code to copy…" (a window to copy or download the code),
+  then SVG image, PNG image and PDF document.
+- The current diagram is kept by the browser and restored when the page is opened again.
 
-## Version en ligne
+### Drawing
 
-- Fournisseurs : Anthropic, OpenAI, Ollama et tout serveur compatible OpenAI, réglés dans la fenêtre
-  « Options » du panneau Assistant. Chaque visiteur utilise sa propre clé et paie ses propres appels.
-- La clé reste dans le navigateur : le temps de la session de l'onglet, ou sur l'appareil si
-  « Se souvenir des clés » est coché. Le site ne reçoit ni clé ni diagramme.
-- Le fournisseur doit accepter les appels venant d'une page web (CORS). Anthropic les accepte.
-  OpenAI ne les accepte pas toujours : la version docker évite ce blocage. Ollama doit être lancé avec
-  `OLLAMA_ORIGINS` réglée sur l'adresse du site. Un serveur compatible (LiteLLM…) doit autoriser cette
-  adresse dans son réglage CORS.
-- La page n'exécute aucun script tiers : une politique de sécurité du contenu (CSP) n'autorise que les
-  scripts du site, et la police Urbanist est servie par le site.
+- Tool palette on the left, context pad next to the selected element, copy and paste (including
+  between tabs) and copying a selection as an image.
+- **Colors**: the brush in the context pad offers 18 colors, each with a pale fill and a dark,
+  readable stroke, plus "Custom color…" to pick any color. The stroke is then computed to
+  stay readable.
+- **Text**: the "A" button in the context pad formats the element's label: bold, italic, underline,
+  size (10 to 24) and font (Sans serif, Serif, Monospace). "Default text" removes the
+  formatting. The style is saved in the .bpmn file as the BPMN standard defines it
+  (`bpmndi:BPMNLabelStyle`). Underline does not show in the PDF export.
+- **Tidy up** rearranges the diagram layout.
+- **Simulation** runs tokens through the process to check how it flows.
+- Automatic BPMN rule checking, with problems flagged on the canvas.
+- Grid, minimap and properties panel (hidden or shown with the button on the right).
+- **Theme**: light, dark, or automatic to follow the system.
+- **Language**: the EN/FR button switches the interface between English (default) and French. The
+  browser remembers the choice, and the diagram is kept.
+
+### AI assistant
+
+The **AI assistant** button opens the chat panel: describe a process and the assistant draws it, in
+the language you write in. The "Model" menu picks the model, and the "Options" window sets up
+providers and keys.
+
+- The input grows with its text. The button in its corner opens a large editor, handy to paste a
+  long prompt or load one from a .txt or .md file. Ctrl+Enter sends.
+- A message can be up to 100,000 characters long.
+
+## Online version
+
+- Providers: Anthropic, OpenAI, Ollama and any OpenAI-compatible server, set up in the "Options"
+  window of the assistant panel. Each visitor uses their own key and pays for their own calls.
+- The key stays in the browser: for the tab's session, or on the device if "Remember keys on this
+  device" is checked. The site receives neither the key nor the diagram.
+- The provider must accept calls from a web page (CORS). Anthropic does. OpenAI does not always:
+  the docker version avoids that block. Ollama must be started with `OLLAMA_ORIGINS` set to the
+  site's address. A compatible server (LiteLLM…) must allow that address in its CORS settings.
+- The page runs no third-party script: a Content Security Policy (CSP) only allows the site's own
+  scripts, and the Urbanist font is served by the site.
+- No MCP server in this version.

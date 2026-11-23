@@ -60,7 +60,7 @@ export class EditorBridge {
         clearTimeout(timer)
         this.pending.delete(msg.id)
         if (msg.ok) resolve(msg.data)
-        else reject(new Error(msg.error || 'Erreur inconnue dans l’éditeur'))
+        else reject(new Error(msg.error || 'Unknown error in the editor'))
       }
     })
 
@@ -70,7 +70,7 @@ export class EditorBridge {
         if (call.ws !== ws) continue
         clearTimeout(call.timer)
         this.pending.delete(id)
-        call.reject(new Error("L'onglet de l'éditeur a été fermé pendant l'appel."))
+        call.reject(new Error('The editor tab was closed during the call.'))
       }
       this.log(`[bridge] onglet ${client.id} déconnecté (${this.clients.size} restant)`)
     })
@@ -109,8 +109,8 @@ export class EditorBridge {
       return Promise.reject(
         new Error(
           tabId
-            ? "L'onglet de l'éditeur n'est plus relié au serveur."
-            : "Aucun éditeur BPMN connecté. Ouvrez l'éditeur dans le navigateur (npm run dev) puis réessayez.",
+            ? 'The editor tab is no longer connected to the server.'
+            : 'No BPMN editor connected. Open the editor in the browser, then try again.',
         ),
       )
     }
@@ -118,7 +118,7 @@ export class EditorBridge {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
         this.pending.delete(id)
-        reject(new Error(`L'éditeur n'a pas répondu en ${CALL_TIMEOUT_MS / 1000} s.`))
+        reject(new Error(`The editor did not answer within ${CALL_TIMEOUT_MS / 1000} s.`))
       }, CALL_TIMEOUT_MS)
       this.pending.set(id, { resolve, reject, timer, ws: target.ws })
       target.ws.send(JSON.stringify({ type: 'call', id, tool, args }))
