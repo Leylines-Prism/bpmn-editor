@@ -4,6 +4,7 @@ import minimapModule from 'diagram-js-minimap'
 import TokenSimulationModule from 'bpmn-js-token-simulation'
 import { CreateAppendAnythingModule } from 'bpmn-js-create-append-anything'
 import BpmnColorPickerModule from 'bpmn-js-color-picker'
+import { COLORS, CustomColorModule } from './color-palette.js'
 import NativeCopyPasteModule from 'bpmn-js-native-copy-paste'
 import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
@@ -11,7 +12,7 @@ import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { autoLayout } from './auto-layout.js'
-import { importDiagram, setupXmlDialog, setupFileDrop } from './import-xml.js'
+import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
 import { exportPdf } from './export-pdf.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
@@ -29,6 +30,7 @@ import '../design/leylines/tokens.css'
 import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupPanelToggle } from './panel-toggle.js'
+import { fitView } from './fit-view.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -109,6 +111,7 @@ const modeler = new BpmnModeler({
   container: '#canvas',
   propertiesPanel: { parent: '#properties-panel' },
   linting: { bpmnlint: lintConfig, active: true },
+  colorPicker: { colors: COLORS },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -116,6 +119,7 @@ const modeler = new BpmnModeler({
     TokenSimulationModule,
     CreateAppendAnythingModule,
     BpmnColorPickerModule,
+    CustomColorModule,
     NativeCopyPasteModule,
     LintModule,
     GridModule,
@@ -131,12 +135,12 @@ async function loadInitial() {
   nameInput.value = (saved && savedName && cleanName(savedName)) || DEFAULT_NAME
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
-    modeler.get('canvas').zoom('fit-viewport')
+    fitView(modeler.get('canvas'))
     setStatus(saved ? 'Reprise auto-save' : 'Nouveau diagramme')
   } catch (e) {
     console.error('Import error:', e)
     await modeler.importXML(EMPTY_DIAGRAM)
-    modeler.get('canvas').zoom('fit-viewport')
+    fitView(modeler.get('canvas'))
   }
 }
 
@@ -163,7 +167,7 @@ document.getElementById('btn-new').addEventListener('click', async () => {
   localStorage.removeItem(LS_KEY)
   setBaseName(DEFAULT_NAME)
   await modeler.importXML(EMPTY_DIAGRAM)
-  modeler.get('canvas').zoom('fit-viewport')
+  fitView(modeler.get('canvas'))
   setStatus('Nouveau')
 })
 
@@ -220,16 +224,29 @@ document.getElementById('btn-save').addEventListener('click', async () => {
   download(xml, baseName() + '.bpmn', 'application/xml')
 })
 
-// Menu Exporter : ouvert sous son bouton, refermé dès qu'un format est choisi.
-const exportMenu = document.getElementById('export-menu')
-exportMenu.addEventListener('beforetoggle', (e) => {
-  if (e.newState !== 'open') return
-  const r = document.getElementById('btn-export').getBoundingClientRect()
-  exportMenu.style.left = r.left + 'px'
-  exportMenu.style.top = (r.bottom + 4) + 'px'
+// Menus Ouvrir et Exporter : ouverts sous leur bouton, refermés dès qu'une entrée est choisie.
+for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
+  const anchor = document.querySelector(`[popovertarget="${menu.id}"]`)
+  menu.addEventListener('beforetoggle', (e) => {
+    if (e.newState !== 'open') return
+    const r = anchor.getBoundingClientRect()
+    menu.style.left = r.left + 'px'
+    menu.style.top = (r.bottom + 4) + 'px'
+  })
+  menu.addEventListener('click', (e) => {
+    if (e.target.closest('button')) menu.hidePopover()
+  })
+}
+
+document.getElementById('btn-save-xml').addEventListener('click', async () => {
+  const { xml } = await modeler.saveXML({ format: true })
+  download(xml, baseName() + '.xml', 'application/xml')
 })
-exportMenu.addEventListener('click', (e) => {
-  if (e.target.closest('button')) exportMenu.hidePopover()
+
+setupXmlExport({
+  openButton: document.getElementById('btn-xml'),
+  getXml: async () => (await modeler.saveXML({ format: true })).xml,
+  download: (xml) => download(xml, baseName() + '.xml', 'application/xml'),
 })
 
 document.getElementById('btn-svg').addEventListener('click', async () => {

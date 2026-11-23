@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
+import { fitView } from './fit-view.js'
 
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
@@ -263,7 +264,7 @@ export function createTools(modeler) {
         throw new Error('Le XML ne contient aucun diagramme dessiné (BPMNDiagram avec BPMNPlane), diagramme inchangé.')
       }
       const { warnings } = await modeler.importXML(xml)
-      canvas.zoom('fit-viewport')
+      fitView(canvas)
       return {
         imported: true,
         elements: elementRegistry.filter((e) => e.type !== 'label').length,
