@@ -53,7 +53,7 @@ export function setupPrivacy({ container }) {
           <p>${T('The site measures its audience with Umami.', 'Le site mesure sa fréquentation avec Umami.')}</p>
           <ul class="pv-facts">
             <li class="pv-key">${T('The content of your diagrams, messages and keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés n\'est jamais collecté.')}</li>
-            <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. In practice:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement. Concrètement :")}</li>
+            <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement :")}</li>
             <li class="pv-sub">${T('No cookie is set and your IP address is not recorded.', "Aucun cookie n'est déposé et votre adresse IP n'est pas enregistrée.")}</li>
             <li class="pv-sub">${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>
             <li class="pv-sub">${T('The data is kept for 25 months at most and is not shared with third parties.', 'Les données sont conservées 25 mois au maximum et ne sont pas transmises à des tiers.')}</li>
