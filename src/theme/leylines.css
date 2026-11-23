@@ -521,7 +521,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .djs-popup.label-style .djs-popup-group[data-group="size"] { display: grid; grid: auto-flow / repeat(5, 1fr); gap: 4px; }
 .djs-popup.label-style .djs-popup-group[data-group="style"] .entry,
 .djs-popup.label-style .djs-popup-group[data-group="size"] .entry { justify-content: center; text-align: center; padding: 4px 0; border: 1px solid var(--mist); border-radius: var(--radius-sm); }
-.djs-popup.label-style .entry:has(.is-active) { background: var(--node-cool, #E3F4FD) !important; border-color: var(--leyline-sky-deep) !important; }
+.djs-popup.label-style .entry:has(.is-active) { background: var(--accent-soft) !important; border-color: var(--leyline-sky-deep) !important; }
 .djs-popup.label-style .label-bold, .djs-popup.label-style .label-bold * { font-weight: 700; }
 .djs-popup.label-style .djs-popup-group[data-group="style"] .djs-popup-label { font-family: Arial, Helvetica, sans-serif; font-size: 15px; }
 .djs-popup.label-style .label-italic { font-style: italic; }
@@ -639,7 +639,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   font-size: 14px; color: var(--ink); background: var(--surface);
 }
 #mcp-connect-dialog .agent-choice input { accent-color: var(--accent); margin: 0; }
-#mcp-connect-dialog .agent-choice label:has(input:checked) { border-color: var(--accent); background: var(--node-cool, #E3F4FD); font-weight: 600; }
+#mcp-connect-dialog .agent-choice label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
 #mcp-connect-dialog .agent-choice label:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 #mcp-connect-dialog .agent-panel { display: flex; flex-direction: column; gap: var(--space-2); }
 #mcp-connect-dialog details { border-top: 1px solid var(--line); padding-top: var(--space-3); margin-top: var(--space-2); }
