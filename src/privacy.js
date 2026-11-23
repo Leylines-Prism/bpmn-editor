@@ -27,8 +27,8 @@ export function setupPrivacy({ container }) {
     <form method="dialog">
       <h2>${T('Privacy', 'Confidentialité')}</h2>
       <ul>
-        <li>${T('<strong>Nothing is sent to us.</strong> This site has no server of its own behind the page: your diagrams, your settings and your API keys stay in this browser, on this device.',
-                "<strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés d'API restent dans ce navigateur, sur cet appareil.")}</li>
+        <li>${T('<strong>Nothing is sent to us.</strong> This site has no server of its own behind the page: your diagrams, your settings and your API keys stay in your browser, on your device.',
+                "<strong>Rien ne nous est envoyé.</strong> Ce site n'a pas de serveur à lui derrière la page : vos diagrammes, vos réglages et vos clés d'API restent dans votre navigateur, sur votre appareil.")}</li>
         <li>${T('<strong>With the AI assistant</strong>, your messages, the diagram and your API key go straight from your browser to the AI provider you chose (Anthropic, OpenAI…), which applies its own terms and privacy policy and bills you for the calls.',
                 "<strong>Avec l'assistant IA</strong>, vos messages, le diagramme et votre clé d'API partent directement de votre navigateur vers le fournisseur d'IA choisi (Anthropic, OpenAI…), qui applique ses propres conditions et sa politique de confidentialité, et vous facture les appels.")}</li>
         <li>${hostText}</li>
