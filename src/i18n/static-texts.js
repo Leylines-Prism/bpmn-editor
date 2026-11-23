@@ -5,7 +5,8 @@ import { lang, setLang } from './lang.js'
 
 const FR = {
   'h1': { text: 'Éditeur BPMN' },
-  '#file-name': { 'aria-label': 'Nom du fichier', title: "Nom du fichier pour l'enregistrement et les exports (sans extension)" },
+  '#file-name-field': { title: "Nom du fichier pour l'enregistrement et les exports" },
+  '#file-name': { 'aria-label': 'Nom du fichier', placeholder: 'Nom du fichier' },
   '#btn-new': { text: 'Nouveau' },
   '#btn-open-menu': { text: 'Ouvrir' },
   '#btn-open': { text: 'Fichier .bpmn ou .xml…' },
