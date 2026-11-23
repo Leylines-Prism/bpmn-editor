@@ -32,6 +32,8 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 - By default, the site can only be reached from the machine running it (`127.0.0.1`).
   `BPMN_PORT` changes the port (8080 by default).
 - Ollama running on the host machine is reachable at `http://host.docker.internal:11434/v1`.
+- Diagrams saved on the server are kept in the `diagrams` docker volume (`/data/diagrams` in the
+  container, one `.bpmn` file per diagram). `docker compose down -v` deletes them.
 - The server has no authentication: do not expose it on a public network.
 
 ## Editor features
@@ -46,6 +48,10 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 - **Export**: .bpmn file, .xml file, "XML code to copy…" (a window to copy or download the code),
   then SVG image, PNG image and PDF document.
 - The current diagram is kept by the browser and restored when the page is opened again.
+- **My diagrams** keeps several diagrams: save the current one under a name, then reopen, rename or
+  delete them. They are saved in the browser (on this device only), and in the docker version also
+  on the server, where any browser that reaches it can open them. Once a diagram is saved, **Ctrl+S**
+  updates it. "Save as new" makes a copy.
 
 ### Drawing
 
@@ -87,4 +93,4 @@ providers and keys.
   site's address. A compatible server (LiteLLM…) must allow that address in its CORS settings.
 - The page runs no third-party script: a Content Security Policy (CSP) only allows the site's own
   scripts, and the Urbanist font is served by the site.
-- No MCP server in this version.
+- No MCP server in this version. My diagrams saves in the browser only.

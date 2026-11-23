@@ -28,7 +28,13 @@ services:
     environment:
       BPMN_EDITOR_ORIGINS: http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}
       MCP_ALLOWED_HOSTS: localhost,127.0.0.1
+    # Diagrammes enregistrés sur le serveur (« Mes diagrammes ») : gardés dans ce volume.
+    volumes:
+      - diagrams:/data
     # Ollama lancé sur la machine hôte : http://host.docker.internal:11434
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
+
+volumes:
+  diagrams:
