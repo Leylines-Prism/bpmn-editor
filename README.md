@@ -100,7 +100,7 @@ give you. Other proxies work too: they must pass the `Host` header and allow Web
 
 Click the **MCP** badge in the toolbar. The "Connect an agent" window gives the address to use
 (`http://localhost:8080/mcp`, or `https://your-domain/mcp`), and the setting to paste for Claude
-Code, Claude Desktop, Cursor or VS Code. The agent draws in the editor tab used last, so keep it open.
+Code, Claude Desktop, GitHub Copilot in VS Code, Cursor or another MCP client. The agent draws in the editor tab used last, so keep it open.
 
 An optional token protects this access: the same window generates one and tells you where to put it.
 
