@@ -1,0 +1,92 @@
+# Publie les deux images Docker sur le GitHub Container Registry à chaque tag de version (vX.Y.Z) :
+#   ghcr.io/<propriétaire>/bpmn-editor      l'éditeur (nginx)
+#   ghcr.io/<propriétaire>/bpmn-editor-mcp  le serveur MCP et le chat intégré (Node)
+#
+# Tags d'image pour v1.2.3 : 1.2.3, 1.2, 1 et latest. Une préversion (v1.3.0-rc.1) n'a que le sien.
+# Lancement manuel (Actions > Docker > Run workflow) : choisir un tag de version dans « Use workflow from ».
+#
+# La première publication crée des paquets privés. Les rendre publics une fois, dans les réglages
+# de chaque paquet (Package settings > Change visibility), pour que chacun les télécharge sans compte.
+
+name: Docker
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  image:
+    # Seules les versions sont publiées : un lancement manuel depuis une branche s'arrête ici.
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: bpmn-editor
+            file: Dockerfile
+            title: BPMN editor
+            description: BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant. Pairs with bpmn-editor-mcp.
+            # Adresse relative du serveur MCP, relayée par le nginx de l'éditeur (voir nginx.conf).
+            build-args: VITE_MCP_BRIDGE_URL=/bridge
+          - name: bpmn-editor-mcp
+            file: mcp/Dockerfile
+            title: BPMN editor MCP server
+            description: MCP server and built-in AI chat for the BPMN editor (bpmn-editor image).
+            build-args: ''
+    env:
+      # Annotations posées aussi sur l'index multi-plateforme, où le registre lit la description.
+      DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # Construction arm64 sur la machine amd64 de GitHub.
+      - uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      - uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.name }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+          labels: |
+            org.opencontainers.image.title=${{ matrix.title }}
+            org.opencontainers.image.description=${{ matrix.description }}
+          annotations: |
+            org.opencontainers.image.title=${{ matrix.title }}
+            org.opencontainers.image.description=${{ matrix.description }}
+
+      - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          platforms: linux/amd64,linux/arm64
+          build-args: ${{ matrix.build-args }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          # Provenance de la construction et liste des composants (SBOM), jointes à l'image.
+          provenance: mode=max
+          sbom: true
+          cache-from: type=gha,scope=${{ matrix.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.name }}
