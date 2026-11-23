@@ -13,7 +13,7 @@ services:
       args:
         VITE_MCP_BRIDGE_URL: /bridge
     ports:
-      - "127.0.0.1:${BPMN_PORT:-8080}:80"
+      - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:80"
     depends_on:
       - mcp
     restart: unless-stopped
@@ -26,8 +26,9 @@ services:
       - path: mcp/.env
         required: false
     environment:
-      BPMN_EDITOR_ORIGINS: http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}
-      MCP_ALLOWED_HOSTS: localhost,127.0.0.1
+      # Pour un autre nom ou une autre adresse (proxy, nom de domaine), voir le README.
+      BPMN_EDITOR_ORIGINS: ${BPMN_EDITOR_ORIGINS:-http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}}
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
     # Diagrammes enregistrés sur le serveur (« Mes diagrammes ») : gardés dans ce volume.
     volumes:
       - diagrams:/data

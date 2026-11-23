@@ -153,6 +153,8 @@ file for its name and date, in `DIAGRAMS_DIR` (`mcp/data/diagrams` by default, e
 
 - The server only listens on `127.0.0.1`. In its docker container it listens on all of the
   container's interfaces, but the site is only published on `127.0.0.1` of the host machine.
+- With `MCP_TOKEN` set, `/mcp` answers 401 to any request without `Authorization: Bearer <token>`.
+  The editor tab (`/bridge`) and the chat do not use it: they are limited to the editor origins.
 - MCP requests whose `Host` header is not local are rejected (DNS rebinding protection, provided by
   the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
 - Only editor pages can connect to the WebSocket: the origin must be listed in `BPMN_EDITOR_ORIGINS`
@@ -172,6 +174,7 @@ They can also be placed in `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | server port |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
+| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
 | `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |

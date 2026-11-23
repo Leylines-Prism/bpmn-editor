@@ -28,13 +28,45 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 
 - API keys: in `mcp/.env` (copy `mcp/.env.example`; the file is kept out of git and of the image),
   or entered in the Options window. Without a key, the editor and the MCP tools still work.
-- MCP clients (Claude Code…): `http://localhost:8080/mcp`.
+- MCP clients (Claude Code…): `http://localhost:8080/mcp`. Click the MCP badge in the toolbar to get
+  the address of your installation and ready-to-paste settings (see below).
 - By default, the site can only be reached from the machine running it (`127.0.0.1`).
   `BPMN_PORT` changes the port (8080 by default).
 - Ollama running on the host machine is reachable at `http://host.docker.internal:11434/v1`.
 - Diagrams saved on the server are kept in the `diagrams` docker volume (`/data/diagrams` in the
   container, one `.bpmn` file per diagram). `docker compose down -v` deletes them.
 - The server has no authentication: do not expose it on a public network.
+
+### Connect an agent
+
+Click the **MCP** badge in the toolbar: the "Connect an agent" window shows the MCP address of this
+installation, worked out from the address of the page, with a Copy button and ready-to-paste settings
+for Claude Code (`claude mcp add`), Claude Desktop (through `mcp-remote`) and other clients
+(Cursor, VS Code, `.mcp.json`). The agent draws in the editor tab used last, so keep it open.
+
+| Install | MCP address |
+|---|---|
+| docker on this machine | `http://localhost:8080/mcp` (or the port set in `BPMN_PORT`) |
+| development (`npm run dev` and `mcp/`) | `http://127.0.0.1:3333/mcp` |
+| docker behind a domain name or a reverse proxy | `https://your-domain/mcp` |
+
+To reach the editor from another machine or through a domain name, set these variables in a `.env`
+file next to `docker-compose.yml`:
+
+```
+BPMN_BIND=0.0.0.0                      # listen on every interface (127.0.0.1 by default)
+BPMN_EDITOR_ORIGINS=https://bpmn.example.com
+MCP_ALLOWED_HOSTS=bpmn.example.com
+```
+
+`BPMN_EDITOR_ORIGINS` lists the addresses of the editor pages (with `http://` or `https://`), and
+`MCP_ALLOWED_HOSTS` the host names that MCP clients use. The reverse proxy must pass the `Host` header
+and allow WebSocket upgrades on `/bridge`.
+
+The server has no login. Put `MCP_TOKEN=a-long-random-value` in `mcp/.env` so that MCP clients must
+send `Authorization: Bearer <token>`: the settings in the window then include that header. The editor
+pages and saved diagrams stay open to anyone who reaches the site, so keep it on a trusted network or
+behind a proxy that asks for a login.
 
 ## Editor features
 

@@ -16,6 +16,7 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 import * as z from 'zod/v4'
 
 import express from 'express'
+import { timingSafeEqual } from 'node:crypto'
 
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
@@ -37,6 +38,8 @@ const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
   .map((s) => s.trim())
   .filter(Boolean)
 const PORT = Number(process.env.MCP_PORT || 3333)
+// Jeton facultatif demandé aux clients MCP (en-tête Authorization: Bearer …).
+const MCP_TOKEN = (process.env.MCP_TOKEN || '').trim()
 const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',')
   .map((s) => s.trim())
@@ -73,7 +76,16 @@ const app = createMcpExpressApp(
   LOCAL_HOSTS.includes(HOST) ? { host: HOST } : { host: HOST, allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1'] },
 )
 
-app.post('/mcp', async (req, res) => {
+function checkToken(req, res, next) {
+  if (!MCP_TOKEN) return next()
+  const given = Buffer.from((req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim())
+  const expected = Buffer.from(MCP_TOKEN)
+  if (given.length === expected.length && timingSafeEqual(given, expected)) return next()
+  res.set('WWW-Authenticate', 'Bearer')
+  res.status(401).json({ jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized: missing or wrong MCP token' }, id: null })
+}
+
+app.post('/mcp', checkToken, async (req, res) => {
   const server = buildMcpServer()
   try {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
@@ -126,7 +138,7 @@ function chatCors(req, res, next) {
 }
 app.options('/chat', chatCors)
 app.options('/chat/models', chatCors)
-app.get('/chat', chatCors, (req, res) => res.json(chat.status()))
+app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), mcpAuth: Boolean(MCP_TOKEN) }))
 
 // Fournisseur réglé dans la fenêtre Options : { provider, format, baseUrl, apiKey, model? }.
 // La clé n'est ni enregistrée ni écrite dans le journal. Renvoie null si invalide.
@@ -272,6 +284,7 @@ const httpServer = app.listen(PORT, HOST, (err) => {
     process.exit(1)
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
+  if (MCP_TOKEN) log('Les clients MCP doivent fournir le jeton MCP_TOKEN.')
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
   for (const warning of chat.warnings) log(`Attention : ${warning}`)
   log(

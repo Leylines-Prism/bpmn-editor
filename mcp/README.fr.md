@@ -153,6 +153,8 @@ docker).
 
 - Le serveur n'écoute que sur `127.0.0.1`. Dans son conteneur docker, il écoute sur toutes les
   interfaces du conteneur, mais le site n'est publié que sur `127.0.0.1` de la machine hôte.
+- Avec `MCP_TOKEN`, `/mcp` répond 401 à toute requête sans `Authorization: Bearer <jeton>`. L'onglet
+  de l'éditeur (`/bridge`) et le chat ne l'utilisent pas : ils sont limités aux origines de l'éditeur.
 - Les requêtes MCP dont l'en-tête `Host` n'est pas local sont refusées (protection contre le DNS rebinding, fournie par le SDK).
   Dans docker, les noms acceptés sont ceux de `MCP_ALLOWED_HOSTS`.
 - Seules les pages de l'éditeur peuvent se connecter au WebSocket : l'origine doit figurer dans
@@ -172,6 +174,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` dans l'image docker) | adresse d'écoute |
+| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | noms d'hôte acceptés quand `MCP_HOST` n'est pas local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket et le chat |
 | `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
