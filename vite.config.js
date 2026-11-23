@@ -43,6 +43,8 @@ function encodedEmail(mode) {
 }
 
 export default defineConfig(({ mode }) => ({
+  // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
+  base: process.env.BASE_PATH || '/',
   plugins: mode === 'online' ? [onlineCsp()] : [],
   define: { __FEEDBACK_EMAIL__: JSON.stringify(encodedEmail(mode)) },
   build: {
