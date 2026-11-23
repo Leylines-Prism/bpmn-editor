@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
+import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
 
@@ -19,7 +20,7 @@ const RETRY_MAX_MS = 15000
 export function connectMcpBridge(modeler, url) {
   const tools = createTools(modeler)
   const badge = createBadge()
-  const state = { tabId: null }
+  const state = { tabId: null, badge }
   let retryDelay = RETRY_MIN_MS
   let ws = null
 
@@ -82,7 +83,8 @@ export function connectMcpBridge(modeler, url) {
 // ── Indicateur dans la barre d'outils ──────────────────────────────────────
 
 function createBadge() {
-  const badge = document.createElement('span')
+  const badge = document.createElement('button')
+  badge.type = 'button'
   badge.id = 'mcp-status'
   badge.style.cssText =
     'font-size:11px;white-space:nowrap;margin-left:auto;padding:2px 8px;border-radius:10px;border:1px solid #0f3460'
@@ -108,7 +110,7 @@ function setBadge(badge, state) {
   badge.style.color = color
   badge.title =
     state === 'connected'
-      ? T('An AI can read and edit this diagram through the MCP server', 'Une IA peut lire et modifier ce diagramme par le serveur MCP')
+      ? T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')
       : T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
 }
 
@@ -250,6 +252,11 @@ export function createTools(modeler) {
     async get_diagram_xml() {
       const { xml } = await modeler.saveXML({ format: true })
       return xml
+    },
+
+    // { image: { mediaType, data (base64), width, height } }
+    get_diagram_image() {
+      return renderDiagramPng(modeler)
     },
 
     async set_diagram_xml({ xml }) {

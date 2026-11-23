@@ -34,7 +34,7 @@ export function defaultSettings() {
     providers: Object.fromEntries(
       PROVIDERS.map((p) => [
         p.id,
-        { enabled: false, baseUrl: p.baseUrl, label: p.customLabel ? '' : p.label, models: p.models.map((m) => ({ ...m, on: true })), apiKey: '' },
+        { enabled: false, verified: false, baseUrl: p.baseUrl, label: p.customLabel ? '' : p.label, models: p.models.map((m) => ({ ...m, on: true })), apiKey: '' },
       ]),
     ),
   }
@@ -51,6 +51,7 @@ export function loadSettings() {
       if (!s) continue
       const target = settings.providers[p.id]
       target.enabled = !!s.enabled
+      target.verified = !!s.verified
       if (typeof s.baseUrl === 'string') target.baseUrl = s.baseUrl
       if (typeof s.label === 'string' && p.customLabel) target.label = s.label
       if (Array.isArray(s.models)) {
@@ -89,11 +90,12 @@ export function forgetKeys(settings) {
   write(sessionStorage, KEYS_KEY, null)
 }
 
-// Un bloc est utilisable s'il est activé, a une adresse et, si besoin, une clé.
+// Un bloc est utilisable s'il est activé, a une adresse, une clé si besoin, et si
+// sa connexion a été testée avec succès (Tester ou Lister les modèles).
 export function isUsable(providerId, settings) {
   const def = PROVIDERS.find((p) => p.id === providerId)
   const s = settings.providers[providerId]
-  return !!(s.enabled && s.baseUrl.trim() && (!def.needsKey || s.apiKey.trim()))
+  return !!(s.enabled && s.verified && s.baseUrl.trim() && (!def.needsKey || s.apiKey.trim()))
 }
 
 export const providerLabel = (providerId, settings) =>

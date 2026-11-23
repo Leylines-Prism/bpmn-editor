@@ -8,7 +8,9 @@ COPY src/ai ./src/ai
 COPY mcp/*.js ./mcp/
 # Les fichiers de src/ai sont des modules ES.
 RUN echo '{"type":"module"}' > src/package.json
-ENV MCP_HOST=0.0.0.0 NODE_ENV=production
+# Diagrammes enregistrés : dossier monté en volume par docker-compose.
+RUN mkdir -p /data/diagrams && chown -R node:node /data
+ENV MCP_HOST=0.0.0.0 NODE_ENV=production DIAGRAMS_DIR=/data/diagrams
 USER node
 EXPOSE 3333
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \

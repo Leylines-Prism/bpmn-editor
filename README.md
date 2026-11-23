@@ -28,11 +28,47 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 
 - API keys: in `mcp/.env` (copy `mcp/.env.example`; the file is kept out of git and of the image),
   or entered in the Options window. Without a key, the editor and the MCP tools still work.
-- MCP clients (Claude Code…): `http://localhost:8080/mcp`.
+- MCP clients (Claude Code…): `http://localhost:8080/mcp`. Click the MCP badge in the toolbar to get
+  the address of your installation and ready-to-paste settings (see below).
 - By default, the site can only be reached from the machine running it (`127.0.0.1`).
   `BPMN_PORT` changes the port (8080 by default).
 - Ollama running on the host machine is reachable at `http://host.docker.internal:11434/v1`.
+- Diagrams saved on the server are kept in the `diagrams` docker volume (`/data/diagrams` in the
+  container, one `.bpmn` file per diagram). `docker compose down -v` deletes them.
 - The server has no authentication: do not expose it on a public network.
+
+### Connect an agent
+
+Click the **MCP** badge in the toolbar: the "Connect an agent" window shows the MCP address of this
+installation, worked out from the address of the page, with a Copy button and ready-to-paste settings
+for Claude Code (`claude mcp add`), Claude Desktop (through `mcp-remote`) and other clients
+(Cursor, VS Code, `.mcp.json`). The agent draws in the editor tab used last, so keep it open.
+
+| Install | MCP address |
+|---|---|
+| docker on this machine | `http://localhost:8080/mcp` (or the port set in `BPMN_PORT`) |
+| development (`npm run dev` and `mcp/`) | `http://127.0.0.1:3333/mcp` |
+| docker behind a domain name or a reverse proxy | `https://your-domain/mcp` |
+
+To reach the editor from another machine or through a domain name, set these variables in a `.env`
+file next to `docker-compose.yml`:
+
+```
+BPMN_BIND=0.0.0.0                      # listen on every interface (127.0.0.1 by default)
+BPMN_EDITOR_ORIGINS=https://bpmn.example.com
+MCP_ALLOWED_HOSTS=bpmn.example.com
+```
+
+`BPMN_EDITOR_ORIGINS` lists the addresses of the editor pages (with `http://` or `https://`), and
+`MCP_ALLOWED_HOSTS` the host names that MCP clients use. The reverse proxy must pass the `Host` header
+and allow WebSocket upgrades on `/bridge`.
+
+The server has no login. Put `MCP_TOKEN=a-long-random-value` in `mcp/.env` so that MCP clients must
+send `Authorization: Bearer <token>`, then restart the server. The "Generate a token" button of the
+window draws one at random and fills it into the `mcp/.env` line and the settings to copy; the page
+cannot write `mcp/.env` itself. The editor
+pages and saved diagrams stay open to anyone who reaches the site, so keep it on a trusted network or
+behind a proxy that asks for a login.
 
 ## Editor features
 
@@ -46,6 +82,10 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 - **Export**: .bpmn file, .xml file, "XML code to copy…" (a window to copy or download the code),
   then SVG image, PNG image and PDF document.
 - The current diagram is kept by the browser and restored when the page is opened again.
+- **My diagrams** keeps several diagrams: save the current one under a name, then reopen, rename or
+  delete them. They are saved in the browser (on this device only), and in the docker version also
+  on the server, where any browser that reaches it can open them. Once a diagram is saved, **Ctrl+S**
+  updates it. "Save as new" makes a copy.
 
 ### Drawing
 
@@ -55,9 +95,13 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
   readable stroke, plus "Custom color…" to pick any color. The stroke is then computed to
   stay readable.
 - **Text**: the "A" button in the context pad formats the element's label: bold, italic, underline,
-  size (10 to 24) and font (Sans serif, Serif, Monospace). "Default text" removes the
-  formatting. The style is saved in the .bpmn file as the BPMN standard defines it
-  (`bpmndi:BPMNLabelStyle`). Underline does not show in the PDF export.
+  size (10 to 24), font (Sans serif, Serif, Monospace) and color. The color comes from the
+  brush hues, black or white, any custom color, or "Auto", which picks black or white,
+  whichever reads best on the element's fill. "Default text" removes the formatting and the
+  color. The style is saved in the .bpmn file as the BPMN standard defines it
+  (`bpmndi:BPMNLabelStyle`), and the color as `color:color` on the label (BPMN in Color),
+  which other bpmn.io tools read too. Underline does not show in the PDF export. With the
+  brush, a dark custom fill now gets a light text on its own.
 - **Tidy up** rearranges the diagram layout.
 - **Simulation** runs tokens through the process to check how it flows.
 - Automatic BPMN rule checking, with problems flagged on the canvas.
@@ -69,22 +113,53 @@ server. nginx relays the server on the same address (`/mcp`, `/bridge`, `/chat`)
 ### AI assistant
 
 The **AI assistant** button opens the chat panel: describe a process and the assistant draws it, in
-the language you write in. The "Model" menu picks the model, and the "Options" window sets up
-providers and keys.
+the language you write in. The "Options" window sets up providers and keys and picks the model: a
+provider's models are offered once its connection has been tested. The panel shows the model in use.
 
 - The input grows with its text. The button in its corner opens a large editor, handy to paste a
   long prompt or load one from a .txt or .md file. Ctrl+Enter sends.
 - A message can be up to 100,000 characters long.
+- **Images and PDF files**: paste them (Ctrl+V, a screenshot for example), drop them on the panel, or
+  pick them with the paperclip button, then describe what to draw. Up to 5 files per message: images
+  up to 5 MB (large ones are scaled down), PDF files up to 20 MB. Claude models read both. With
+  OpenAI-compatible providers, images depend on the model, and PDF files are only sent to OpenAI.
+
+### Feedback link
+
+A "Feedback" link at the bottom of the canvas says where to send feedback. Two build-time settings,
+read by Vite (`npm run dev`, `npm run build`, `npm run build:online`) and by docker compose, from a
+`.env` file at the root of the repository, which git ignores:
+
+| Setting | What it does | Default |
+|---|---|---|
+| `VITE_FEEDBACK_URL` | Where feedback goes (`https://…` or `mailto:…`). `none` removes it. | The GitHub Issues of this repository |
+| `VITE_CONTACT_URL` | How to reach the author: a LinkedIn profile or a page (`https://…`). | None |
+| `FEEDBACK_EMAIL` | An e-mail address. It is stored encoded in the page code, and the `mailto:` link is only built on click, which keeps most address-harvesting robots away. | None |
+
+With one choice, the link opens it. With more, a small window offers them. For example:
+
+```
+VITE_CONTACT_URL=https://www.linkedin.com/in/your-profile
+FEEDBACK_EMAIL=feedback@your-domain.com
+```
+
+Then rebuild: `docker compose up -d --build`, or `npm run build`. Prefer a dedicated address (an alias)
+to your personal one: it can be filtered, or dropped if it draws spam.
 
 ## Online version
 
 - Providers: Anthropic, OpenAI, Ollama and any OpenAI-compatible server, set up in the "Options"
   window of the assistant panel. Each visitor uses their own key and pays for their own calls.
-- The key stays in the browser: for the tab's session, or on the device if "Remember keys on this
+- The key stays in the browser: for the tab's session, or on the device if "Remember keys on your
   device" is checked. The site receives neither the key nor the diagram.
 - The provider must accept calls from a web page (CORS). Anthropic does. OpenAI does not always:
   the docker version avoids that block. Ollama must be started with `OLLAMA_ORIGINS` set to the
   site's address. A compatible server (LiteLLM…) must allow that address in its CORS settings.
 - The page runs no third-party script: a Content Security Policy (CSP) only allows the site's own
   scripts, and the Urbanist font is served by the site.
-- No MCP server in this version.
+- No MCP server in this version. My diagrams saves in the browser only.
+- Privacy: a "Privacy" link at the bottom of the canvas says what leaves the browser. Nothing is sent
+  to the site: diagrams, settings and keys stay in the browser. With the assistant, messages, the
+  diagram and the key go straight to the chosen AI provider, which applies its own rules. The host of
+  the site keeps technical logs, such as the IP address. Set `VITE_SITE_HOST` at build time to name
+  the host (for example `VITE_SITE_HOST="GitHub Pages" npm run build:online`).

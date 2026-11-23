@@ -15,11 +15,17 @@ import Anthropic from '@anthropic-ai/sdk'
 import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js'
 import * as z from 'zod/v4'
 
+import express from 'express'
+import { timingSafeEqual } from 'node:crypto'
+
 import { EditorBridge } from './bridge.js'
+import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
 import { ChatService } from './chat.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
+import { checkAttachments } from '../src/ai/attachments.js'
+import { imageCaption, isImageResult } from '../src/ai/image-result.js'
 import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
@@ -34,6 +40,8 @@ const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
   .map((s) => s.trim())
   .filter(Boolean)
 const PORT = Number(process.env.MCP_PORT || 3333)
+// Jeton facultatif demandé aux clients MCP (en-tête Authorization: Bearer …).
+const MCP_TOKEN = (process.env.MCP_TOKEN || '').trim()
 const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',')
   .map((s) => s.trim())
@@ -53,6 +61,14 @@ function buildMcpServer() {
       async (args) => {
         try {
           const data = await bridge.call(tool.name, args ?? {})
+          if (isImageResult(data)) {
+            return {
+              content: [
+                { type: 'image', data: data.image.data, mimeType: data.image.mediaType },
+                { type: 'text', text: imageCaption(data.image) },
+              ],
+            }
+          }
           const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2)
           return { content: [{ type: 'text', text }] }
         } catch (err) {
@@ -70,7 +86,16 @@ const app = createMcpExpressApp(
   LOCAL_HOSTS.includes(HOST) ? { host: HOST } : { host: HOST, allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1'] },
 )
 
-app.post('/mcp', async (req, res) => {
+function checkToken(req, res, next) {
+  if (!MCP_TOKEN) return next()
+  const given = Buffer.from((req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim())
+  const expected = Buffer.from(MCP_TOKEN)
+  if (given.length === expected.length && timingSafeEqual(given, expected)) return next()
+  res.set('WWW-Authenticate', 'Bearer')
+  res.status(401).json({ jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized: missing or wrong MCP token' }, id: null })
+}
+
+app.post('/mcp', checkToken, async (req, res) => {
   const server = buildMcpServer()
   try {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
@@ -114,7 +139,7 @@ function chatCors(req, res, next) {
   res.set('Access-Control-Allow-Origin', origin)
   res.set('Vary', 'Origin')
   if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Methods', 'GET, POST')
+    res.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE')
     res.set('Access-Control-Allow-Headers', 'Content-Type')
     res.set('Access-Control-Max-Age', '600')
     return res.sendStatus(204)
@@ -123,7 +148,7 @@ function chatCors(req, res, next) {
 }
 app.options('/chat', chatCors)
 app.options('/chat/models', chatCors)
-app.get('/chat', chatCors, (req, res) => res.json(chat.status()))
+app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), mcpAuth: Boolean(MCP_TOKEN) }))
 
 // Fournisseur réglé dans la fenêtre Options : { provider, format, baseUrl, apiKey, model? }.
 // La clé n'est ni enregistrée ni écrite dans le journal. Renvoie null si invalide.
@@ -159,8 +184,14 @@ app.post('/chat/models', chatCors, async (req, res) => {
   }
 })
 
-app.post('/chat', chatCors, async (req, res) => {
+// Les messages avec pièces jointes (images, PDF) dépassent la limite de 100 Ko du
+// lecteur JSON général : ils arrivent avec leur propre type, lu ici jusqu'à 34 Mo.
+const chatBody = express.json({ type: 'application/vnd.bpmn-chat+json', limit: '34mb' })
+
+app.post('/chat', chatCors, chatBody, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
+  const attachments = checkAttachments(req.body?.attachments)
+  if (!attachments) return res.status(400).json({ error: T(req, 'Invalid attachments (type or size)', 'Pièces jointes invalides (type ou taille)') })
   if (typeof text !== 'string' || !text.trim() || text.length > 100000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: T(req, 'Invalid request', 'Requête invalide') })
   }
@@ -185,6 +216,7 @@ app.post('/chat', chatCors, async (req, res) => {
       model,
       custom,
       text: text.trim(),
+      attachments,
       emit,
       signal: abort.signal,
       lang: langOf(req),
@@ -197,6 +229,53 @@ app.post('/chat', chatCors, async (req, res) => {
     }
   }
   res.end()
+})
+
+// ── Mes diagrammes, enregistrés sur le serveur ─────────────────────────────
+// Mêmes règles d'origine que le chat : seules les pages de l'éditeur y ont accès.
+
+const diagrams = new DiagramStore()
+const xmlBody = express.text({ type: ['application/xml', 'text/xml', 'text/plain'], limit: MAX_XML_BYTES })
+function checkId(req, res, next) {
+  if (!DiagramStore.validId(req.params.id)) return res.status(400).json({ error: 'Invalid id' })
+  next()
+}
+const failed = (res, err) => {
+  log('[diagrams] erreur :', err.message)
+  res.status(500).json({ error: 'Storage error' })
+}
+
+app.options('/diagrams', chatCors)
+app.options('/diagrams/:id', chatCors)
+app.get('/diagrams', chatCors, async (req, res) => {
+  try { res.json({ diagrams: await diagrams.list() }) } catch (err) { failed(res, err) }
+})
+app.get('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  try {
+    const item = await diagrams.get(req.params.id)
+    if (!item) return res.status(404).json({ error: 'Not found' })
+    res.json(item)
+  } catch (err) { failed(res, err) }
+})
+app.put('/diagrams/:id', chatCors, checkId, xmlBody, async (req, res) => {
+  const name = DiagramStore.cleanName(req.query.name)
+  if (!name || typeof req.body !== 'string' || !req.body.includes('<')) return res.status(400).json({ error: 'Invalid diagram' })
+  try { res.json(await diagrams.put(req.params.id, name, req.body)) } catch (err) { failed(res, err) }
+})
+app.patch('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  const name = DiagramStore.cleanName(req.body?.name)
+  if (!name) return res.status(400).json({ error: 'Invalid name' })
+  try {
+    const meta = await diagrams.rename(req.params.id, name)
+    if (!meta) return res.status(404).json({ error: 'Not found' })
+    res.json(meta)
+  } catch (err) { failed(res, err) }
+})
+app.delete('/diagrams/:id', chatCors, checkId, async (req, res) => {
+  try {
+    await diagrams.remove(req.params.id)
+    res.json({ ok: true })
+  } catch (err) { failed(res, err) }
 })
 
 function chatErrorMessage(err, lang = 'en') {
@@ -222,6 +301,7 @@ const httpServer = app.listen(PORT, HOST, (err) => {
     process.exit(1)
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
+  if (MCP_TOKEN) log('Les clients MCP doivent fournir le jeton MCP_TOKEN.')
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
   for (const warning of chat.warnings) log(`Attention : ${warning}`)
   log(

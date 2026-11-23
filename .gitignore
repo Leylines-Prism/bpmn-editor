@@ -4,3 +4,4 @@ dist-online/
 .env*
 src/packed-lint-config.js
 !.env.example
+mcp/data/

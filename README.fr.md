@@ -28,11 +28,49 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 
 - Clés d'API : dans `mcp/.env` (copier `mcp/.env.example`, fichier exclu de git et de l'image), ou
   saisies dans la fenêtre Options. Sans clé, l'éditeur et les outils MCP marchent quand même.
-- Clients MCP (Claude Code…) : `http://localhost:8080/mcp`.
+- Clients MCP (Claude Code…) : `http://localhost:8080/mcp`. Un clic sur le badge MCP de la barre
+  d'outils donne l'adresse de votre installation et des réglages prêts à coller (voir plus bas).
 - Par défaut, le site n'est joignable que depuis la machine qui le fait tourner (`127.0.0.1`).
   `BPMN_PORT` change le port (8080 par défaut).
 - Ollama lancé sur la machine hôte se joint par `http://host.docker.internal:11434/v1`.
+- Les diagrammes enregistrés sur le serveur sont gardés dans le volume docker `diagrams`
+  (`/data/diagrams` dans le conteneur, un fichier `.bpmn` par diagramme). `docker compose down -v`
+  les supprime.
 - Le serveur n'a pas d'authentification : ne pas l'exposer sur un réseau public.
+
+### Connecter un agent
+
+Cliquer sur le badge **MCP** de la barre d'outils : la fenêtre « Connecter un agent » montre l'adresse
+MCP de cette installation, calculée depuis l'adresse de la page, avec un bouton Copier et des réglages
+prêts à coller pour Claude Code (`claude mcp add`), Claude Desktop (par `mcp-remote`) et les autres
+clients (Cursor, VS Code, `.mcp.json`). L'agent dessine dans le dernier onglet de l'éditeur utilisé :
+il faut le garder ouvert.
+
+| Installation | Adresse MCP |
+|---|---|
+| docker sur cette machine | `http://localhost:8080/mcp` (ou le port réglé dans `BPMN_PORT`) |
+| développement (`npm run dev` et `mcp/`) | `http://127.0.0.1:3333/mcp` |
+| docker derrière un nom de domaine ou un proxy inverse | `https://votre-domaine/mcp` |
+
+Pour joindre l'éditeur depuis une autre machine ou par un nom de domaine, régler ces variables dans un
+fichier `.env` à côté de `docker-compose.yml` :
+
+```
+BPMN_BIND=0.0.0.0                      # écoute sur toutes les interfaces (127.0.0.1 par défaut)
+BPMN_EDITOR_ORIGINS=https://bpmn.example.com
+MCP_ALLOWED_HOSTS=bpmn.example.com
+```
+
+`BPMN_EDITOR_ORIGINS` liste les adresses des pages de l'éditeur (avec `http://` ou `https://`), et
+`MCP_ALLOWED_HOSTS` les noms d'hôte qu'utilisent les clients MCP. Le proxy inverse doit transmettre
+l'en-tête `Host` et accepter le passage en WebSocket sur `/bridge`.
+
+Le serveur n'a pas de connexion. Mettre `MCP_TOKEN=une-longue-valeur-aléatoire` dans `mcp/.env` pour
+que les clients MCP doivent envoyer `Authorization: Bearer <jeton>`, puis relancer le serveur. Le
+bouton « Générer un jeton » de la fenêtre en tire un au hasard et le place dans la ligne pour
+`mcp/.env` et dans les réglages à copier ; la page ne peut pas écrire `mcp/.env` elle-même. Les pages de l'éditeur et les diagrammes enregistrés restent ouverts à
+quiconque joint le site : le garder sur un réseau de confiance ou derrière un proxy qui demande une
+connexion.
 
 ## Fonctions de l'éditeur
 
@@ -46,6 +84,11 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 - **Exporter** : fichier .bpmn, fichier .xml, « Code XML à copier… » (une fenêtre pour copier ou
   télécharger le code), puis image SVG, image PNG et PDF.
 - Le diagramme en cours est gardé par le navigateur et retrouvé à la réouverture de la page.
+- **Mes diagrammes** garde plusieurs diagrammes : on enregistre celui en cours sous un nom, puis on
+  peut les rouvrir, les renommer ou les supprimer. Ils sont enregistrés dans le navigateur (sur cet
+  appareil seulement), et dans la version docker aussi sur le serveur, où n'importe quel navigateur
+  qui y accède peut les ouvrir. Une fois un diagramme enregistré, **Ctrl+S** le met à jour.
+  « Enregistrer comme nouveau » en fait une copie.
 
 ### Dessin
 
@@ -55,9 +98,14 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
   foncé lisible, et « Couleur personnalisée… » pour choisir n'importe quelle teinte. Le trait est
   alors calculé pour rester lisible.
 - **Texte** : le bouton « A » du menu contextuel met en forme le libellé de l'élément : gras,
-  italique, souligné, taille (10 à 24) et police (Sans serif, Serif, Monospace). « Texte par
-  défaut » retire la mise en forme. Le style est enregistré dans le .bpmn selon la norme BPMN
-  (`bpmndi:BPMNLabelStyle`). Le souligné n'apparaît pas dans l'export PDF.
+  italique, souligné, taille (10 à 24), police (Sans serif, Serif, Monospace) et couleur. La
+  couleur se choisit parmi les teintes du pinceau, le noir ou le blanc, une couleur libre, ou
+  « Auto », qui prend le noir ou le blanc, le plus lisible sur le fond de l'élément. « Texte
+  par défaut » retire la mise en forme et la couleur. Le style est enregistré dans le .bpmn
+  selon la norme BPMN (`bpmndi:BPMNLabelStyle`), et la couleur en `color:color` sur le
+  libellé (BPMN in Color), que les autres outils bpmn.io lisent aussi. Le souligné
+  n'apparaît pas dans l'export PDF. Avec le pinceau, un fond libre foncé reçoit maintenant
+  de lui-même un texte clair.
 - **Ranger** remet en ordre la disposition du diagramme.
 - **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
 - Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
@@ -69,12 +117,40 @@ serveur MCP. nginx relaie le serveur sur la même adresse (`/mcp`, `/bridge`, `/
 ### Assistant IA
 
 Le bouton **Assistant IA** ouvre le panneau de discussion : on décrit un processus, l'assistant le
-dessine, dans la langue du message. Le menu « Modèle » choisit le modèle, la fenêtre « Options » règle les fournisseurs et les
-clés.
+dessine, dans la langue du message. La fenêtre « Options » règle les fournisseurs et les clés, et
+choisit le modèle : les modèles d'un fournisseur sont proposés une fois sa connexion testée. Le panneau
+affiche le modèle utilisé.
 
 - La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pratique
   pour coller un long prompt ou l'ouvrir depuis un fichier .txt ou .md. Ctrl+Entrée envoie.
 - Un message fait au plus 100 000 caractères.
+- **Images et PDF** : on les colle (Ctrl+V, une capture d'écran par exemple), on les glisse sur le
+  panneau, ou on les choisit avec le bouton trombone, puis on décrit ce qu'il faut dessiner. Jusqu'à 5
+  fichiers par message : images de 5 Mo au plus (les grandes sont réduites), PDF de 20 Mo au plus. Les
+  modèles Claude lisent les deux. Avec les fournisseurs compatibles OpenAI, les images dépendent du
+  modèle, et les PDF ne partent que vers OpenAI.
+
+### Lien Feedback
+
+Un lien « Feedback » en bas du canevas dit où envoyer un retour. Deux réglages de build, lus par Vite
+(`npm run dev`, `npm run build`, `npm run build:online`) et par docker compose, dans un fichier
+`.env` à la racine du dépôt, que git ignore :
+
+| Réglage | Rôle | Par défaut |
+|---|---|---|
+| `VITE_FEEDBACK_URL` | Où vont les retours (`https://…` ou `mailto:…`). `none` le retire. | Les Issues GitHub de ce dépôt |
+| `VITE_CONTACT_URL` | Comment joindre l'auteur : un profil LinkedIn ou une page (`https://…`). | Aucun |
+| `FEEDBACK_EMAIL` | Une adresse mail. Elle est rangée encodée dans le code de la page, et le lien `mailto:` n'est construit qu'au clic, ce qui écarte la plupart des robots qui ramassent les adresses. | Aucune |
+
+Avec un seul choix, le lien l'ouvre. Avec plusieurs, une petite fenêtre les propose. Par exemple :
+
+```
+VITE_CONTACT_URL=https://www.linkedin.com/in/votre-profil
+FEEDBACK_EMAIL=feedback@votre-domaine.fr
+```
+
+Puis reconstruisez : `docker compose up -d --build`, ou `npm run build`. Préférez une adresse dédiée (un
+alias) à votre adresse personnelle : on peut la filtrer, ou la supprimer si elle attire le spam.
 
 ## Version en ligne
 
@@ -88,4 +164,10 @@ clés.
   adresse dans son réglage CORS.
 - La page n'exécute aucun script tiers : une politique de sécurité du contenu (CSP) n'autorise que les
   scripts du site, et la police Urbanist est servie par le site.
-- Pas de serveur MCP dans cette version.
+- Pas de serveur MCP dans cette version. Mes diagrammes enregistre dans le navigateur seulement.
+- Confidentialité : un lien « Confidentialité » en bas du canevas dit ce qui quitte le navigateur. Rien
+  n'est envoyé au site : diagrammes, réglages et clés restent dans le navigateur. Avec l'assistant, les
+  messages, le diagramme et la clé partent directement chez le fournisseur d'IA choisi, qui applique ses
+  propres règles. L'hébergeur du site garde des journaux techniques, comme l'adresse IP. Régler
+  `VITE_SITE_HOST` au build pour nommer l'hébergeur (par exemple
+  `VITE_SITE_HOST="GitHub Pages" npm run build:online`).
