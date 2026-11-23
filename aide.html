@@ -139,8 +139,52 @@
 
       <section id="verifier">
         <h2>Vérifier, ranger, simuler</h2>
-        <h3>Vérification automatique</h3>
-        <p>L'éditeur vérifie les règles de modélisation BPMN pendant que vous dessinez : élément isolé, processus sans début ni fin, passerelle mal reliée, élément sans libellé… Les problèmes sont signalés par une pastille sur l'élément concerné, et un compteur en bas à gauche du canevas les liste. Ce sont des conseils : le diagramme s'enregistre même s'il en reste.</p>
+        <h3>Vérification de conformité BPMN</h3>
+        <p>L'éditeur intègre un vérificateur de conformité BPMN, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint</a>. Il contrôle le diagramme pendant que vous dessinez, avec ses 27 règles recommandées : élément isolé, processus sans début ni fin, passerelle mal reliée, élément sans libellé… Ce sont des conseils : le diagramme s'enregistre même s'il en reste.</p>
+        <ul>
+          <li>Une pastille sur l'élément signale un problème : rouge pour une erreur, orange pour un avertissement.</li>
+          <li>Survolez la pastille pour lire le message. Le nom de la règle suit entre parenthèses, par exemple <code>no-implicit-end</code>.</li>
+          <li>Cliquez sur ce nom pour ouvrir l'explication de la règle, avec un exemple faux et un exemple juste. Ces pages sont en anglais.</li>
+          <li>Le compteur en bas à gauche du canevas donne le nombre d'erreurs et d'avertissements. Cliquez dessus pour masquer ou afficher les pastilles.</li>
+        </ul>
+        <details class="faq">
+          <summary>Les 27 règles vérifiées, avec leur explication</summary>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Règle</th><th>Ce qu'elle vérifie</th><th>Niveau</th></tr></thead>
+              <tbody>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/start-event-required.md" target="_blank" rel="noopener"><code>start-event-required</code></a></td><td>Chaque processus et sous-processus a un événement de début.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/end-event-required.md" target="_blank" rel="noopener"><code>end-event-required</code></a></td><td>Chaque processus et sous-processus a un événement de fin.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-start.md" target="_blank" rel="noopener"><code>no-implicit-start</code></a></td><td>Aucun élément ne démarre le processus à la place d'un événement de début (élément sans flux entrant).</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-end.md" target="_blank" rel="noopener"><code>no-implicit-end</code></a></td><td>Aucun élément ne termine le processus à la place d'un événement de fin (élément sans flux sortant).</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-disconnected.md" target="_blank" rel="noopener"><code>no-disconnected</code></a></td><td>Chaque élément est relié au reste du processus.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/label-required.md" target="_blank" rel="noopener"><code>label-required</code></a></td><td>Les tâches, événements et passerelles portent un libellé.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/conditional-flows.md" target="_blank" rel="noopener"><code>conditional-flows</code></a></td><td>Un flux qui part d'une séparation conditionnelle porte une condition, sauf le flux par défaut.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-split.md" target="_blank" rel="noopener"><code>no-implicit-split</code></a></td><td>Une tâche ne se sépare pas en plusieurs flux sans condition : ajoutez une passerelle parallèle.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/fake-join.md" target="_blank" rel="noopener"><code>fake-join</code></a></td><td>Une tâche ne reçoit pas plusieurs flux entrants : ajoutez une passerelle de jonction.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-gateway-join-fork.md" target="_blank" rel="noopener"><code>no-gateway-join-fork</code></a></td><td>Une passerelle ne fait pas à la fois jonction et séparation.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-gateway.md" target="_blank" rel="noopener"><code>superfluous-gateway</code></a></td><td>Une passerelle avec une seule entrée et une seule sortie ne sert à rien.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-label.md" target="_blank" rel="noopener"><code>superfluous-label</code></a></td><td>Un flux simple, sans condition ni passerelle de séparation, n'a pas besoin de libellé.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-termination.md" target="_blank" rel="noopener"><code>superfluous-termination</code></a></td><td>Un événement de fin « Terminer » est inutile quand c'est la seule fin du processus.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-multi-instance-termination.md" target="_blank" rel="noopener"><code>no-multi-instance-termination</code></a></td><td>Dans un sous-processus multi-instance, « Terminer » n'arrête que l'instance en cours, pas les autres.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-duplicate-sequence-flows.md" target="_blank" rel="noopener"><code>no-duplicate-sequence-flows</code></a></td><td>Deux flux identiques ne relient pas les mêmes éléments.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-overlapping-elements.md" target="_blank" rel="noopener"><code>no-overlapping-elements</code></a></td><td>Les formes ne se chevauchent pas et restent dans leur conteneur.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-inclusive-gateway.md" target="_blank" rel="noopener"><code>no-inclusive-gateway</code></a></td><td>La passerelle inclusive est déconseillée : elle est difficile à lire.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-complex-gateway.md" target="_blank" rel="noopener"><code>no-complex-gateway</code></a></td><td>La passerelle complexe est déconseillée.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-based-gateway.md" target="_blank" rel="noopener"><code>event-based-gateway</code></a></td><td>Une passerelle basée sur les événements a au moins deux sorties, sans condition.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-blank-start-event.md" target="_blank" rel="noopener"><code>single-blank-start-event</code></a></td><td>Un processus a au plus un événement de début sans type.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-event-definition.md" target="_blank" rel="noopener"><code>single-event-definition</code></a></td><td>Un événement n'a qu'un seul type (message, minuterie, signal…).</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/sub-process-blank-start-event.md" target="_blank" rel="noopener"><code>sub-process-blank-start-event</code></a></td><td>Un sous-processus commence par un événement de début sans type.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-sub-process-typed-start-event.md" target="_blank" rel="noopener"><code>event-sub-process-typed-start-event</code></a></td><td>Un sous-processus événementiel commence par un événement de début typé.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/ad-hoc-sub-process.md" target="_blank" rel="noopener"><code>ad-hoc-sub-process</code></a></td><td>Un sous-processus ad hoc ne contient ni événement de début ni événement de fin.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/link-event.md" target="_blank" rel="noopener"><code>link-event</code></a></td><td>Les événements de lien vont par paires (envoi et réception) portant le même nom.</td><td>Erreur</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Les messages, signaux, erreurs et escalades ont un nom unique et servent quelque part.</td><td>Avertissement</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Chaque élément du processus a une forme sur le diagramme.</td><td>Erreur</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+        <p>Pour aller plus loin : la <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">documentation de toutes les règles</a> et la <a href="https://www.omg.org/spec/BPMN/2.0.2/" target="_blank" rel="noopener">norme BPMN 2.0.2</a> de l'OMG.</p>
         <h3>Ranger</h3>
         <p>Le bouton <span class="ui">Ranger</span> (l'icône en forme de schéma, après Mes diagrammes) recalcule la disposition de tout le diagramme, de gauche à droite. C'est pratique après un import ou un diagramme dessiné par l'IA.</p>
         <div class="note warn">Ranger déplace toutes les formes et efface l'historique d'annulation. L'éditeur vous demande de confirmer. Pour garder la version d'avant, enregistrez-la d'abord dans Mes diagrammes.</div>
