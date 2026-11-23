@@ -82,7 +82,7 @@ export function setupXmlDialog({ openButton, fileInput, onImport }) {
   dialog.innerHTML = `
     <form method="dialog">
       <h2>${T('Import BPMN XML', 'Importer du XML BPMN')}</h2>
-      <p class="hint">${T('Paste the XML of a BPMN 2.0 diagram, or choose a .bpmn or .xml file. You can also drop a file straight onto the editor.', 'Colle le XML d\'un diagramme BPMN 2.0, ou choisis un fichier .bpmn ou .xml. Tu peux aussi déposer un fichier directement sur l\'éditeur.')}</p>
+      <p class="hint">${T('Paste the XML of a BPMN 2.0 diagram, or choose a .bpmn or .xml file. You can also drop a file straight onto the editor.', 'Collez le XML d\'un diagramme BPMN 2.0, ou choisissez un fichier .bpmn ou .xml. Vous pouvez aussi déposer un fichier directement sur l\'éditeur.')}</p>
       <textarea id="xml-text" spellcheck="false" placeholder="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; …&gt;"></textarea>
       <p class="error" id="xml-error" role="alert"></p>
       <div class="actions">

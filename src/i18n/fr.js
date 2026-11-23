@@ -436,5 +436,12 @@ export default {
   '{name} canceled': '{name} annulé',
   'Intermediate Event': 'Événement intermédiaire',
   'Finished': 'Terminé',
-  'Focus process instance {scopeId}': "Afficher l'instance de processus {scopeId}"
+  'Focus process instance {scopeId}': "Afficher l'instance de processus {scopeId}",
+  // @bpmn-io/properties-panel (voir panel-titles.js)
+  'Section contains edits': 'Cette section contient des modifications',
+  'Section contains an error': 'Cette section contient une erreur',
+  'Section contains a warning': 'Cette section contient un avertissement',
+  'Open pop-up editor': "Ouvrir l'éditeur en grand",
+  'Opened in editor': "Ouvert dans l'éditeur",
+  'Open documentation': 'Ouvrir la documentation'
 }

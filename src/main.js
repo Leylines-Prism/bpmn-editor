@@ -13,6 +13,7 @@ import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { lang, T } from './i18n/lang.js'
+import { translatePanelTitles } from './i18n/panel-titles.js'
 import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
@@ -161,7 +162,7 @@ async function autosave({ quiet = false } = {}) {
   try {
     const { xml } = await modeler.saveXML({ format: true })
     localStorage.setItem(LS_KEY, xml)
-    if (!quiet) setStatus(new Date().toLocaleTimeString())
+    if (!quiet) setStatus(new Date().toLocaleTimeString(lang === 'fr' ? 'fr-FR' : 'en-US'))
   } catch (e) { setStatus(T('error', 'erreur')) }
 }
 
@@ -214,7 +215,7 @@ async function importAndReport(xml, fileName) {
 
 async function importFile(file) {
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
-    alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisis un fichier .bpmn ou .xml.'))
+    alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
     return
   }
   const failure = await importAndReport(await file.text(), file.name)
@@ -371,6 +372,7 @@ setupPanelToggle({
 })
 
 // Poignée pour régler la largeur du panneau Processus.
+translatePanelTitles(document.getElementById('properties-panel'))
 makeResizable(document.getElementById('properties-panel'), {
   name: 'properties', label: T('Process panel width', 'Largeur du panneau Processus'), min: 240, max: 640, fallback: 300,
 })
