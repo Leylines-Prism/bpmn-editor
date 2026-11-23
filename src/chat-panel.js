@@ -14,6 +14,7 @@ import { listModels } from './ai/providers.js'
 import { connectionFor, loadSettings, userModels } from './ai-settings.js'
 import { createOptionsDialog } from './options-dialog.js'
 import { lang, num, T } from './i18n/lang.js'
+import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -59,6 +60,46 @@ const MAX_MESSAGE = 100000
 
 const EXPAND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h4v4M13.5 2.5 9 7M6.5 13.5h-4v-4M2.5 13.5 7 9"/></svg>`
 
+const ATTACH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5 12.5 20a5.5 5.5 0 0 1-7.8-7.8l8.9-8.9a3.7 3.7 0 0 1 5.2 5.2l-8.9 8.9a1.8 1.8 0 0 1-2.6-2.6L15.5 6.6"/></svg>`
+const PDF_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 16.5v-4h1.2a1.2 1.2 0 0 1 0 2.4H8.5M13 12.5v4h.8a2 2 0 0 0 0-4zM17.5 12.5h-1.6v4M15.9 14.5h1.3"/></svg>`
+const MAX_IMAGE_SIDE = 1568 // au-delà, l'image est réduite : le modèle n'en voit pas plus
+
+const sizeText = (bytes) =>
+  bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} ${T('MB', 'Mo')}` : `${Math.max(1, Math.round(bytes / 1024))} ${T('KB', 'Ko')}`
+
+const blobToBase64 = (blob) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '')
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
+
+// Réduit une grande image (côté le plus long à 1568 px), ou la convertit si son
+// format n'est pas accepté par les modèles. Renvoie un Blob.
+async function prepareImage(file) {
+  let bitmap
+  try {
+    bitmap = await createImageBitmap(file)
+  } catch {
+    if (IMAGE_TYPES.includes(file.type)) return file
+    throw new Error(T('this image cannot be read', 'image illisible'))
+  }
+  const scale = Math.min(1, MAX_IMAGE_SIDE / Math.max(bitmap.width, bitmap.height))
+  const keep = IMAGE_TYPES.includes(file.type) && scale === 1 && file.size <= MAX_IMAGE_BYTES
+  if (keep || (file.type === 'image/gif' && file.size <= MAX_IMAGE_BYTES)) {
+    bitmap.close?.()
+    return file
+  }
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(bitmap.width * scale)
+  canvas.height = Math.round(bitmap.height * scale)
+  canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+  bitmap.close?.()
+  const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
+  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, 0.9))
+}
+
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const style = document.createElement('style')
   style.textContent = CSS
@@ -72,10 +113,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-options" hidden>
       <span id="chat-model-name"></span>
     </div>
+    <div id="chat-attachments" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
         <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change…', 'Décrivez le processus à dessiner, ou ce qu\'il faut changer…')}"></textarea>
         <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
+        <button type="button" id="chat-attach" title="${T('Attach an image or a PDF (you can also paste or drop it)', 'Joindre une image ou un PDF (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach an image or a PDF', 'Joindre une image ou un PDF')}">${ATTACH_ICON}</button>
+        <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" multiple hidden>
       </div>
       <button class="btn primary" type="submit" id="chat-send">${T('Send', 'Envoyer')}</button>
     </form>
@@ -316,6 +360,131 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     else input.focus()
   })
 
+  // ── Pièces jointes : images et PDF, joints, collés ou glissés ─────────────
+  let pending = [] // { kind, mediaType, name, data, size, url }
+  const attachBox = panel.querySelector('#chat-attachments')
+  const attachInput = panel.querySelector('#chat-attach-input')
+
+  function attachmentChip(a, onRemove) {
+    const chip = document.createElement('div')
+    chip.className = 'chat-file'
+    chip.title = `${a.name} (${sizeText(a.size)})`
+    if (a.kind === 'image') {
+      const img = document.createElement('img')
+      img.src = a.url
+      img.alt = ''
+      chip.append(img)
+    } else {
+      const icon = document.createElement('span')
+      icon.className = 'chat-file-pdf'
+      icon.innerHTML = PDF_ICON
+      chip.append(icon)
+    }
+    const label = document.createElement('span')
+    label.className = 'chat-file-name'
+    label.textContent = a.name
+    chip.append(label)
+    if (onRemove) {
+      const remove = document.createElement('button')
+      remove.type = 'button'
+      remove.className = 'chat-file-remove'
+      remove.textContent = '×'
+      remove.title = T('Remove', 'Retirer')
+      remove.setAttribute('aria-label', T(`Remove ${a.name}`, `Retirer ${a.name}`))
+      remove.addEventListener('click', onRemove)
+      chip.append(remove)
+    }
+    return chip
+  }
+
+  function renderAttachments() {
+    attachBox.replaceChildren(
+      ...pending.map((a, i) =>
+        attachmentChip(a, () => {
+          pending.splice(i, 1)
+          renderAttachments()
+          input.focus()
+        }),
+      ),
+    )
+    attachBox.hidden = !pending.length
+  }
+
+  async function addFiles(files) {
+    for (const file of files) {
+      const isPdf = file.type === PDF_TYPE || /\.pdf$/i.test(file.name)
+      const isImage = file.type.startsWith('image/')
+      const name = file.name || (isPdf ? 'document.pdf' : T('pasted image', 'image collée'))
+      if (!isPdf && !isImage) {
+        add('error', T(`${name}: only images (PNG, JPEG, GIF, WebP) and PDF files can be attached.`, `${name} : seules les images (PNG, JPEG, GIF, WebP) et les PDF peuvent être joints.`))
+        continue
+      }
+      if (pending.length >= MAX_ATTACHMENTS) {
+        add('error', T(`${MAX_ATTACHMENTS} files at most per message.`, `${MAX_ATTACHMENTS} fichiers au plus par message.`))
+        break
+      }
+      try {
+        const blob = isPdf ? file : await prepareImage(file)
+        const max = isPdf ? MAX_PDF_BYTES : MAX_IMAGE_BYTES
+        if (blob.size > max) {
+          add('error', T(`${name} is too large: ${sizeText(max)} at most.`, `${name} est trop volumineux : ${sizeText(max)} au plus.`))
+          continue
+        }
+        const total = pending.reduce((n, a) => n + a.size, 0) + blob.size
+        if (total > MAX_TOTAL_BYTES) {
+          add('error', T(`Attached files: ${sizeText(MAX_TOTAL_BYTES)} at most per message.`, `Fichiers joints : ${sizeText(MAX_TOTAL_BYTES)} au plus par message.`))
+          continue
+        }
+        pending.push({
+          kind: isPdf ? 'pdf' : 'image',
+          mediaType: isPdf ? PDF_TYPE : blob.type,
+          name,
+          data: await blobToBase64(blob),
+          size: blob.size,
+          url: isPdf ? null : URL.createObjectURL(blob),
+        })
+      } catch (err) {
+        add('error', T(`${name}: ${err.message}`, `${name} : ${err.message}`))
+      }
+    }
+    renderAttachments()
+  }
+
+  panel.querySelector('#chat-attach').addEventListener('click', () => attachInput.click())
+  attachInput.addEventListener('change', () => {
+    const files = [...attachInput.files]
+    attachInput.value = ''
+    addFiles(files).then(() => input.focus())
+  })
+  // Coller une image (capture d'écran…) ou un fichier dans la zone de saisie.
+  input.addEventListener('paste', (e) => {
+    const files = [...(e.clipboardData?.files || [])]
+    if (!files.length) return
+    e.preventDefault()
+    addFiles(files)
+  })
+  // Glisser sur le panneau : le fichier est joint au message, il n'ouvre pas de diagramme.
+  const hasFiles = (e) => Array.from(e.dataTransfer?.types || []).includes('Files')
+  for (const type of ['dragenter', 'dragover']) {
+    panel.addEventListener(type, (e) => {
+      if (!hasFiles(e)) return
+      e.preventDefault()
+      e.stopPropagation()
+      document.body.classList.remove('drop-target')
+      panel.classList.add('drop-files')
+    })
+  }
+  panel.addEventListener('dragleave', (e) => {
+    if (!panel.contains(e.relatedTarget)) panel.classList.remove('drop-files')
+  })
+  panel.addEventListener('drop', (e) => {
+    if (!hasFiles(e)) return
+    e.preventDefault()
+    e.stopPropagation()
+    panel.classList.remove('drop-files')
+    addFiles([...e.dataTransfer.files])
+  })
+
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
       e.preventDefault()
@@ -329,8 +498,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       controller.abort()
       return
     }
-    const text = input.value.trim()
-    if (!text) return
+    let text = input.value.trim()
+    if (!text && !pending.length) return
+    if (!text) text = T('Draw the process shown in the attached file.', 'Dessine le processus du fichier joint.')
     if (text.length > MAX_MESSAGE) {
       add('error', T(`Message too long: ${num(MAX_MESSAGE)} characters at most.`, `Message trop long : ${num(MAX_MESSAGE)} caractères au plus.`))
       return
@@ -343,13 +513,29 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add('error', T('The editor is not connected to the server (MCP badge offline).', "L'éditeur n'est pas relié au serveur (badge MCP hors ligne)."))
       return
     }
+    const attachments = pending.slice()
+    const model = currentModel()
+    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'openai' ? 'openai' : 'anthropic', providerId: model.provider }
+    if (attachments.some((a) => !supports(caps, a.kind))) {
+      add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic or OpenAI model, or paste the text of the document.`,
+        `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic ou OpenAI, ou collez le texte du document.`))
+      return
+    }
     input.value = ''
     fitInput()
-    send(text)
+    pending = []
+    renderAttachments()
+    send(text, attachments)
   })
 
-  async function send(text) {
-    add('user', text)
+  async function send(text, attachments = []) {
+    const userMsg = add('user', text)
+    if (attachments.length) {
+      const strip = document.createElement('div')
+      strip.className = 'chat-msg-files'
+      for (const a of attachments) strip.append(attachmentChip(a))
+      userMsg.prepend(strip)
+    }
     const reply = add('assistant')
     reply.hidden = true // affichée au premier texte ou au premier outil
     let tools = null
@@ -415,8 +601,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
 
     const conn = model.source === 'user' ? connectionFor(model, settings) : null
     try {
-      if (mode === 'online') await sendLocal({ conn, model, text, handle, signal: controller.signal })
-      else await sendServer({ conn, model, text, handle, signal: controller.signal })
+      const payload = attachments.map(({ kind, mediaType, name, data }) => ({ kind, mediaType, name, data }))
+      if (mode === 'online') await sendLocal({ conn, model, text, attachments: payload, handle, signal: controller.signal })
+      else await sendServer({ conn, model, text, attachments: payload, handle, signal: controller.signal })
     } catch (err) {
       failed = true
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
@@ -426,6 +613,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
+      if (failed && attachments.length && !controller.signal.aborted && kindOf(model).endsWith(':openai'))
+        add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null
       setBusy(false)
@@ -434,16 +623,18 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   // Version docker : le serveur fait la boucle et renvoie un flux SSE.
-  async function sendServer({ conn, model, text, handle, signal }) {
-    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text, lang }
+  async function sendServer({ conn, model, text, attachments, handle, signal }) {
+    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text, lang, ...(attachments.length ? { attachments } : {}) }
     if (conn) body.custom = conn
     else body.model = model.id
+    // Type propre au chat : le serveur le lit avec une limite assez grande pour les pièces jointes.
     const res = await fetch(chatUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/vnd.bpmn-chat+json' },
       body: JSON.stringify(body),
       signal,
     })
+    if (res.status === 413) throw new Error(T('the attached files are too large for the server', 'les fichiers joints sont trop volumineux pour le serveur'))
     if (!res.ok) throw new Error(T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
     // Flux SSE : des blocs « data: {json} » séparés par une ligne vide.
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
@@ -467,7 +658,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   // Version en ligne : la boucle tourne ici, les outils agissent sur cette page.
-  async function sendLocal({ conn, model, text, handle, signal }) {
+  async function sendLocal({ conn, model, text, attachments, handle, signal }) {
     const engine = await loadEngine()
     const kind = kindOf(model)
     if (!conversation || conversation.kind !== kind || !conversation.messages) conversation = { kind, messages: [] }
@@ -476,6 +667,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       model: conn.model,
       conv,
       text,
+      attachments,
       toolSet: engine.toolSet,
       executeTool: async (name, args) => {
         const tool = tools[name]

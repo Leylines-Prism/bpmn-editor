@@ -83,7 +83,7 @@ export class ChatService {
   //
   // custom : fournisseur réglé dans la fenêtre Options de l'éditeur,
   // { format, baseUrl, apiKey, model }. La clé sert à cet appel puis est oubliée.
-  async send({ conversationId, tabId, model: modelKey, custom, text, emit, signal, lang = 'en' }) {
+  async send({ conversationId, tabId, model: modelKey, custom, text, attachments = [], emit, signal, lang = 'en' }) {
     const T = (en, fr) => (lang === 'fr' ? fr : en)
     let target
     if (custom) {
@@ -104,6 +104,7 @@ export class ChatService {
       model: target.id,
       conv,
       text,
+      attachments,
       toolSet: TOOL_SET,
       executeTool: (name, args) => this.bridge.call(name, args, { tabId }),
       emit,

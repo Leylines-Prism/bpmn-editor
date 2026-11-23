@@ -119,6 +119,11 @@ affiche le modèle utilisé.
 - La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pratique
   pour coller un long prompt ou l'ouvrir depuis un fichier .txt ou .md. Ctrl+Entrée envoie.
 - Un message fait au plus 100 000 caractères.
+- **Images et PDF** : on les colle (Ctrl+V, une capture d'écran par exemple), on les glisse sur le
+  panneau, ou on les choisit avec le bouton trombone, puis on décrit ce qu'il faut dessiner. Jusqu'à 5
+  fichiers par message : images de 5 Mo au plus (les grandes sont réduites), PDF de 20 Mo au plus. Les
+  modèles Claude lisent les deux. Avec les fournisseurs compatibles OpenAI, les images dépendent du
+  modèle, et les PDF ne partent que vers OpenAI.
 
 ## Version en ligne
 
