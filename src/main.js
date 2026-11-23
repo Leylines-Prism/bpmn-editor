@@ -144,7 +144,7 @@ async function loadInitial() {
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
     fitView(modeler.get('canvas'))
-    setStatus(saved ? T('restored', 'Reprise auto-save') : T('New diagram', 'Nouveau diagramme'))
+    setStatus(saved ? T('previous work restored', 'travail précédent restauré') : T('New diagram', 'Nouveau diagramme'))
   } catch (e) {
     console.error('Import error:', e)
     await modeler.importXML(EMPTY_DIAGRAM)
