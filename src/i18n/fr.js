@@ -8,7 +8,8 @@
 //
 // Vocabulaire retenu : passerelle (gateway), couloir (lane), événement de
 // bordure (boundary event), réception et émission (catch et throw),
-// non interruptif (non-interrupting).
+// non interruptif (non-interrupting). Pool et participant désignent la même
+// forme : on garde « pool », sans traduction établie en français.
 
 // Titres du panneau de propriétés. Le panneau fabrique le type affiché
 // au-dessus du nom à partir du type BPMN : « Message Start Event »,
@@ -18,7 +19,7 @@
 const PANEL_TYPES = {
   'Process': 'Processus',
   'Collaboration': 'Collaboration',
-  'Participant': 'Participant',
+  'Participant': 'Pool',
   'Lane': 'Couloir',
   'Task': 'Tâche',
   'User Task': 'Tâche utilisateur',
@@ -105,7 +106,7 @@ export default {
   'Create gateway': 'Créer une passerelle',
   'Create group': 'Créer un groupe',
   'Create intermediate/boundary event': 'Créer un événement intermédiaire ou de bordure',
-  'Create pool/participant': 'Créer un pool ou participant',
+  'Create pool/participant': 'Créer un pool',
   'Create start event': 'Créer un événement de début',
   'Create task': 'Créer une tâche',
 
@@ -152,7 +153,7 @@ export default {
   'Collection': 'Collection',
   'Loop': 'Boucle',
   'Parallel multi-instance': 'Multi-instance parallèle',
-  'Participant multiplicity': 'Multiplicité du participant',
+  'Participant multiplicity': 'Multiplicité du pool',
   'Sequential multi-instance': 'Multi-instance séquentielle',
 
   // Activités
@@ -188,7 +189,7 @@ export default {
   'Default flow': 'Flux par défaut',
   'Sequence flow': 'Flux de séquence',
 
-  // Données et participants
+  // Données et pools
   'Data object reference': 'Objet de données',
   'Data store reference': 'Stock de données',
   'Empty pool/participant': 'Pool vide',
@@ -257,7 +258,7 @@ export default {
   'element required': 'élément requis',
   'element {element} referenced by {referenced}#{property} not yet drawn': "l'élément {element} référencé par {referenced}#{property} n'est pas encore dessiné",
   'failed to import {element}': "échec de l'import de {element}",
-  'flow elements must be children of pools/participants': 'les éléments de flux doivent être placés dans un pool ou participant',
+  'flow elements must be children of pools/participants': 'les éléments de flux doivent être placés dans un pool',
   'missing {semantic}#attachedToRef': '{semantic}#attachedToRef manquant',
   'more than {count} child lanes': 'plus de {count} couloirs enfants',
   'multiple DI elements defined for {element}': 'plusieurs éléments DI définis pour {element}',
@@ -280,7 +281,7 @@ export default {
   'Data': 'Données',
   'Events': 'Événements',
   'Gateways': 'Passerelles',
-  'Participants': 'Participants',
+  'Participants': 'Pools',
   'Sub-processes': 'Sous-processus',
   'Tasks': 'Tâches',
   'Templates': 'Modèles',
@@ -342,8 +343,8 @@ export default {
   'Message': 'Message',
   'Multi-instance': 'Multi-instance',
   'Name': 'Nom',
-  'Participant ID': 'Identifiant du participant',
-  'Participant Name': 'Nom du participant',
+  'Participant ID': 'Identifiant du pool',
+  'Participant Name': 'Nom du pool',
   'Process ID': 'Identifiant du processus',
   'Process documentation': 'Documentation du processus',
   'Process name': 'Nom du processus',
