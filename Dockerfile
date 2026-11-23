@@ -9,11 +9,7 @@ COPY . .
 # Vide : l'éditeur seul, sans assistant côté serveur ni badge MCP.
 ARG VITE_MCP_BRIDGE_URL=""
 ENV VITE_MCP_BRIDGE_URL=$VITE_MCP_BRIDGE_URL
-# Lien « Feedback » (voir le README) : adresse des retours et contact de l'auteur.
-ARG VITE_FEEDBACK_URL=""
-ARG VITE_CONTACT_URL=""
-ARG FEEDBACK_EMAIL=""
-ENV VITE_FEEDBACK_URL=$VITE_FEEDBACK_URL VITE_CONTACT_URL=$VITE_CONTACT_URL FEEDBACK_EMAIL=$FEEDBACK_EMAIL
+# La fenêtre Feedback propose les Issues GitHub du dépôt : aucun réglage de contact ici.
 RUN npm run build
 
 # ── Stage 2 : serve statique ───────────────────────────────────────────────
