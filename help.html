@@ -86,15 +86,20 @@
         <h3>The palette</h3>
         <p>The palette on the left holds the selection tools (hand, lasso, space, connect) and then the shapes: events, tasks, gateways, subprocesses, data objects, pools and lanes. The <span class="ui">…</span> button at the bottom of the palette opens the full list of BPMN elements, with a search by name.</p>
         <h3>The context menu</h3>
-        <p>It appears next to the selected element. From this menu you can:</p>
+        <p>When you select an element, a set of buttons appears next to it. Which buttons you get depends on the element type. For a task, you will find:</p>
         <ul>
-          <li>append the next element (task, gateway, end event…), already connected by a flow,</li>
-          <li>draw a connection to another element,</li>
-          <li>change the element's type (the wrench), for example a task into a user task,</li>
-          <li>add color (the brush) or format the text (the A button),</li>
-          <li>delete the element (the bin).</li>
+          <li><strong>First row:</strong> append an end event, a gateway, a task or an intermediate event. The new element is placed to the right, already linked by a flow.</li>
+          <li><span class="ui">Add text annotation</span> (the dotted bracket) adds a comment linked to the element.</li>
+          <li><span class="ui">Append element</span> (the three dots) opens the full list of elements that can follow, sorted by family (tasks, gateways, sub-processes, events, data), with a search field.</li>
+          <li><span class="ui">Connect to other element</span> (the slanted arrow): click it, then click the target element to draw a flow.</li>
+          <li><span class="ui">Change element</span> (the wrench) turns the element into another type without redrawing it: its links and label are kept. See the details below.</li>
+          <li><span class="ui">Delete</span> (the bin) removes the element and its flows.</li>
+          <li><span class="ui">Set color</span> (the brush) and <span class="ui">Text formatting</span> (the A button) are covered in <a href="#colors-text">Colors and text</a>.</li>
         </ul>
         <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
+        <h3>Change element</h3>
+        <p>The wrench opens the <span class="ui">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
+        <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance (three vertical lines), sequential multi-instance (three horizontal lines) and loop (the circular arrow). Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
         <h3>Keyboard shortcuts</h3>
         <p>On a Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -116,16 +121,48 @@
             </tbody>
           </table>
         </div>
-        <p>The minimap, top right of the canvas, shows the whole diagram. Click in it to move around. The grid helps you line shapes up, and they snap to it.</p>
+        <h3>The minimap</h3>
+        <p>The minimap shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="ui">Open minimap</span> to expand it, then <span class="ui">Close minimap</span> to collapse it.</p>
+        <ul>
+          <li>The orange frame is the part of the diagram visible on screen. Drag it to move around.</li>
+          <li>Click anywhere else in the minimap to center the view on that point.</li>
+          <li><kbd>Ctrl</kbd>+wheel over the minimap zooms the canvas.</li>
+        </ul>
+        <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
       </section>
 
       <section id="properties">
         <h2>Process panel</h2>
-        <p>The right-hand panel shows the properties of the selected element, or of the process when nothing is selected: name, ID, documentation, and the settings of each type (timer, message, flow condition…).</p>
+        <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
+        <h3>Show and hide the panel</h3>
         <ul>
-          <li>The button at the far right of the toolbar hides or shows the panel.</li>
-          <li>Drag the handle on its left edge to make it wider or narrower. Double-click the handle to go back to the default width.</li>
+          <li>The button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
+          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, move to the handle with <kbd>Tab</kbd> and use the left and right arrows. Double-click the handle to go back to the default width.</li>
         </ul>
+        <h3>Name, ID and Executable</h3>
+        <p>Every element has the <span class="ui">General</span> group.</p>
+        <ul>
+          <li><span class="ui">Name</span> is the label shown on the diagram. Changing it here is the same as double-clicking the shape.</li>
+          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. It is not shown on the diagram. The file uses it to link elements together (a flow to its task, a pool to its process), and execution engines use it to identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
+          <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
+        </ul>
+        <p>For a pool, the General group holds the name and ID of the pool, then the name and ID of the process it contains, with its Executable box. This is where you find the process settings once the diagram has pools.</p>
+        <h3>Other groups</h3>
+        <p>Fields are sorted into groups. Click a group title to collapse or expand it. A dot to the right of the title means the group already holds values.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Group</th><th>Shown for</th><th>Content</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>All elements</td><td>Free text describing the element, saved in the file. A pool has two fields, one for itself and one for its process.</td></tr>
+              <tr><td>Message, Signal, Error, Escalation</td><td>Events of that type (and receive or send tasks for Message)</td><td>The message, signal, error or escalation used, picked from a list shared by the whole diagram. Two events with the same reference point to the same message.</td></tr>
+              <tr><td>Timer</td><td>Timer events</td><td>The type (date, duration or cycle) and the value in ISO 8601 format, for example <code>PT1H</code> for one hour.</td></tr>
+              <tr><td>Link</td><td>Link events</td><td>The link name. A throw event jumps to the catch event with the same name.</td></tr>
+              <tr><td>Compensation</td><td>Compensation events</td><td>The activity to compensate, and whether to wait for the compensation to complete.</td></tr>
+              <tr><td>Multi-instance</td><td>Activities marked as multi-instance</td><td>The loop cardinality and the completion condition.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
       </section>
 
       <section id="colors-text">
