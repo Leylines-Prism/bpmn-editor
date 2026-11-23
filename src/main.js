@@ -34,6 +34,7 @@ import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
+import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDiagramLibrary } from './diagram-library.js'
 import { setupFeedback } from './feedback.js'
@@ -367,6 +368,11 @@ setupPanelToggle({
   button: document.getElementById('btn-properties'),
   panel: document.getElementById('properties-panel'),
   canvas: modeler.get('canvas'),
+})
+
+// Poignée pour régler la largeur du panneau Processus.
+makeResizable(document.getElementById('properties-panel'), {
+  name: 'properties', label: T('Process panel width', 'Largeur du panneau Processus'), min: 240, max: 640, fallback: 300,
 })
 loadInitial().then(() => { dirty = false })
 

@@ -109,6 +109,7 @@ behind a proxy that asks for a login.
   which other bpmn.io tools read too. Underline does not show in the PDF export. With the
   brush, a dark custom fill now gets a light text on its own.
 - **Tidy up** rearranges the diagram layout.
+- **Panel width**: drag the handle on the left edge of the AI assistant or the Process panel to widen or narrow it (arrow keys also work, double-click resets). The width is remembered in the browser.
 - **Simulation** runs tokens through the process to check how it flows.
 - Automatic BPMN rule checking, with problems flagged on the canvas.
 - Grid, minimap and properties panel (hidden or shown with the button on the right).

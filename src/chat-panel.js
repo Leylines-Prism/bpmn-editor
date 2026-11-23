@@ -15,6 +15,7 @@ import { connectionFor, loadSettings, userModels } from './ai-settings.js'
 import { createOptionsDialog } from './options-dialog.js'
 import { lang, num, T } from './i18n/lang.js'
 import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
+import { makeResizable } from './panel-resize.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -138,6 +139,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       </form>
     </dialog>`
   document.getElementById('canvas').after(panel)
+  makeResizable(panel, { name: 'chat', label: T('AI assistant width', "Largeur de l'assistant IA"), min: 300, max: 900, fallback: 360 })
 
   const toggle = document.createElement('button')
   toggle.className = 'btn'
