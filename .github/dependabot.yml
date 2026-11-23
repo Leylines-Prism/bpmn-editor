@@ -1,0 +1,33 @@
+# Propositions de mise à jour, une PR par groupe et par semaine. Rien n'est fusionné d'office.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    groups:
+      editor:
+        patterns: ['*']
+
+  - package-ecosystem: npm
+    directory: /mcp
+    schedule:
+      interval: weekly
+    versioning-strategy: increase
+    groups:
+      mcp-server:
+        patterns: ['*']
+
+  - package-ecosystem: docker
+    directories: ['/', '/mcp']
+    schedule:
+      interval: weekly

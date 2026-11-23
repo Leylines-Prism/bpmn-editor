@@ -17,6 +17,7 @@ import * as z from 'zod/v4'
 
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
+import { isIP } from 'node:net'
 
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
@@ -42,6 +43,9 @@ const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
 const PORT = Number(process.env.MCP_PORT || 3333)
 // Jeton facultatif demandé aux clients MCP (en-tête Authorization: Bearer …).
 const MCP_TOKEN = (process.env.MCP_TOKEN || '').trim()
+// Relais des fournisseurs réglés dans la fenêtre Options. CHAT_RELAY=off le coupe : seuls
+// les modèles configurés sur le serveur restent proposés.
+const RELAY = !/^(off|false|0|no)$/i.test((process.env.CHAT_RELAY || '').trim())
 const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:5173,http://127.0.0.1:5173')
   .split(',')
   .map((s) => s.trim())
@@ -148,7 +152,7 @@ function chatCors(req, res, next) {
 }
 app.options('/chat', chatCors)
 app.options('/chat/models', chatCors)
-app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), mcpAuth: Boolean(MCP_TOKEN) }))
+app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), relay: RELAY, mcpAuth: Boolean(MCP_TOKEN) }))
 
 // Fournisseur réglé dans la fenêtre Options : { provider, format, baseUrl, apiKey, model? }.
 // La clé n'est ni enregistrée ni écrite dans le journal. Renvoie null si invalide.
@@ -158,7 +162,7 @@ function readCustom(value, { needModel }) {
   const { provider, label, format, baseUrl, apiKey, model } = value
   if (!PROVIDER_IDS.has(provider) || (format !== 'anthropic' && format !== 'openai')) return null
   const url = checkBaseUrl(baseUrl)
-  if (!url) return null
+  if (!url || isLinkLocal(new URL(url).hostname)) return null
   if (apiKey !== undefined && apiKey !== null && (typeof apiKey !== 'string' || apiKey.length > 500)) return null
   if (needModel && (typeof model !== 'string' || !model.trim() || model.length > 200)) return null
   const fallbackLabel = PROVIDERS.find((p) => p.id === provider).label
@@ -172,15 +176,36 @@ function readCustom(value, { needModel }) {
   }
 }
 
+// Adresses de lien local (169.254.0.0/16, fe80::/10) : services de métadonnées des
+// hébergeurs cloud, jamais un fournisseur de modèles. Refusées pour le relais.
+function isLinkLocal(hostname) {
+  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
+  if (isIP(host) === 4) return host.startsWith('169.254.')
+  if (isIP(host) === 6) return /^fe[89ab]/.test(host) || /^::ffff:169\.254\./.test(host)
+  return host === 'metadata.google.internal'
+}
+
+const RELAY_OFF = (req) => T(req, 'Providers set in Options are turned off on this server (CHAT_RELAY=off).', 'Les fournisseurs réglés dans Options sont désactivés sur ce serveur (CHAT_RELAY=off).')
+
+// Erreur d'un fournisseur relayé, telle qu'elle repart vers le navigateur. Le relais
+// appelle une adresse choisie par la page : le corps d'une réponse qui n'est pas une
+// erreur d'API en JSON (page HTML, service interne…) n'est jamais renvoyé, seul son statut.
+function relayError(err) {
+  if (!err || typeof err !== 'object' || typeof err.status !== 'number') return err
+  const parsed = err.providerJson ?? err.error
+  return parsed ? err : { name: err.name, status: err.status, message: '' }
+}
+
 // Bouton « Tester » ou « Lister » de la fenêtre Options, relayé par le serveur.
 app.post('/chat/models', chatCors, async (req, res) => {
+  if (!RELAY) return res.json({ error: RELAY_OFF(req) })
   const custom = readCustom(req.body, { needModel: false })
   if (!custom) return res.status(400).json({ error: T(req, 'Invalid settings', 'Réglages invalides') })
   try {
     const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000) })
     res.json({ models })
   } catch (err) {
-    res.json({ error: describeProviderError(err, { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })
+    res.json({ error: describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })
   }
 })
 
@@ -195,6 +220,7 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
   if (typeof text !== 'string' || !text.trim() || text.length > 100000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: T(req, 'Invalid request', 'Requête invalide') })
   }
+  if (req.body.custom !== undefined && !RELAY) return res.status(400).json({ error: RELAY_OFF(req) })
   const custom = req.body.custom === undefined ? null : readCustom(req.body.custom, { needModel: true })
   if (req.body.custom !== undefined && !custom) return res.status(400).json({ error: T(req, 'Invalid provider settings', 'Réglages du fournisseur invalides') })
   // Sinon, seuls les modèles configurés sur le serveur sont acceptés.
@@ -225,7 +251,7 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
   } catch (err) {
     if (!abort.signal.aborted) {
       log('[chat] erreur :', err.message)
-      emit({ type: 'error', message: custom ? describeProviderError(err, { label: custom.label, providerId: custom.provider, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
+      emit({ type: 'error', message: custom ? describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
     }
   }
   res.end()
@@ -302,6 +328,13 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
   if (MCP_TOKEN) log('Les clients MCP doivent fournir le jeton MCP_TOKEN.')
+  const publicHosts = LOCAL_HOSTS.includes(HOST) ? [] : ALLOWED_HOSTS.filter((h) => !LOCAL_HOSTS.includes(h))
+  if (publicHosts.length && !MCP_TOKEN) {
+    log(`ATTENTION : le serveur accepte le nom ${publicHosts.join(', ')} mais MCP_TOKEN est vide.`)
+    log('Quiconque atteint cette adresse peut piloter l\'éditeur, utiliser les clés d\'API du serveur et lire les diagrammes.')
+    log('Réglez MCP_TOKEN, et placez le site derrière une authentification (voir le README).')
+  }
+  if (!RELAY) log('Relais des fournisseurs de la fenêtre Options désactivé (CHAT_RELAY=off).')
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
   for (const warning of chat.warnings) log(`Attention : ${warning}`)
   log(
