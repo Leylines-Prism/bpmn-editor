@@ -5,10 +5,13 @@
 // on les assemble ici, et on signale au fil de l'eau ce qui se passe.
 
 export class OpenAICompatError extends Error {
-  constructor(status, message) {
+  // providerJson : le message vient d'une erreur d'API en JSON. Sinon (page HTML, texte
+  // brut), le relais du serveur ne le renvoie pas au navigateur.
+  constructor(status, message, { providerJson = true } = {}) {
     super(message)
     this.name = 'OpenAICompatError'
     this.status = status // null si le serveur n'a pas répondu
+    this.providerJson = providerJson
   }
 }
 
@@ -45,11 +48,13 @@ export class OpenAICompatClient {
     if (!res.ok) {
       const text = await res.text().catch(() => '')
       let message = text.slice(0, 500) || res.statusText
+      let providerJson = false
       try {
         const data = JSON.parse(text)
         message = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : message)
+        providerJson = true
       } catch {}
-      throw new OpenAICompatError(res.status, message)
+      throw new OpenAICompatError(res.status, message, { providerJson })
     }
 
     let content = ''

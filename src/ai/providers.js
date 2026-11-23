@@ -26,10 +26,13 @@ export const PROVIDERS = [
 export const providerById = (id) => PROVIDERS.find((p) => p.id === id)
 
 export class ProviderError extends Error {
-  constructor(status, message) {
+  // providerJson : le message vient d'une erreur d'API en JSON, ou de ce module. Sinon
+  // (page HTML, texte brut), le relais du serveur ne le renvoie pas au navigateur.
+  constructor(status, message, { providerJson = true } = {}) {
     super(message)
     this.name = 'ProviderError'
     this.status = status // null si le serveur n'a pas répondu
+    this.providerJson = providerJson
   }
 }
 
@@ -79,7 +82,7 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
   } catch {}
   if (!res.ok) {
     const message = data?.error?.message || data?.message || (typeof data?.error === 'string' ? data.error : '') || text.slice(0, 300) || res.statusText
-    throw new ProviderError(res.status, message)
+    throw new ProviderError(res.status, message, { providerJson: !!data })
   }
   const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : null
   if (!list) throw new ProviderError(res.status, 'unexpected response: not a list of models')

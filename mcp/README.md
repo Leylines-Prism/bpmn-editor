@@ -118,6 +118,7 @@ a domain name or from another machine, set these variables in a `.env` file next
 
 | Variable | Example | Purpose |
 |---|---|---|
+| `CHAT_RELAY` | `off` | `off` turns off the providers set in the Options window: the server then only offers its own models and never calls an address sent by a page |
 | `BPMN_EDITOR_ORIGINS` | `https://bpmn.example.com` | addresses of the editor pages, with `http://` or `https://`, separated by commas. The WebSocket and the chat only accept them |
 | `MCP_ALLOWED_HOSTS` | `bpmn.example.com` | host names that MCP clients use |
 | `BPMN_BIND` | `0.0.0.0` | interface the site listens on (`127.0.0.1` by default). Only needed when the proxy runs on another machine |
@@ -201,7 +202,7 @@ They can also be placed in `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | server port |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
-| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing |
+| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing, and the server warns at startup when `MCP_ALLOWED_HOSTS` holds a name other than localhost |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
 | `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |
@@ -213,6 +214,7 @@ They can also be placed in `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | provider name in the menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |
 | `CHAT_MODEL` | the first in the list | model selected by default in the menu: `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, or the id alone |
+| `CHAT_RELAY` | `on` | `off` turns off the providers set in the Options window: the server then only offers its own models (above) and never calls an address sent by a page |
 | `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` in the docker image) | folder of the diagrams saved on the server |
 | `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |
 

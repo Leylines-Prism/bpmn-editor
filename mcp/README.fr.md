@@ -119,6 +119,7 @@ un nom de domaine ou depuis une autre machine, régler ces variables dans un fic
 
 | Variable | Exemple | Rôle |
 |---|---|---|
+| `CHAT_RELAY` | `off` | `off` coupe les fournisseurs réglés dans la fenêtre Options : le serveur ne propose plus que ses propres modèles et n'appelle jamais une adresse envoyée par une page |
 | `BPMN_EDITOR_ORIGINS` | `https://bpmn.example.com` | adresses des pages de l'éditeur, avec `http://` ou `https://`, séparées par des virgules. Le WebSocket et le chat n'acceptent qu'elles |
 | `MCP_ALLOWED_HOSTS` | `bpmn.example.com` | noms d'hôte qu'utilisent les clients MCP |
 | `BPMN_BIND` | `0.0.0.0` | interface où le site écoute (`127.0.0.1` par défaut). Utile seulement si le proxy tourne sur une autre machine |
@@ -203,7 +204,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` dans l'image docker) | adresse d'écoute |
-| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien |
+| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien, et le serveur avertit au démarrage quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | noms d'hôte acceptés quand `MCP_HOST` n'est pas local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket et le chat |
 | `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
@@ -215,6 +216,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | `OPENAI_LABEL` | `OpenAI-compatible` | nom du fournisseur dans le menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort`, pour les modèles qui l'acceptent |
 | `CHAT_MODEL` | le premier de la liste | modèle choisi par défaut dans le menu : `anthropic:claude-sonnet-5-5`, `openai:qwen3:14b`, ou l'identifiant seul |
+| `CHAT_RELAY` | `on` | `off` coupe les fournisseurs réglés dans la fenêtre Options : le serveur ne propose plus que ses propres modèles (ci-dessus) et n'appelle jamais une adresse envoyée par une page |
 | `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` dans l'image docker) | dossier des diagrammes enregistrés sur le serveur |
 | `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement, `/bridge` dans le compose | adresse du pont. Une adresse relative vise le site lui-même |
 

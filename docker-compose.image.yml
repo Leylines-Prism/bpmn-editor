@@ -2,7 +2,8 @@
 #
 # ⚠ À NE PAS EXPOSER SUR INTERNET SANS AUTHENTIFICATION.
 # Son serveur n'a pas de comptes : quiconque l'atteint peut utiliser les clés d'API du serveur,
-# lire et supprimer tous les diagrammes enregistrés, et piloter l'éditeur.
+# lire et supprimer tous les diagrammes enregistrés, faire appeler par le serveur des adresses
+# de votre réseau, et piloter l'éditeur.
 # Par défaut, le site n'est joignable que depuis cette machine (127.0.0.1).
 #
 # Ce fichier se suffit à lui-même : téléchargez-le seul, ou collez-le dans votre outil de gestion
@@ -38,6 +39,9 @@ services:
       OPENAI_REASONING_EFFORT: ${OPENAI_REASONING_EFFORT:-}
       CHAT_MODEL: ${CHAT_MODEL:-}
       CHAT_EFFORT: ${CHAT_EFFORT:-}
+      # off : coupe les fournisseurs réglés dans la fenêtre Options (le serveur n'appelle plus
+      # d'adresse envoyée par la page).
+      CHAT_RELAY: ${CHAT_RELAY:-}
       # Jeton demandé aux clients MCP (fenêtre « Connecter un agent »).
       MCP_TOKEN: ${MCP_TOKEN:-}
       # Pour un autre nom ou une autre adresse (proxy, nom de domaine), voir le README.
