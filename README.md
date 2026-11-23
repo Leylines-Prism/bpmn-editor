@@ -180,5 +180,6 @@ The online version is a static site, published on GitHub Pages by the workflow
 - Optional build settings, in Settings > Secrets and variables > Actions, never in the repository:
   the variables `VITE_SITE_HOST` ("GitHub Pages" by default), `VITE_FEEDBACK_URL` and
   `VITE_CONTACT_URL`, and the secret `FEEDBACK_EMAIL`.
-- The site is built for its address on Pages (`/bpmn-editor/`). Elsewhere, `BASE_PATH` sets the
+- The site is built for the root of its custom domain. Without one, set the `BASE_PATH` variable
+  to `/bpmn-editor/`. Elsewhere, `BASE_PATH` sets the
   path, and `npm run build:online` produces the `dist-online/` folder to put on any static host.
