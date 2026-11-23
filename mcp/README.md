@@ -98,7 +98,7 @@ key changes. "Assistant model" picks the model used by the chat.
 ### With docker compose
 
 The `docker-compose.yml` file at the root of the repository starts the editor and this server (see
-the [main README](../README.md#docker-version)). The server reads `mcp/.env` when it exists.
+the [main README](../README.md#run-it-with-docker)). The server reads `mcp/.env` when it exists.
 Variables can also be passed through `environment`, keys preferably through a `.env` file next to the
 compose file, never written in the compose file itself:
 
@@ -109,6 +109,30 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
       CHAT_MODEL: anthropic:claude-sonnet-5-5
 ```
+
+### Behind a domain name
+
+By default, the compose file publishes the site on `127.0.0.1` of the host only. To serve it under
+a domain name or from another machine, set these variables in a `.env` file next to
+`docker-compose.yml`:
+
+| Variable | Example | Purpose |
+|---|---|---|
+| `BPMN_EDITOR_ORIGINS` | `https://bpmn.example.com` | addresses of the editor pages, with `http://` or `https://`, separated by commas. The WebSocket and the chat only accept them |
+| `MCP_ALLOWED_HOSTS` | `bpmn.example.com` | host names that MCP clients use |
+| `BPMN_BIND` | `0.0.0.0` | interface the site listens on (`127.0.0.1` by default). Only needed when the proxy runs on another machine |
+
+| Install | MCP address |
+|---|---|
+| docker on this machine | `http://localhost:8080/mcp` (or the port set in `BPMN_PORT`) |
+| development (`npm run dev` and `mcp/`) | `http://127.0.0.1:3333/mcp` |
+| docker behind a domain name or a reverse proxy | `https://your-domain/mcp` |
+
+The reverse proxy must pass the `Host` header, allow WebSocket upgrades on `/bridge`, and not buffer
+the answers of `/mcp` and `/chat` (Caddy does all of this by default). Set `MCP_TOKEN` so that MCP
+clients must send `Authorization: Bearer <token>`. The editor pages and saved diagrams stay open to
+anyone who reaches the site: put a login in front of them at the proxy, as in the
+[main README](../README.md#serve-it-over-https).
 
 ## Running
 
