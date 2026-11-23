@@ -68,7 +68,7 @@
 
       <section id="premiers-pas">
         <h2>Premiers pas</h2>
-        <p>À la première ouverture, l'éditeur montre un petit processus : un début, une tâche et une fin. Vous pouvez partir de là, ou cliquer sur <span class="ui">Nouveau</span> pour repartir d'un diagramme vide.</p>
+        <p>À la première ouverture, l'éditeur montre un petit processus : un début, une tâche et une fin. Vous pouvez partir de là, ou cliquer sur <span class="ico" data-icon="new" aria-hidden="true"></span><span class="ui">Nouveau</span> pour repartir d'un diagramme vide.</p>
         <figure><img src="/src/help/img/fr-editeur.webp" width="1440" height="820" alt="L'éditeur avec un processus de note de frais : la palette à gauche, le canevas, et le panneau de l'assistant IA ouvert à droite." loading="lazy" /><figcaption>L'éditeur, avec le panneau de l'assistant IA ouvert à droite. Le panneau Processus est masqué ici.</figcaption></figure>
         <ol>
           <li>Choisissez une forme dans la palette, à gauche du canevas, puis cliquez sur le canevas pour la poser.</li>
@@ -77,29 +77,29 @@
           <li>Donnez un nom au fichier dans le champ à gauche de la barre d'outils. Il sert à l'enregistrement et à tous les exports.</li>
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification. En rouvrant la page, vous le retrouvez tel que vous l'avez laissé. La barre d'outils l'indique avec « Sauvegarde auto ».</p>
-        <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
+        <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
         <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit. Ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
       </section>
 
       <section id="dessiner">
         <h2>Dessiner</h2>
         <h3>La palette</h3>
-        <p>La palette, à gauche, propose les outils de sélection (main, lasso, espace, connexion) puis les formes : événements, tâches, passerelles, sous-processus, objets de données, piscines et couloirs. Le bouton <span class="ui">…</span> en bas de la palette ouvre la liste complète des éléments BPMN, avec une recherche par nom.</p>
+        <p>La palette, à gauche, propose les outils de sélection (main <span class="ico bpmn-icon-hand-tool" aria-hidden="true"></span>, lasso <span class="ico bpmn-icon-lasso-tool" aria-hidden="true"></span>, espace <span class="ico bpmn-icon-space-tool" aria-hidden="true"></span>, connexion <span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span>) puis les formes : événements, tâches, passerelles, sous-processus, objets de données, piscines et couloirs. Le bouton <svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg> en bas de la palette ouvre la liste complète des éléments BPMN, avec une recherche par nom.</p>
         <h3>Le menu contextuel</h3>
         <p>Quand vous sélectionnez un élément, une série de boutons apparaît à côté de lui. Leur liste dépend du type de l'élément. Pour une tâche, on trouve :</p>
         <ul>
-          <li><strong>Première ligne :</strong> ajouter un événement de fin, une passerelle, une tâche ou un événement intermédiaire. Le nouvel élément est posé à droite et déjà relié par un flux.</li>
-          <li><span class="ui">Ajouter une annotation</span> (le crochet en pointillé) pose un commentaire relié à l'élément.</li>
-          <li><span class="ui">Ajouter un élément</span> (les trois points) ouvre la liste complète des éléments qui peuvent suivre, rangés par famille (tâches, passerelles, sous-processus, événements, données), avec un champ de recherche.</li>
-          <li><span class="ui">Relier à un autre élément</span> (la flèche oblique) : cliquez dessus, puis sur l'élément cible pour tracer un flux.</li>
-          <li><span class="ui">Changer l'élément</span> (la clé à molette) transforme l'élément sans le redessiner : ses liens et son libellé sont conservés. Voir le détail ci-dessous.</li>
-          <li><span class="ui">Supprimer</span> (la corbeille) retire l'élément et ses flux.</li>
-          <li><span class="ui">Choisir la couleur</span> (le pinceau) et <span class="ui">Mise en forme du texte</span> (le bouton A) sont décrits dans <a href="#couleurs-texte">Couleurs et texte</a>.</li>
+          <li><span class="ico bpmn-icon-end-event-none" aria-hidden="true"></span><span class="ico bpmn-icon-gateway-none" aria-hidden="true"></span><span class="ico bpmn-icon-task" aria-hidden="true"></span><span class="ico bpmn-icon-intermediate-event-none" aria-hidden="true"></span> <strong>Première ligne :</strong> ajouter un événement de fin, une passerelle, une tâche ou un événement intermédiaire. Le nouvel élément est posé à droite et déjà relié par un flux.</li>
+          <li><span class="ico bpmn-icon-text-annotation" aria-hidden="true"></span><span class="ui">Ajouter une annotation</span> (le crochet en pointillé) pose un commentaire relié à l'élément.</li>
+          <li><svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg><span class="ui">Ajouter un élément</span> (les trois points) ouvre la liste complète des éléments qui peuvent suivre, rangés par famille (tâches, passerelles, sous-processus, événements, données), avec un champ de recherche.</li>
+          <li><span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span><span class="ui">Relier à un autre élément</span> (la flèche oblique) : cliquez dessus, puis sur l'élément cible pour tracer un flux.</li>
+          <li><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span><span class="ui">Changer l'élément</span> (la clé à molette) transforme l'élément sans le redessiner : ses liens et son libellé sont conservés. Voir le détail ci-dessous.</li>
+          <li><span class="ico bpmn-icon-trash" aria-hidden="true"></span><span class="ui">Supprimer</span> (la corbeille) retire l'élément et ses flux.</li>
+          <li><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg><span class="ui">Choisir la couleur</span> (le pinceau) et <svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg><span class="ui">Mise en forme du texte</span> (le bouton A) sont décrits dans <a href="#couleurs-texte">Couleurs et texte</a>.</li>
         </ul>
         <figure><img src="/src/help/img/fr-menu-contextuel.webp" width="460" height="300" alt="Menu contextuel d'une tâche sélectionnée : éléments à ajouter, connexion, changement de type, couleur, texte et suppression." loading="lazy" /><figcaption>Le menu contextuel d'une tâche sélectionnée.</figcaption></figure>
         <h3>Changer l'élément</h3>
         <p>La clé à molette ouvre la fenêtre <span class="ui">Changer l'élément</span>. Elle liste les types compatibles avec l'élément choisi : une tâche peut devenir tâche utilisateur, tâche de service, activité d'appel ou sous-processus, un événement de début peut devenir événement de début de message ou de minuteur, etc. Tapez quelques lettres dans le champ de recherche pour filtrer la liste, puis cliquez sur un type ou validez avec <kbd>Entrée</kbd>. La touche <kbd>R</kbd> ouvre la même fenêtre au clavier.</p>
-        <p>Pour une tâche ou un sous-processus, les icônes en haut à droite de la fenêtre ajoutent un marqueur sans changer le type : multi-instance parallèle (trois traits verticaux), multi-instance séquentielle (trois traits horizontaux) et boucle (la flèche circulaire). Un second clic retire le marqueur. Le nombre de boucles et la condition d'achèvement se règlent ensuite dans le <a href="#proprietes">panneau Processus</a>.</p>
+        <p>Pour une tâche ou un sous-processus, les icônes en haut à droite de la fenêtre ajoutent un marqueur sans changer le type : multi-instance parallèle <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, multi-instance séquentielle <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> et boucle <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Un second clic retire le marqueur. Le nombre de boucles et la condition d'achèvement se règlent ensuite dans le <a href="#proprietes">panneau Processus</a>.</p>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -136,7 +136,7 @@
         <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des piscines. Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
         <h3>Afficher et masquer le panneau</h3>
         <ul>
-          <li>Le bouton tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
+          <li>Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
           <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, placez-vous sur la poignée avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic sur la poignée rétablit la largeur par défaut.</li>
         </ul>
         <h3>Nom, Identifiant et Exécutable</h3>
@@ -223,10 +223,10 @@
         </details>
         <p>Pour apprendre la notation : le <a href="https://lucid.co/fr/diagramme/bpmn/tutoriel" target="_blank" rel="noopener">tutoriel BPMN de Lucidchart</a>, en français, qui explique chaque symbole avec un exemple, et l'<a href="https://bpm-conference.org/assets/docs/bpmn-poster/BPMN2_0_Poster_FR.pdf" target="_blank" rel="noopener">affiche BPMN 2.0</a> (PDF), qui rassemble tous les symboles sur une page. La <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">documentation des règles</a> détaille chaque vérification.</p>
         <h3>Ranger</h3>
-        <p>Le bouton <span class="ui">Ranger</span> (l'icône en forme de schéma, après Mes diagrammes) recalcule la disposition de tout le diagramme, de gauche à droite. Utile après un import, ou après un diagramme dessiné par l'IA.</p>
+        <p>Le bouton <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Ranger</span> (après Mes diagrammes) recalcule la disposition de tout le diagramme, de gauche à droite. Utile après un import, ou après un diagramme dessiné par l'IA.</p>
         <div class="note warn">Ranger déplace toutes les formes et efface l'historique d'annulation. L'éditeur vous demande de confirmer. Pour garder la version d'avant, enregistrez-la d'abord dans Mes diagrammes.</div>
         <h3>Simulation</h3>
-        <p>Le bouton <span class="ui">Simulation</span> (l'icône lecture, à côté de Ranger) passe en mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="ui">Arrêter la simulation</span> pour revenir à l'édition.</p>
+        <p>Le bouton <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> (à côté de Ranger) passe en mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="ui">Arrêter la simulation</span> pour revenir à l'édition.</p>
         <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
       </section>
 
@@ -235,7 +235,7 @@
         <h3>Sauvegarde automatique</h3>
         <p>Le diagramme en cours est gardé dans votre navigateur une seconde après chaque modification. L'heure affichée à côté de « Sauvegarde auto » est celle du dernier enregistrement. Il n'y a qu'un seul diagramme en cours : cliquer sur <span class="ui">Nouveau</span> ou ouvrir un fichier le remplace.</p>
         <h3>Mes diagrammes</h3>
-        <p>Pour garder plusieurs diagrammes, ouvrez <span class="ui">Mes diagrammes</span>. Vous pouvez y enregistrer le diagramme en cours sous un nom, puis rouvrir, renommer ou supprimer vos diagrammes. Une fois un diagramme enregistré, <kbd>Ctrl</kbd>+<kbd>S</kbd> le met à jour. <span class="ui">Enregistrer comme nouveau</span> en fait une copie.</p>
+        <p>Pour garder plusieurs diagrammes, ouvrez <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">Mes diagrammes</span>. Vous pouvez y enregistrer le diagramme en cours sous un nom, puis rouvrir, renommer ou supprimer vos diagrammes. Une fois un diagramme enregistré, <kbd>Ctrl</kbd>+<kbd>S</kbd> le met à jour. <span class="ui">Enregistrer comme nouveau</span> en fait une copie.</p>
         <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre Mes diagrammes.</figcaption></figure>
         <div class="note warn">Mes diagrammes est rangé dans ce navigateur, sur cet appareil. Il n'est pas synchronisé, et il disparaît si vous effacez les données du site ou si vous naviguez en mode privé. Pour garder un diagramme pour de bon, ou le passer à quelqu'un, exportez-le en fichier .bpmn.</div>
       </section>
@@ -244,7 +244,7 @@
         <h2>Ouvrir, importer, exporter</h2>
         <h3>Ouvrir</h3>
         <ul>
-          <li><span class="ui">Ouvrir</span>, puis <span class="ui">Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
+          <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Ouvrir</span>, puis <span class="ui">Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
           <li><span class="ui">Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
           <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
         </ul>
@@ -268,7 +268,7 @@
 
       <section id="assistant">
         <h2>Assistant IA</h2>
-        <p>Le bouton <span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le diagramme ouvert, le ranger et le vérifier. Vous retouchez ensuite à la main ce qu'il a fait, comme n'importe quel diagramme.</p>
+        <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le diagramme ouvert, le ranger et le vérifier. Vous retouchez ensuite à la main ce qu'il a fait, comme n'importe quel diagramme.</p>
 
         <h3>1. Choisir un fournisseur</h3>
         <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé d'API. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>

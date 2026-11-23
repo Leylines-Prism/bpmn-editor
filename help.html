@@ -68,7 +68,7 @@
 
       <section id="getting-started">
         <h2>Getting started</h2>
-        <p>The first time you open it, the editor shows a small process: a start, a task and an end. Build from there, or click <span class="ui">New</span> to start from an empty diagram.</p>
+        <p>The first time you open it, the editor shows a small process: a start, a task and an end. Build from there, or click <span class="ico" data-icon="new" aria-hidden="true"></span><span class="ui">New</span> to start from an empty diagram.</p>
         <figure><img src="/src/help/img/en-editeur.webp" width="1440" height="820" alt="The editor with an expense claim process: the palette on the left, the canvas, and the AI assistant panel open on the right." loading="lazy" /><figcaption>The editor, with the AI assistant panel open on the right. The Process panel is hidden here.</figcaption></figure>
         <ol>
           <li>Pick a shape in the palette, left of the canvas, then click the canvas to place it.</li>
@@ -77,29 +77,29 @@
           <li>Name the file in the field on the left of the toolbar. That name is used when saving and for every export.</li>
         </ol>
         <p>Your work is kept in the browser after every change. Reopen the page and you find it as you left it. The toolbar shows this as "Autosave".</p>
-        <p>The <span class="ui">FR</span> or <span class="ui">EN</span> button switches the interface language, and the round button next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <p>The <span class="ui">FR</span> or <span class="ui">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
         <div class="note">There is no account. Your diagrams stay in your browser. If you use the assistant, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
       </section>
 
       <section id="drawing">
         <h2>Drawing</h2>
         <h3>The palette</h3>
-        <p>The palette on the left holds the selection tools (hand, lasso, space, connect) and then the shapes: events, tasks, gateways, subprocesses, data objects, pools and lanes. The <span class="ui">…</span> button at the bottom of the palette opens the full list of BPMN elements, with a search by name.</p>
+        <p>The palette on the left holds the selection tools (hand <span class="ico bpmn-icon-hand-tool" aria-hidden="true"></span>, lasso <span class="ico bpmn-icon-lasso-tool" aria-hidden="true"></span>, space <span class="ico bpmn-icon-space-tool" aria-hidden="true"></span>, connect <span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span>) and then the shapes: events, tasks, gateways, subprocesses, data objects, pools and lanes. The <svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg> button at the bottom of the palette opens the full list of BPMN elements, with a search by name.</p>
         <h3>The context menu</h3>
         <p>When you select an element, a set of buttons appears next to it. Which buttons you get depends on the element type. For a task, you will find:</p>
         <ul>
-          <li><strong>First row:</strong> append an end event, a gateway, a task or an intermediate event. The new element is placed to the right, already linked by a flow.</li>
-          <li><span class="ui">Add text annotation</span> (the dotted bracket) adds a comment linked to the element.</li>
-          <li><span class="ui">Append element</span> (the three dots) opens the full list of elements that can follow, sorted by family (tasks, gateways, sub-processes, events, data), with a search field.</li>
-          <li><span class="ui">Connect to other element</span> (the slanted arrow): click it, then click the target element to draw a flow.</li>
-          <li><span class="ui">Change element</span> (the wrench) turns the element into another type without redrawing it: its links and label are kept. See the details below.</li>
-          <li><span class="ui">Delete</span> (the bin) removes the element and its flows.</li>
-          <li><span class="ui">Set color</span> (the brush) and <span class="ui">Text formatting</span> (the A button) are covered in <a href="#colors-text">Colors and text</a>.</li>
+          <li><span class="ico bpmn-icon-end-event-none" aria-hidden="true"></span><span class="ico bpmn-icon-gateway-none" aria-hidden="true"></span><span class="ico bpmn-icon-task" aria-hidden="true"></span><span class="ico bpmn-icon-intermediate-event-none" aria-hidden="true"></span> <strong>First row:</strong> append an end event, a gateway, a task or an intermediate event. The new element is placed to the right, already linked by a flow.</li>
+          <li><span class="ico bpmn-icon-text-annotation" aria-hidden="true"></span><span class="ui">Add text annotation</span> (the dotted bracket) adds a comment linked to the element.</li>
+          <li><svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg><span class="ui">Append element</span> (the three dots) opens the full list of elements that can follow, sorted by family (tasks, gateways, sub-processes, events, data), with a search field.</li>
+          <li><span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span><span class="ui">Connect to other element</span> (the slanted arrow): click it, then click the target element to draw a flow.</li>
+          <li><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span><span class="ui">Change element</span> (the wrench) turns the element into another type without redrawing it: its links and label are kept. See the details below.</li>
+          <li><span class="ico bpmn-icon-trash" aria-hidden="true"></span><span class="ui">Delete</span> (the bin) removes the element and its flows.</li>
+          <li><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg><span class="ui">Set color</span> (the brush) and <svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg><span class="ui">Text formatting</span> (the A button) are covered in <a href="#colors-text">Colors and text</a>.</li>
         </ul>
         <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
         <h3>Change element</h3>
         <p>The wrench opens the <span class="ui">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
-        <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance (three vertical lines), sequential multi-instance (three horizontal lines) and loop (the circular arrow). Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
+        <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, sequential multi-instance <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> and loop <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
         <h3>Keyboard shortcuts</h3>
         <p>On a Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -136,7 +136,7 @@
         <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
         <h3>Show and hide the panel</h3>
         <ul>
-          <li>The button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
+          <li>The <span class="ico" data-icon="panel" aria-hidden="true"></span> button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
           <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, move to the handle with <kbd>Tab</kbd> and use the left and right arrows. Double-click the handle to go back to the default width.</li>
         </ul>
         <h3>Name, ID and Executable</h3>
@@ -223,10 +223,10 @@
         </details>
         <p>To learn the notation: the <a href="https://camunda.com/bpmn/reference/" target="_blank" rel="noopener">BPMN 2.0 symbol reference by Camunda</a>, which explains each symbol with an example, and the <a href="https://bpm-conference.org/assets/docs/bpmn-poster/BPMN2_0_Poster_EN.pdf" target="_blank" rel="noopener">BPMN 2.0 poster</a> (PDF), with every symbol on one page. The <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">rule documentation</a> details each check.</p>
         <h3>Tidy up</h3>
-        <p>The <span class="ui">Tidy up</span> button (the diagram icon, after My diagrams) recomputes the layout of the whole diagram, from left to right. Useful after an import, or after a diagram drawn by the AI.</p>
+        <p>The <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Tidy up</span> button (after My diagrams) recomputes the layout of the whole diagram, from left to right. Useful after an import, or after a diagram drawn by the AI.</p>
         <div class="note warn">Tidy up moves every shape and clears the undo history. The editor asks you to confirm. To keep the previous version, save it in My diagrams first.</div>
         <h3>Simulation</h3>
-        <p>The <span class="ui">Simulation</span> button (the play icon, next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. This shows whether the process ends in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
+        <p>The <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. This shows whether the process ends in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
         <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
       </section>
 
@@ -235,7 +235,7 @@
         <h3>Autosave</h3>
         <p>The current diagram is kept in your browser one second after each change. The time shown next to "Autosave" is the time of the last save. There is only one current diagram: clicking <span class="ui">New</span> or opening a file replaces it.</p>
         <h3>My diagrams</h3>
-        <p>To keep several diagrams, open <span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
+        <p>To keep several diagrams, open <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="470" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The My diagrams window.</figcaption></figure>
         <div class="note warn">My diagrams lives in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a diagram for good, or share it, export it as a .bpmn file.</div>
       </section>
@@ -244,7 +244,7 @@
         <h2>Open, import, export</h2>
         <h3>Open</h3>
         <ul>
-          <li><span class="ui">Open</span>, then <span class="ui">.bpmn or .xml file…</span>, opens a file from your disk.</li>
+          <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Open</span>, then <span class="ui">.bpmn or .xml file…</span>, opens a file from your disk.</li>
           <li><span class="ui">Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
           <li>You can also drop a .bpmn file onto the page.</li>
         </ul>
@@ -268,7 +268,7 @@
 
       <section id="assistant">
         <h2>AI assistant</h2>
-        <p>The <span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. Then you touch up its work by hand, like any other diagram.</p>
+        <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. Then you touch up its work by hand, like any other diagram.</p>
 
         <h3>1. Choose a provider</h3>
         <p>The assistant uses an AI model from the provider of your choice, with your own API key. Open <span class="ui">Options</span> in the assistant panel:</p>
