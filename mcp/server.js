@@ -24,6 +24,7 @@ import { ChatService } from './chat.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
+import { checkAttachments } from '../src/ai/attachments.js'
 import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
@@ -174,8 +175,14 @@ app.post('/chat/models', chatCors, async (req, res) => {
   }
 })
 
-app.post('/chat', chatCors, async (req, res) => {
+// Les messages avec pièces jointes (images, PDF) dépassent la limite de 100 Ko du
+// lecteur JSON général : ils arrivent avec leur propre type, lu ici jusqu'à 34 Mo.
+const chatBody = express.json({ type: 'application/vnd.bpmn-chat+json', limit: '34mb' })
+
+app.post('/chat', chatCors, chatBody, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
+  const attachments = checkAttachments(req.body?.attachments)
+  if (!attachments) return res.status(400).json({ error: T(req, 'Invalid attachments (type or size)', 'Pièces jointes invalides (type ou taille)') })
   if (typeof text !== 'string' || !text.trim() || text.length > 100000 || typeof tabId !== 'string') {
     return res.status(400).json({ error: T(req, 'Invalid request', 'Requête invalide') })
   }
@@ -200,6 +207,7 @@ app.post('/chat', chatCors, async (req, res) => {
       model,
       custom,
       text: text.trim(),
+      attachments,
       emit,
       signal: abort.signal,
       lang: langOf(req),

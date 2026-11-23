@@ -115,6 +115,10 @@ provider's models are offered once its connection has been tested. The panel sho
 - The input grows with its text. The button in its corner opens a large editor, handy to paste a
   long prompt or load one from a .txt or .md file. Ctrl+Enter sends.
 - A message can be up to 100,000 characters long.
+- **Images and PDF files**: paste them (Ctrl+V, a screenshot for example), drop them on the panel, or
+  pick them with the paperclip button, then describe what to draw. Up to 5 files per message: images
+  up to 5 MB (large ones are scaled down), PDF files up to 20 MB. Claude models read both. With
+  OpenAI-compatible providers, images depend on the model, and PDF files are only sent to OpenAI.
 
 ## Online version
 

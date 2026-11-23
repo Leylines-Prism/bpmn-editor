@@ -43,6 +43,8 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
   model. The server uses it for that call, without storing it or writing it to its log.
 - The `/chat` route only accepts editor pages (same list of origins as the WebSocket).
 - Conversations are kept in the server's memory (20 at most) and lost when it restarts.
+- Images and PDF files attached in the panel are sent with the message (34 MB at most per request,
+  with their own content type `application/vnd.bpmn-chat+json`), then passed on to the model.
 - If Claude Opus or Sonnet declines a request, the API replays it on a fallback model
   (`fallbacks: "default"`). Haiku has no fallback.
 - Each message uses API credits: a key from an organization with included credits stops when they

@@ -43,6 +43,8 @@ Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion
   clé et modèle. Le serveur s'en sert pour cet appel, sans l'enregistrer ni l'écrire dans son journal.
 - La route `/chat` n'accepte que les pages de l'éditeur (même liste d'origines que le WebSocket).
 - Les conversations sont gardées en mémoire par le serveur (20 au plus) et perdues à son redémarrage.
+- Les images et PDF joints dans le panneau partent avec le message (34 Mo au plus par requête, avec
+  leur propre type de contenu `application/vnd.bpmn-chat+json`), puis sont transmis au modèle.
 - Si Claude Opus ou Sonnet décline une demande, l'API la rejoue sur un modèle de repli
   (`fallbacks: "default"`). Haiku n'a pas ce repli.
 - Chaque message consomme des crédits d'API : la clé de l'organisation à crédits inclus s'arrête

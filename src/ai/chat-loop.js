@@ -9,6 +9,7 @@
 // Une conversation est un objet { messages } que la boucle met à jour.
 
 import { INSTRUCTIONS, buildTools } from './tools.js'
+import { anthropicUserContent, openaiUserContent } from './attachments.js'
 
 export const MAX_STEPS = 30 // appels successifs au modèle pour un seul message
 const MAX_JSON_RETRIES = 2
@@ -78,12 +79,12 @@ export async function runTool({ toolSet, name, input, executeTool, emit, log = c
 
 // Un tour avec l'API Claude. client : instance du SDK Anthropic ;
 // APIError : sa classe d'erreur (Anthropic.APIError), pour reconnaître les erreurs de l'API.
-export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
   // On travaille sur une copie, et on n'enregistre que des étapes complètes :
   // une interruption ne laisse jamais un appel d'outil sans résultat.
   const before = conv.messages
-  const messages = [...before, { role: 'user', content: text }]
+  const messages = [...before, { role: 'user', content: anthropicUserContent(text, attachments) }]
   conv.messages = messages.slice()
 
   // Si le modèle décline une demande, l'API la rejoue sur un modèle de repli.
@@ -173,10 +174,10 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
 
 // Même boucle pour une API compatible OpenAI (/chat/completions avec outils).
 // client : OpenAICompatClient.
-export async function runOpenAITurn({ client, model, reasoningEffort = null, conv, text, toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+export async function runOpenAITurn({ client, model, reasoningEffort = null, conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
   const before = conv.messages
-  const messages = [...before, { role: 'user', content: text }]
+  const messages = [...before, { role: 'user', content: openaiUserContent(text, attachments) }]
   conv.messages = messages.slice()
 
   for (let step = 0; step < MAX_STEPS; step++) {
