@@ -50,14 +50,14 @@ export function setupPrivacy({ container }) {
                  "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>`)
 
   const audience = analyticsHost ? section('chart', T('Audience measurement', "Mesure d'audience"), `
-          <p>${T('The site measures its audience with Umami, without cookies. Your IP address is not recorded.',
-                 "Le site mesure sa fréquentation avec Umami, sans cookie. Votre adresse IP n'est pas enregistrée.")}</p>
+          <p>${T('The site measures its audience with Umami.', 'Le site mesure sa fréquentation avec Umami.')}</p>
           <ul class="pv-facts">
-            <li>${T('The measurement is configured according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent.', "La mesure est configurée conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement.")}</li>
-            <li>${T('The content of your diagrams, messages and keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés n\'est jamais collecté.')}</li>
-            <li>${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>
-            <li>${T('The data is kept for 25 months at most and is not shared with third parties.', 'Les données sont conservées 25 mois au maximum et ne sont pas transmises à des tiers.')}</li>
-            <li>${T('The measurement is turned off if your browser sends a "Do Not Track" or "Global Privacy Control" signal.', 'La mesure est désactivée si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».')}</li>
+            <li class="pv-key">${T('The content of your diagrams, messages and keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés n\'est jamais collecté.')}</li>
+            <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. In practice:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement. Concrètement :")}</li>
+            <li class="pv-sub">${T('No cookie is set and your IP address is not recorded.', "Aucun cookie n'est déposé et votre adresse IP n'est pas enregistrée.")}</li>
+            <li class="pv-sub">${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>
+            <li class="pv-sub">${T('The data is kept for 25 months at most and is not shared with third parties.', 'Les données sont conservées 25 mois au maximum et ne sont pas transmises à des tiers.')}</li>
+            <li class="pv-sub">${T('The measurement is turned off if your browser sends a "Do Not Track" or "Global Privacy Control" signal.', 'La mesure est désactivée si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».')}</li>
           </ul>`) : ''
 
   const hosting = section('server', T('Hosting', 'Hébergement'), `
