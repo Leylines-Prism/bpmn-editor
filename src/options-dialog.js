@@ -42,7 +42,6 @@ export function createOptionsDialog({ mode, test, onSave }) {
     <form method="dialog">
       <h2 id="options-title">${T('Assistant options', "Options de l'assistant")}</h2>
       <p class="hint">${T('Turn on one or more providers, paste the key if needed and test the connection: their models then appear in the menu below, where you pick the model of the assistant.', 'Activez un ou plusieurs fournisseurs, collez la clé si besoin et testez la connexion : leurs modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
-      <p class="hint" id="options-server" hidden></p>
       <div class="providers">
         ${PROVIDERS.map(
           (p) => `
@@ -265,12 +264,6 @@ export function createOptionsDialog({ mode, test, onSave }) {
     open(settings, { server = [] } = {}) {
       draft = structuredClone(settings)
       serverModels = server
-      const note = dialog.querySelector('#options-server')
-      const groups = [...new Set(server.map((m) => m.providerLabel))]
-      note.hidden = !groups.length
-      note.textContent = groups.length
-        ? T(`Set up on the server: ${groups.map((g) => { const n = server.filter((m) => m.providerLabel === g).length; return `${g} (${n} model${n > 1 ? 's' : ''})` }).join(', ')}. These models are already offered, with no key to enter here.`, `Configuré sur le serveur : ${groups.map((g) => { const n = server.filter((m) => m.providerLabel === g).length; return `${g} (${n} modèle${n > 1 ? 's' : ''})` }).join(', ')}. Ces modèles sont déjà proposés, sans clé à saisir ici.`)
-        : ''
       for (const id of blocks.keys()) renderBlock(id)
       remember.checked = draft.remember
       renderDefault()
