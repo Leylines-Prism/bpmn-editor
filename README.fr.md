@@ -85,7 +85,6 @@ sauf si le tableau indique `mcp/.env`. Puis lancez `docker compose up -d --build
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
-| `VITE_CONTACT_URL`, `FEEDBACK_EMAIL`, `VITE_FEEDBACK_URL` | Ce que propose la fenêtre Feedback : une page de contact (LinkedIn…), une adresse e-mail, et où signaler les bugs (GitHub Issues par défaut). |
 
 ## Ce que fait l'éditeur
 
