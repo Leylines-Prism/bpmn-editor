@@ -2,7 +2,7 @@
 
 **English** | [Français](README.fr.md)
 
-This server lets an AI (Claude Code, Claude Desktop or any MCP client) read and draw in the BPMN
+This server lets an AI (Claude Code, Claude Desktop, GitHub Copilot in VS Code or any MCP client) read and draw in the BPMN
 editor **open in the browser**. Changes show up live on the canvas, as if made by hand, and each tool
 call can be undone with a single Ctrl+Z, except `set_diagram_xml` and `auto_layout`, which reload the
 whole diagram.

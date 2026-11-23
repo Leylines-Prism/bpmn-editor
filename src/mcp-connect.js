@@ -1,6 +1,6 @@
 // Fenêtre « Connecter un agent », ouverte d'un clic sur le badge MCP : l'adresse
 // du serveur MCP de cette installation, à copier, et des configurations prêtes
-// à coller pour Claude Code, Claude Desktop et les autres clients MCP.
+// à coller pour Claude Code, Claude Desktop, VS Code (GitHub Copilot) et les autres clients MCP.
 //
 // L'adresse est calculée depuis celle du pont : en docker, c'est le site
 // lui-même (http://localhost:8080/mcp, ou le nom de domaine derrière un proxy),
@@ -22,15 +22,16 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
   const AGENTS = [
     { id: 'code', label: 'Claude Code' },
     { id: 'desktop', label: 'Claude Desktop' },
-    { id: 'other', label: T('Cursor, VS Code, others', 'Cursor, VS Code, autres') },
+    { id: 'vscode', label: 'VS Code (Copilot)' },
+    { id: 'other', label: T('Cursor, others', 'Cursor, autres') },
   ]
 
   dialog.innerHTML = `
     <form method="dialog">
       <h2>${T('Connect an agent', 'Connecter un agent')}</h2>
       <p class="hint">${T(
-        'An AI agent installed on a computer (Claude Code, Claude Desktop, Cursor, VS Code…) can read and draw in the diagram open in this tab, with the same tools as the built-in assistant. Pick your agent: the setting to copy shows below.',
-        'Un agent IA installé sur un ordinateur (Claude Code, Claude Desktop, Cursor, VS Code…) peut lire et dessiner dans le diagramme ouvert dans cet onglet, avec les mêmes outils que l\'assistant intégré. Choisissez votre agent : le réglage à copier s\'affiche en dessous.',
+        'An AI agent installed on a computer (Claude Code, Claude Desktop, GitHub Copilot in VS Code, Cursor…) can read and draw in the diagram open in this tab, with the same tools as the built-in assistant. Pick your agent: the setting to copy shows below.',
+        'Un agent IA installé sur un ordinateur (Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor…) peut lire et dessiner dans le diagramme ouvert dans cet onglet, avec les mêmes outils que l\'assistant intégré. Choisissez votre agent : le réglage à copier s\'affiche en dessous.',
       )}</p>
       <p class="warn" id="mcp-exposed" hidden></p>
 
@@ -53,10 +54,23 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
         </ol>
         <p class="hint">${T('This setting goes through the small mcp-remote program, which needs Node.js installed on the computer.', 'Ce réglage passe par le petit programme mcp-remote, qui demande Node.js installé sur l\'ordinateur.')}</p>
       </div>
+      <div class="agent-panel" data-agent="vscode">
+        <ol class="steps">
+          <li><p class="hint">${T(
+            'In VS Code, open the command palette (Ctrl+Shift+P), then run "MCP: Open User Configuration". The editor is then available in all your projects. For one project only, create instead a .vscode/mcp.json file in its folder.',
+            'Dans VS Code, ouvrez la palette de commandes (Ctrl+Maj+P), puis lancez « MCP: Open User Configuration ». L\'éditeur est alors disponible dans tous vos projets. Pour un seul projet, créez plutôt un fichier .vscode/mcp.json dans son dossier.',
+          )}</p></li>
+          <li><p class="hint">${T(
+            'Paste this block in the mcp.json file. If the file already has a "servers" block, add only the "bpmn-editor" entry inside it. Then save.',
+            'Collez ce bloc dans le fichier mcp.json. Si le fichier a déjà un bloc « servers », ajoutez seulement l\'entrée « bpmn-editor » dedans. Puis enregistrez.',
+          )}</p>${code('mcp-vscode')}</li>
+          <li><p class="hint" id="mcp-vscode-start"></p></li>
+        </ol>
+      </div>
       <div class="agent-panel" data-agent="other">
         <p class="hint">${T(
-          'Add this block to the agent\'s MCP settings file (for example .mcp.json, or the MCP settings of Cursor and VS Code). It uses the "http" type (Streamable HTTP).',
-          'Ajoutez ce bloc au fichier de réglages MCP de l\'agent (par exemple .mcp.json, ou les réglages MCP de Cursor et VS Code). Il utilise le type « http » (Streamable HTTP).',
+          'Add this block to the agent\'s MCP settings file (for example .mcp.json, or the MCP settings of Cursor). It uses the "http" type (Streamable HTTP).',
+          'Ajoutez ce bloc au fichier de réglages MCP de l\'agent (par exemple .mcp.json, ou les réglages MCP de Cursor). Il utilise le type « http » (Streamable HTTP).',
         )}</p>
         ${code('mcp-generic')}
       </div>
@@ -144,6 +158,28 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
         },
       }),
     )
+    // VS Code : clé « servers », et le jeton demandé une fois par VS Code (champ masqué),
+    // qui le garde dans son coffre au lieu de l'écrire en clair dans mcp.json.
+    set(
+      'mcp-vscode',
+      compact({
+        servers: {
+          'bpmn-editor': {
+            type: 'http',
+            url: mcpUrl,
+            ...(auth ? { headers: { Authorization: 'Bearer ${input:bpmn-editor-token}' } } : {}),
+          },
+        },
+        ...(auth
+          ? { inputs: [{ id: 'bpmn-editor-token', type: 'promptString', description: T('BPMN editor MCP token', 'Jeton MCP de l\'éditeur BPMN'), password: true }] }
+          : {}),
+      }),
+    )
+    $('#mcp-vscode-start').textContent = auth
+      ? T('Open the Copilot chat in Agent mode. The first time, VS Code asks for the MCP token: paste it (see "Protect the access with a token" below). The bpmn-editor tools then show in the tools menu of the chat.',
+          'Ouvrez le chat Copilot en mode Agent. La première fois, VS Code demande le jeton MCP : collez-le (voir « Protéger l\'accès par un jeton » plus bas). Les outils bpmn-editor apparaissent alors dans le menu des outils du chat.')
+      : T('Open the Copilot chat in Agent mode: the bpmn-editor tools show in the tools menu of the chat. If VS Code shows a "Start" link above the server in mcp.json, click it.',
+          'Ouvrez le chat Copilot en mode Agent : les outils bpmn-editor apparaissent dans le menu des outils du chat. Si VS Code affiche un lien « Start » au-dessus du serveur dans mcp.json, cliquez dessus.')
     set(
       'mcp-generic',
       compact({ mcpServers: { 'bpmn-editor': { type: 'http', url: mcpUrl, ...(header ? { headers: header } : {}) } } }),
