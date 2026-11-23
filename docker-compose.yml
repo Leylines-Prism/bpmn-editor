@@ -15,6 +15,7 @@ services:
         # Lien « Feedback » : à régler dans le fichier .env à côté de ce fichier (voir le README).
         VITE_FEEDBACK_URL: ${VITE_FEEDBACK_URL:-}
         VITE_CONTACT_URL: ${VITE_CONTACT_URL:-}
+        FEEDBACK_EMAIL: ${FEEDBACK_EMAIL:-}
     ports:
       - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:80"
     depends_on:

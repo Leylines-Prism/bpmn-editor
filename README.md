@@ -133,16 +133,18 @@ read by Vite (`npm run dev`, `npm run build`, `npm run build:online`) and by doc
 | Setting | What it does | Default |
 |---|---|---|
 | `VITE_FEEDBACK_URL` | Where feedback goes (`https://…` or `mailto:…`). `none` removes it. | The GitHub Issues of this repository |
-| `VITE_CONTACT_URL` | How to reach the author: a LinkedIn profile, a page or `mailto:…`. | None |
+| `VITE_CONTACT_URL` | How to reach the author: a LinkedIn profile or a page (`https://…`). | None |
+| `FEEDBACK_EMAIL` | An e-mail address. It is stored encoded in the page code, and the `mailto:` link is only built on click, which keeps most address-harvesting robots away. | None |
 
-With one address, the link opens it. With both, a small window offers the two. For example:
+With one choice, the link opens it. With more, a small window offers them. For example:
 
 ```
 VITE_CONTACT_URL=https://www.linkedin.com/in/your-profile
+FEEDBACK_EMAIL=feedback@your-domain.com
 ```
 
-Then rebuild: `docker compose up -d --build`, or `npm run build`. Avoid a personal e-mail address on
-a public site: it draws spam.
+Then rebuild: `docker compose up -d --build`, or `npm run build`. Prefer a dedicated address (an alias)
+to your personal one: it can be filtered, or dropped if it draws spam.
 
 ## Online version
 

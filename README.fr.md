@@ -139,17 +139,18 @@ Un lien « Feedback » en bas du canevas dit où envoyer un retour. Deux réglag
 | Réglage | Rôle | Par défaut |
 |---|---|---|
 | `VITE_FEEDBACK_URL` | Où vont les retours (`https://…` ou `mailto:…`). `none` le retire. | Les Issues GitHub de ce dépôt |
-| `VITE_CONTACT_URL` | Comment joindre l'auteur : un profil LinkedIn, une page ou `mailto:…`. | Aucun |
+| `VITE_CONTACT_URL` | Comment joindre l'auteur : un profil LinkedIn ou une page (`https://…`). | Aucun |
+| `FEEDBACK_EMAIL` | Une adresse mail. Elle est rangée encodée dans le code de la page, et le lien `mailto:` n'est construit qu'au clic, ce qui écarte la plupart des robots qui ramassent les adresses. | Aucune |
 
-Avec une seule adresse, le lien l'ouvre. Avec les deux, une petite fenêtre propose les deux. Par
-exemple :
+Avec un seul choix, le lien l'ouvre. Avec plusieurs, une petite fenêtre les propose. Par exemple :
 
 ```
 VITE_CONTACT_URL=https://www.linkedin.com/in/votre-profil
+FEEDBACK_EMAIL=feedback@votre-domaine.fr
 ```
 
-Puis reconstruisez : `docker compose up -d --build`, ou `npm run build`. Évitez une adresse mail
-personnelle sur un site public : elle attire le spam.
+Puis reconstruisez : `docker compose up -d --build`, ou `npm run build`. Préférez une adresse dédiée (un
+alias) à votre adresse personnelle : on peut la filtrer, ou la supprimer si elle attire le spam.
 
 ## Version en ligne
 
