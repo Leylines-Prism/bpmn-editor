@@ -8,7 +8,45 @@ own machine with Docker.
 
 ## Run it with Docker
 
-You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose.
+You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose. Two images are published
+on the GitHub Container Registry, for amd64 and arm64:
+
+- `ghcr.io/leylines-prism/bpmn-editor`: the editor.
+- `ghcr.io/leylines-prism/bpmn-editor-mcp`: its server (AI assistant, MCP for agents, "My diagrams").
+
+### From the command line
+
+```
+mkdir bpmn-editor && cd bpmn-editor
+curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
+docker compose -f docker-compose.image.yml up -d
+```
+
+Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` does the same.
+
+- **AI assistant**: create a `.env` file in the same folder with your API key (Anthropic, OpenAI,
+  or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
+  again. All the variables are listed in [mcp/.env.example](mcp/.env.example). You can also enter a
+  key in the assistant's Options window. Without a key, the editor works; only the assistant is off.
+- **Your diagrams** saved with "My diagrams" are kept in the `diagrams` Docker volume.
+  `docker compose -f docker-compose.image.yml down -v` deletes them.
+- **Update**: change the version number of both images in `docker-compose.image.yml` (see the
+  [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), then:
+
+  ```
+  docker compose -f docker-compose.image.yml pull
+  docker compose -f docker-compose.image.yml up -d
+  ```
+
+### With a container manager
+
+In a tool that deploys Compose stacks (Portainer, for example), create a stack, paste the content of
+[docker-compose.image.yml](docker-compose.image.yml), and enter the settings below
+(`ANTHROPIC_API_KEY`…) as the stack's environment variables.
+
+### From the source code
+
+To change the code, or to build the images yourself:
 
 ```
 git clone https://github.com/Leylines-Prism/bpmn-editor.git
@@ -16,14 +54,8 @@ cd bpmn-editor
 docker compose up -d --build
 ```
 
-Then open http://localhost:8080.
-
-- **AI assistant**: copy `mcp/.env.example` to `mcp/.env` and put your API key in it (Anthropic,
-  OpenAI, or a local Ollama), then run `docker compose up -d` again. You can also enter a key in the
-  assistant's Options window. Without a key, the editor works; only the assistant is off.
-- **Your diagrams** saved with "My diagrams" are kept in the `diagrams` Docker volume.
-  `docker compose down -v` deletes them.
-- **Update**: `git pull`, then `docker compose up -d --build`.
+Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
+next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
 
 > **Keep it on your machine or a private network.** It has no accounts: anyone who reaches it can
 > use your API keys, read and delete your diagrams, and drive the editor. By default it only answers
@@ -46,8 +78,9 @@ bpmn.example.com {
 }
 ```
 
-Then tell the editor its new name, in a `.env` file next to `docker-compose.yml`, and put a token in
-`mcp/.env` (the "Connect an agent" window generates one):
+Then tell the editor its new name, in the `.env` file next to the Compose file, and add a token
+`MCP_TOKEN=...` (the "Connect an agent" window generates one; from the source code, it goes in
+`mcp/.env`):
 
 ```
 BPMN_EDITOR_ORIGINS=https://bpmn.example.com
@@ -73,7 +106,8 @@ An optional token protects this access: the same window generates one and tells 
 
 ## Where your API keys are kept
 
-**In the Docker version**, the safest place is `mcp/.env`: the key stays on the server and never
+**In the Docker version**, the safest place is the server: the `.env` file next to
+`docker-compose.image.yml` (or `mcp/.env` from the source code). The key stays on the server and never
 reaches the browser. A key typed in the assistant's Options window is kept in the browser as below,
 then sent with each message to your server, which passes it on to the provider without storing it.
 
@@ -92,8 +126,10 @@ then sent with each message to your server, which passes it on to the provider w
 
 ## Settings
 
-All optional. Put them in a `.env` file next to `docker-compose.yml` (git ignores it), unless the
-table says `mcp/.env`. Then run `docker compose up -d --build`.
+All optional. With the published images, put them all in the `.env` file next to
+`docker-compose.image.yml`, or in the stack's environment variables, then run the `up -d` command
+again. From the source code, put them in a `.env` file next to `docker-compose.yml` (git ignores
+it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 | Setting | What it does |
 |---|---|

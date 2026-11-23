@@ -8,7 +8,47 @@ tourne sur votre propre machine avec Docker.
 
 ## Le lancer avec Docker
 
-Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose.
+Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose. Deux images sont publiées
+sur le GitHub Container Registry, pour amd64 et arm64 :
+
+- `ghcr.io/leylines-prism/bpmn-editor` : l'éditeur.
+- `ghcr.io/leylines-prism/bpmn-editor-mcp` : son serveur (assistant IA, MCP pour les agents,
+  « Mes diagrammes »).
+
+### En ligne de commande
+
+```
+mkdir bpmn-editor && cd bpmn-editor
+curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
+docker compose -f docker-compose.image.yml up -d
+```
+
+Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` fait la même chose.
+
+- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé d'API (Anthropic,
+  OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
+  commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
+  Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
+  seul l'assistant est éteint.
+- **Vos diagrammes** enregistrés avec « Mes diagrammes » sont gardés dans le volume Docker
+  `diagrams`. `docker compose -f docker-compose.image.yml down -v` les supprime.
+- **Mise à jour** : changez le numéro de version des deux images dans `docker-compose.image.yml`
+  (voir les [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), puis :
+
+  ```
+  docker compose -f docker-compose.image.yml pull
+  docker compose -f docker-compose.image.yml up -d
+  ```
+
+### Avec un gestionnaire de conteneurs
+
+Dans un outil qui déploie des piles Compose (Portainer, par exemple), créez une pile, collez-y le
+contenu de [docker-compose.image.yml](docker-compose.image.yml), et saisissez les réglages ci-dessous
+(`ANTHROPIC_API_KEY`…) comme variables d'environnement de la pile.
+
+### Depuis le code source
+
+Pour modifier le code, ou construire les images vous-même :
 
 ```
 git clone https://github.com/Leylines-Prism/bpmn-editor.git
@@ -16,14 +56,9 @@ cd bpmn-editor
 docker compose up -d --build
 ```
 
-Puis ouvrir http://localhost:8080.
-
-- **Assistant IA** : copier `mcp/.env.example` en `mcp/.env` et y mettre votre clé d'API (Anthropic,
-  OpenAI, ou un Ollama local), puis relancer `docker compose up -d`. Une clé peut aussi se saisir
-  dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ; seul l'assistant est éteint.
-- **Vos diagrammes** enregistrés avec « Mes diagrammes » sont gardés dans le volume Docker
-  `diagrams`. `docker compose down -v` les supprime.
-- **Mise à jour** : `git pull`, puis `docker compose up -d --build`.
+Les clés d'API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autres réglages dans
+un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
+`docker compose up -d --build`.
 
 > **Gardez-le sur votre machine ou un réseau privé.** Il n'a pas de comptes : quiconque l'atteint
 > peut utiliser vos clés d'API, lire et supprimer vos diagrammes, et piloter l'éditeur. Par défaut,
@@ -46,8 +81,9 @@ bpmn.example.com {
 }
 ```
 
-Donnez ensuite son nouveau nom à l'éditeur, dans un fichier `.env` à côté de `docker-compose.yml`, et
-mettez un jeton dans `mcp/.env` (la fenêtre « Connecter un agent » en génère un) :
+Donnez ensuite son nouveau nom à l'éditeur, dans le fichier `.env` à côté du fichier Compose, et
+ajoutez un jeton `MCP_TOKEN=...` (la fenêtre « Connecter un agent » en génère un ; depuis le code
+source, il va dans `mcp/.env`) :
 
 ```
 BPMN_EDITOR_ORIGINS=https://bpmn.example.com
@@ -75,8 +111,9 @@ Un jeton facultatif protège cet accès : la même fenêtre en génère un et di
 
 ## Où sont gardées vos clés d'API
 
-**Dans la version Docker**, le plus sûr est `mcp/.env` : la clé reste sur le serveur et n'arrive
-jamais au navigateur. Une clé saisie dans la fenêtre Options de l'assistant est gardée dans le
+**Dans la version Docker**, le plus sûr est le serveur : le fichier `.env` à côté de
+`docker-compose.image.yml` (ou `mcp/.env` depuis le code source). La clé reste sur le serveur et
+n'arrive jamais au navigateur. Une clé saisie dans la fenêtre Options de l'assistant est gardée dans le
 navigateur comme ci-dessous, puis envoyée à chaque message à votre serveur, qui la transmet au
 fournisseur sans l'enregistrer.
 
@@ -96,8 +133,11 @@ fournisseur sans l'enregistrer.
 
 ## Réglages
 
-Tous facultatifs. Mettez-les dans un fichier `.env` à côté de `docker-compose.yml` (git l'ignore),
-sauf si le tableau indique `mcp/.env`. Puis lancez `docker compose up -d --build`.
+Tous facultatifs. Avec les images publiées, mettez-les tous dans le fichier `.env` à côté de
+`docker-compose.image.yml`, ou dans les variables d'environnement de la pile, puis relancez la
+commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à côté de
+`docker-compose.yml` (git l'ignore), sauf si le tableau indique `mcp/.env`, puis lancez
+`docker compose up -d --build`.
 
 | Réglage | Rôle |
 |---|---|
