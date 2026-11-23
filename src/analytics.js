@@ -1,4 +1,4 @@
-// Mesure d'audience de la version en ligne, par une instance Umami auto-hébergée.
+// Mesure d'audience de la version en ligne, par Umami.
 //
 // Aucun script tiers n'est chargé : ce module envoie lui-même les mesures au point
 // de collecte d'Umami (POST /api/send, même format que son traceur officiel). La
@@ -6,8 +6,8 @@
 // que ce code ne s'exécute à côté des clés d'API du visiteur.
 //
 // Réglages au build (variables GitHub, voir .github/workflows/pages.yml) :
-//   VITE_UMAMI_URL         adresse d'Umami (https://stats.exemple.fr) ou de son point
-//                          de collecte complet (https://stats.exemple.fr/api/send)
+//   VITE_UMAMI_URL         adresse d'Umami (https://umami.example.com) ou de son point
+//                          de collecte complet (https://umami.example.com/api/send)
 //   VITE_UMAMI_WEBSITE_ID  identifiant du site dans Umami
 // Sans ces deux variables, ou hors de la version en ligne, rien n'est envoyé.
 //
