@@ -2,7 +2,7 @@
 
 [English](README.md) | **Français**
 
-Ce serveur permet à une IA (Claude Code, Claude Desktop ou tout client MCP) de lire et de dessiner
+Ce serveur permet à une IA (Claude Code, Claude Desktop, GitHub Copilot dans VS Code ou tout client MCP) de lire et de dessiner
 dans l'éditeur BPMN **ouvert dans le navigateur**. Les modifications apparaissent en direct sur le
 canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z, sauf `set_diagram_xml` et `auto_layout` qui rechargent tout le diagramme.
 

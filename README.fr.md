@@ -104,7 +104,7 @@ et accepter le WebSocket sur `/bridge` (détails dans
 
 Cliquez sur le badge **MCP** de la barre d'outils. La fenêtre « Connecter un agent » donne l'adresse à
 utiliser (`http://localhost:8080/mcp`, ou `https://votre-domaine/mcp`), et le réglage à coller pour
-Claude Code, Claude Desktop, Cursor ou VS Code. L'agent dessine dans le dernier onglet de l'éditeur
+Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor ou un autre client MCP. L'agent dessine dans le dernier onglet de l'éditeur
 utilisé : gardez-le ouvert.
 
 Un jeton facultatif protège cet accès : la même fenêtre en génère un et dit où le mettre.
