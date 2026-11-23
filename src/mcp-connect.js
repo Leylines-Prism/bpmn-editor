@@ -170,8 +170,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     const host = new URL(mcpUrl, location.href).hostname
     const exposed = !LOCAL.includes(host)
     $('#mcp-url-hint').textContent = !docker
-      ? T('This is the address where the agent reaches the editor. In development, the MCP server runs on its own port, on this computer.',
-          'C\'est l\'adresse à laquelle l\'agent joint l\'éditeur. En développement, le serveur MCP tourne sur son propre port, sur cet ordinateur.')
+      ? T('This is the address where the agent reaches the editor.',
+          'C\'est l\'adresse à laquelle l\'agent joint l\'éditeur.')
       : exposed
         ? T(`This is the address where the agent reaches the editor: the address in your browser bar, followed by /mcp. An agent on any machine that reaches ${host} can use it.`,
             `C'est l'adresse à laquelle l'agent joint l'éditeur : celle de la barre d'adresse de votre navigateur, suivie de /mcp. Un agent sur n'importe quelle machine qui joint ${host} peut l'utiliser.`)

@@ -114,6 +114,7 @@ connexion.
   n'apparaît pas dans l'export PDF. Avec le pinceau, un fond libre foncé reçoit maintenant
   de lui-même un texte clair.
 - **Ranger** remet en ordre la disposition du diagramme.
+- **Largeur des panneaux** : tirez la poignée sur le bord gauche de l'assistant IA ou du panneau Processus pour l'élargir ou la rétrécir (les flèches du clavier marchent aussi, un double-clic revient à la largeur par défaut). La largeur est retenue dans le navigateur.
 - **Simulation** fait circuler des jetons dans le processus pour vérifier son déroulement.
 - Vérification automatique des règles BPMN, avec signalement des erreurs sur le canevas.
 - Grille, mini-carte et panneau des propriétés (masquable avec le bouton à droite).
