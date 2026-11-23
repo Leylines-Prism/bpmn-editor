@@ -265,7 +265,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
       actions.append(
         rowButton(T('Open', 'Ouvrir'), () => openRow(row), unreachable),
         rowButton(T('Rename', 'Renommer'), () => startRename(row, nameCell), unreachable),
-        rowButton(T('Delete', 'Supprimer'), () => removeRow(row), unreachable),
+        rowButton(T('Delete', 'Supprimer'), () => removeRow(row), unreachable, 'danger'),
       )
       tr.append(actions)
       body.append(tr)
@@ -274,10 +274,10 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     listEl.append(table)
   }
 
-  function rowButton(label, onClick, disabled) {
+  function rowButton(label, onClick, disabled, variant) {
     const b = document.createElement('button')
     b.type = 'button'
-    b.className = 'btn'
+    b.className = variant ? `btn ${variant}` : 'btn'
     b.textContent = label
     b.disabled = disabled
     b.addEventListener('click', onClick)

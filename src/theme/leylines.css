@@ -610,6 +610,18 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #library-dialog td.where, #library-dialog td.date { color: var(--ink-muted); white-space: nowrap; font-size: 13px; }
 #library-dialog td.row-actions { white-space: nowrap; text-align: right; }
 #library-dialog td.row-actions .btn { height: 28px; padding: 0 var(--space-2); font-size: 13px; }
+#library-dialog td.row-actions .btn + .btn { margin-left: var(--space-2); }
+/* Boutons de la fenêtre : relevés comme ceux de la barre d'outils, pour qu'on
+   voie qu'ils se cliquent. Supprimer garde la couleur de danger. */
+#library-dialog .btn:not(.primary) {
+  border-color: var(--line-strong);
+  background: var(--surface-raised);
+  box-shadow: 0 1px 0 var(--line);
+}
+#library-dialog .btn:not(.primary):not(:disabled):hover { background: var(--surface-sunken); border-color: var(--ink-muted); }
+#library-dialog .btn:not(:disabled):active { box-shadow: none; transform: translateY(1px); }
+#library-dialog .btn.danger { color: var(--magenta); border-color: var(--magenta); }
+#library-dialog .btn.danger:not(:disabled):hover { background: color-mix(in srgb, var(--magenta) 12%, transparent); border-color: var(--magenta); }
 #library-dialog tr.current td { background: var(--accent-soft); }
 #library-dialog tr.current td.name::after { content: ' •'; color: var(--accent); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
