@@ -138,7 +138,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         </div>
       </form>
     </dialog>`
-  document.getElementById('canvas').after(panel)
+  document.getElementById('properties-panel').after(panel)
   makeResizable(panel, { name: 'chat', label: T('AI assistant width', "Largeur de l'assistant IA"), min: 300, max: 900, fallback: 360 })
 
   const toggle = document.createElement('button')
