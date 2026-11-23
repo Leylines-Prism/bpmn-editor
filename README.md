@@ -130,8 +130,8 @@ created, opened or exported, active time by range). No third-party script is loa
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
 `localStorage.setItem('umami.disabled', '1')` in the console excludes your own visits. Neither the
-Docker image nor `npm run dev` measure anything. The measurement follows the recommendations of the CNIL (the French data
-protection authority) for audience measurement exempt from consent.
+Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
+CNIL (the French data protection authority) for audience measurement exempt from consent.
 
 ## Development
 
