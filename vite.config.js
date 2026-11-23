@@ -68,7 +68,7 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',
-    rollupOptions: {
+    rolldownOptions: {
       // Trois pages : l'éditeur, et la page d'aide en anglais et en français.
       input: {
         main: 'index.html',
@@ -76,9 +76,11 @@ export default defineConfig(({ mode }) => ({
         aide: 'aide.html',
       },
       output: {
-        manualChunks: {
-          bpmn: ['bpmn-js'],
-        }
+        // bpmn-js dans un fichier à part, comme avant Vite 8 (Rolldown n'accepte plus
+        // la forme objet de manualChunks).
+        codeSplitting: {
+          groups: [{ name: 'bpmn', test: /[\\/]node_modules[\\/]bpmn-js[\\/]/ }],
+        },
       }
     }
   },
