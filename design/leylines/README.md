@@ -1,3 +1,6 @@
+> The Leylines name, logo and the files in `assets/` are not covered by the repository's MIT
+> License. Forks should replace them with their own brand.
+
 Leylines comes from network infrastructure and fibre-optic communications. The mark is the word leylines underlined by a fibre: a line of light runs beneath the name, from under its first letter to one bright pulse arriving at the end. The name is a double meaning — ley lines are the legendary energy lines said to connect sacred sites across the world, just as fibre connects places across the network.
 
 Build every surface from that idea: a calm ground — white or night — one path of light, a few connected points that glow. The brand works in both modes, as people now expect from any app.

@@ -189,3 +189,14 @@ Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/
 chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
 d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Elle est publiée par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
+
+## Licence
+
+Le code est publié sous la [licence MIT](LICENSE).
+
+Le nom, le logo et les éléments de marque Leylines (les fichiers de [design/leylines/](design/leylines/)
+et le logo dessiné par [src/theme/brand-logo.js](src/theme/brand-logo.js)) ne sont pas couverts
+par cette licence. Si vous publiez votre propre version, remplacez-les par les vôtres.
+
+L'éditeur repose sur [bpmn-js](https://github.com/bpmn-io/bpmn-js), dont la licence impose que le
+filigrane bpmn.io reste entièrement visible sur le canevas. Gardez-le si vous changez la mise en page.
