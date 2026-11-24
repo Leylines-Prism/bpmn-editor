@@ -290,7 +290,7 @@
           <table>
             <thead><tr><th>Provider</th><th>What to know</th></tr></thead>
             <tbody>
-              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images, not PDFs.</td></tr>
+              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>The simplest in this version: create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
               <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI does not always accept calls made from a web page: if "Test" fails, this provider will not work here.</td></tr>
               <tr><td>Ollama</td><td>Free models, on your own computer. Ollama must be started with the <code>OLLAMA_ORIGINS</code> variable set to this site's address (Options gives you the exact value). Pick a model that supports tool calls.</td></tr>
@@ -312,7 +312,7 @@
         </ul>
 
         <h3>3. Start from an image or a PDF</h3>
-        <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool or a procedure in a PDF. Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs only work with OpenAI.</p>
+        <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool or a procedure in a PDF. Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral.</p>
 
         <h3>See what the assistant changed</h3>
         <p>After each answer, the shapes the assistant added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>

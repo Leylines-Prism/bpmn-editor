@@ -135,7 +135,7 @@ export class ChatService {
     try {
       if (target.format === 'openai') {
         const reasoningEffort = custom ? null : target.provider === 'mistral' ? this.mistralEffort : this.openaiEffort
-        await runOpenAITurn({ ...common, client: target.client, reasoningEffort })
+        await runOpenAITurn({ ...common, client: target.client, providerId: custom ? custom.provider : target.provider, reasoningEffort })
       } else {
         await runAnthropicTurn({ ...common, client: target.client, APIError: Anthropic.APIError, effort: this.effort })
       }
