@@ -176,3 +176,14 @@ Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/READ
 `npm run build:online` builds the demo as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (Umami address)
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
 It is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
+
+## License
+
+The code is released under the [MIT License](LICENSE).
+
+The Leylines name, logo and brand assets (the files in [design/leylines/](design/leylines/) and
+the logo drawn by [src/theme/brand-logo.js](src/theme/brand-logo.js)) are not covered by this
+license. If you publish your own version, replace them with your own.
+
+The editor is built on [bpmn-js](https://github.com/bpmn-io/bpmn-js), whose license requires the
+bpmn.io watermark to stay fully visible on the canvas. Keep it if you change the layout.
