@@ -17,6 +17,7 @@ import { lang, num, T } from './i18n/lang.js'
 import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
 import { makeResizable } from './panel-resize.js'
 import { trackOnce } from './analytics.js'
+import { newAiRound } from './ai-changes.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -535,6 +536,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
 
   async function send(text, attachments = []) {
     trackOnce('assistant-utilise')
+    // Chaque réponse ne marque que ce qu'elle a changé.
+    newAiRound()
     const userMsg = add('user', text)
     if (attachments.length) {
       const strip = document.createElement('div')

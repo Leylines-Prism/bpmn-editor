@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
+import { trackAiChanges } from './ai-changes.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -116,7 +117,12 @@ function setBadge(badge, state) {
 
 // ── Outils ─────────────────────────────────────────────────────────────────
 
+// Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 export function createTools(modeler) {
+  return trackAiChanges(modeler, buildTools(modeler))
+}
+
+function buildTools(modeler) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')

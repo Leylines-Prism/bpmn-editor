@@ -929,3 +929,41 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 }
 .file-name-field:hover { border-color: var(--accent); }
 .file-name-field:focus-within { background: var(--surface); box-shadow: none; }
+
+/* Ce que l'IA vient de changer (src/ai-changes.js) : contour fin et point magenta,
+   plein pour un ajout, pointillé pour une modification. */
+#canvas .ai-change-frame {
+  position: relative; box-sizing: border-box; pointer-events: none;
+  border: 1.5px solid rgba(210, 78, 142, 0.55); border-radius: 14px;
+}
+#canvas .ai-change-frame.ai-changed { border-style: dashed; }
+#canvas .ai-change-frame.round { border-radius: 50%; }
+#canvas .djs-connection.ai-added > .djs-visual,
+#canvas .djs-connection.ai-changed > .djs-visual { filter: drop-shadow(0 0 1.5px rgba(210, 78, 142, 0.7)); }
+#canvas .ai-change-dot {
+  position: absolute; top: -4px; right: -4px; width: 8px; height: 8px; box-sizing: border-box;
+  border-radius: 50%; background: var(--leyline-magenta);
+}
+#canvas .ai-change-frame.round .ai-change-dot { top: 2px; right: 2px; }
+#canvas .ai-change-frame.ai-changed .ai-change-dot { background: var(--white); border: 1.5px solid var(--leyline-magenta); }
+
+/* Pilule de résumé, en haut au centre du canevas */
+#canvas .ai-changes-pill {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 500;
+  display: inline-flex; align-items: center;
+  background: var(--white); border: 1px solid var(--mist); border-radius: var(--radius-pill);
+  box-shadow: var(--elevation-1);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px; color: var(--night-800);
+}
+#canvas .ai-changes-pill[hidden] { display: none; }
+#canvas .ai-changes-pill button {
+  font: inherit; color: inherit; background: none; border: 0; cursor: default;
+}
+#canvas .ai-changes-summary { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px 6px 14px; white-space: nowrap; }
+#canvas .ai-changes-summary.toggle { cursor: pointer; }
+#canvas .ai-changes-summary.toggle:hover { color: var(--leyline-magenta); }
+#canvas .ai-changes-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--leyline-magenta); }
+#canvas .ai-changes-summary[aria-pressed="false"] .ai-changes-dot { background: var(--white); border: 1.5px solid var(--leyline-magenta); box-sizing: border-box; }
+#canvas .ai-changes-close { padding: 4px 12px 4px 8px; font-size: 18px; cursor: pointer; color: var(--night-800); opacity: 0.6; }
+#canvas .ai-changes-close:hover { opacity: 1; color: var(--leyline-magenta); }
+#canvas .ai-changes-pill button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
