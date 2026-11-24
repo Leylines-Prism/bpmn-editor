@@ -2,6 +2,8 @@
 
 **English** | [Français](README.fr.md)
 
+![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
+
 A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
 describe, and an MCP server so that agents such as Claude Code can draw in it too. It runs on your
 own machine with Docker.
