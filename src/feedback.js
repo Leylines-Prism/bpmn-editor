@@ -3,17 +3,25 @@
 // personne) :
 //   VITE_FEEDBACK_URL : les retours. Par défaut, les Issues GitHub du dépôt ;
 //                       « none » pour ne pas en proposer.
-//   VITE_CONTACT_URL  : un contact (profil LinkedIn, page…). Aucun par défaut.
-//   FEEDBACK_EMAIL    : une adresse mail. Aucune par défaut. vite.config.js la range
-//                       encodée dans le code ; le lien mailto n'est construit qu'au clic.
+//   CONTACT_URL       : un contact (profil LinkedIn, page…). Aucun par défaut.
+//   FEEDBACK_EMAIL    : une adresse mail. Aucune par défaut.
+// Le contact et l'adresse mail sont chiffrés au build par vite.config.js (module
+// d'obfuscation d'ALTCHA, voir seal.js) : au clic, le navigateur retrouve la clé par une
+// preuve de travail (une seconde environ), puis ouvre le lien. Ni l'un ni l'autre
+// n'est lisible dans le code de la page.
 // Le bouton « Feedback » ouvre une petite fenêtre qui propose les choix réglés.
 // La page vitrine (leylines.html) les montre aussi, en icônes.
 
 import { T } from './i18n/lang.js'
 
 const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-editor/issues'
-/* global __FEEDBACK_EMAIL__ */
-const ENCODED_EMAIL = typeof __FEEDBACK_EMAIL__ === 'string' ? __FEEDBACK_EMAIL__ : ''
+/* global __FEEDBACK_EMAIL__, __CONTACT_LINK__ */
+// contact : { sealed, linkedin, host }, où seul sealed est chiffré (l'icône et le texte
+// du choix en dépendent, pas le profil).
+const SEALED = {
+  email: typeof __FEEDBACK_EMAIL__ === 'string' ? __FEEDBACK_EMAIL__ : '',
+  contact: typeof __CONTACT_LINK__ === 'object' && __CONTACT_LINK__ ? __CONTACT_LINK__ : null,
+}
 
 // Icônes des choix : marques GitHub et LinkedIn (tracés Simple Icons, CC0), et enveloppe.
 const svg = (body, filled = true) =>
@@ -43,31 +51,45 @@ export function cleanUrl(value) {
   }
 }
 
-export function decodeEmail(encoded) {
-  if (!encoded) return null
+// Donnée chiffrée au build : du JSON en base64, avec le défi et le texte chiffré.
+// On vérifie sa forme sans la déchiffrer, pour savoir s'il faut proposer le choix.
+export function isSealed(sealed) {
+  if (!sealed) return false
   try {
-    const bytes = Uint8Array.from(atob(encoded), (c) => c.charCodeAt(0))
-    const email = [...new TextDecoder().decode(bytes)].reverse().join('')
-    return /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(email) ? email : null
+    const data = JSON.parse(atob(sealed))
+    return !!(data?.parameters?.salt && data?.cipher?.data)
   } catch {
-    return null
+    return false
   }
 }
 
-function contactChoice(url) {
-  const host = new URL(url).hostname.replace(/^www\./, '')
-  return host.endsWith('linkedin.com')
+// Preuve de travail puis déchiffrement. Le module d'ALTCHA n'est chargé qu'à ce moment-là.
+// Le résultat est vérifié : une adresse mail, ou une adresse https.
+export async function reveal(sealed, kind) {
+  if (!isSealed(sealed)) return null
+  const { Obfuscation } = await import('./seal.js')
+  const value = (await Obfuscation.deobfuscate(sealed)).trim()
+  if (kind === 'mail') return /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(value) ? value : null
+  return cleanUrl(value)
+}
+
+const CHECKING = {
+  busy: () => T('Checking that you are not a robot…', "Vérification que vous n'êtes pas un robot…"),
+  error: () => T('The check failed. Click to try again.', 'La vérification a échoué. Cliquez pour réessayer.'),
+}
+
+function contactChoice({ linkedin, host }) {
+  return linkedin
     ? { icon: 'linkedin', title: T('Connect with the author on LinkedIn', "Retrouver l'auteur sur LinkedIn"), detail: T('To keep in touch, or for a professional contact.', 'Pour garder le contact, ou pour un échange professionnel.') }
     : { icon: 'link', title: T('Contact the author', "Contacter l'auteur"), detail: host }
 }
 
 // Les choix réglés au build : retours, contact, e-mail. Partagés par la fenêtre
-// Feedback et par la page vitrine (leylines.html).
-export function contactChoices({ env = import.meta.env, encodedEmail = ENCODED_EMAIL } = {}) {
+// Feedback et par la page vitrine (leylines.html). Un choix chiffré porte sealed et kind
+// ('link' ou 'mail'), et les textes busy et error montrés pendant la vérification.
+export function contactChoices({ env = import.meta.env, sealed = SEALED } = {}) {
   const raw = env.VITE_FEEDBACK_URL
   const feedback = cleanUrl(raw === undefined || raw === '' ? DEFAULT_FEEDBACK_URL : raw)
-  const contact = cleanUrl(env.VITE_CONTACT_URL)
-  const hasEmail = !!decodeEmail(encodedEmail)
 
   const choices = []
   if (feedback) {
@@ -80,26 +102,54 @@ export function contactChoices({ env = import.meta.env, encodedEmail = ENCODED_E
         : new URL(feedback).hostname,
     })
   }
-  if (contact) choices.push({ url: contact, ...contactChoice(contact) })
-  if (hasEmail) {
+  if (isSealed(sealed.contact?.sealed)) {
+    choices.push({ sealed: sealed.contact.sealed, kind: 'link', ...contactChoice(sealed.contact) })
+  }
+  if (isSealed(sealed.email)) {
     choices.push({
-      email: true,
+      sealed: sealed.email,
+      kind: 'mail',
       icon: 'mail',
       title: T('Send an e-mail', 'Envoyer un e-mail'),
       detail: T('Your mail app opens with a new message to the author.', "Votre messagerie s'ouvre avec un nouveau message pour l'auteur."),
     })
   }
-  return choices.map((c) => ({ ...c, svg: ICONS[c.icon] }))
+  return choices.map((c) => ({ ...c, svg: ICONS[c.icon], ...(c.sealed ? { busy: CHECKING.busy(), error: CHECKING.error() } : {}) }))
 }
 
-// Le mailto est construit au moment du clic : l'adresse n'est jamais dans la page.
-export function openEmail(encodedEmail = ENCODED_EMAIL) {
-  const email = decodeEmail(encodedEmail)
-  if (email) location.href = `mailto:${email}?subject=${encodeURIComponent('BPMN editor')}`
+// Ouvre un choix chiffré : le lien n'est construit qu'au clic, il n'est jamais dans la page.
+// Pendant le calcul, le bouton porte data-state="busy" (puis "error" en cas d'échec) :
+// un double clic ne relance pas le calcul.
+export async function openSealed(button, { sealed, kind }) {
+  if (button?.dataset.state === 'busy') return false
+  if (button) { button.dataset.state = 'busy'; button.setAttribute('aria-busy', 'true') }
+  // Lien : l'onglet s'ouvre tout de suite, pendant le clic, sinon le bloqueur de fenêtres
+  // l'arrêterait une fois le calcul fini. Il reçoit l'adresse dès qu'elle est déchiffrée.
+  const tab = kind === 'link' ? window.open('about:blank', '_blank') : null
+  if (tab) tab.opener = null
+  const start = performance.now()
+  let value = null
+  try {
+    value = await reveal(sealed, kind)
+  } catch (err) {
+    console.warn('[feedback] contact not revealed:', err)
+  }
+  // L'état « Vérification… » reste visible au moins un instant, même sur une machine rapide.
+  if (!tab) await new Promise((resolve) => setTimeout(resolve, Math.max(0, 600 - (performance.now() - start))))
+  if (button) {
+    button.removeAttribute('aria-busy')
+    if (value) delete button.dataset.state
+    else button.dataset.state = 'error'
+  }
+  if (!value) tab?.close()
+  else if (kind === 'mail') location.href = `mailto:${value}?subject=${encodeURIComponent('BPMN editor')}`
+  else if (tab) tab.location.href = value
+  else window.open(value, '_blank', 'noopener')
+  return !!value
 }
 
-export function setupFeedback({ container, env = import.meta.env, encodedEmail = ENCODED_EMAIL }) {
-  const choices = contactChoices({ env, encodedEmail })
+export function setupFeedback({ container, env = import.meta.env, sealed = SEALED }) {
+  const choices = contactChoices({ env, sealed })
   if (!choices.length) return
 
   // Bouton « Feedback » bien visible, en bas à droite du canevas.
@@ -116,10 +166,14 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
       <h2>${T('Feedback', 'Votre avis')}</h2>
       <p class="hint">${T('A bug, an idea, a question? Your feedback helps improve the editor.', 'Un bug, une idée, une question ? Vos retours aident à améliorer l\'éditeur.')}</p>
       ${choices
-        .map((c) => {
-          const inner = `<span class="choice-icon icon-${c.icon}">${ICONS[c.icon]}</span><span class="choice-text"><strong>${esc(c.title)}</strong><span>${esc(c.detail)}</span></span><span class="choice-go">${CHEVRON}</span>`
-          return c.email
-            ? `<button type="button" class="choice" data-email>${inner}</button>`
+        .map((c, i) => {
+          // Un choix chiffré a trois textes, montrés selon son état (voir openSealed).
+          const detail = c.sealed
+            ? `<span class="when-idle">${esc(c.detail)}</span><span class="when-busy">${esc(c.busy)}</span><span class="when-error">${esc(c.error)}</span>`
+            : `<span>${esc(c.detail)}</span>`
+          const inner = `<span class="choice-icon icon-${c.icon}">${ICONS[c.icon]}</span><span class="choice-text"><strong>${esc(c.title)}</strong>${detail}</span><span class="choice-go">${CHEVRON}</span>`
+          return c.sealed
+            ? `<button type="button" class="choice" data-sealed="${i}" aria-live="polite">${inner}</button>`
             : `<a class="choice" href="${esc(c.url)}" target="_blank" rel="noopener">${inner}</a>`
         })
         .join('')}
@@ -131,11 +185,19 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
   document.body.append(dialog)
   const open = () => { if (!dialog.open) dialog.showModal() }
   button.addEventListener('click', open)
-  dialog.addEventListener('click', (e) => {
+  dialog.addEventListener('click', async (e) => {
     const choice = e.target.closest('.choice')
     if (!choice) return
-    if (choice.hasAttribute('data-email')) openEmail(encodedEmail)
+    // Choix chiffré : la fenêtre reste ouverte pendant la vérification, et en cas d'échec.
+    if (choice.hasAttribute('data-sealed')) {
+      e.preventDefault()
+      if (!(await openSealed(choice, choices[Number(choice.dataset.sealed)]))) return
+    }
     dialog.close()
+  })
+  // Fenêtre refermée : un choix en échec retrouve son texte de départ.
+  dialog.addEventListener('close', () => {
+    for (const el of dialog.querySelectorAll('[data-sealed][data-state="error"]')) delete el.dataset.state
   })
   return { open }
 }

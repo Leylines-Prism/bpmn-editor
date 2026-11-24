@@ -3,7 +3,7 @@
 
 import { T, lang } from '../i18n/lang.js'
 import { setupThemeToggle } from '../theme/theme-toggle.js'
-import { contactChoices, openEmail } from '../feedback.js'
+import { contactChoices, openSealed } from '../feedback.js'
 import { WALLPAPERS } from './wallpapers.js'
 import { createPulses } from './pulses.js'
 import introLight from '../../design/leylines/assets/leylines-logo-intro-light.svg?url'
@@ -34,10 +34,19 @@ if (!reduceMotion) {
 // Icônes de contact : les mêmes choix que la fenêtre « Votre avis ».
 const contacts = document.getElementById('contacts')
 for (const c of contactChoices()) {
-  const el = c.email ? document.createElement('button') : document.createElement('a')
-  if (c.email) {
+  const el = c.sealed ? document.createElement('button') : document.createElement('a')
+  if (c.sealed) {
     el.type = 'button'
-    el.addEventListener('click', () => openEmail())
+    el.addEventListener('click', async () => {
+      if (el.dataset.state === 'busy') return
+      // L'infobulle suit l'état de la vérification (preuve de travail, voir feedback.js).
+      el.title = c.busy
+      el.setAttribute('aria-label', c.busy)
+      await openSealed(el, c)
+      const label = el.dataset.state === 'error' ? c.error : c.title
+      el.title = label
+      el.setAttribute('aria-label', label)
+    })
   } else {
     Object.assign(el, { href: c.url, target: '_blank', rel: 'noopener' })
   }

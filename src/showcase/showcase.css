@@ -52,6 +52,20 @@ body { background: var(--surface); color: var(--ink); font-family: var(--font-sa
 }
 .contact svg { width: 20px; height: 20px; }
 .contact:hover { --disc: var(--accent); color: var(--on-accent); }
+/* Icônes chiffrées (contact, e-mail) pendant la preuve de travail (feedback.js) : un anneau tourne autour,
+   puis un filet orange si la vérification échoue. */
+.contact { position: relative; }
+.contact[data-state="busy"] { cursor: progress; }
+.contact[data-state="busy"]::after {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%;
+  border: 2px solid transparent; border-top-color: var(--accent);
+  animation: contact-spin 0.8s linear infinite;
+}
+.contact[data-state="error"] { background: linear-gradient(var(--disc), var(--disc)) padding-box, var(--warm) border-box; }
+@keyframes contact-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .contact[data-state="busy"]::after { animation-duration: 2.4s; }
+}
 
 /* Petites flèches aux extrémités */
 .arrow {

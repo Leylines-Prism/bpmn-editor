@@ -52,12 +52,35 @@ function serverConnect(mode) {
   return sources.join(' ')
 }
 
-// Adresse mail du lien « Feedback » (FEEDBACK_EMAIL, dans .env ou l'environnement) :
-// rangée encodée dans le code, et non en clair, pour gêner les robots qui
-// ramassent les adresses. La page la décode au clic.
-function encodedEmail(mode) {
-  const email = (loadEnv(mode, process.cwd(), '').FEEDBACK_EMAIL || '').trim()
-  return email ? Buffer.from([...email].reverse().join(''), 'utf8').toString('base64') : ''
+// Contact et adresse mail de la fenêtre « Feedback » (CONTACT_URL et FEEDBACK_EMAIL,
+// dans .env ou l'environnement) : chiffrés au build par le module d'obfuscation d'ALTCHA
+// (src/seal.js). La clé ne se retrouve que par une preuve de travail, que le navigateur
+// calcule au clic (une seconde environ) : un robot qui fouille le code n'y lit ni l'un
+// ni l'autre sans refaire ce calcul. Du contact, seuls restent en clair son domaine et
+// le fait que ce soit LinkedIn, pour l'icône et le texte du choix.
+// SEAL_WORK : nombre d'essais demandés au navigateur, tiré au hasard dans cette plage.
+const SEAL_WORK = { cost: 5000, counterMin: 400, counterMax: 800 }
+
+async function sealedContacts(mode) {
+  const env = loadEnv(mode, process.cwd(), '')
+  const email = (env.FEEDBACK_EMAIL || '').trim()
+  let url = (env.CONTACT_URL || '').trim()
+  if (/^www\./i.test(url)) url = `https://${url}`
+  let contact = null
+  try {
+    if (url && url.toLowerCase() !== 'none') {
+      const parsed = new URL(url)
+      if (parsed.protocol === 'https:') {
+        const host = parsed.hostname.replace(/^www\./, '')
+        contact = { url: parsed.href, host, linkedin: host === 'linkedin.com' || host.endsWith('.linkedin.com') }
+      }
+    }
+  } catch {}
+  const { Obfuscation } = await import('./src/seal.js')
+  return {
+    __FEEDBACK_EMAIL__: JSON.stringify(email ? await Obfuscation.obfuscate(email, SEAL_WORK) : ''),
+    __CONTACT_LINK__: JSON.stringify(contact && { sealed: await Obfuscation.obfuscate(contact.url, SEAL_WORK), host: contact.host, linkedin: contact.linkedin }),
+  }
 }
 
 // Aperçu des liens partagés : les réseaux veulent une adresse absolue pour og:image.
@@ -77,14 +100,14 @@ function socialPreview(mode, base) {
   }
 }
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(async ({ mode }) => ({
   // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
   base: process.env.BASE_PATH || '/',
   plugins: [
     csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode)),
     socialPreview(mode, process.env.BASE_PATH || '/'),
   ],
-  define: { __FEEDBACK_EMAIL__: JSON.stringify(encodedEmail(mode)) },
+  define: await sealedContacts(mode),
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',
