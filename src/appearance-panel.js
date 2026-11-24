@@ -56,46 +56,7 @@ function hasAppearance(element) {
 // pinceau du menu contextuel.
 const SHAPE_ROW = [0, 1, 2, 6, 9, 11, 13, 15].map((i) => COLORS[i])
 const TEXT_ROW = [0, 1, 2, 3, 7, 12, 14, 16].map((i) => TEXT_COLORS[i])
-const MAX_USED = 16
-
-const pairKey = (fill, stroke) => `${upper(fill)}|${upper(stroke)}`
-const SHAPE_ROW_KEYS = new Set(SHAPE_ROW.map((c) => pairKey(c.fill, c.stroke)))
 const TEXT_ROW_KEYS = new Set(TEXT_ROW.map((c) => c.color))
-
-// Couleurs déjà employées dans le diagramme et absentes de la ligne proposée :
-// une couleur personnalisée choisie sur un élément se reprend ainsi d'un clic
-// sur un autre. Rien n'est stocké à part : la liste se lit dans le diagramme.
-function usedShapeColors(elementRegistry) {
-  const seen = new Map()
-  for (const el of elementRegistry.getAll()) {
-    if (el.type === 'label' || !el.di) continue
-    const fill = fillOf(el)
-    const stroke = strokeOf(el)
-    if (!fill && !stroke) continue
-    const key = pairKey(fill, stroke)
-    if (!SHAPE_ROW_KEYS.has(key) && !seen.has(key)) seen.set(key, { fill, stroke })
-    if (seen.size >= MAX_USED) break
-  }
-  return [...seen.values()]
-}
-function usedTextColors(elementRegistry) {
-  const seen = new Set()
-  for (const el of elementRegistry.getAll()) {
-    if (el.type === 'label' || !el.di) continue
-    const color = upper(textColorOf(el))
-    if (color && !TEXT_ROW_KEYS.has(color)) seen.add(color)
-    if (seen.size >= MAX_USED) break
-  }
-  return [...seen]
-}
-
-function UsedRow({ label, children }) {
-  if (!children.length) return null
-  return html`<div class="appearance-used">
-    <div class="appearance-sublabel">${label}</div>
-    <div class="appearance-swatches" role="group" aria-label=${label}>${children}</div>
-  </div>`
-}
 
 // ── Pastille ────────────────────────────────────────────────────────────────
 
@@ -164,9 +125,16 @@ function readCopied() {
   try { return JSON.parse(localStorage.getItem(STYLE_KEY)) || null } catch { return null }
 }
 
-function copyStyle(element) {
+// Style complet d'un élément : couleurs de la forme, police et couleur du texte.
+function styleOf(element) {
   const target = targetOf(element)
-  copied = { fill: fillOf(target) || null, stroke: strokeOf(target) || null, font: fontOf(target), textColor: upper(textColorOf(target)) || null }
+  return { fill: fillOf(target) || null, stroke: strokeOf(target) || null, font: fontOf(target), textColor: upper(textColorOf(target)) || null }
+}
+const styleKey = (style) => JSON.stringify([style.fill, style.stroke, style.textColor, style.font && Object.keys(style.font).sort().map((k) => [k, style.font[k]])])
+const isDefaultStyle = (style) => !style.fill && !style.stroke && !style.font && !style.textColor
+
+function copyStyle(element) {
+  copied = styleOf(element)
   try { localStorage.setItem(STYLE_KEY, JSON.stringify(copied)) } catch { /* stockage indisponible : le style vaut pour cette page */ }
 }
 
@@ -187,9 +155,75 @@ function registerPasteStyle(commandStack, modeling) {
 }
 registerPasteStyle.$inject = ['commandStack', 'modeling']
 
-function pasteStyle(commandStack, elements) {
+function pasteStyle(commandStack, elements, style = copied) {
   const targets = pasteTargets(elements)
-  if (copied && targets.length) commandStack.execute('appearance.pasteStyle', { elements: targets, style: copied })
+  if (style && targets.length) commandStack.execute('appearance.pasteStyle', { elements: targets, style })
+}
+
+// ── Styles du diagramme ─────────────────────────────────────────────────────
+// Chaque style posé à la main sur un élément est repris automatiquement dans
+// une ligne du groupe Style : un clic l'applique à l'élément sélectionné. La
+// liste se lit dans le diagramme (elle suit donc le fichier), les styles
+// modifiés le plus récemment en tête.
+
+const USED_MAX = 8
+const recent = new Map()
+let tick = 0
+
+function trackRecentStyles(eventBus) {
+  eventBus.on('elements.changed', ({ elements }) => {
+    for (const el of elements) {
+      if (el.type === 'label' || !hasAppearance(el)) continue
+      const style = styleOf(el)
+      if (!isDefaultStyle(style)) recent.set(styleKey(style), ++tick)
+    }
+  })
+  eventBus.on('import.done', () => recent.clear())
+}
+trackRecentStyles.$inject = ['eventBus']
+
+function usedStyles(elementRegistry) {
+  const seen = new Map()
+  elementRegistry.forEach((el) => {
+    if (el.type === 'label' || !hasAppearance(el)) return
+    const style = styleOf(el)
+    if (isDefaultStyle(style)) return
+    const key = styleKey(style)
+    if (!seen.has(key)) seen.set(key, { key, style, order: seen.size })
+  })
+  return [...seen.values()]
+    .sort((a, b) => (recent.get(b.key) || 0) - (recent.get(a.key) || 0) || a.order - b.order)
+    .slice(0, USED_MAX)
+}
+
+function describeStyle(style) {
+  const font = style.font || {}
+  const parts = [
+    style.fill && `${T('Fill', 'Fond')} ${style.fill}`,
+    style.stroke && `${T('Stroke', 'Contour')} ${style.stroke}`,
+    font.name, font.size && `${font.size}`,
+    font.isBold && T('bold', 'gras'), font.isItalic && T('italic', 'italique'), font.isUnderline && T('underline', 'souligné'),
+    style.textColor && `${T('Text', 'Texte')} ${style.textColor}`,
+  ]
+  return parts.filter(Boolean).join(', ')
+}
+
+function UsedStyles({ element }) {
+  const commandStack = useService('commandStack')
+  const elementRegistry = useService('elementRegistry')
+  const styles = usedStyles(elementRegistry)
+  if (!styles.length) return null
+  const current = styleKey(styleOf(element))
+  const label = T('Used in this diagram', 'Déjà dans le diagramme')
+  return html`<div class="appearance-used">
+    <div class="appearance-sublabel">${label}</div>
+    <div class="appearance-swatches" role="group" aria-label=${label}>
+      ${styles.map(({ key, style }) => html`<button type="button" key=${key}
+        class=${'appearance-swatch' + (key === current ? ' is-active' : '')}
+        title=${describeStyle(style)} aria-label=${describeStyle(style)} aria-pressed=${key === current ? 'true' : 'false'}
+        onClick=${() => pasteStyle(commandStack, [element], style)}><${StylePreview} style=${style} /></button>`)}
+    </div>
+  </div>`
 }
 
 // Aperçu du style copié : la forme et un « A » dans la couleur et la police du texte.
@@ -216,6 +250,7 @@ function CopyPasteEntry({ element, id }) {
         ${copied ? html`<${StylePreview} style=${copied} />` : null}${T('Paste style', 'Coller le style')}
       </button>
     </div>
+    <${UsedStyles} element=${element} />
   </div>`
 }
 
@@ -225,7 +260,6 @@ const ROLLER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="
 
 function ShapeColorEntry({ element, id }) {
   const modeling = useService('modeling')
-  const elementRegistry = useService('elementRegistry')
   const target = targetOf(element)
   const edge = isConnection(target)
   const fill = fillOf(target)
@@ -237,10 +271,6 @@ function ShapeColorEntry({ element, id }) {
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
-    <${UsedRow} label=${T('Used in this diagram', 'Déjà dans le diagramme')}>${usedShapeColors(elementRegistry).map((c) => html`<${Swatch}
-      key=${pairKey(c.fill, c.stroke)} title=${[c.fill, c.stroke].filter(Boolean).join(' / ')} fill=${c.fill} stroke=${c.stroke}
-      active=${c.fill === fill && c.stroke === stroke}
-      onClick=${() => set(edge ? { stroke: c.stroke } : { fill: c.fill, stroke: c.stroke })} />`)}<//>
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
   </div>`
@@ -250,7 +280,6 @@ function ShapeColorEntry({ element, id }) {
 
 function TextStyleEntry({ element, id }) {
   const commandStack = useService('commandStack')
-  const elementRegistry = useService('elementRegistry')
   const target = targetOf(element)
   const elements = [target]
   const font = fontOf(target) || {}
@@ -287,9 +316,6 @@ function TextStyleEntry({ element, id }) {
       ${TEXT_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.color} stroke="var(--line-strong)" text=${readableOn(c.color)}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <${UsedRow} label=${T('Used in this diagram', 'Déjà dans le diagramme')}>${usedTextColors(elementRegistry).map((c) => html`<${Swatch}
-      key=${c} title=${c} fill=${c} stroke="var(--line-strong)" text=${readableOn(c)}
-      active=${color === c} onClick=${() => applyTextColor(commandStack, elements, c)} />`)}<//>
     <div class="appearance-row">
       <button type="button" class="appearance-button" title=${T('Black or white, whichever reads best on the fill', 'Noir ou blanc, le plus lisible sur le fond')}
         onClick=${() => applyTextColor(commandStack, elements, 'auto')}>
@@ -398,7 +424,7 @@ AppearanceContextPad.prototype.getContextPadEntries = function (element) {
 }
 
 export const AppearancePanelModule = {
-  __init__: ['appearancePropertiesProvider', 'appearanceContextPad', registerPasteStyle],
+  __init__: ['appearancePropertiesProvider', 'appearanceContextPad', registerPasteStyle, trackRecentStyles],
   appearancePropertiesProvider: ['type', AppearancePropertiesProvider],
   appearanceContextPad: ['type', AppearanceContextPad],
 }
