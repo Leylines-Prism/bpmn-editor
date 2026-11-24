@@ -460,13 +460,14 @@ export function createTools(modeler) {
 
     async auto_layout() {
       try {
-        await autoLayout(modeler)
+        var warnings = await autoLayout(modeler)
       } catch (err) {
         throw new Error(`Layout failed, diagram unchanged: ${err.message}`)
       }
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== canvas.getRootElement())
       return {
         laidOut: true,
+        ...(warnings.length ? { warnings } : {}),
         shapes: elements.filter((e) => !e.waypoints).length,
         connections: elements.filter((e) => e.waypoints).length,
       }

@@ -221,6 +221,5 @@ They can also be placed in `mcp/.env`.
 ## Prototype limits
 
 - The editor tab must be open for the AI to draw.
-- `auto_layout` inherits the limits of bpmn-auto-layout 1.3.0: only the first participant of a
-  collaboration is laid out, and annotations and message flows are not placed. On a diagram with
-  lanes or several pools, it keeps only the content of the first pool: lanes and the other pools are lost.
+- `auto_layout` uses bpmn-auto-layout 2.0.0-alpha.2, which lays out pools, lanes, message flows
+  and boundary events. It is still an alpha version: the result can change with its next releases.

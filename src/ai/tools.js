@@ -13,13 +13,13 @@ Recommended method:
 2. For a linear sequence, add_shapes with "after": the shape is placed to the right of the previous one and connected automatically.
 3. For branches and loops back, add_shapes then connect_shapes.
 4. Read the diagram again with get_shapes to check. get_diagram_image shows how it actually looks.
-5. If the drawing is messy, auto_layout tidies it up (see its limits).
+5. When the drawing is complete, call auto_layout: it places every shape and connection cleanly, pools and lanes included.
 6. Finish with validate_diagram and fix the reported errors.
 
-Pools and lanes: create each Participant first (add_shapes with x and y, one under the other, about 300 apart),
+Pools and lanes: create each Participant first (add_shapes with x and y, one under the other),
 then its lanes, from top to bottom (type Lane, parent: the participant id), then the shapes with parent: the lane id.
 Connect shapes of two different participants with connect_shapes: it creates a message flow.
-auto_layout does not handle lanes or several participants: do not call it on such a diagram.
+Do not worry about exact positions: auto_layout tidies everything at the end.
 
 Deadlines and exceptions on a task: add a boundary event with attachTo (for example a timer "3 days"),
 then draw the exception path from it with "after".
@@ -169,8 +169,8 @@ export function buildTools(z) {
       title: 'Tidy up the diagram',
       description:
         'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
-        'Limits: only the first participant of a collaboration is laid out, subprocesses become collapsed, ' +
-        'annotations, groups, associations and message flows are not placed, colors are lost. ' +
+        'Handles pools, lanes, message flows, boundary events, expanded subprocesses, annotations and groups. ' +
+        'Colors are kept. Returns the layout warnings, if any. ' +
         "Clears the editor's undo history.",
       inputSchema: {},
     },

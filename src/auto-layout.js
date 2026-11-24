@@ -17,12 +17,49 @@ function ensureFlowRefs(modeler) {
   })
 }
 
+// bpmn-auto-layout redessine tout le DI et perd les couleurs : on les relève
+// avant, puis on les remet sur les nouveaux éléments, sans passer par l'historique.
+const COLOR_ATTRS = ['bioc:fill', 'bioc:stroke', 'color:background-color', 'color:border-color']
+
+function readColors(modeler) {
+  const colors = new Map()
+  modeler.get('elementRegistry').forEach((el) => {
+    if (el.type === 'label' || !el.di) return
+    const attrs = {}
+    for (const name of COLOR_ATTRS) if (el.di.get(name)) attrs[name] = el.di.get(name)
+    const text = el.di.label?.get('color:color')
+    if (text) attrs.text = text
+    if (Object.keys(attrs).length) colors.set(el.id, attrs)
+  })
+  return colors
+}
+
+function restoreColors(modeler, colors) {
+  const registry = modeler.get('elementRegistry')
+  const bpmnFactory = modeler.get('bpmnFactory')
+  const eventBus = modeler.get('eventBus')
+  for (const [id, attrs] of colors) {
+    const el = registry.get(id)
+    if (!el?.di) continue
+    for (const name of COLOR_ATTRS) if (attrs[name]) el.di.set(name, attrs[name])
+    if (attrs.text) {
+      if (!el.di.label) el.di.label = bpmnFactory.create('bpmndi:BPMNLabel')
+      el.di.label.set('color:color', attrs.text)
+    }
+    eventBus.fire('element.changed', { element: el })
+    if (el.label) eventBus.fire('element.changed', { element: el.label })
+  }
+}
+
 // Recalcule toutes les positions puis recharge le diagramme. Le rechargement
 // vide l'historique d'annulation. En cas d'échec, le diagramme reste inchangé.
 export async function autoLayout(modeler) {
   ensureFlowRefs(modeler)
+  const colors = readColors(modeler)
   const { xml } = await modeler.saveXML({ format: true })
-  const laid = await layoutProcess(xml)
+  const { xml: laid, warnings } = await layoutProcess(xml)
   await modeler.importXML(laid)
+  restoreColors(modeler, colors)
   fitView(modeler.get('canvas'))
+  return warnings.map((w) => w.message)
 }
