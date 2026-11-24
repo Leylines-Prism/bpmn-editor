@@ -311,6 +311,13 @@ function chatErrorMessage(err, lang = 'en') {
   if (err instanceof Anthropic.RateLimitError) return T('API usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard.")
   if (err instanceof Anthropic.BadRequestError) return T(`Request rejected by the API: ${err.message}`, `Requête refusée par l'API : ${err.message}`)
   if (err instanceof Anthropic.APIError) return T(`API error (${err.status ?? 'network'}): ${err.message}`, `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`)
+  if (err instanceof OpenAICompatError && err.provider === 'mistral') {
+    if (err.status === 401 || err.status === 403) return T('Key rejected by Mistral. Check MISTRAL_API_KEY on the server.', 'Clé refusée par Mistral. Vérifiez MISTRAL_API_KEY sur le serveur.')
+    if (err.status === 404) return T(`Model or address not found at Mistral. Check MISTRAL_BASE_URL and MISTRAL_MODELS (${err.message}).`, `Modèle ou adresse introuvable chez Mistral. Vérifiez MISTRAL_BASE_URL et MISTRAL_MODELS (${err.message}).`)
+    if (err.status === 429) return T('Mistral usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de Mistral atteinte, ou crédits épuisés. Réessayez plus tard.")
+    if (err.status === null) return T(`Mistral unreachable. Check MISTRAL_BASE_URL (${err.message}).`, `Mistral injoignable. Vérifiez MISTRAL_BASE_URL (${err.message}).`)
+    return T(`Mistral error (${err.status}): ${err.message}`, `Erreur de Mistral (${err.status}) : ${err.message}`)
+  }
   if (err instanceof OpenAICompatError) {
     if (err.status === 401 || err.status === 403) return T('Key rejected by the OpenAI-compatible provider. Check OPENAI_API_KEY on the server.', 'Clé refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.')
     if (err.status === 404) return T(`Model or address not found at the OpenAI-compatible provider. Check OPENAI_BASE_URL and OPENAI_MODELS (${err.message}).`, `Modèle ou adresse introuvable chez le fournisseur compatible OpenAI. Vérifiez OPENAI_BASE_URL et OPENAI_MODELS (${err.message}).`)
@@ -340,7 +347,7 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   log(
     chat.enabled
       ? `Chat intégré actif : ${chat.models.map((m) => m.key).join(', ')} (par défaut ${chat.defaultKey})`
-      : 'Chat intégré inactif : ni ANTHROPIC_API_KEY ni OPENAI_MODELS ne sont définies',
+      : 'Chat intégré inactif : ni MISTRAL_API_KEY, ni ANTHROPIC_API_KEY, ni OPENAI_MODELS ne sont définies',
   )
 })
 httpServer.on('upgrade', (req, socket, head) => bridge.handleUpgrade(req, socket, head))

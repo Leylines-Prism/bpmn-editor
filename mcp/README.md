@@ -54,7 +54,15 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
 ### Setting up providers
 
 Copy `mcp/.env.example` to `mcp/.env` (excluded from git) and fill in what you need. A provider only
-shows in the menu once it is set up. Both can be set up at the same time.
+shows in the menu once it is set up. Several can be set up at the same time.
+
+**Mistral**: the key is enough. The menu then offers Mistral Large and Mistral Small, first in the
+list. For processing in the European Union (billed 10% more), add
+`MISTRAL_BASE_URL=https://api.eu.mistral.ai/v1`.
+
+```
+MISTRAL_API_KEY=...
+```
 
 **Anthropic**: the key is enough. The menu then offers Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5.
 
@@ -205,6 +213,10 @@ They can also be placed in `mcp/.env`.
 | `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing, and the server warns at startup when `MCP_ALLOWED_HOSTS` holds a name other than localhost |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
+| `MISTRAL_API_KEY` | none | Mistral API key. Without it, no Mistral model in the menu |
+| `MISTRAL_MODELS` | `mistral-large-latest=Mistral Large,mistral-small-latest=Mistral Small` | Mistral models offered, same format as `ANTHROPIC_MODELS` |
+| `MISTRAL_BASE_URL` | `https://api.mistral.ai/v1` | Mistral API address. `https://api.eu.mistral.ai/v1` keeps processing in the European Union |
+| `MISTRAL_REASONING_EFFORT` | none | sent as is as `reasoning_effort` (`low`, `medium`, `high`…). Without it, each model uses its own default |
 | `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |
 | `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | Claude models offered, `id=Label` separated by commas (label optional) |
 | `CHAT_EFFORT` | `medium` | thinking effort of Claude models: `low`, `medium`, `high`, `xhigh` or `max` |

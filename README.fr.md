@@ -27,8 +27,8 @@ docker compose -f docker-compose.image.yml up -d
 
 Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` fait la même chose.
 
-- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé d'API (Anthropic,
-  OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
+- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé d'API (Mistral,
+  Anthropic, OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
   commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
   Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
   seul l'assistant est éteint.
@@ -143,7 +143,7 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 
 | Réglage | Rôle |
 |---|---|
-| `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés de l'assistant IA. Voir `mcp/.env.example`. |
+| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés de l'assistant IA. Voir `mcp/.env.example`. |
 | `MCP_TOKEN` (`mcp/.env`) | Jeton que les agents doivent envoyer. La fenêtre « Connecter un agent » en génère un. |
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |

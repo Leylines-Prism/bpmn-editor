@@ -54,7 +54,15 @@ Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion
 ### Configurer les fournisseurs
 
 Copier `mcp/.env.example` en `mcp/.env` (exclu de git) et remplir ce qui sert. Un fournisseur n'apparaît
-dans le menu que s'il est configuré. Les deux peuvent l'être en même temps.
+dans le menu que s'il est configuré. Plusieurs peuvent l'être en même temps.
+
+**Mistral** : il suffit de la clé. Le menu propose alors Mistral Large et Mistral Small, en tête de
+liste. Pour un traitement dans l'Union européenne (facturé 10 % de plus), ajoutez
+`MISTRAL_BASE_URL=https://api.eu.mistral.ai/v1`.
+
+```
+MISTRAL_API_KEY=...
+```
 
 **Anthropic** : il suffit de la clé. Le menu propose alors Claude Opus 5.5, Sonnet 5.5 et Haiku 5.5.
 
@@ -207,6 +215,10 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien, et le serveur avertit au démarrage quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | noms d'hôte acceptés quand `MCP_HOST` n'est pas local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket et le chat |
+| `MISTRAL_API_KEY` | aucune | clé d'API Mistral. Sans elle, pas de modèle Mistral dans le menu |
+| `MISTRAL_MODELS` | `mistral-large-latest=Mistral Large,mistral-small-latest=Mistral Small` | modèles Mistral proposés, même format que `ANTHROPIC_MODELS` |
+| `MISTRAL_BASE_URL` | `https://api.mistral.ai/v1` | adresse de l'API Mistral. `https://api.eu.mistral.ai/v1` garde le traitement dans l'Union européenne |
+| `MISTRAL_REASONING_EFFORT` | aucune | envoyée telle quelle en `reasoning_effort` (`low`, `medium`, `high`…). Sans elle, chaque modèle garde son réglage par défaut |
 | `ANTHROPIC_API_KEY` | aucune | clé d'API Anthropic. Sans elle, pas de modèle Claude dans le menu |
 | `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | modèles Claude proposés, `identifiant=Libellé` séparés par des virgules (libellé facultatif) |
 | `CHAT_EFFORT` | `medium` | effort de réflexion des modèles Claude : `low`, `medium`, `high`, `xhigh` ou `max` |

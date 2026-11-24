@@ -4,6 +4,7 @@
 // un fournisseur n'apparaît que s'il est configuré. Le navigateur reçoit
 // la liste (identifiants et libellés), jamais les clés ni les adresses.
 
+const DEFAULT_MISTRAL_MODELS = 'mistral-large-latest=Mistral Large,mistral-small-latest=Mistral Small'
 const DEFAULT_ANTHROPIC_MODELS = 'claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5'
 
 // « id=Libellé,id2,id3=Libellé 3 » -> [{ id, label }]. Le libellé est facultatif.
@@ -33,6 +34,8 @@ export function buildCatalog(env = process.env) {
     }
   }
 
+  // Mistral en premier : il devient le modèle par défaut quand sa clé est réglée.
+  if (env.MISTRAL_API_KEY) add('mistral', 'Mistral', parseModelList(env.MISTRAL_MODELS || DEFAULT_MISTRAL_MODELS))
   if (env.ANTHROPIC_API_KEY) add('anthropic', 'Anthropic', parseModelList(env.ANTHROPIC_MODELS || DEFAULT_ANTHROPIC_MODELS))
   if (env.OPENAI_MODELS) add('openai', env.OPENAI_LABEL || 'OpenAI-compatible', parseModelList(env.OPENAI_MODELS))
 
