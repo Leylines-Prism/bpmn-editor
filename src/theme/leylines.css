@@ -278,35 +278,36 @@ a.btn { text-decoration: none; }
   #canvas .bjsl-button,
   #canvas .lint-process-badge { bottom: 148px; }
 }
-#feedback-button {
-  position: absolute; right: 16px; bottom: 56px; z-index: 100;
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  padding: 8px 16px 8px 12px; border-radius: var(--radius-pill);
-  border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink);
-  font: inherit; font-size: 14px; font-weight: 600; line-height: 20px; cursor: pointer;
-  box-shadow: var(--elevation-1); transition: border-color 0.15s, color 0.15s, transform 0.15s;
-}
-#feedback-button svg { width: 18px; height: 18px; }
-#feedback-button:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
-#feedback-button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) { #feedback-button { transition: none; transform: none !important; } }
-.brand-logo.clickable { cursor: pointer; border-radius: var(--radius-sm); }
-.brand-logo.clickable:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
-/* Bouton « Confidentialité » (version en ligne) : même forme que « Votre avis », en plus
-   discret, posé au-dessus de lui s'il existe. */
+/* Boutons « Votre avis » et « Confidentialité », en bas à droite du canevas : même forme et
+   même taille, empilés et alignés à droite. La largeur minimale, réglée par langue, couvre le
+   plus long des deux libellés, pour que les deux pilules aient exactement la même largeur. */
+#feedback-button,
 #privacy-button {
   position: absolute; right: 16px; bottom: 56px; z-index: 100;
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px 6px 10px; border-radius: var(--radius-pill);
-  border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink-muted);
-  font: inherit; font-size: 13px; font-weight: 600; line-height: 18px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 104px; padding: 5px 12px 5px 10px; border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong); background: var(--surface-raised); color: var(--ink);
+  font: inherit; font-size: 13px; font-weight: 600; line-height: 18px; white-space: nowrap; cursor: pointer;
   box-shadow: var(--elevation-1); transition: border-color 0.15s, color 0.15s, transform 0.15s;
 }
-#feedback-button ~ #privacy-button { bottom: 104px; }
-#privacy-button svg { width: 16px; height: 16px; color: var(--accent); }
+:root[lang="fr"] #feedback-button,
+:root[lang="fr"] #privacy-button { min-width: 132px; }
+#feedback-button svg,
+#privacy-button svg { width: 16px; height: 16px; flex-shrink: 0; }
+#feedback-button:hover,
 #privacy-button:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-1px); }
+#feedback-button:focus-visible,
 #privacy-button:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) { #privacy-button { transition: none; transform: none !important; } }
+@media (prefers-reduced-motion: reduce) {
+  #feedback-button, #privacy-button { transition: none; transform: none !important; }
+}
+/* « Confidentialité » reste plus discret (bordure et texte atténués, bouclier en couleur), posé
+   au-dessus de « Votre avis » s'il existe. */
+#privacy-button { border-color: var(--line); color: var(--ink-muted); }
+#privacy-button svg { color: var(--accent); }
+#feedback-button ~ #privacy-button { bottom: 94px; }
+.brand-logo.clickable { cursor: pointer; border-radius: var(--radius-sm); }
+.brand-logo.clickable:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 
 /* ── Panneau de propriétés : suit le thème clair ou sombre ───────────── */
 
