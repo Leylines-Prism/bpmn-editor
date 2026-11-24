@@ -223,4 +223,4 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 ## Limites du prototype
 
 - L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
-- `auto_layout` hérite des limites de bpmn-auto-layout 1.3.0 : seul le premier participant d'une collaboration est rangé, les annotations et les flux de message ne sont pas placés. Sur un diagramme avec des lanes ou plusieurs pools, il ne garde que le contenu du premier pool : les lanes et les autres pools sont perdus.
+- `auto_layout` utilise bpmn-auto-layout 2.0.0-alpha.2, qui range pools, lanes, flux de messages et événements de bordure. C'est encore une version alpha : le rendu peut changer avec ses prochaines versions.
