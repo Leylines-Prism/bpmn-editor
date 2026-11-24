@@ -40,6 +40,11 @@ body {
 .brand-logo .only-dark.brand-pulse { mix-blend-mode: lighten; }
 .brand-logo .brand-pulse.done { opacity: 0; }
 .brand h1 { font-size: 16px; line-height: 24px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+.channel-badge {
+  padding: 1px var(--space-2); border: 1px solid var(--warm); border-radius: var(--radius-pill);
+  color: var(--warm); font-size: 12px; line-height: 18px; font-weight: 600; text-decoration: none; white-space: nowrap;
+}
+.channel-badge:hover { background: var(--warm); color: var(--on-accent); }
 
 /* Le pictogramme suit le thème, y compris quand il est forcé à la main */
 .only-dark { display: none !important; }
@@ -559,6 +564,7 @@ body #chat-model:disabled { opacity: 0.5; }
 #options-dialog .p-result.ok { color: var(--accent); }
 #options-dialog .p-result.failed { color: var(--magenta); }
 #options-dialog .keys-row, #options-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#options-dialog .app-version { color: var(--ink-muted); font-size: 12px; }
 #options-dialog .keys-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; cursor: pointer; }
 #options-dialog .grow { flex: 1; }
 #chat-panel #chat-settings { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }

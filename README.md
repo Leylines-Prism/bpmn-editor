@@ -181,6 +181,11 @@ A demo runs at https://bpmn.leylines.fr (GitHub Pages). Its [user guide](https:/
 explains how to draw, save, export and use the AI assistant. The Help (?) button in the toolbar opens it
 too.
 
+It comes in two pages. The root follows the released versions (the latest `vX.Y.Z` tag), and
+https://bpmn.leylines.fr/dev/ follows the main branch, with the latest changes before they are released.
+The development page keeps its own diagrams and settings in the browser, so trying it does not touch
+those of the stable page. Both show their version at the bottom of Options and of the user guide.
+
 It is for a quick try only: each visitor enters their own API key, which stays in their browser.
 There is no agent connection (MCP) and no saving on a server, and some providers (OpenAI) refuse
 calls from a web page. The "Privacy" link on the page says what leaves the browser.

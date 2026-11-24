@@ -6,6 +6,7 @@ import { PROVIDERS } from './ai/providers.js'
 import { forgetKeys, providerLabel, saveSettings, userModels } from './ai-settings.js'
 import { T } from './i18n/lang.js'
 import { trackOnce } from './analytics.js'
+import { APP_VERSION } from './site-channel.js'
 
 const HINTS = {
   online: {
@@ -82,6 +83,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       </div>
       <p class="hint privacy">${esc(PRIVACY[mode])} ${T('Without the box above, keys are forgotten when the tab is closed.', "Sans la case ci-dessus, les clés sont oubliées à la fermeture de l'onglet.")}</p>
       <div class="actions">
+        ${APP_VERSION ? `<span class="app-version">${T('Version', 'Version')} ${esc(APP_VERSION)}</span>` : ''}
         <span class="grow"></span>
         <button type="button" class="btn" id="options-cancel">${T('Cancel', 'Annuler')}</button>
         <button type="button" class="btn primary" id="options-save">${T('Save', 'Enregistrer')}</button>

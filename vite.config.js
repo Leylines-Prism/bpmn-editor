@@ -1,4 +1,6 @@
+import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 import { defineConfig, loadEnv } from 'vite'
 
 // Politique de sécurité du contenu, posée au build dans chaque page : seuls les scripts
@@ -100,14 +102,59 @@ function socialPreview(mode, base) {
   }
 }
 
+// Version affichée (Options, aide) : APP_VERSION si elle est donnée (image Docker, construite
+// depuis un tag), sinon le dernier tag de git (« v1.1.0 » sur un tag, « v1.1.0-12-gabc1234 »
+// entre deux), sinon le numéro de package.json.
+function appVersion() {
+  const given = (process.env.APP_VERSION || '').trim()
+  if (given) return given
+  try {
+    return execFileSync('git', ['describe', '--tags', '--always'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+  } catch {
+    return `v${JSON.parse(readFileSync('package.json', 'utf8')).version}`
+  }
+}
+
+// Canal du site en ligne : SITE_CHANNEL=dev pour la page de développement (/dev/), qui suit
+// main, à côté de la page stable qui suit les versions. Les deux partagent l'origine, donc le
+// stockage du navigateur : en dev, toutes les clés « bpmn-editor-… » (localStorage et IndexedDB,
+// dans le code et dans les petits scripts des pages) deviennent « bpmn-editor-dev-… », pour qu'un
+// essai en dev n'abîme pas les diagrammes ni les réglages de la page stable. La page dev n'est
+// pas indexée par les moteurs de recherche.
+// Dans les pages, %APP_VERSION% est remplacé par la version.
+function siteChannel(channel, version) {
+  const prefix = (code) => code.replace(/(['"`])bpmn-editor-(?!dev-)/g, '$1bpmn-editor-dev-')
+  return {
+    name: 'site-channel',
+    transform(code, id) {
+      if (channel !== 'dev' || !/[\\/]src[\\/].*\.js$/.test(id) || id.includes('node_modules')) return null
+      return { code: prefix(code), map: null }
+    },
+    transformIndexHtml(html) {
+      let out = html.replaceAll('%APP_VERSION%', version)
+      if (channel === 'dev') {
+        out = prefix(out).replace('<meta charset="UTF-8" />', '<meta charset="UTF-8" />\n  <meta name="robots" content="noindex" />')
+      }
+      return out
+    },
+  }
+}
+
+const APP_VERSION = appVersion()
+
 export default defineConfig(async ({ mode }) => ({
   // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
   base: process.env.BASE_PATH || '/',
   plugins: [
     csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode)),
     socialPreview(mode, process.env.BASE_PATH || '/'),
+    siteChannel(process.env.SITE_CHANNEL || '', APP_VERSION),
   ],
-  define: await sealedContacts(mode),
+  define: {
+    ...(await sealedContacts(mode)),
+    __APP_VERSION__: JSON.stringify(APP_VERSION),
+    __SITE_CHANNEL__: JSON.stringify(process.env.SITE_CHANNEL || ''),
+  },
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',
