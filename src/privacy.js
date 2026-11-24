@@ -16,6 +16,7 @@ const ICONS = {
   device: svg('<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>'),
   assistant: svg('<path d="M12 3v3M5 9h14a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a1 1 0 0 1 1-1z"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>'),
   chart: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  key: svg('<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M15 8l2 2"/>'),
   server: svg('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'),
 }
 
@@ -48,6 +49,17 @@ export function setupPrivacy({ container }) {
                  "Vos messages, le diagramme et votre clé d'API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Anthropic, OpenAI, etc.).")}</p>
           <p>${T("The provider's own terms and privacy policy apply, and it bills you for usage.",
                  "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>`)
+
+  // Encadré mis en avant : la clé d'API recommandée pour cet éditeur.
+  const responsible = `<section class="pv-section pv-responsible" aria-labelledby="pv-responsible-title">
+        <span class="pv-icon">${ICONS.key}</span>
+        <div class="pv-body"><h3 id="pv-responsible-title">${T('Responsible use', 'Usage responsable')}</h3>
+          <p>${T('Use, first and foremost, an API key dedicated to this editor, created for it alone, with a limited validity period.',
+                 "Utilisez en priorité une clé d'API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée.")}</p>
+          <p>${T('Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.',
+                 "Ajoutez une limite de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.")}</p>
+        </div>
+      </section>`
 
   const audience = analyticsHost ? section('chart', T('Audience measurement', "Mesure d'audience"), `
           <p>${T('The site measures its audience with Umami.', 'Le site mesure sa fréquentation avec Umami.')}</p>
@@ -82,6 +94,7 @@ export function setupPrivacy({ container }) {
       ${yours}
       ${assistant}
       </div>
+      ${responsible}
       ${audience}
       ${hosting}
       <div class="actions">
