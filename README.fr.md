@@ -232,6 +232,13 @@ l'éditeur est assisté par IA, avec Claude Code et d'autres modèles, et chaque
 dans le navigateur avant d'être publié. Les relectures de développeurs expérimentés sont particulièrement
 appréciées.
 
+**Testeurs recherchés pour les fournisseurs d'IA.** L'assistant est essayé au quotidien avec les
+modèles Anthropic seulement. Mistral, OpenAI, Ollama et les serveurs compatibles OpenAI sont pris en
+charge d'après leur documentation, mais rarement essayés pour de vrai. Si vous utilisez l'un d'eux,
+tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-editor/issues)
+ou une [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) avec le fournisseur,
+le modèle et ce que vous avez essayé (dessin, images, PDF).
+
 Commencez par [CONTRIBUTING.md](CONTRIBUTING.md) (en anglais). Les questions et les idées vont dans
 les [Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), les bugs dans les
 [issues](https://github.com/Leylines-Prism/bpmn-editor/issues), et les failles de sécurité passent
