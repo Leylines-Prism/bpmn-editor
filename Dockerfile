@@ -23,6 +23,9 @@ RUN sed -i -e '/^user /d' -e 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.c
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY nginx-headers.conf /etc/nginx/snippets/headers.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
+# Licence du projet, hors des fichiers servis.
+COPY LICENSE /usr/share/licenses/bpmn-editor/LICENSE
+LABEL org.opencontainers.image.licenses="MIT"
 USER nginx
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
