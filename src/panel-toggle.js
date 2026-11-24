@@ -1,13 +1,18 @@
 // Masquer et afficher le panneau de propriétés (« Processus ») d'un clic.
 // Le panneau se replie vers la droite et le canevas reprend la place libérée.
-// L'état est retenu dans ce navigateur.
+// L'état est retenu dans ce navigateur. Sans choix enregistré, le panneau commence
+// replié sur un petit écran, où il couvrirait presque tout le canevas.
 
 import { T } from './i18n/lang.js'
+import { isSmallScreen } from './small-screen.js'
 
 const KEY = 'bpmn-editor-properties-hidden'
 
 function readHidden() {
-  try { return localStorage.getItem(KEY) === '1' } catch { return false }
+  let saved = null
+  try { saved = localStorage.getItem(KEY) } catch { /* stockage indisponible */ }
+  if (saved === '1' || saved === '0') return saved === '1'
+  return isSmallScreen()
 }
 
 export function setupPanelToggle({ button, panel, canvas }) {
