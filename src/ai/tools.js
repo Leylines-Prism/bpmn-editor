@@ -21,6 +21,9 @@ then its lanes, from top to bottom (type Lane, parent: the participant id), then
 Connect shapes of two different participants with connect_shapes: it creates a message flow.
 auto_layout does not handle lanes or several participants: do not call it on such a diagram.
 
+Deadlines and exceptions on a task: add a boundary event with attachTo (for example a timer "3 days"),
+then draw the exception path from it with "after".
+
 Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates are the centre of the shape.
 To start from scratch or import a complete diagram, use set_diagram_xml.`
 
@@ -99,6 +102,18 @@ export function buildTools(z) {
                 .string()
                 .optional()
                 .describe('Id of an existing element, or "key" of an earlier shape in this call'),
+              attachTo: z
+                .string()
+                .optional()
+                .describe(
+                  'Boundary event: id (or "key") of the task or subprocess it is attached to. The shape becomes a BoundaryEvent ' +
+                    'on the bottom edge of that activity; give its eventDefinition (TimerEventDefinition, ErrorEventDefinition…). ' +
+                    'Continue from it with "after" for the exception path',
+                ),
+              interrupting: z
+                .boolean()
+                .optional()
+                .describe('Boundary event only: false for a non-interrupting event (the activity goes on). Default: true'),
               x: z.number().optional(),
               y: z.number().optional(),
               parent: elementId

@@ -166,6 +166,8 @@ export function createTools(modeler) {
     if (bo.name) out.name = bo.name
     const eventDef = bo.eventDefinitions?.[0]
     if (eventDef) out.eventDefinition = eventDef.$type
+    if (element.host) out.attachedTo = element.host.id
+    if (bo.cancelActivity === false) out.interrupting = false
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id
@@ -347,6 +349,29 @@ export function createTools(modeler) {
             if (spec.name) modeling.updateLabel(lane, spec.name)
             if (spec.key) byKey[spec.key] = lane
             const entry = describe(lane)
+            if (spec.key) entry.key = spec.key
+            created.push(entry)
+            continue
+          }
+
+          if (spec.attachTo) {
+            // Événement de bordure : posé sur le bord bas de l'activité, à droite des autres.
+            const host = byKey[spec.attachTo] || getElement(spec.attachTo)
+            if (!is(host, 'bpmn:Activity')) {
+              throw new Error(`An event can only be attached to a task, subprocess or call activity, not ${host.type}.`)
+            }
+            const shape = createShape({ ...spec, type: 'BoundaryEvent' })
+            const count = host.attachers.length
+            const position = { x: host.x + host.width - 20 - count * 60, y: host.y + host.height }
+            if (position.x < host.x + 18) position.x = host.x + 18
+            if (!bpmnRules.canAttach([shape], host, null, position)) {
+              throw new Error(`Cannot attach the event to ${host.id}`)
+            }
+            const element = modeling.createShape(shape, position, host, { attach: true })
+            if (spec.interrupting === false) modeling.updateProperties(element, { cancelActivity: false })
+            if (spec.name) modeling.updateLabel(element, spec.name)
+            if (spec.key) byKey[spec.key] = element
+            const entry = describe(element)
             if (spec.key) entry.key = spec.key
             created.push(entry)
             continue
