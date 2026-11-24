@@ -17,14 +17,22 @@ function translateTitle(el) {
   if (value && value !== title) el.setAttribute('title', value)
 }
 
+// Texte « Opened in editor » du champ dont le contenu est ouvert dans la grande
+// fenêtre : le composant de zone de texte ne reçoit pas le service de traduction.
+const PLACEHOLDER = '[class$="__open-popup-placeholder"]'
+
+function translateText(el) {
+  const value = fr[el.textContent]
+  if (value) el.textContent = value
+}
+
 function translateTree(root) {
   if (root.nodeType !== 1) return
   if (root.hasAttribute('title')) translateTitle(root)
+  if (root.matches(PLACEHOLDER)) translateText(root)
+  root.querySelectorAll(PLACEHOLDER).forEach(translateText)
   root.querySelectorAll('[title]').forEach(translateTitle)
-  root.querySelectorAll('.bio-properties-panel-add-entry-label').forEach((span) => {
-    const value = fr[span.textContent]
-    if (value) span.textContent = value
-  })
+  root.querySelectorAll('.bio-properties-panel-add-entry-label').forEach(translateText)
 }
 
 export function translatePanelTitles(container) {

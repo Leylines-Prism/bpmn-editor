@@ -14,6 +14,7 @@ import lintConfig from './packed-lint-config.js'
 import TranslateModule from './i18n/translate.js'
 import { lang, T } from './i18n/lang.js'
 import { translatePanelTitles } from './i18n/panel-titles.js'
+import { setupPanelPopup } from './panel-popup.js'
 import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
@@ -390,6 +391,7 @@ setupPanelToggle({
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
+setupPanelPopup(modeler.get('eventBus'))
 makeResizable(document.getElementById('properties-panel'), {
   name: 'properties', label: T('Process panel width', 'Largeur du panneau Processus'), min: 240, max: 640, fallback: 300,
 })
