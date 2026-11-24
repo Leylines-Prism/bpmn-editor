@@ -62,8 +62,8 @@ export function openaiUserContent(text, attachments = []) {
   ]
 }
 
-// Le fournisseur sait-il lire ce type de pièce jointe ? providerId : anthropic, openai,
-// ollama, compat (Options) ; format : anthropic ou openai.
+// Le fournisseur sait-il lire ce type de pièce jointe ? providerId : mistral, anthropic,
+// openai, ollama, compat (Options) ; format : anthropic ou openai.
 export function supports({ format, providerId }, kind) {
   if (format === 'anthropic') return true
   if (kind === 'image') return true // selon le modèle : l'erreur du fournisseur le dira

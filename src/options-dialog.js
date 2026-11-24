@@ -9,12 +9,14 @@ import { trackOnce } from './analytics.js'
 
 const HINTS = {
   online: {
+    mistral: T('Create a key at console.mistral.ai. Calls go straight from this page to Mistral. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé sur console.mistral.ai. Les appels partent directement de cette page vers Mistral. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
     anthropic: T('Create a key at console.anthropic.com. Calls go straight from this page to Anthropic.', 'Créez une clé sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.'),
     openai: T('Create a key at platform.openai.com. OpenAI does not always allow calls made from a web page: if "Test" fails, use the docker version.', "Créez une clé sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker."),
     ollama: T('Ollama must allow this page: start it with OLLAMA_ORIGINS={origin}. Pick a model that supports tool calls.', 'Ollama doit autoriser cette page : lancez-le avec la variable OLLAMA_ORIGINS={origin}. Choisissez un modèle qui sait appeler des outils.'),
     compat: T('LiteLLM, LM Studio, vLLM… The server must allow the origin {origin} (CORS setting). An https page can only call an https address, or localhost.', "LiteLLM, LM Studio, vLLM… Le serveur doit autoriser l'origine {origin} (réglage CORS). Une page en https ne peut appeler qu'une adresse en https, ou localhost."),
   },
   server: {
+    mistral: T('Create a key at console.mistral.ai. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé sur console.mistral.ai. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
     anthropic: T('Create a key at console.anthropic.com.', 'Créez une clé sur console.anthropic.com.'),
     openai: T('Create a key at platform.openai.com.', 'Créez une clé sur platform.openai.com.'),
     ollama: T('Address as seen from the server. If it runs in docker, try http://host.docker.internal:11434/v1. Pick a model that supports tool calls.', "Adresse vue depuis le serveur. S'il tourne dans docker, essayez http://host.docker.internal:11434/v1. Choisissez un modèle qui sait appeler des outils."),
@@ -180,7 +182,9 @@ export function createOptionsDialog({ mode, test, onSave }) {
         const on = new Set(current.filter((m) => m.on).map((m) => m.id))
         // Les modèles cochés restent, même absents de la liste reçue.
         const kept = current.filter((m) => m.on && !models.some((x) => x.id === m.id))
-        draft.providers[id].models = [...kept, ...models.map((m) => ({ ...m, on: on.has(m.id) }))]
+        // Un libellé déjà connu (« Mistral Large ») l'emporte sur l'identifiant brut.
+        const labels = new Map(current.filter((m) => m.label && m.label !== m.id).map((m) => [m.id, m.label]))
+        draft.providers[id].models = [...kept, ...models.map((m) => ({ ...m, label: m.label === m.id ? labels.get(m.id) || m.label : m.label, on: on.has(m.id) }))]
         renderModels(id)
         showResult(result, true, T(`${models.length} model${models.length > 1 ? 's' : ''} received: tick the ones to offer.`, `${models.length} modèle${models.length > 1 ? 's' : ''} reçu${models.length > 1 ? 's' : ''} : cochez ceux à proposer.`))
       } else {

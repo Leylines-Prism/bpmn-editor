@@ -244,7 +244,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add(
         'notice',
         mode === 'online'
-          ? T('To start, open Options and turn on a provider: Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
+          ? T('To start, open Options and turn on a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
           : T('Chat is not set up: open Options to set up a provider, or add ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
@@ -521,7 +521,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
     const attachments = pending.slice()
     const model = currentModel()
-    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'openai' ? 'openai' : 'anthropic', providerId: model.provider }
+    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.provider }
     if (attachments.some((a) => !supports(caps, a.kind))) {
       add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic or OpenAI model, or paste the text of the document.`,
         `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic ou OpenAI, ou collez le texte du document.`))

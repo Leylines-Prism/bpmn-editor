@@ -5,8 +5,8 @@
 // avec les mêmes outils que le serveur MCP, les exécute dans cet onglet par le
 // pont WebSocket, et renvoie au fil de l'eau le texte et les outils appelés.
 //
-// Deux fournisseurs : Anthropic (API Claude) et toute API compatible OpenAI.
-// Les clés restent ici, côté serveur (ANTHROPIC_API_KEY, OPENAI_API_KEY).
+// Fournisseurs : Mistral, Anthropic (API Claude) et toute API compatible OpenAI.
+// Les clés restent ici, côté serveur (MISTRAL_API_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY).
 
 import Anthropic from '@anthropic-ai/sdk'
 import { randomUUID } from 'node:crypto'
@@ -45,6 +45,14 @@ export class ChatService {
         })
       : null
     this.openaiEffort = process.env.OPENAI_REASONING_EFFORT || null
+    // Mistral passe par le même client : son API suit le format /chat/completions.
+    this.mistral = process.env.MISTRAL_API_KEY
+      ? new OpenAICompatClient({
+          baseUrl: process.env.MISTRAL_BASE_URL || 'https://api.mistral.ai/v1',
+          apiKey: process.env.MISTRAL_API_KEY,
+        })
+      : null
+    this.mistralEffort = process.env.MISTRAL_REASONING_EFFORT || null
   }
 
   get enabled() {
@@ -99,11 +107,16 @@ export class ChatService {
       if (!this.enabled) throw new Error(T('Chat is not set up: no model provider is defined on the server.', "Le chat n'est pas configuré : aucun fournisseur de modèle n'est défini sur le serveur."))
       const model = this.models.find((m) => m.key === (modelKey || this.defaultKey))
       if (!model) throw new Error(T(`Unknown model: ${modelKey}`, `Modèle inconnu : ${modelKey}`))
-      target = { format: model.provider, id: model.id, client: model.provider === 'openai' ? this.openai : this.anthropic }
+      target = {
+        format: model.provider === 'anthropic' ? 'anthropic' : 'openai',
+        provider: model.provider,
+        id: model.id,
+        client: { anthropic: this.anthropic, openai: this.openai, mistral: this.mistral }[model.provider],
+      }
     }
     if (!this.bridge.hasTab(tabId)) throw new Error(T('This tab is not connected to the server. Reload the page.', "Cet onglet n'est pas relié au serveur. Rechargez la page."))
 
-    const { id, conv } = this.#conversation(conversationId, target.format)
+    const { id, conv } = this.#conversation(conversationId, target.provider || target.format)
     if (conv.busy) throw new Error(T('A reply is already in progress in this conversation.', 'Une réponse est déjà en cours dans cette conversation.'))
     conv.busy = true
     emit({ type: 'conversation', id })
@@ -121,10 +134,15 @@ export class ChatService {
     }
     try {
       if (target.format === 'openai') {
-        await runOpenAITurn({ ...common, client: target.client, reasoningEffort: custom ? null : this.openaiEffort })
+        const reasoningEffort = custom ? null : target.provider === 'mistral' ? this.mistralEffort : this.openaiEffort
+        await runOpenAITurn({ ...common, client: target.client, reasoningEffort })
       } else {
         await runAnthropicTurn({ ...common, client: target.client, APIError: Anthropic.APIError, effort: this.effort })
       }
+    } catch (err) {
+      // Pour le message d'erreur : quelles variables du serveur vérifier.
+      if (!custom && err && typeof err === 'object') err.provider = target.provider
+      throw err
     } finally {
       conv.busy = false
     }

@@ -30,6 +30,10 @@ services:
     image: ghcr.io/leylines-prism/bpmn-editor-mcp:1.0.0
     environment:
       # Fournisseurs du chat intégré (voir mcp/.env.example pour le détail).
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
+      MISTRAL_MODELS: ${MISTRAL_MODELS:-}
+      MISTRAL_BASE_URL: ${MISTRAL_BASE_URL:-}
+      MISTRAL_REASONING_EFFORT: ${MISTRAL_REASONING_EFFORT:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODELS: ${ANTHROPIC_MODELS:-}
       OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}

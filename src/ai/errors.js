@@ -27,6 +27,10 @@ export function describeProviderError(err, { label, providerId, browser = false,
       return T('The call to OpenAI did not go through. Check your connection. OpenAI does not always allow calls made straight from a web page: the docker version, which goes through your server, avoids this block.',
         "L'appel à OpenAI n'a pas abouti. Vérifiez votre connexion. OpenAI n'autorise pas toujours les appels faits directement depuis une page : la version docker, qui passe par votre serveur, évite ce blocage.")
     }
+    if (providerId === 'mistral') {
+      return T(`Mistral cannot be reached from this page. Check your connection and the address in Options${detail}.`,
+        `Mistral est injoignable depuis cette page. Vérifiez votre connexion et l'adresse dans Options${detail}.`)
+    }
     if (providerId === 'anthropic') {
       return T(`Anthropic cannot be reached from this page. Check your connection and the address in Options${detail}.`,
         `Anthropic est injoignable depuis cette page. Vérifiez votre connexion et l'adresse dans Options${detail}.`)
