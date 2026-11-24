@@ -117,7 +117,7 @@ export default defineConfig(async ({ mode }) => ({
         main: 'index.html',
         help: 'help.html',
         aide: 'aide.html',
-        leylines: 'leylines.html',
+        about: 'about.html',
       },
       output: {
         // bpmn-js dans un fichier à part, comme avant Vite 8 (Rolldown n'accepte plus

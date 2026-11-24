@@ -1,4 +1,4 @@
-// Page vitrine Leylines (leylines.html) : carrousel plein écran des fonds d'écran,
+// Page vitrine Leylines (about.html) : carrousel plein écran des fonds d'écran,
 // logo animé au centre, icônes de contact, bouton de thème et retour à l'éditeur.
 
 import { T, lang } from '../i18n/lang.js'
