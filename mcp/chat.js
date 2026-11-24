@@ -19,6 +19,13 @@ import { buildCatalog } from './models.js'
 const MAX_CONVERSATIONS = 20
 const TOOL_SET = createToolSet(z)
 
+
+// Le SDK 1.12 enverrait la clé dans « Authorization: Bearer », que l'API refuse
+// dans certains cas (« x-api-key header is required ») : on la passe en x-api-key.
+function anthropicClient({ apiKey, baseURL }) {
+  return new Anthropic({ apiKey: null, authToken: null, ...(baseURL ? { baseURL } : {}), ...(apiKey ? { defaultHeaders: { 'x-api-key': apiKey } } : {}) })
+}
+
 export class ChatService {
   constructor({ bridge, log = console.error }) {
     this.bridge = bridge
@@ -30,7 +37,7 @@ export class ChatService {
     this.defaultKey = defaultKey
     this.warnings = warnings
     this.effort = process.env.CHAT_EFFORT || 'medium'
-    this.anthropic = process.env.ANTHROPIC_API_KEY ? new Anthropic() : null
+    this.anthropic = process.env.ANTHROPIC_API_KEY ? anthropicClient({ apiKey: process.env.ANTHROPIC_API_KEY }) : null
     this.openai = process.env.OPENAI_MODELS
       ? new OpenAICompatClient({
           baseUrl: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
@@ -125,7 +132,7 @@ export class ChatService {
 
   // Client d'un appel, avec la clé reçue. Rien n'est gardé après la réponse.
   #customClient({ format, baseUrl, apiKey }) {
-    if (format === 'anthropic') return new Anthropic({ apiKey: apiKey || null, authToken: null, baseURL: baseUrl })
+    if (format === 'anthropic') return anthropicClient({ apiKey, baseURL: baseUrl })
     return new OpenAICompatClient({ baseUrl, apiKey })
   }
 }

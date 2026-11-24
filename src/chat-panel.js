@@ -686,7 +686,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       lang,
     }
     if (conn.format === 'anthropic') {
-      const client = new engine.Anthropic({ apiKey: conn.apiKey, authToken: null, baseURL: conn.baseUrl, dangerouslyAllowBrowser: true })
+      // Le SDK 1.12 enverrait la clé dans « Authorization: Bearer », que l'API refuse
+      // dans certains cas (« x-api-key header is required ») : on la passe en x-api-key.
+      const client = new engine.Anthropic({ apiKey: null, authToken: null, baseURL: conn.baseUrl, dangerouslyAllowBrowser: true, ...(conn.apiKey ? { defaultHeaders: { 'x-api-key': conn.apiKey } } : {}) })
       await engine.runAnthropicTurn({ ...common, client, APIError: engine.Anthropic.APIError })
     } else {
       const client = new engine.OpenAICompatClient({ baseUrl: conn.baseUrl, apiKey: conn.apiKey })

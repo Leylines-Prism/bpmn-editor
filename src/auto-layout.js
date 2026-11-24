@@ -3,6 +3,7 @@
 
 import { layoutProcess } from 'bpmn-auto-layout'
 import { fitView } from './fit-view.js'
+import { separateMessageFlows } from './separate-flows.js'
 
 // bpmn-auto-layout se repère avec les listes incoming/outgoing des éléments,
 // or un fichier BPMN valide venu d'un autre outil peut ne pas les contenir.
@@ -60,6 +61,10 @@ export async function autoLayout(modeler) {
   const { xml: laid, warnings } = await layoutProcess(xml)
   await modeler.importXML(laid)
   restoreColors(modeler, colors)
+  separateMessageFlows(modeler)
   fitView(modeler.get('canvas'))
+  // Le rechargement ne passe pas par l'historique : on prévient l'éditeur pour
+  // qu'il enregistre le diagramme rangé.
+  modeler.get('eventBus').fire('layout.done')
   return warnings.map((w) => w.message)
 }

@@ -2,6 +2,8 @@
 
 [English](README.md) | **Français**
 
+![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
+
 Un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
 vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi. Il
 tourne sur votre propre machine avec Docker.

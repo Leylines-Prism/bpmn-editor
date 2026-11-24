@@ -173,7 +173,7 @@ async function autosave({ quiet = false } = {}) {
 // Modifications non enregistrées dans « Mes diagrammes ».
 let dirty = false
 
-modeler.on('commandStack.changed', () => {
+modeler.on(['commandStack.changed', 'layout.done'], () => {
   dirty = true
   clearTimeout(saveTimer)
   saveTimer = setTimeout(autosave, 1000)
