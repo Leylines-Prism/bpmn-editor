@@ -20,6 +20,7 @@ import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
 import { exportPdf } from './export-pdf.js'
+import { printDiagram } from './print-diagram.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -350,6 +351,19 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
     alert(T('PDF export failed: ', 'Export PDF impossible : ') + err.message)
   } finally {
     button.disabled = false
+  }
+})
+
+document.getElementById('btn-print').addEventListener('click', async () => {
+  try {
+    await printDiagram(modeler, { title: baseName() })
+  } catch (err) {
+    if (err.message === 'empty') {
+      alert(T('Nothing to print: the diagram is empty.', 'Rien à imprimer : le diagramme est vide.'))
+      return
+    }
+    console.error('Print error:', err)
+    alert(T('Printing failed: ', 'Impression impossible : ') + err.message)
   }
 })
 

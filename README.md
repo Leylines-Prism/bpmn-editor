@@ -143,8 +143,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 ## What the editor does
 
-- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF). The
-  current diagram is restored when you come back.
+- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF), print
+  the diagram alone fitted to one page. The current diagram is restored when you come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
 - **Drawing**: palette, context pad, copy and paste, 18 colors or a custom one, text formatting
   (bold, italic, size, font, color, with "Auto" for readable text on dark fills), tidy up,

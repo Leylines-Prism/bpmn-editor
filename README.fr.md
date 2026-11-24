@@ -152,7 +152,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 ## Ce que fait l'éditeur
 
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
-  .xml, SVG, PNG, PDF). Le diagramme en cours est restauré quand vous revenez.
+  .xml, SVG, PNG, PDF), imprimer le diagramme seul, sur une page. Le diagramme en cours est restauré
+  quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
 - **Dessin** : palette, menu contextuel, copier-coller, 18 couleurs ou une couleur libre, mise en
