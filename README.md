@@ -215,6 +215,13 @@ In full transparency: its author is not a professional developer. The editor is 
 assistance, using Claude Code and other AI models, and each change is tried in the browser before
 it is published. Reviews from experienced developers are especially appreciated.
 
+**Testers wanted for AI providers.** The assistant is tried day to day with Anthropic models only.
+Mistral, OpenAI, Ollama and OpenAI-compatible servers are supported from their documentation, but
+rarely tried for real. If you use one of them, any report helps, whether it works or not: open an
+[issue](https://github.com/Leylines-Prism/bpmn-editor/issues) or a
+[discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) with the provider, the model
+and what you tried (drawing, images, PDF files).
+
 Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
 [Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), bugs to the
 [issues](https://github.com/Leylines-Prism/bpmn-editor/issues), and security problems to the private

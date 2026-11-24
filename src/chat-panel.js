@@ -523,8 +523,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const model = currentModel()
     const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.provider }
     if (attachments.some((a) => !supports(caps, a.kind))) {
-      add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic or OpenAI model, or paste the text of the document.`,
-        `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic ou OpenAI, ou collez le texte du document.`))
+      add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic, OpenAI or Mistral model, or paste the text of the document.`,
+        `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic, OpenAI ou Mistral, ou collez le texte du document.`))
       return
     }
     input.value = ''
@@ -695,7 +695,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       await engine.runAnthropicTurn({ ...common, client, APIError: engine.Anthropic.APIError })
     } else {
       const client = new engine.OpenAICompatClient({ baseUrl: conn.baseUrl, apiKey: conn.apiKey })
-      await engine.runOpenAITurn({ ...common, client })
+      await engine.runOpenAITurn({ ...common, client, providerId: conn.provider })
     }
   }
 }

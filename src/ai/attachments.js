@@ -48,15 +48,22 @@ export function anthropicUserContent(text, attachments = []) {
   ]
 }
 
-// Même chose pour une API compatible OpenAI : images en data URL, PDF en partie « file »
-// (acceptée par OpenAI ; les autres fournisseurs la refusent souvent).
-export function openaiUserContent(text, attachments = []) {
+// Même chose pour une API compatible OpenAI : images en data URL. Les PDF partent en
+// partie « file » chez OpenAI, et en partie « document_url » chez Mistral (Document QnA).
+// providerId : voir supports().
+function openaiPdfPart(a, providerId) {
+  const dataUrl = `data:${PDF_TYPE};base64,${a.data}`
+  if (providerId === 'mistral') return { type: 'document_url', document_url: dataUrl }
+  return { type: 'file', file: { filename: a.name || 'document.pdf', file_data: dataUrl } }
+}
+
+export function openaiUserContent(text, attachments = [], providerId = null) {
   if (!attachments.length) return text
   return [
     { type: 'text', text },
     ...attachments.map((a) =>
       a.kind === 'pdf'
-        ? { type: 'file', file: { filename: a.name || 'document.pdf', file_data: `data:${PDF_TYPE};base64,${a.data}` } }
+        ? openaiPdfPart(a, providerId)
         : { type: 'image_url', image_url: { url: `data:${a.mediaType};base64,${a.data}` } },
     ),
   ]
@@ -67,5 +74,5 @@ export function openaiUserContent(text, attachments = []) {
 export function supports({ format, providerId }, kind) {
   if (format === 'anthropic') return true
   if (kind === 'image') return true // selon le modèle : l'erreur du fournisseur le dira
-  return providerId === 'openai'
+  return providerId === 'openai' || providerId === 'mistral'
 }

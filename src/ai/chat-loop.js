@@ -188,11 +188,11 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
 }
 
 // Même boucle pour une API compatible OpenAI (/chat/completions avec outils).
-// client : OpenAICompatClient.
-export async function runOpenAITurn({ client, model, reasoningEffort = null, conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+// client : OpenAICompatClient. providerId choisit le format des PDF joints.
+export async function runOpenAITurn({ client, model, providerId = null, reasoningEffort = null, conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
   const before = conv.messages
-  const messages = [...before, { role: 'user', content: openaiUserContent(text, attachments) }]
+  const messages = [...before, { role: 'user', content: openaiUserContent(text, attachments, providerId) }]
   conv.messages = messages.slice()
 
   for (let step = 0; step < MAX_STEPS; step++) {

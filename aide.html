@@ -290,7 +290,7 @@
           <table>
             <thead><tr><th>Fournisseur</th><th>Ce qu'il faut savoir</th></tr></thead>
             <tbody>
-              <tr><td>Mistral</td><td>Clé à créer sur <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Les appels partent directement de cette page. Pour un traitement dans l'Union européenne, remplacez l'adresse par <code>https://api.eu.mistral.ai/v1</code> (facturée 10 % de plus). Les modèles Mistral lisent aussi les images, pas les PDF.</td></tr>
+              <tr><td>Mistral</td><td>Clé à créer sur <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Les appels partent directement de cette page. Pour un traitement dans l'Union européenne, remplacez l'adresse par <code>https://api.eu.mistral.ai/v1</code> (facturée 10 % de plus). Les modèles Mistral lisent aussi les images et les PDF.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>Le plus simple dans cette version : créez une clé sur <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Les modèles Claude lisent aussi les images et les PDF.</td></tr>
               <tr><td>OpenAI</td><td>Clé à créer sur <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI n'accepte pas toujours les appels faits depuis une page web : si « Tester » échoue, ce fournisseur ne marchera pas ici.</td></tr>
               <tr><td>Ollama</td><td>Des modèles gratuits, sur votre propre ordinateur. Ollama doit être lancé avec la variable <code>OLLAMA_ORIGINS</code> réglée sur l'adresse de ce site (Options vous donne la valeur exacte). Choisissez un modèle qui sait appeler des outils.</td></tr>
@@ -312,7 +312,7 @@
         </ul>
 
         <h3>3. Partir d'une image ou d'un PDF</h3>
-        <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil ou d'une procédure en PDF. Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez à l'assistant de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF ne passent que chez OpenAI.</p>
+        <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil ou d'une procédure en PDF. Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez à l'assistant de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral.</p>
 
         <h3>Voir ce que l'assistant a changé</h3>
         <p>Après chaque réponse, les formes que l'assistant a ajoutées sont entourées d'un fin contour magenta avec un point, celles qu'il a modifiées d'un contour en pointillé. Une pilule en haut du canevas résume, par exemple « IA : 2 ajoutés, 1 modifié, 1 supprimé ». Le survol de la pilule donne le nom des formes supprimées.</p>
