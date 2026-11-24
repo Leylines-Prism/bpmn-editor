@@ -112,7 +112,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, keys and models', 'Fournisseurs, clés et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-options" hidden>
       <span id="chat-model-name"></span>

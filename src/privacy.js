@@ -44,13 +44,13 @@ export function setupPrivacy({ container, env = import.meta.env }) {
 
   const yours = section('device', T('Your data', 'Vos données'), `
           <p>${T('Your diagrams, your settings and your API keys stay in your browser, on your device.',
-                 'Vos diagrammes, vos réglages et vos clés d\'API restent dans votre navigateur, sur votre appareil.')}</p>
+                 'Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur, sur votre appareil.')}</p>
           <p>${T(`They are not sent to us, nor to the host of this site${hostName}.`,
                  `Ils ne sont transmis ni à nous ni à l'hébergeur du site${hostName}.`)}</p>`)
 
   const assistant = section('assistant', T('With the AI assistant', "Avec l'assistant IA"), `
           <p>${T('Your messages, the diagram and your API key are sent from your browser directly to the provider you selected (Mistral, Anthropic, OpenAI, etc.).',
-                 "Vos messages, le diagramme et votre clé d'API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Mistral, Anthropic, OpenAI, etc.).")}</p>
+                 "Vos messages, le diagramme et votre clé API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Mistral, Anthropic, OpenAI, etc.).")}</p>
           <p>${T("The provider's own terms and privacy policy apply, and it bills you for usage.",
                  "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>`)
 
@@ -59,7 +59,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
         <span class="pv-icon">${ICONS.key}</span>
         <div class="pv-body"><h3 id="pv-responsible-title">${T('Responsible use', 'Usage responsable')}</h3>
           <p>${T('Use, first and foremost, an API key dedicated to this editor, created for it alone, with a limited validity period.',
-                 "Utilisez en priorité une clé d'API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée.")}</p>
+                 "Utilisez en priorité une clé API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée.")}</p>
           <p>${T('Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.',
                  "Ajoutez une limite de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.")}</p>
         </div>
@@ -68,7 +68,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
   const audience = analyticsHost ? section('chart', T('Audience measurement', "Mesure d'audience"), `
           <p>${T('The site measures its audience with Umami.', 'Le site mesure sa fréquentation avec Umami.')}</p>
           <ul class="pv-facts">
-            <li class="pv-key">${T('The content of your diagrams, messages and keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés n\'est jamais collecté.')}</li>
+            <li class="pv-key">${T('The content of your diagrams, messages and API keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés API n\'est jamais collecté.')}</li>
             <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement :")}</li>
             <li class="pv-sub">${T('No cookie is set and your IP address is not recorded.', "Aucun cookie n'est déposé et votre adresse IP n'est pas enregistrée.")}</li>
             <li class="pv-sub">${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>

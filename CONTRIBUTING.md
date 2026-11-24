@@ -37,7 +37,7 @@ npm run dev          # the editor, at http://localhost:5173
 cd mcp && npm install && npm start   # the MCP server and the built-in assistant
 ```
 
-`npm run dev:online` runs the editor as the online demo (no server, keys in the browser). The
+`npm run dev:online` runs the editor as the online demo (no server, API keys in the browser). The
 [README](README.md) and [mcp/README.md](mcp/README.md) explain the rest.
 
 ## Pull requests

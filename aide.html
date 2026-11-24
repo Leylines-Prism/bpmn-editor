@@ -42,7 +42,7 @@
           <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
           <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
           <li><a href="#assistant">Assistant IA</a></li>
-          <li><a href="#cles">Vos clés d'API</a></li>
+          <li><a href="#cles">Vos clés API</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
           <li><a href="#docker">Version Docker et agents MCP</a></li>
           <li><a href="#faq">Questions fréquentes</a></li>
@@ -274,7 +274,7 @@
         <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le diagramme ouvert, le ranger et le vérifier. Vous retouchez ensuite à la main ce qu'il a fait, comme n'importe quel diagramme.</p>
 
         <h3>1. Choisir un fournisseur</h3>
-        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé d'API. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>
+        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Fournisseur</th><th>Ce qu'il faut savoir</th></tr></thead>
@@ -288,7 +288,7 @@
           </table>
         </div>
         <p>Collez la clé, cliquez sur <span class="ui">Tester</span>, puis choisissez le modèle. Les modèles d'un fournisseur sont proposés une fois sa connexion testée. Le panneau affiche le modèle utilisé.</p>
-        <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options de l'assistant, avec le fournisseur Mistral activé : adresse, clé, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options de l'assistant : Mistral activé, en attente de la clé.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options de l'assistant, avec le fournisseur Mistral activé : adresse, clé API, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options de l'assistant : Mistral activé, en attente de la clé.</figcaption></figure>
 
         <h3>2. Décrire le processus</h3>
         <p>Écrivez comme vous l'expliqueriez à un collègue : qui fait quoi, dans quel ordre, avec quelles décisions. L'assistant répond dans la langue de votre message. Par exemple :</p>
@@ -316,14 +316,14 @@
       </section>
 
       <section id="cles">
-        <h2>Vos clés d'API</h2>
-        <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés sur votre appareil</span>, dans Options :</p>
+        <h2>Vos clés API</h2>
+        <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés API sur votre appareil</span>, dans Options :</p>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
             <tbody>
               <tr><td>Décochée (par défaut)</td><td>Stockage de session de l'onglet</td><td>Elle s'efface à la fermeture de l'onglet</td></tr>
-              <tr><td>Cochée</td><td>Stockage local du navigateur</td><td>Elle reste jusqu'au clic sur <span class="ui">Effacer les clés</span></td></tr>
+              <tr><td>Cochée</td><td>Stockage local du navigateur</td><td>Elle reste jusqu'au clic sur <span class="ui">Effacer les clés API</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -331,14 +331,14 @@
         <div class="note warn">Sur un ordinateur partagé, laissez la case décochée et fermez l'onglet en partant.</div>
         <div class="note responsible" role="note" aria-labelledby="usage-responsable">
           <p class="note-title" id="usage-responsable">Usage responsable</p>
-          <p>Utilisez en priorité une clé d'API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée. Ajoutez une limite de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.</p>
+          <p>Utilisez en priorité une clé API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée. Ajoutez une limite de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.</p>
         </div>
       </section>
 
       <section id="confidentialite">
         <h2>Confidentialité</h2>
         <ul>
-          <li>Vos diagrammes, vos réglages et vos clés restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
+          <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
           <li>Si vous utilisez l'assistant IA, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Comme tout hébergeur web, celui du site (GitHub Pages) garde des journaux techniques, comme votre adresse IP.</li>
           <li>Le site mesure sa fréquentation avec Umami, sans cookie, conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement. L'adresse IP n'est pas enregistrée. Elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation de l'assistant, type de fournisseur connecté, temps d'utilisation par tranche). Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
@@ -351,7 +351,7 @@
         <h2>Version Docker et agents MCP</h2>
         <p>Ce site est la version en ligne. L'éditeur existe aussi en version Docker, à installer sur votre machine ou votre réseau privé. Elle ajoute :</p>
         <ul>
-          <li>des clés d'API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
+          <li>des clés API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>Mes diagrammes enregistré aussi sur le serveur, accessible depuis plusieurs navigateurs,</li>
           <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
@@ -363,11 +363,11 @@
         <h2>Questions fréquentes</h2>
         <details class="faq">
           <summary>Faut-il créer un compte ?</summary>
-          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé chez un fournisseur d'IA.</p>
+          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé API chez un fournisseur d'IA.</p>
         </details>
         <details class="faq">
           <summary>Puis-je utiliser l'éditeur sans l'IA ?</summary>
-          <p>Oui. Tout l'éditeur marche sans clé : dessin, vérification, simulation, enregistrement et exports.</p>
+          <p>Oui. Tout l'éditeur marche sans clé API : dessin, vérification, simulation, enregistrement et exports.</p>
         </details>
         <details class="faq">
           <summary>Mes diagrammes ont disparu. Que s'est-il passé ?</summary>
