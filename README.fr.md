@@ -178,6 +178,14 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   entouré sur le canevas, et une pilule résume les changements.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
 
+## En quoi il diffère de draw.io ou Lucidchart
+
+Ils sont très bien pour dessiner à peu près tout, à plusieurs. Cet éditeur ne fait que du BPMN 2.0,
+sur la base de [bpmn-js](https://github.com/bpmn-io/bpmn-js) : un diagramme y est un vrai modèle
+BPMN, le fichier .bpmn s'ouvre donc dans d'autres outils BPMN, se vérifie et se simule, et ce que
+dessine l'IA est aussi du BPMN valide. En revanche, pas de collaboration en temps réel, de lien de
+partage ni de modèles.
+
 ## Démo en ligne
 
 Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages). Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)

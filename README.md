@@ -168,6 +168,13 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   canvas, and a pill sums up the changes.
 - **Interface**: light or dark theme, English or French, resizable side panels.
 
+## How it differs from draw.io or Lucidchart
+
+They are great for drawing almost anything, as a team. This editor only does BPMN 2.0, on top of
+[bpmn-js](https://github.com/bpmn-io/bpmn-js): a diagram is a real BPMN model, so the .bpmn file
+opens in other BPMN tools, can be checked and simulated, and what the AI draws is valid BPMN too. It
+has no real-time collaboration, share link or templates, though.
+
 ## Online demo
 
 A demo runs at https://bpmn.leylines.fr (GitHub Pages). Its [user guide](https://bpmn.leylines.fr/help.html)
