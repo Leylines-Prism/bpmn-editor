@@ -63,5 +63,8 @@ export async function autoLayout(modeler) {
   restoreColors(modeler, colors)
   separateMessageFlows(modeler)
   fitView(modeler.get('canvas'))
+  // Le rechargement ne passe pas par l'historique : on prévient l'éditeur pour
+  // qu'il enregistre le diagramme rangé.
+  modeler.get('eventBus').fire('layout.done')
   return warnings.map((w) => w.message)
 }
