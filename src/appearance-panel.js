@@ -27,6 +27,7 @@ import {
 
 const html = htm.bind(h)
 const LOW_PRIORITY = 500
+const STYLE_GROUP = 'appearance-style'
 const SHAPE_GROUP = 'appearance-shape'
 const TEXT_GROUP = 'appearance-text'
 
@@ -316,12 +317,15 @@ AppearancePropertiesProvider.prototype.getGroups = function (element) {
     if (!hasAppearance(element)) return groups
     const target = targetOf(element)
     const added = [{
+      // Copier et coller portent sur la forme et le texte : groupe à part, avant les deux.
+      id: STYLE_GROUP,
+      label: 'Style',
+      shouldOpen: true,
+      entries: [{ id: 'appearance-copy-paste', component: CopyPasteEntry }],
+    }, {
       id: SHAPE_GROUP,
       label: T('Shape', 'Forme'),
-      entries: [
-        { id: 'appearance-copy-paste', component: CopyPasteEntry },
-        { id: 'appearance-shape-color', component: ShapeColorEntry, isEdited: () => !!(fillOf(target) || strokeOf(target)) },
-      ],
+      entries: [{ id: 'appearance-shape-color', component: ShapeColorEntry, isEdited: () => !!(fillOf(target) || strokeOf(target)) }],
     }]
     if (hasText(target)) {
       added.push({
