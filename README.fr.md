@@ -159,7 +159,9 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, 18 couleurs ou une couleur libre, mise en
   forme du texte (gras, italique, taille, police, couleur, avec « Auto » pour un texte lisible sur
   les fonds sombres), rangement, simulation de jetons, vérification des règles BPMN, grille,
-  mini-carte, panneau de propriétés.
+  mini-carte, panneau de propriétés avec des groupes Forme et Texte (fond, contour, libellé et mise
+  en forme du texte de l'élément sélectionné, couleurs personnalisées reprises d'un clic, copier-coller d'un style
+  complet, aussi sur plusieurs éléments).
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
   déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, et une pilule résume les changements.

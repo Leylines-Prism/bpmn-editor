@@ -142,7 +142,7 @@
         <h3>Nom, Identifiant et Exécutable</h3>
         <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
         <ul>
-          <li><span class="ui">Nom</span> est le libellé affiché sur le diagramme. Le modifier ici revient à double-cliquer sur la forme.</li>
+          <li><span class="ui">Nom</span> est le libellé affiché sur le diagramme. Le modifier ici revient à double-cliquer sur la forme. Le groupe <span class="ui">Texte</span> le reprend à côté de la mise en forme du texte (voir <a href="#couleurs-texte">Couleurs et texte</a>).</li>
           <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Il n'apparaît pas sur le diagramme. Le fichier s'en sert pour relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus), et les moteurs d'exécution s'en servent pour désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
           <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un diagramme de documentation ou d'analyse, elle peut rester décochée.</li>
         </ul>
@@ -170,8 +170,18 @@
         <h3>Couleurs</h3>
         <p>Le pinceau du menu contextuel propose 18 couleurs, chacune avec un fond pâle et un trait foncé lisible. <span class="ui">Couleur personnalisée…</span> accepte n'importe quelle teinte. Le trait est alors calculé pour rester lisible, et un fond foncé reçoit un texte clair.</p>
         <h3>Mise en forme du texte</h3>
-        <p>Le bouton <span class="ui">A</span> du menu contextuel met en forme le libellé : gras, italique, souligné, taille (de 10 à 24), police (sans serif, serif, monospace) et couleur. La couleur <span class="ui">Auto</span> prend le noir ou le blanc, le plus lisible sur le fond de l'élément. <span class="ui">Texte par défaut</span> retire toute la mise en forme.</p>
-        <p>Couleurs et styles sont enregistrés dans le fichier .bpmn selon la norme, et les autres outils bpmn.io les relisent. Le souligné n'apparaît pas dans l'export PDF.</p>
+        <p>Le bouton <span class="ui">A</span> du menu contextuel met en forme le libellé : gras, italique, souligné, taille (de 10 à 24), police (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) et couleur. La couleur <span class="ui">Auto</span> prend le noir ou le blanc, le plus lisible sur le fond de l'élément. <span class="ui">Texte par défaut</span> retire toute la mise en forme.</p>
+        <h3>Dans le panneau Processus</h3>
+        <p>Pour un seul élément sélectionné, le pinceau et le bouton <span class="ui">A</span> du menu contextuel ouvrent le <a href="#proprietes">panneau Processus</a> sur son groupe <span class="ui">Forme</span> ou <span class="ui">Texte</span>, avec plus de place. Pour plusieurs éléments sélectionnés, ils ouvrent les petits menus décrits plus haut.</p>
+        <ul>
+          <li><span class="ui">Forme</span> : une ligne de couleurs toutes prêtes, puis un <span class="ui">Fond</span> et un <span class="ui">Contour</span> pour régler l'un sans l'autre (le carré ouvre le sélecteur de couleur du système). Un flux n'a qu'un contour.</li>
+          <li><span class="ui">Texte</span> : le <span class="ui">Libellé</span>, gras, italique, souligné, taille, police, une ligne de couleurs du texte, <span class="ui">Auto</span>, <span class="ui">Autre…</span> et <span class="ui">Texte par défaut</span>.</li>
+          <li><span class="ui">Déjà dans le diagramme</span> reprend les couleurs personnalisées déjà posées sur d'autres éléments : un clic redonne la même teinte.</li>
+          <li><span class="ui">Copier le style</span>, en haut du groupe <span class="ui">Forme</span>, retient le fond, le contour, la police et la couleur du texte de l'élément. <span class="ui">Coller le style</span> les applique à un autre élément, avec un aperçu du style copié. Pour l'appliquer à plusieurs éléments d'un coup, sélectionnez-les et utilisez le rouleau <span class="ui">Coller le style</span> du menu contextuel. Le navigateur garde le style copié, même d'un diagramme à l'autre.</li>
+        </ul>
+        <p>Chaque réglage s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
+        <figure><img src="/src/help/img/fr-panneau-apparence.webp" width="300" height="781" alt="Groupes Forme et Texte du panneau Processus pour une tâche : fond et contour bleus, gras activé, et une couleur de texte personnalisée reprise sous Déjà dans le diagramme." loading="lazy" /><figcaption>Les groupes Forme et Texte pour une tâche sélectionnée.</figcaption></figure>
+        <p>Couleurs et styles sont enregistrés dans le fichier .bpmn selon la norme, et les autres outils bpmn.io les relisent. Le souligné n'apparaît pas dans l'export PDF, et le PDF dessine les autres polices en Helvetica ou en Times, selon leur famille. Une police absente d'un ordinateur est remplacée par une police voisine.</p>
       </section>
 
       <section id="verifier">

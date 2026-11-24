@@ -142,7 +142,7 @@
         <h3>Name, ID and Executable</h3>
         <p>Every element has the <span class="ui">General</span> group.</p>
         <ul>
-          <li><span class="ui">Name</span> is the label shown on the diagram. Changing it here is the same as double-clicking the shape.</li>
+          <li><span class="ui">Name</span> is the label shown on the diagram. Changing it here is the same as double-clicking the shape. The <span class="ui">Text</span> group repeats it next to the text formatting (see <a href="#colors-text">Colors and text</a>).</li>
           <li><span class="ui">ID</span> is the technical reference of the element in the XML file. It is not shown on the diagram. The file uses it to link elements together (a flow to its task, a pool to its process), and execution engines use it to identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
           <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
         </ul>
@@ -170,8 +170,18 @@
         <h3>Colors</h3>
         <p>The brush in the context menu offers 18 colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to stay readable, and a dark fill gets light text.</p>
         <h3>Text formatting</h3>
-        <p>The <span class="ui">A</span> button in the context menu formats the label: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
-        <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export.</p>
+        <p>The <span class="ui">A</span> button in the context menu formats the label: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
+        <h3>In the Process panel</h3>
+        <p>For a single selected element, the brush and the <span class="ui">A</span> button of the context menu open the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the small menus described above.</p>
+        <ul>
+          <li><span class="ui">Shape</span>: a row of ready-made colors, then a <span class="ui">Fill</span> and a <span class="ui">Stroke</span> to set one without the other (the square opens your system's color picker). A flow only has a stroke.</li>
+          <li><span class="ui">Text</span>: the <span class="ui">Label</span>, bold, italic, underline, size, font, a row of text colors, <span class="ui">Auto</span>, <span class="ui">Custom…</span> and <span class="ui">Default text</span>.</li>
+          <li><span class="ui">Used in this diagram</span> lists the custom colors already applied to other elements: one click reuses the same shade.</li>
+          <li><span class="ui">Copy style</span>, at the top of the <span class="ui">Shape</span> group, remembers the element's fill, stroke, font and text color. <span class="ui">Paste style</span> applies them to another element, with a preview of the copied style. To apply it to several elements at once, select them and use the <span class="ui">Paste style</span> roller of the context menu. The browser keeps the copied style, even from one diagram to another.</li>
+        </ul>
+        <p>Each change is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
+        <figure><img src="/src/help/img/en-panneau-apparence.webp" width="300" height="781" alt="Shape and Text groups of the Process panel for a task: blue fill and stroke, bold on, and a custom text color listed under Used in this diagram." loading="lazy" /><figcaption>The Shape and Text groups for a selected task.</figcaption></figure>
+        <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export, and the PDF draws the other fonts in Helvetica or Times, depending on their family. A font missing from a computer is replaced by a similar one.</p>
       </section>
 
       <section id="checking">
