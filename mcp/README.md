@@ -160,7 +160,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
 | `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with the OpenAI format, the built-in assistant cannot receive it) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
-| `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram |
+| `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent` |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
 | `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
 | `remove_elements` | removes shapes or connections |
@@ -222,4 +222,5 @@ They can also be placed in `mcp/.env`.
 
 - The editor tab must be open for the AI to draw.
 - `auto_layout` inherits the limits of bpmn-auto-layout 1.3.0: only the first participant of a
-  collaboration is laid out, and annotations and message flows are not placed.
+  collaboration is laid out, and annotations and message flows are not placed. On a diagram with
+  lanes or several pools, it keeps only the content of the first pool: lanes and the other pools are lost.

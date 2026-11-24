@@ -16,6 +16,11 @@ Recommended method:
 5. If the drawing is messy, auto_layout tidies it up (see its limits).
 6. Finish with validate_diagram and fix the reported errors.
 
+Pools and lanes: create each Participant first (add_shapes with x and y, one under the other, about 300 apart),
+then its lanes, from top to bottom (type Lane, parent: the participant id), then the shapes with parent: the lane id.
+Connect shapes of two different participants with connect_shapes: it creates a message flow.
+auto_layout does not handle lanes or several participants: do not call it on such a diagram.
+
 Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates are the centre of the shape.
 To start from scratch or import a complete diagram, use set_diagram_xml.`
 
@@ -30,7 +35,7 @@ export function buildTools(z) {
       'BPMN type, with or without the "bpmn:" prefix. Examples: StartEvent, EndEvent, IntermediateThrowEvent, ' +
         'IntermediateCatchEvent, Task, UserTask, ServiceTask, ScriptTask, ManualTask, SendTask, ReceiveTask, ' +
         'BusinessRuleTask, SubProcess, CallActivity, ExclusiveGateway, ParallelGateway, InclusiveGateway, ' +
-        'EventBasedGateway, DataObjectReference, DataStoreReference, TextAnnotation, Participant',
+        'EventBasedGateway, DataObjectReference, DataStoreReference, TextAnnotation, Participant, Lane',
     )
 
   const eventDefinition = z
@@ -77,6 +82,7 @@ export function buildTools(z) {
       description:
         'Adds one or more shapes. With "after", the shape is placed to the right of the given element and connected to it. ' +
         'With x and y, it is placed at that position without a connection. With neither, it is placed to the right of the diagram. ' +
+        'A Lane is added at the bottom of its participant, which grows to make room. ' +
         'Returns the id created for each shape, and for each "key" given.',
       inputSchema: {
         shapes: z
@@ -97,7 +103,11 @@ export function buildTools(z) {
               y: z.number().optional(),
               parent: elementId
                 .optional()
-                .describe('Participant or subprocess that will contain the shape. Default: the main process'),
+                .describe(
+                  'Participant, lane or subprocess that will contain the shape (an id, or the "key" of an earlier shape in this call). ' +
+                    'In a lane, the shape is placed at the height of the lane, even with "after". ' +
+                    'For a Lane: the participant that receives it. Default: the main process, or the first participant',
+                ),
             }),
           )
           .min(1),

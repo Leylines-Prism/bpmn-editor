@@ -161,7 +161,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
 | `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec le format OpenAI, l'assistant intégré ne peut pas la recevoir) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
-| `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme |
+| `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent` |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
 | `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
 | `remove_elements` | supprime des formes ou des connexions |
@@ -223,4 +223,4 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 ## Limites du prototype
 
 - L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
-- `auto_layout` hérite des limites de bpmn-auto-layout 1.3.0 : seul le premier participant d'une collaboration est rangé, les annotations et les flux de message ne sont pas placés.
+- `auto_layout` hérite des limites de bpmn-auto-layout 1.3.0 : seul le premier participant d'une collaboration est rangé, les annotations et les flux de message ne sont pas placés. Sur un diagramme avec des lanes ou plusieurs pools, il ne garde que le contenu du premier pool : les lanes et les autres pools sont perdus.
