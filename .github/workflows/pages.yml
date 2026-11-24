@@ -4,9 +4,10 @@
 # diagrammes dans son navigateur et utilise sa propre clé d'API.
 #
 # Réglages facultatifs, dans Settings > Secrets and variables > Actions (jamais dans le dépôt) :
-#   variables : VITE_SITE_HOST, VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH,
+#   variables : VITE_SITE_HOST, VITE_HOST_LEGAL (mentions légales : nom, adresse et
+#               téléphone de l'hébergeur), VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH,
 #               VITE_UMAMI_URL et VITE_UMAMI_WEBSITE_ID (mesure d'audience, voir src/analytics.js)
-#   secret    : FEEDBACK_EMAIL
+#   secret    : FEEDBACK_EMAIL (aussi l'adresse de « Vos droits » dans Confidentialité)
 # Prérequis : Settings > Pages > Source réglé sur « GitHub Actions ».
 
 name: Pages
@@ -47,6 +48,7 @@ jobs:
           # régler la variable BASE_PATH sur /<nom-du-dépôt>/ (configure-pages ne suit pas le domaine).
           BASE_PATH: ${{ vars.BASE_PATH || '/' }}
           VITE_SITE_HOST: ${{ vars.VITE_SITE_HOST || 'GitHub Pages' }}
+          VITE_HOST_LEGAL: ${{ vars.VITE_HOST_LEGAL }}
           VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
           VITE_CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
           VITE_UMAMI_URL: ${{ vars.VITE_UMAMI_URL }}
