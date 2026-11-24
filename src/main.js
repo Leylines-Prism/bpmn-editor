@@ -11,6 +11,7 @@ import LintModule from 'bpmn-js-bpmnlint'
 import GridModule from 'diagram-js-grid'
 import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './packed-lint-config.js'
+import { LintProcessBadgeModule } from './lint-process-badge.js'
 import TranslateModule from './i18n/translate.js'
 import { lang, T } from './i18n/lang.js'
 import { translatePanelTitles } from './i18n/panel-titles.js'
@@ -132,6 +133,7 @@ const modeler = new BpmnModeler({
     LabelStyleModule,
     NativeCopyPasteModule,
     LintModule,
+    LintProcessBadgeModule,
     GridModule,
     CopyAsImageModule,
     ...(lang === 'fr' ? [TranslateModule] : []),

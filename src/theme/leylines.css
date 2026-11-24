@@ -235,6 +235,21 @@ a.btn { text-decoration: none; }
 #canvas .bjsl-button:hover { border-color: var(--leyline-sky-deep); }
 #canvas .bjsl-button-inactive { color: var(--night-800); opacity: 0.7; }
 
+/* Erreurs du processus lui-même : badge fixe en bas à gauche du canevas, hors du diagramme */
+#canvas .lint-process-badge { position: absolute; left: 20px; bottom: 20px; z-index: 500; }
+#canvas .lint-process-badge:empty { display: none; }
+#canvas .lint-process-badge .bjsl-overlay {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 14px 4px 4px; border-radius: var(--radius-pill);
+  background: var(--white); border: 1px solid var(--mist); box-shadow: var(--elevation-1);
+  cursor: default;
+}
+#canvas .lint-process-badge .lint-process-label {
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px; color: var(--night-800);
+}
+#canvas .lint-process-badge .bjsl-dropdown { left: -1px; bottom: 100%; top: auto; }
+#canvas .lint-process-badge .bjsl-dropdown-content { position: static; padding-bottom: 6px; }
+
 /* Menus contextuels de remplacement, toujours clairs comme le canevas */
 .djs-popup {
   color: var(--night-800) !important;
