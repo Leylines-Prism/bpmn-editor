@@ -3,9 +3,16 @@
 // de l'hébergeur se règle au build avec VITE_SITE_HOST (par exemple « GitHub Pages ») ;
 // sans lui, le texte reste générique. La section « Mesure d'audience » n'apparaît que
 // si la mesure est réglée au build (voir src/analytics.js).
+// « Vos droits » donne l'adresse de FEEDBACK_EMAIL (encodée au build, voir src/feedback.js),
+// et « Mentions légales » le texte de VITE_HOST_LEGAL (nom, adresse et téléphone de
+// l'hébergeur). Chaque section n'apparaît que si son réglage est donné.
 
 import { T } from './i18n/lang.js'
 import { analyticsHost } from './analytics.js'
+import { decodeEmail } from './feedback.js'
+
+/* global __FEEDBACK_EMAIL__ */
+const ENCODED_EMAIL = typeof __FEEDBACK_EMAIL__ === 'string' ? __FEEDBACK_EMAIL__ : ''
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 
@@ -17,6 +24,8 @@ const ICONS = {
   assistant: svg('<path d="M12 3v3M5 9h14a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8a1 1 0 0 1 1-1z"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>'),
   chart: svg('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
   key: svg('<circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3M15 8l2 2"/>'),
+  mail: svg('<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/>'),
+  scale: svg('<path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>'),
   server: svg('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'),
 }
 
@@ -27,8 +36,10 @@ function section(icon, title, body) {
       </section>`
 }
 
-export function setupPrivacy({ container }) {
-  const host = (import.meta.env.VITE_SITE_HOST || '').trim()
+export function setupPrivacy({ container, env = import.meta.env, encodedEmail = ENCODED_EMAIL }) {
+  const host = (env.VITE_SITE_HOST || '').trim()
+  const hostLegal = (env.VITE_HOST_LEGAL || '').trim()
+  const email = decodeEmail(encodedEmail)
   const hostName = host ? ` (${esc(host)})` : ''
 
   // Bouton visible en bas à droite du canevas, au-dessus de « Votre avis » s'il existe.
@@ -70,7 +81,21 @@ export function setupPrivacy({ container }) {
             <li class="pv-sub">${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>
             <li class="pv-sub">${T('The data is kept for 25 months at most and is not shared with third parties.', 'Les données sont conservées 25 mois au maximum et ne sont pas transmises à des tiers.')}</li>
             <li class="pv-sub">${T('The measurement is turned off if your browser sends a "Do Not Track" or "Global Privacy Control" signal.', 'La mesure est désactivée si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».')}</li>
-          </ul>`) : ''
+          </ul>
+          <p>${T("Its purpose is to know how the site is used, so as to improve it. Legal basis: the publisher's legitimate interest.",
+                 "Elle sert à savoir comment le site est utilisé, pour l'améliorer. Base légale : l'intérêt légitime de l'éditeur.")}</p>`) : ''
+
+  // Droits RGPD : seulement s'il y a des données d'audience, et une adresse pour les exercer.
+  const rights = analyticsHost && email ? section('mail', T('Your rights', 'Vos droits'), `
+          <p>${T('You can ask to access or erase the audience data that concerns you, or object to it, by writing to the publisher of the site.',
+                 "Vous pouvez demander l'accès aux données d'audience qui vous concernent, leur effacement, ou vous opposer à leur traitement, en écrivant à l'éditeur du site.")}</p>
+          <p><button type="button" class="pv-mail">${T('Write to the publisher', "Écrire à l'éditeur")}</button></p>
+          <p>${T('You can also lodge a complaint with the CNIL', 'Vous pouvez aussi adresser une réclamation à la CNIL')} (<a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">cnil.fr</a>).</p>`) : ''
+
+  const legal = hostLegal ? section('scale', T('Legal notice', 'Mentions légales'), `
+          <p>${T('Personal, non-commercial site, published by a private individual.',
+                 'Site personnel et non commercial, édité par un particulier.')}</p>
+          <p>${T('Host:', 'Hébergeur :')} ${esc(hostLegal)}</p>`) : ''
 
   const hosting = section('server', T('Hosting', 'Hébergement'), `
           <p>${T(`The host of this site${hostName} keeps technical logs, as any web host does, including your IP address and the pages requested.`,
@@ -97,12 +122,18 @@ export function setupPrivacy({ container }) {
       ${responsible}
       ${audience}
       ${hosting}
+      ${rights}
+      ${legal}
       <div class="actions">
         <span class="grow"></span>
         <button type="submit" class="btn primary" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
   document.body.append(dialog)
+  // Le lien mailto n'est construit qu'au clic, comme dans la fenêtre Feedback.
+  dialog.querySelector('.pv-mail')?.addEventListener('click', () => {
+    window.location.href = `mailto:${email}`
+  })
   button.addEventListener('click', () => {
     dialog.showModal()
     // La fenêtre s'ouvre en haut, même si le focus va au bouton Fermer.

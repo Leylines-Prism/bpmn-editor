@@ -1,0 +1,15 @@
+body:
+  - type: markdown
+    attributes:
+      value: Never paste an API key or a token, even a revoked one.
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: How do you use the editor?
+      placeholder: Online demo, Docker, or from the source code

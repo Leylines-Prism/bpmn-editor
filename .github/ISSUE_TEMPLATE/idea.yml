@@ -1,0 +1,25 @@
+name: Idea
+description: Suggest a feature or an improvement.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: For an open question or a first rough idea, a [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) works well too.
+  - type: textarea
+    id: need
+    attributes:
+      label: What would you like to do?
+      description: The need or the problem, in your own words, before the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: How could it work?
+      description: Your idea of the solution, if you have one. Screenshots or sketches are welcome.
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to work on it myself.

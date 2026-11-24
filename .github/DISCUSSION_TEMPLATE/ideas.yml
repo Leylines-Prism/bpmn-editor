@@ -1,0 +1,8 @@
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What you would like the editor to do, and why it would help you.
+    validations:
+      required: true
