@@ -875,6 +875,26 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 @media (prefers-reduced-motion: reduce) {
   #feedback-dialog .choice, #feedback-dialog .choice-go { transition: none; transform: none !important; }
 }
+/* Choix chiffrés (contact, e-mail) : texte selon l'état de la preuve de travail (openSealed), et anneau qui
+   tourne à la place de la flèche pendant le calcul. */
+#feedback-dialog .choice .when-busy, #feedback-dialog .choice .when-error { display: none; }
+#feedback-dialog .choice[data-state="busy"] .when-idle,
+#feedback-dialog .choice[data-state="error"] .when-idle { display: none; }
+#feedback-dialog .choice[data-state="busy"] .when-busy,
+#feedback-dialog .choice[data-state="error"] .when-error { display: inline; }
+#feedback-dialog .choice[data-state="busy"] { cursor: progress; }
+#feedback-dialog .choice[data-state="error"] { border-color: var(--warm); }
+#feedback-dialog .choice[data-state="error"] .when-error { color: var(--warm); }
+#feedback-dialog .choice[data-state="busy"] .choice-go {
+  width: 18px; height: 18px; margin: 2px; border-radius: 50%;
+  border: 2px solid var(--line); border-top-color: var(--accent);
+  animation: feedback-spin 0.8s linear infinite;
+}
+#feedback-dialog .choice[data-state="busy"] .choice-go > svg { display: none; }
+@keyframes feedback-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  #feedback-dialog .choice[data-state="busy"] .choice-go { animation-duration: 2.4s; }
+}
 #feedback-dialog .actions { display: flex; align-items: center; }
 #feedback-dialog .grow { flex: 1; }
 
