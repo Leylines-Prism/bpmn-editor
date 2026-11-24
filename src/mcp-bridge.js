@@ -175,6 +175,8 @@ export function createTools(modeler) {
       out.width = element.width
       out.height = element.height
       if (element.parent && element.parent !== canvas.getRootElement()) out.parent = element.parent.id
+      const lane = laneOf(element)
+      if (lane) out.lane = lane.id
       const incoming = element.incoming.map((c) => c.id)
       const outgoing = element.outgoing.map((c) => c.id)
       if (incoming.length) out.incoming = incoming
@@ -193,10 +195,61 @@ export function createTools(modeler) {
     return root
   }
 
+  // Lane qui contient une forme (la plus profonde), d'après les flowNodeRef du modèle.
+  function laneOf(element) {
+    if (is(element, 'bpmn:Lane') || is(element, 'bpmn:Participant')) return null
+    const bo = getBusinessObject(element)
+    const lanes = elementRegistry.filter((e) => is(e, 'bpmn:Lane') && (e.businessObject.flowNodeRef || []).includes(bo))
+    return lanes.find((l) => !lanes.some((o) => o !== l && o.parent === l)) || null
+  }
+
+  // Participant qui porte une lane, éventuellement imbriquée.
+  function laneParticipant(lane) {
+    let p = lane.parent
+    while (p && !is(p, 'bpmn:Participant')) p = p.parent
+    return p
+  }
+
+  const laneCenterY = (lane) => lane.y + lane.height / 2
+
+  // Ajoute une lane en bas d'un participant. La première lane d'un pool vide
+  // ramène le pool à la hauteur d'une lane, pour que toutes aient la même taille.
+  function addLaneTo(participant) {
+    const lanes = participant.children.filter((c) => is(c, 'bpmn:Lane'))
+    if (!lanes.length) {
+      const hasContent = participant.children.some((c) => c.type !== 'label')
+      if (!hasContent) modeling.resizeShape(participant, { x: participant.x, y: participant.y, width: participant.width, height: 120 })
+      modeling.splitLane(participant, 1)
+      return participant.children.find((c) => is(c, 'bpmn:Lane'))
+    }
+    const last = lanes.reduce((a, b) => (a.y + a.height >= b.y + b.height ? a : b))
+    return modeling.addLane(last, 'bottom')
+  }
+
+  // Décale une position vers la droite tant qu'elle chevauche une forme du conteneur.
+  function freeInRow(parent, shape, position) {
+    const others = (parent.children || []).filter(
+      (c) => !c.waypoints && c.type !== 'label' && !is(c, 'bpmn:Lane') && !is(c, 'bpmn:Participant'),
+    )
+    const margin = 30
+    const hit = (pos) =>
+      others.find(
+        (s) =>
+          pos.x - shape.width / 2 < s.x + s.width + margin &&
+          pos.x + shape.width / 2 > s.x - margin &&
+          pos.y - shape.height / 2 < s.y + s.height + margin &&
+          pos.y + shape.height / 2 > s.y - margin,
+      )
+    for (let i = 0, s; i < 50 && (s = hit(position)); i++) position.x = s.x + s.width + margin + shape.width / 2
+    return position
+  }
+
   function createShape(spec) {
     const attrs = { type: withPrefix(spec.type) }
     if (spec.eventDefinition) attrs.eventDefinitionType = withPrefix(spec.eventDefinition)
     try {
+      // Un pool reçoit son propre processus, pour pouvoir contenir des lanes et des formes.
+      if (attrs.type === 'bpmn:Participant') return elementFactory.createParticipantShape({})
       return elementFactory.createShape(attrs)
     } catch (err) {
       throw new Error(`Invalid BPMN type "${spec.type}": ${err.message}`)
@@ -285,14 +338,47 @@ export function createTools(modeler) {
         const byKey = {}
         const created = []
         for (const spec of shapes) {
+          if (withPrefix(spec.type) === 'bpmn:Lane') {
+            const target = spec.parent ? byKey[spec.parent] || getElement(spec.parent) : defaultParent()
+            if (!is(target, 'bpmn:Participant')) {
+              throw new Error('A lane goes in a participant (pool): create the Participant first, then give its id as "parent".')
+            }
+            const lane = addLaneTo(target)
+            if (spec.name) modeling.updateLabel(lane, spec.name)
+            if (spec.key) byKey[spec.key] = lane
+            const entry = describe(lane)
+            if (spec.key) entry.key = spec.key
+            created.push(entry)
+            continue
+          }
+
           const shape = createShape(spec)
           let element
+          const target = spec.parent ? byKey[spec.parent] || getElement(spec.parent) : null
+          const lane = target && is(target, 'bpmn:Lane') ? target : null
 
-          if (spec.after) {
+          if (lane) {
+            // Dans une lane : la forme appartient au participant, à la hauteur de la lane.
+            const participant = laneParticipant(lane)
+            const source = spec.after ? byKey[spec.after] || getElement(spec.after) : null
+            let position
+            if (spec.x !== undefined && spec.y !== undefined) position = { x: spec.x, y: spec.y }
+            else {
+              const base = source ? appendPosition(source, shape) : nextFreePosition(participant, shape)
+              position = freeInRow(participant, shape, { x: base.x, y: laneCenterY(lane) })
+            }
+            if (!bpmnRules.canCreate(shape, participant, null, position)) {
+              throw new Error(`Cannot place ${shape.type} in ${lane.id}`)
+            }
+            element = source
+              ? modeling.appendShape(source, shape, position, participant)
+              : modeling.createShape(shape, position, participant)
+          } else if (spec.after) {
             const source = byKey[spec.after] || getElement(spec.after)
             element = modeling.appendShape(source, shape, appendPosition(source, shape), source.parent)
           } else {
-            const parent = spec.parent ? getElement(spec.parent) : defaultParent()
+            // Un nouveau pool va dans la collaboration, pas dans le premier pool.
+            const parent = target || (is(shape, 'bpmn:Participant') ? canvas.getRootElement() : defaultParent())
             const position =
               spec.x !== undefined && spec.y !== undefined ? { x: spec.x, y: spec.y } : nextFreePosition(parent, shape)
             if (!bpmnRules.canCreate(shape, parent, null, position)) {
