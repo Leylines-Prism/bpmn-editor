@@ -107,3 +107,8 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+        env:
+          # Pages repère un déploiement par son commit (GITHUB_SHA) et garde celui déjà en ligne
+          # quand le même commit revient. Un tag de version tombe en général sur un commit que main
+          # vient de publier : sans ce suffixe, son lancement ne changerait rien à la page stable.
+          GITHUB_SHA: ${{ github.sha }}-${{ github.run_number }}
