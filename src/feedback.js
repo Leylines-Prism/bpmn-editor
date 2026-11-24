@@ -10,7 +10,7 @@
 // preuve de travail (une seconde environ), puis ouvre le lien. Ni l'un ni l'autre
 // n'est lisible dans le code de la page.
 // Le bouton « Feedback » ouvre une petite fenêtre qui propose les choix réglés.
-// La page vitrine (leylines.html) les montre aussi, en icônes.
+// La page vitrine (about.html) les montre aussi, en icônes.
 
 import { T } from './i18n/lang.js'
 
@@ -85,7 +85,7 @@ function contactChoice({ linkedin, host }) {
 }
 
 // Les choix réglés au build : retours, contact, e-mail. Partagés par la fenêtre
-// Feedback et par la page vitrine (leylines.html). Un choix chiffré porte sealed et kind
+// Feedback et par la page vitrine (about.html). Un choix chiffré porte sealed et kind
 // ('link' ou 'mail'), et les textes busy et error montrés pendant la vérification.
 export function contactChoices({ env = import.meta.env, sealed = SEALED } = {}) {
   const raw = env.VITE_FEEDBACK_URL
