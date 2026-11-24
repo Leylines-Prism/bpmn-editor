@@ -445,5 +445,8 @@ export default {
   'Section contains a warning': 'Cette section contient un avertissement',
   'Open pop-up editor': "Ouvrir l'éditeur en grand",
   'Opened in editor': "Ouvert dans l'éditeur",
-  'Open documentation': 'Ouvrir la documentation'
+  'Open documentation': 'Ouvrir la documentation',
+  // grande fenêtre d'édition du panneau (voir panel-popup.js)
+  'Save and close': 'Enregistrer et fermer',
+  'Close popup': 'Fermer la fenêtre'
 }
