@@ -192,6 +192,23 @@ chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL
 d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Elle est publiée par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
 
+## À propos du projet
+
+C'est un projet personnel, maintenu sur le temps libre, et **toutes les contributions sont les
+bienvenues** : signalements de bugs, idées, traductions, documentation ou code. Si vous avez envie de
+le faire grandir, n'hésitez pas.
+
+En toute transparence : son auteur n'est pas développeur professionnel. L'éditeur est construit en
+« vibe coding », avec Claude Code et d'autres modèles d'IA, et chaque changement est essayé dans le
+navigateur avant d'être publié. Les relectures de développeurs expérimentés sont particulièrement
+appréciées.
+
+Commencez par [CONTRIBUTING.md](CONTRIBUTING.md) (en anglais). Les questions et les idées vont dans
+les [Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), les bugs dans les
+[issues](https://github.com/Leylines-Prism/bpmn-editor/issues), et les failles de sécurité passent
+par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
+mais tout est lu.
+
 ## Licence
 
 Le code est publié sous la [licence MIT](LICENSE).

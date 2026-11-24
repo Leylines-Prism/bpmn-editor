@@ -179,6 +179,21 @@ Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/READ
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
 It is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
 
+## About this project
+
+This is a personal project, maintained in spare time, and **every contribution is welcome**: bug
+reports, ideas, translations, documentation or code. If you feel like helping it grow, please do.
+
+In full transparency: its author is not a professional developer. The editor is built in "vibe
+coding" style, with Claude Code and other AI models, and each change is tried in the browser before
+it is published. Reviews from experienced developers are especially appreciated.
+
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
+[Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), bugs to the
+[issues](https://github.com/Leylines-Prism/bpmn-editor/issues), and security problems to the private
+form described in [SECURITY.md](SECURITY.md). There is no guaranteed response time, but everything
+is read.
+
 ## License
 
 The code is released under the [MIT License](LICENSE).
