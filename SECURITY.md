@@ -19,7 +19,8 @@ Never include a real API key.
 - The Docker images published from this repository.
 
 The security of the AI providers themselves, and of the reverse proxy or network you put in front
-of the Docker version, is outside this project.
+of the Docker version, is outside this project. The Docker version is meant for a single machine or
+a private network: exposing it on the internet is not supported and is done at your own risk.
 
 ## Supported versions
 
