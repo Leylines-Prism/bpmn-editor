@@ -232,6 +232,9 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), le
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 
+Si l'éditeur vous rend service, vous pouvez soutenir le projet en offrant un café sur
+[Ko-fi](https://ko-fi.com/leylines_prism).
+
 ## Licence
 
 Le code est publié sous la [licence MIT](LICENSE).
