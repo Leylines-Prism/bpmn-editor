@@ -150,7 +150,10 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
 - **Drawing**: palette, context pad, copy and paste, 18 colors or a custom one, text formatting
   (bold, italic, size, font, color, with "Auto" for readable text on dark fills), tidy up,
-  token simulation, BPMN rule checking, grid, minimap, properties panel.
+  token simulation, BPMN rule checking, grid, minimap, properties panel with Shape and Text
+  groups (fill, stroke, label and text formatting of the selected element, custom colors reused in
+  one click, copy and paste of a whole
+  style, also onto several elements).
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
   images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, and a pill sums up the changes.

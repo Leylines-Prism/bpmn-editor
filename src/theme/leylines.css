@@ -605,6 +605,67 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #chat-editor .chat-editor-count.too-long { color: var(--magenta); }
 #chat-editor #chat-editor-send { background: var(--accent); color: var(--on-accent); }
 
+/* ── Groupes « Forme » et « Texte » du panneau (src/appearance-panel.js) ─ */
+/* Les pastilles gardent leurs vraies couleurs ; le reste suit le thème du panneau. */
+#properties-panel .appearance-entry { display: flex; flex-direction: column; gap: var(--space-2); }
+#properties-panel .appearance-entry > .bio-properties-panel-label { margin-top: var(--space-2); }
+#properties-panel .appearance-entry > .bio-properties-panel-label:first-child { margin-top: 0; }
+#properties-panel .appearance-swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+#properties-panel .appearance-used { display: flex; flex-direction: column; gap: 4px; }
+#properties-panel .appearance-sublabel { font-size: 11px; color: var(--ink-muted); }
+#properties-panel .appearance-swatch {
+  display: flex; align-items: center; justify-content: center; aspect-ratio: 1; min-width: 0;
+  padding: 2px; border: 2px solid transparent; border-radius: var(--radius-sm); background: none; cursor: pointer;
+}
+#properties-panel .appearance-swatch-color {
+  width: 100%; height: 100%; border: 1.5px solid; border-radius: 4px; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: center;
+  font: 700 12px/1 Arial, Helvetica, sans-serif;
+}
+#properties-panel .appearance-swatch:hover { border-color: var(--line-strong); }
+#properties-panel .appearance-swatch.is-active { border-color: var(--accent); }
+#properties-panel .appearance-swatch:focus-visible,
+#properties-panel .appearance-toggle:focus-visible,
+#properties-panel .appearance-button:focus-visible,
+#properties-panel .appearance-button:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#properties-panel .appearance-color-field { display: grid; grid-template-columns: 64px 40px 1fr; align-items: center; gap: var(--space-2); font-size: 12px; color: var(--ink); }
+#properties-panel .appearance-color-field input[type="color"] {
+  width: 40px; height: 28px; padding: 2px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); cursor: pointer;
+}
+#properties-panel .appearance-color-code { font-family: var(--font-mono); color: var(--ink-muted); }
+#properties-panel .appearance-toggles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+#properties-panel .appearance-toggle,
+#properties-panel .appearance-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 4px 10px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer;
+}
+#properties-panel .appearance-toggle { font: 15px Arial, Helvetica, sans-serif; }
+#properties-panel .appearance-toggle.is-bold { font-weight: 700; }
+#properties-panel .appearance-toggle.is-italic { font-style: italic; }
+#properties-panel .appearance-toggle.is-underline { text-decoration: underline; }
+#properties-panel .appearance-toggle:hover,
+#properties-panel .appearance-button:hover { border-color: var(--accent); }
+#properties-panel .appearance-toggle.is-active,
+#properties-panel .appearance-button.is-active { background: var(--accent-soft); border-color: var(--accent); }
+#properties-panel .appearance-selects { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+#properties-panel .appearance-select { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink); min-width: 0; }
+#properties-panel .appearance-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+#properties-panel .appearance-icon { display: inline-flex; width: 18px; height: 18px; }
+#properties-panel .appearance-icon svg { width: 18px; height: 18px; }
+#properties-panel .appearance-custom { position: relative; }
+#properties-panel .appearance-custom input[type="color"] {
+  width: 18px; height: 18px; padding: 0; border: 1px dashed var(--line-strong); border-radius: 4px; background: none; cursor: pointer;
+}
+#properties-panel .appearance-button:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--line); }
+#properties-panel .appearance-style-preview {
+  display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex-shrink: 0;
+  border: 1.5px solid; border-radius: 4px; box-sizing: border-box; font-size: 11px; line-height: 1;
+}
+#properties-panel .appearance-swatch .appearance-style-preview { width: 100%; height: 100%; font-size: 13px; }
+#properties-panel .appearance-reset { margin-top: var(--space-1, 4px); }
+
 /* ── Menu « Texte » (src/label-style.js) ─────────────────────────────── */
 /* Style et taille en rangées de boutons ; chaque police s'affiche dans sa police. */
 .djs-popup.label-style .djs-popup-group[data-group="style"] { display: grid; grid: auto-flow / repeat(3, 1fr); gap: 4px; }
@@ -620,6 +681,12 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .djs-popup.label-style .label-font-sans { font-family: Arial, Helvetica, sans-serif; }
 .djs-popup.label-style .label-font-serif { font-family: "Times New Roman", Times, serif; }
 .djs-popup.label-style .label-font-mono { font-family: "Courier New", Courier, monospace; }
+.djs-popup.label-style .label-font-verdana { font-family: Verdana, Geneva, sans-serif; }
+.djs-popup.label-style .label-font-tahoma { font-family: Tahoma, Verdana, sans-serif; }
+.djs-popup.label-style .label-font-trebuchet { font-family: "Trebuchet MS", Helvetica, sans-serif; }
+.djs-popup.label-style .label-font-georgia { font-family: Georgia, "Times New Roman", serif; }
+.djs-popup.label-style .label-font-palatino { font-family: "Palatino Linotype", Palatino, "Book Antiqua", serif; }
+.djs-popup.label-style .label-font-comic { font-family: "Comic Sans MS", "Comic Sans", cursive; }
 .djs-popup.label-style .entry-header { font-size: 12px; font-weight: 600; color: var(--night-800); opacity: 0.7; padding: 6px 2px 2px; }
 .djs-popup.label-style .djs-popup-results { max-height: min(560px, calc(100vh - 120px)); }
 .djs-popup.label-style .djs-popup-group[data-group="font"] { display: grid; grid: auto-flow / repeat(3, 1fr); gap: 4px; }

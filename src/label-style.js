@@ -10,11 +10,20 @@ import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
 
-// Polices proposées : leurs équivalents existent dans les PDF (Helvetica, Times, Courier).
+// Polices proposées. Les trois premières ont leur équivalent dans les PDF
+// (Helvetica, Times, Courier). Les autres sont présentes sur la plupart des
+// ordinateurs : à défaut, le navigateur prend une police de la même famille,
+// et l'export PDF les remplace par Helvetica ou Times.
 export const FONTS = [
   { id: 'sans', label: 'Sans', name: 'Arial', family: 'Arial, Helvetica, sans-serif' },
   { id: 'serif', label: 'Serif', name: 'Times New Roman', family: '"Times New Roman", Times, serif' },
   { id: 'mono', label: 'Mono', name: 'Courier New', family: '"Courier New", Courier, monospace' },
+  { id: 'verdana', label: 'Verdana', name: 'Verdana', family: 'Verdana, Geneva, sans-serif' },
+  { id: 'tahoma', label: 'Tahoma', name: 'Tahoma', family: 'Tahoma, Verdana, sans-serif' },
+  { id: 'trebuchet', label: 'Trebuchet', name: 'Trebuchet MS', family: '"Trebuchet MS", Helvetica, sans-serif' },
+  { id: 'georgia', label: 'Georgia', name: 'Georgia', family: 'Georgia, "Times New Roman", serif' },
+  { id: 'palatino', label: 'Palatino', name: 'Palatino Linotype', family: '"Palatino Linotype", Palatino, "Book Antiqua", serif' },
+  { id: 'comic', label: 'Comic', name: 'Comic Sans MS', family: '"Comic Sans MS", "Comic Sans", cursive' },
 ]
 export const SIZES = [
   { size: 10, label: T('Small', 'Petit') },
@@ -45,7 +54,7 @@ export function textColorOf(element) {
 }
 
 // Fond de la forme, pour choisir un texte lisible (noir ou blanc).
-function fillOf(element) {
+export function fillOf(element) {
   const di = targetOf(element)?.di
   return di?.get('color:background-color') || di?.get('bioc:fill') || '#FFFFFF'
 }
@@ -65,7 +74,7 @@ export function readableOn(fill) {
 }
 
 // Couleurs proposées pour le texte : noir, blanc, puis les traits de la palette du pinceau.
-const TEXT_COLORS = [
+export const TEXT_COLORS = [
   { label: T('Black', 'Noir'), color: '#000000' },
   { label: T('White', 'Blanc'), color: '#FFFFFF' },
   ...COLORS.filter((c) => c.stroke).map((c) => ({ label: c.label, color: c.stroke })),
@@ -84,7 +93,7 @@ function styleOf(font) {
 }
 
 // Les éléments qui ont un texte à mettre en forme.
-function hasText(element) {
+export function hasText(element) {
   const target = targetOf(element)
   if (!target || target.waypoints === undefined && !target.width) return false
   const bo = getBusinessObject(target)
@@ -173,7 +182,8 @@ SetLabelFontHandler.prototype.revert = function (context) {
   context.elements.forEach((element, i) => {
     const target = targetOf(element)
     const { di, hadLabel, style } = context.previous[i]
-    if (!hadLabel) di.label = undefined
+    // « delete » et non « = undefined » : bpmnlint parcourt toute propriété présente, même vide.
+    if (!hadLabel) delete di.label
     else di.label.labelStyle = style
     changed.push(target)
     if (target.label) changed.push(target.label)
@@ -212,7 +222,8 @@ SetLabelColorHandler.prototype.revert = function (context) {
   context.elements.forEach((element, i) => {
     const target = targetOf(element)
     const { di, hadLabel, color } = context.previous[i]
-    if (!hadLabel) di.label = undefined
+    // « delete » et non « = undefined » : bpmnlint parcourt toute propriété présente, même vide.
+    if (!hadLabel) delete di.label
     else di.label.set('color:color', color)
     changed.push(target)
     if (target.label) changed.push(target.label)
@@ -220,12 +231,34 @@ SetLabelColorHandler.prototype.revert = function (context) {
   return changed
 }
 
+// ── Réglages partagés par le menu « Texte » et le panneau Apparence ─────────
+
+// update : les champs de police à changer, fusionnés avec la police actuelle,
+// ou null pour la retirer.
+export function applyFont(commandStack, elements, update) {
+  const base = fontOf(elements[0]) || {}
+  const font = update === null ? null : { ...base, ...update }
+  for (const key of Object.keys(font || {})) if (font[key] === undefined || font[key] === false) delete font[key]
+  commandStack.execute('element.setLabelFont', { elements, font: font && Object.keys(font).length ? font : null })
+}
+
+// color : une couleur, 'auto' (noir ou blanc selon le fond de chaque élément) ou null.
+export function applyTextColor(commandStack, elements, color) {
+  const colors = elements.map((e) => (color === 'auto' ? readableOn(fillOf(e)) : color))
+  commandStack.execute('element.setLabelColor', { elements, colors })
+}
+
+// « Texte par défaut » : police et couleur retirées en une seule étape d'annulation.
+export function resetText(commandStack, elements) {
+  commandStack.execute('label-style.reset', { elements })
+}
+
 // ── Menu « Mise en forme du texte » ─────────────────────────────────────────
 
 const swatch = (color) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${color}" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><text x="12" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="${readableOn(color)}">A</text></svg>`
 
-const AUTO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FFFFFF" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><path d="M2.75 21.25 21.25 2.75V18a3.25 3.25 0 0 1-3.25 3.25Z" fill="#0C1120"/><text x="8.5" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#000">A</text><text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#FFF">A</text></svg>`
+export const AUTO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FFFFFF" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><path d="M2.75 21.25 21.25 2.75V18a3.25 3.25 0 0 1-3.25 3.25Z" fill="#0C1120"/><text x="8.5" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#000">A</text><text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#FFF">A</text></svg>`
 
 const CUSTOM_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><defs><linearGradient id="text-color-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0D4372"/><stop offset="0.5" stop-color="#880E4F"/><stop offset="1" stop-color="#714800"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="4" fill="url(#text-color-gradient)" stroke="rgba(12,17,32,0.35)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`
 
@@ -243,16 +276,11 @@ function LabelStylePopupProvider(popupMenu, contextPad, commandStack) {
 LabelStylePopupProvider.$inject = ['popupMenu', 'contextPad', 'commandStack']
 
 LabelStylePopupProvider.prototype._apply = function (elements, update) {
-  const base = fontOf(elements[0]) || {}
-  const font = update === null ? null : { ...base, ...update }
-  for (const key of Object.keys(font || {})) if (font[key] === undefined || font[key] === false) delete font[key]
-  this._commandStack.execute('element.setLabelFont', { elements, font: font && Object.keys(font).length ? font : null })
+  applyFont(this._commandStack, elements, update)
 }
 
-// color : une couleur, 'auto' (noir ou blanc selon le fond de chaque élément) ou null.
 LabelStylePopupProvider.prototype._applyColor = function (elements, color) {
-  const colors = elements.map((e) => (color === 'auto' ? readableOn(fillOf(e)) : color))
-  this._commandStack.execute('element.setLabelColor', { elements, colors })
+  applyTextColor(this._commandStack, elements, color)
 }
 
 // Sélecteur de couleur du système, pour une couleur libre.
@@ -335,9 +363,7 @@ LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
     label: T('Default text', 'Texte par défaut'),
     title: T('Remove formatting and color', 'Retirer la mise en forme et la couleur'),
     group: { id: 'reset' },
-    action: () => {
-      this._commandStack.execute('label-style.reset', { elements })
-    },
+    action: () => resetText(this._commandStack, elements),
   }
   return entries
 }
