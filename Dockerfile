@@ -11,6 +11,10 @@ COPY . .
 # Vide : l'éditeur seul, sans assistant côté serveur ni badge MCP.
 ARG VITE_MCP_BRIDGE_URL=""
 ENV VITE_MCP_BRIDGE_URL=$VITE_MCP_BRIDGE_URL
+# Version affichée dans Options et l'aide (le tag, donné par le workflow Docker). Vide : le
+# numéro de package.json, car le dossier .git n'entre pas dans l'image.
+ARG APP_VERSION=""
+ENV APP_VERSION=$APP_VERSION
 # La fenêtre Feedback propose les Issues GitHub du dépôt : aucun réglage de contact ici.
 RUN npm run build
 

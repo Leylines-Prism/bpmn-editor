@@ -192,6 +192,12 @@ Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages). Son [guide d'utili
 explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de la
 barre d'outils l'ouvre aussi.
 
+Elle existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
+https://bpmn.leylines.fr/dev/ suit la branche main, avec les dernières modifications avant leur
+publication. La page de développement garde ses propres diagrammes et réglages dans le navigateur :
+l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas des Options
+et du guide d'utilisation.
+
 Elle sert juste à essayer : chaque visiteur saisit sa propre clé API, qui reste dans son
 navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et certains
 fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page

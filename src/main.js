@@ -46,6 +46,7 @@ import { setupDeepLink } from './deep-link.js'
 import { setupDiagramLibrary } from './diagram-library.js'
 import { setupFeedback } from './feedback.js'
 import { setupAnalytics, track } from './analytics.js'
+import { APP_VERSION, IS_DEV_SITE, OTHER_SITE } from './site-channel.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -430,9 +431,22 @@ loadInitial().then(() => { dirty = false })
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 // Lien « Feedback », en bas du canevas (adresses réglées au build).
 setupFeedback({ container: document.getElementById('canvas') })
+// Page de développement en ligne : une pastille à côté du titre le dit, et mène à la page stable.
+if (IS_DEV_SITE) {
+  const badge = document.createElement('a')
+  badge.className = 'channel-badge'
+  badge.href = OTHER_SITE
+  badge.textContent = 'Dev'
+  badge.title = T(
+    `Development version ${APP_VERSION}: it follows the latest changes and keeps its own diagrams and settings. Click to open the stable version.`,
+    `Version de développement ${APP_VERSION} : elle suit les dernières modifications et garde ses propres diagrammes et réglages. Cliquez pour ouvrir la version stable.`,
+  )
+  document.querySelector('#toolbar .brand').append(badge)
+}
 if (import.meta.env.MODE === 'online') {
-  // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js).
-  setupAnalytics()
+  // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js). Pas sur la page de
+  // développement : seule la page stable est mesurée.
+  if (!IS_DEV_SITE) setupAnalytics()
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
