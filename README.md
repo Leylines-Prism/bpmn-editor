@@ -1,3 +1,5 @@
+![BPMN Editor: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
+
 # bpmn-editor
 
 **English** | [Français](README.fr.md)
