@@ -49,8 +49,8 @@ export function setupPrivacy({ container, env = import.meta.env }) {
                  `Ils ne sont transmis ni à nous ni à l'hébergeur du site${hostName}.`)}</p>`)
 
   const assistant = section('assistant', T('With the AI assistant', "Avec l'assistant IA"), `
-          <p>${T('Your messages, the diagram and your API key are sent from your browser directly to the provider you selected (Anthropic, OpenAI, etc.).',
-                 "Vos messages, le diagramme et votre clé d'API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Anthropic, OpenAI, etc.).")}</p>
+          <p>${T('Your messages, the diagram and your API key are sent from your browser directly to the provider you selected (Mistral, Anthropic, OpenAI, etc.).',
+                 "Vos messages, le diagramme et votre clé d'API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Mistral, Anthropic, OpenAI, etc.).")}</p>
           <p>${T("The provider's own terms and privacy policy apply, and it bills you for usage.",
                  "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>`)
 

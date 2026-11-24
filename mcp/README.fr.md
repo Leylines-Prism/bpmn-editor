@@ -81,9 +81,9 @@ Sans aucun fournisseur, le serveur démarre quand même : les outils MCP marchen
 
 ### Fenêtre Options
 
-Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisseur : Anthropic, OpenAI,
-Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse (préremplie pour
-Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
+Le bouton « Options » du panneau ouvre une fenêtre avec un bloc par fournisseur : Mistral, Anthropic,
+OpenAI, Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM…). Pour chacun : l'adresse
+(préremplie pour Mistral, Anthropic, OpenAI et Ollama), la clé, et les modèles à proposer. « Lister les modèles » les demande au
 fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
 Les modèles d'un fournisseur ne sont proposés qu'après la réussite de « Tester » ou « Lister les
 modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle de l'assistant » choisit le

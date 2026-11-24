@@ -243,7 +243,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add(
         'notice',
         mode === 'online'
-          ? T('To start, open Options and turn on a provider: Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
+          ? T('To start, open Options and turn on a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
           : T('Chat is not set up: open Options to set up a provider, or add ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {

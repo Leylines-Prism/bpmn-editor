@@ -4,7 +4,20 @@
 // Ce module n'importe rien : il utilise le fetch de l'environnement.
 
 // format : « anthropic » (API Claude) ou « openai » (route /chat/completions).
+// Mistral vient en premier, devant les fournisseurs américains.
 export const PROVIDERS = [
+  {
+    id: 'mistral',
+    label: 'Mistral',
+    format: 'openai',
+    baseUrl: 'https://api.mistral.ai/v1',
+    needsKey: true,
+    keyHint: '',
+    models: [
+      { id: 'mistral-large-latest', label: 'Mistral Large' },
+      { id: 'mistral-small-latest', label: 'Mistral Small' },
+    ],
+  },
   {
     id: 'anthropic',
     label: 'Anthropic',
@@ -107,6 +120,9 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
   const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : null
   if (!list) throw new ProviderError(res.status, 'unexpected response: not a list of models')
   return list
+    // Mistral décrit les capacités de chaque modèle : on écarte ceux qui ne savent
+    // pas converser ou appeler des outils (embeddings, OCR, modération…).
+    .filter((m) => m?.capabilities?.completion_chat !== false && m?.capabilities?.function_calling !== false)
     .map((m) => ({ id: String(m.id ?? m.name ?? ''), label: String(m.display_name || m.id || m.name || '') }))
     .filter((m) => m.id)
     .sort((a, b) => a.label.localeCompare(b.label))
