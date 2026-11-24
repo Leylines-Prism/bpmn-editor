@@ -36,6 +36,26 @@ export class ProviderError extends Error {
   }
 }
 
+// Message d'une erreur d'API en JSON, quel que soit son format : OpenAI et Anthropic
+// ({ error: { message } }), Ollama ({ error: "..." }), Mistral et les serveurs FastAPI
+// ({ detail: "..." } ou, pour une requête invalide, { detail: [{ msg, loc }] }).
+export function apiErrorMessage(data) {
+  if (!data || typeof data !== 'object') return ''
+  if (typeof data.error?.message === 'string' && data.error.message) return data.error.message
+  if (typeof data.message === 'string' && data.message) return data.message
+  if (typeof data.error === 'string' && data.error) return data.error
+  const { detail } = data
+  if (typeof detail === 'string') return detail
+  if (Array.isArray(detail)) {
+    return detail
+      .map((d) => (typeof d === 'string' ? d : [Array.isArray(d?.loc) ? d.loc.join('.') : '', d?.msg || ''].filter(Boolean).join(': ')))
+      .filter(Boolean)
+      .join(', ')
+  }
+  if (typeof detail?.message === 'string') return detail.message
+  return ''
+}
+
 export const trimUrl = (url) => String(url ?? '').trim().replace(/\/+$/, '')
 
 // Adresse http(s) valide, sans identifiants. Renvoie l'adresse nettoyée ou null.
@@ -81,7 +101,7 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
     data = JSON.parse(text)
   } catch {}
   if (!res.ok) {
-    const message = data?.error?.message || data?.message || (typeof data?.error === 'string' ? data.error : '') || text.slice(0, 300) || res.statusText
+    const message = apiErrorMessage(data) || text.slice(0, 300) || res.statusText
     throw new ProviderError(res.status, message, { providerJson: !!data })
   }
   const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : null

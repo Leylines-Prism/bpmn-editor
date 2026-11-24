@@ -4,6 +4,8 @@
 // Requête en flux (SSE). Le texte et les appels d'outils arrivent par morceaux :
 // on les assemble ici, et on signale au fil de l'eau ce qui se passe.
 
+import { apiErrorMessage } from './providers.js'
+
 export class OpenAICompatError extends Error {
   // providerJson : le message vient d'une erreur d'API en JSON. Sinon (page HTML, texte
   // brut), le relais du serveur ne le renvoie pas au navigateur.
@@ -51,7 +53,7 @@ export class OpenAICompatClient {
       let providerJson = false
       try {
         const data = JSON.parse(text)
-        message = data.error?.message || data.message || (typeof data.error === 'string' ? data.error : message)
+        message = apiErrorMessage(data) || message
         providerJson = true
       } catch {}
       throw new OpenAICompatError(res.status, message, { providerJson })
