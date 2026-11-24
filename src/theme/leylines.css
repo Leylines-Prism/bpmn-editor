@@ -152,6 +152,7 @@ a.btn { text-decoration: none; }
 
 #canvas {
   flex: 1; position: relative; overflow: hidden;
+  container: canvas / inline-size;
   background: var(--white);
   border: 1px solid var(--line); border-radius: var(--radius-md);
   box-shadow: var(--elevation-1);
@@ -269,6 +270,14 @@ a.btn { text-decoration: none; }
 }
 #credit a { color: inherit; text-decoration: none; }
 #credit a:hover { text-decoration: underline; }
+/* Canevas étroit (téléphone) : la licence de bpmn-js veut le filigrane bpmn.io entièrement
+   visible, sans rien par-dessus. Le crédit texte, redondant, s'efface, et les pastilles de
+   validation montent au-dessus du filigrane et des boutons Votre avis et Confidentialité. */
+@container canvas (max-width: 560px) {
+  #credit { display: none; }
+  #canvas .bjsl-button,
+  #canvas .lint-process-badge { bottom: 148px; }
+}
 #feedback-button {
   position: absolute; right: 16px; bottom: 56px; z-index: 100;
   display: inline-flex; align-items: center; gap: var(--space-2);
