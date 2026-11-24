@@ -89,11 +89,12 @@ export default defineConfig(({ mode }) => ({
     outDir: mode === 'online' ? 'dist-online' : 'dist',
     assetsDir: 'assets',
     rolldownOptions: {
-      // Trois pages : l'éditeur, et la page d'aide en anglais et en français.
+      // Quatre pages : l'éditeur, la page d'aide en anglais et en français, et la page vitrine.
       input: {
         main: 'index.html',
         help: 'help.html',
         aide: 'aide.html',
+        leylines: 'leylines.html',
       },
       output: {
         // bpmn-js dans un fichier à part, comme avant Vite 8 (Rolldown n'accepte plus

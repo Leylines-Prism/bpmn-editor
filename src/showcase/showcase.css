@@ -1,0 +1,100 @@
+/* Page vitrine (leylines.html) : un fond d'écran plein écran, le logo au centre.
+   Toutes les valeurs viennent de design/leylines/tokens.css. */
+
+@import '@fontsource/urbanist/500.css';
+@import '../../design/leylines/tokens.css';
+@import '../theme/icons.css';
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; }
+body { background: var(--surface); color: var(--ink); font-family: var(--font-sans); overflow: hidden; }
+
+.only-dark { display: none !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .only-dark { display: block !important; }
+  :root:not([data-theme="light"]) .only-light { display: none !important; }
+}
+:root[data-theme="dark"] .only-dark { display: block !important; }
+:root[data-theme="dark"] .only-light { display: none !important; }
+
+.stage { position: fixed; inset: 0; overflow: hidden; touch-action: pan-y; }
+
+/* Fonds : fondu enchaîné entre deux fonds, centrés et recadrés comme l'image d'origine */
+.slide {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  opacity: 0; transition: opacity 0.7s ease;
+}
+.slide.active { opacity: 1; }
+.pulses { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* Logo et contacts, au centre */
+.center {
+  position: absolute; inset: 0;
+  display: grid; place-content: center; justify-items: center; gap: var(--space-4);
+  pointer-events: none;
+}
+.logo { position: relative; width: clamp(240px, 32vw, 600px); max-width: calc(100vw - 2 * var(--space-16)); aspect-ratio: 310 / 142; }
+.logo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* Le logo fixe clair a un fond blanc : la multiplication le fond dans le fond d'écran. */
+.logo .only-light { mix-blend-mode: multiply; }
+.contacts { display: flex; gap: var(--space-3); pointer-events: auto; }
+.contacts:empty { display: none; }
+.contact {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: var(--radius-pill); border: 1.5px solid transparent; cursor: pointer;
+  /* Contraste inversé et adouci : pastille de la couleur du texte, icône de la couleur
+     du fond, cerclée d'un fin filet de la ligne de lumière */
+  --disc: color-mix(in srgb, var(--ink) 88%, transparent);
+  background: linear-gradient(var(--disc), var(--disc)) padding-box, var(--leyline) border-box;
+  color: var(--surface-raised);
+  backdrop-filter: blur(6px); transition: color 0.2s;
+}
+.contact svg { width: 20px; height: 20px; }
+.contact:hover { --disc: var(--accent); color: var(--on-accent); }
+
+/* Petites flèches aux extrémités */
+.arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 40px; display: grid; place-items: center;
+  border-radius: var(--radius-pill); border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--surface-raised) 70%, transparent);
+  color: var(--ink); cursor: pointer; opacity: 0.6; backdrop-filter: blur(6px);
+  transition: opacity 0.2s;
+}
+.arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.arrow:hover, .arrow:focus-visible { opacity: 1; }
+.arrow.prev { left: max(var(--space-4), env(safe-area-inset-left, 0px)); }
+.arrow.next { right: max(var(--space-4), env(safe-area-inset-right, 0px)); }
+
+/* Coin haut droit : thème et retour à l'éditeur, comme la page d'aide */
+.corner {
+  position: absolute; display: flex; gap: var(--space-2);
+  top: calc(var(--space-4) + env(safe-area-inset-top, 0px));
+  right: max(var(--space-4), env(safe-area-inset-right, 0px));
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: 36px; padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-raised) 80%, transparent); color: var(--ink);
+  font: 500 14px/20px var(--font-sans); text-decoration: none; white-space: nowrap; cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+.btn:hover { background: var(--surface-sunken); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.round { width: 36px; padding: 0; border-radius: var(--radius-pill); }
+.btn[data-icon]::before {
+  content: ''; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+
+:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .slide { transition: none; }
+}
+@media (max-width: 520px) {
+  .arrow { width: 34px; height: 34px; }
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leylines</title>
+  <meta name="description" content="Leylines wallpapers, with the animated Leylines logo." />
+  <link rel="icon" href="/design/leylines/assets/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-white.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="/design/leylines/assets/favicon-black.svg" media="(prefers-color-scheme: dark)" />
+  <link rel="apple-touch-icon" href="/design/leylines/assets/favicon-black-180.png" />
+  <script>
+    // Même thème et même langue que l'éditeur, appliqués avant le premier affichage
+    try { const t = localStorage.getItem('bpmn-editor-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t } catch {}
+    try { if (localStorage.getItem('bpmn-editor-lang') === 'fr') document.documentElement.lang = 'fr' } catch {}
+  </script>
+  <link rel="stylesheet" href="/src/showcase/showcase.css" />
+</head>
+<body>
+  <main class="stage" id="stage">
+    <div class="slides" id="slides" aria-live="polite"></div>
+    <svg class="pulses" id="pulses" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+    <div class="center">
+      <div class="logo" role="img" aria-label="leylines">
+        <img class="only-light" id="logo-light" src="/design/leylines/assets/leylines-logo-white.svg" alt="" />
+        <img class="only-dark" id="logo-dark" src="/design/leylines/assets/leylines-logo-transparent.svg" alt="" />
+      </div>
+      <nav class="contacts" id="contacts" aria-label="Contact"></nav>
+    </div>
+    <button class="arrow prev" id="prev" type="button" aria-label="Previous wallpaper"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button>
+    <button class="arrow next" id="next" type="button" aria-label="Next wallpaper"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button>
+    <div class="corner">
+      <button class="btn round" id="btn-theme" type="button" data-icon="theme" aria-label="Theme: auto"></button>
+      <a class="btn primary" id="open-editor" href="./">Open the editor</a>
+    </div>
+  </main>
+  <script type="module" src="/src/showcase/showcase.js"></script>
+</body>
+</html>
