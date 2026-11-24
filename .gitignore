@@ -5,3 +5,6 @@ dist-online/
 src/packed-lint-config.js
 !.env.example
 mcp/data/
+
+# Kit de marque complet, gardé en local (les fichiers utiles au site sont dans src/brand/)
+design/

@@ -6,8 +6,8 @@ import { setupThemeToggle } from '../theme/theme-toggle.js'
 import { contactChoices, openSealed } from '../feedback.js'
 import { WALLPAPERS } from './wallpapers.js'
 import { createPulses } from './pulses.js'
-import introLight from '../../design/leylines/assets/leylines-logo-intro-light.svg?url'
-import introDark from '../../design/leylines/assets/leylines-logo-intro-dark.svg?url'
+import introLight from '../brand/leylines-logo-intro-light.svg?url'
+import introDark from '../brand/leylines-logo-intro-dark.svg?url'
 
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches
 const systemDark = matchMedia('(prefers-color-scheme: dark)')

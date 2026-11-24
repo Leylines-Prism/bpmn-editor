@@ -1,5 +1,5 @@
 /* Habillage Leylines de l'éditeur.
-   Les valeurs viennent de design/leylines/tokens.css (clair et sombre).
+   Les valeurs viennent de src/brand/tokens.css (clair et sombre).
    Le canevas reste clair dans les deux thèmes : il n'utilise que des teintes
    fixes (--white, --night-800, --mist, --leyline-sky-deep), jamais celles qui
    basculent avec le thème. */

@@ -228,7 +228,7 @@ mais tout est lu.
 
 Le code est publié sous la [licence MIT](LICENSE).
 
-Le nom, le logo et les éléments de marque Leylines (les fichiers de [design/leylines/](design/leylines/)
+Le nom, le logo et les éléments de marque Leylines (les fichiers de [src/brand/](src/brand/)
 et le logo dessiné par [src/theme/brand-logo.js](src/theme/brand-logo.js)) ne sont pas couverts
 par cette licence. Si vous publiez votre propre version, remplacez-les par les vôtres.
 
