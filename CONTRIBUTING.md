@@ -1,0 +1,67 @@
+# Contributing
+
+Thank you for your interest in this BPMN editor. **All contributions are welcome**: bug reports,
+ideas, translations, documentation, BPMN examples, and code. If you want to help this project grow,
+you are more than welcome here.
+
+## A word about how this project is made
+
+This is a personal project, maintained in spare time. Its author is not a professional developer:
+the code is written in "vibe coding" style, with Claude Code and other AI models, then tried in the
+browser before each change. So:
+
+- If you see something clumsy, fragile or simply wrong, say so. A short explanation in an issue
+  helps as much as a fix.
+- Experienced developers are especially welcome to review the code, the security of the MCP server,
+  or the way the AI assistant handles API keys.
+- AI-assisted contributions are fine too, as long as you have read and tested what you submit.
+
+There is no guaranteed response time, but every issue and pull request is read.
+
+## Where to start
+
+- **A bug**: open an issue with the "Bug report" form.
+- **An idea or a question**: start a [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions),
+  or open an issue with the "Idea" form.
+- **A security problem**: never in public. See [SECURITY.md](SECURITY.md).
+- **Something to code**: look at the issues labelled `good first issue` or `help wanted`. For a
+  large change, open an issue first, so we can agree on the approach before you spend time on it.
+
+## Run the project
+
+You need Node.js 22 or later.
+
+```
+npm install
+npm run dev          # the editor, at http://localhost:5173
+cd mcp && npm install && npm start   # the MCP server and the built-in assistant
+```
+
+`npm run dev:online` runs the editor as the online demo (no server, keys in the browser). The
+[README](README.md) and [mcp/README.md](mcp/README.md) explain the rest.
+
+## Pull requests
+
+- One change per pull request, with a short description of what it does and how you tried it
+  (screenshots are welcome for anything visible).
+- Try your change in the browser, including the case that should fail (an invalid file, an empty
+  diagram), and check the console for errors.
+- Dependencies use exact versions in `package.json` (no `^` or `~`).
+- The user interface is in English and French: give both texts, with the `T('English', 'Français')` helper of `src/i18n/lang.js`.
+- Commit messages, pull requests and issues are written in English.
+- Never commit an API key, a token or a `.env` file.
+- The automated checks (CI) must pass. For a first contribution, they start once the maintainer
+  approves them.
+
+The maintainer may ask for changes, or decline a pull request that does not fit the project. It is
+never personal.
+
+## License
+
+By contributing, you agree that your contribution is released under the project's
+[MIT License](LICENSE). The Leylines name and logo are not part of it.
+
+## Code of conduct
+
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md). Be kind, especially to
+newcomers.
