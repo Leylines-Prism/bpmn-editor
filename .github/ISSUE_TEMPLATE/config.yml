@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or open discussion
+    url: https://github.com/Leylines-Prism/bpmn-editor/discussions
+    about: How to do something, how it works, or an idea to talk about.
+  - name: Security problem
+    url: https://github.com/Leylines-Prism/bpmn-editor/security/advisories/new
+    about: Report a vulnerability privately. Never in a public issue.
