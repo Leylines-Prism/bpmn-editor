@@ -6,8 +6,8 @@
 //   VITE_CONTACT_URL  : un contact (profil LinkedIn, page…). Aucun par défaut.
 //   FEEDBACK_EMAIL    : une adresse mail. Aucune par défaut. vite.config.js la range
 //                       encodée dans le code ; le lien mailto n'est construit qu'au clic.
-// Le bouton « Feedback » (et le logo de la barre) ouvre une petite fenêtre qui
-// propose les choix réglés.
+// Le bouton « Feedback » ouvre une petite fenêtre qui propose les choix réglés.
+// La page vitrine (leylines.html) les montre aussi, en icônes.
 
 import { T } from './i18n/lang.js'
 
@@ -61,7 +61,9 @@ function contactChoice(url) {
     : { icon: 'link', title: T('Contact the author', "Contacter l'auteur"), detail: host }
 }
 
-export function setupFeedback({ container, env = import.meta.env, encodedEmail = ENCODED_EMAIL }) {
+// Les choix réglés au build : retours, contact, e-mail. Partagés par la fenêtre
+// Feedback et par la page vitrine (leylines.html).
+export function contactChoices({ env = import.meta.env, encodedEmail = ENCODED_EMAIL } = {}) {
   const raw = env.VITE_FEEDBACK_URL
   const feedback = cleanUrl(raw === undefined || raw === '' ? DEFAULT_FEEDBACK_URL : raw)
   const contact = cleanUrl(env.VITE_CONTACT_URL)
@@ -87,13 +89,19 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
       detail: T('Your mail app opens with a new message to the author.', "Votre messagerie s'ouvre avec un nouveau message pour l'auteur."),
     })
   }
+  return choices.map((c) => ({ ...c, svg: ICONS[c.icon] }))
+}
+
+// Le mailto est construit au moment du clic : l'adresse n'est jamais dans la page.
+export function openEmail(encodedEmail = ENCODED_EMAIL) {
+  const email = decodeEmail(encodedEmail)
+  if (email) location.href = `mailto:${email}?subject=${encodeURIComponent('BPMN editor')}`
+}
+
+export function setupFeedback({ container, env = import.meta.env, encodedEmail = ENCODED_EMAIL }) {
+  const choices = contactChoices({ env, encodedEmail })
   if (!choices.length) return
 
-  // Le mailto est construit au moment du clic : l'adresse n'est jamais dans la page.
-  const openEmail = () => {
-    const email = decodeEmail(encodedEmail)
-    if (email) location.href = `mailto:${email}?subject=${encodeURIComponent('BPMN editor')}`
-  }
   // Bouton « Feedback » bien visible, en bas à droite du canevas.
   const button = document.createElement('button')
   button.type = 'button'
@@ -126,7 +134,7 @@ export function setupFeedback({ container, env = import.meta.env, encodedEmail =
   dialog.addEventListener('click', (e) => {
     const choice = e.target.closest('.choice')
     if (!choice) return
-    if (choice.hasAttribute('data-email')) openEmail()
+    if (choice.hasAttribute('data-email')) openEmail(encodedEmail)
     dialog.close()
   })
   return { open }

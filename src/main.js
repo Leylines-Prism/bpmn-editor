@@ -401,6 +401,9 @@ function download(content, filename, type) {
 
 setupThemeToggle(document.getElementById('btn-theme'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
+// Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
+// le diagramme en cours et son historique d'annulation restent intacts.
+document.querySelector('.brand-logo')?.setAttribute('aria-label', T('Leylines (opens in a new tab)', 'Leylines (ouvre un nouvel onglet)'))
 setupBrandLogo()
 setupPanelToggle({
   button: document.getElementById('btn-properties'),
@@ -422,20 +425,7 @@ loadInitial().then(() => { dirty = false })
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 // Lien « Feedback », en bas du canevas (adresses réglées au build).
-const feedback = setupFeedback({ container: document.getElementById('canvas') })
-// Le logo de la barre ouvre aussi la fenêtre Feedback.
-const brandLogo = document.querySelector('.brand-logo')
-if (feedback && brandLogo) {
-  Object.assign(brandLogo, { tabIndex: 0, title: T('Feedback', 'Votre avis') })
-  brandLogo.setAttribute('role', 'button')
-  brandLogo.setAttribute('aria-label', T('Leylines: send feedback', 'Leylines : donner votre avis'))
-  brandLogo.classList.add('clickable')
-  brandLogo.addEventListener('click', feedback.open)
-  brandLogo.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); feedback.open() }
-  })
-}
-
+setupFeedback({ container: document.getElementById('canvas') })
 if (import.meta.env.MODE === 'online') {
   // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js).
   setupAnalytics()
