@@ -204,7 +204,7 @@ is read.
 
 The code is released under the [MIT License](LICENSE).
 
-The Leylines name, logo and brand assets (the files in [design/leylines/](design/leylines/) and
+The Leylines name, logo and brand assets (the files in [src/brand/](src/brand/) and
 the logo drawn by [src/theme/brand-logo.js](src/theme/brand-logo.js)) are not covered by this
 license. If you publish your own version, replace them with your own.
 

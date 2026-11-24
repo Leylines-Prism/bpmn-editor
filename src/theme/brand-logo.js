@@ -2,8 +2,8 @@
 // chargement de la page, puis le logo fixe prend le relais (fondu court).
 // Rien ne bouge si le système demande de réduire les animations.
 
-import pulseLight from '../../design/leylines/assets/leylines-logo-pulse-light.svg?url'
-import pulseDark from '../../design/leylines/assets/leylines-logo-pulse-dark.svg?url'
+import pulseLight from '../brand/leylines-logo-pulse-light.svg?url'
+import pulseDark from '../brand/leylines-logo-pulse-dark.svg?url'
 
 const CYCLE_MS = 2000 // durée d'un passage, fixée par le fichier de la charte
 const CYCLES = 3

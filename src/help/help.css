@@ -1,10 +1,10 @@
 /* Page d'aide (aide.html et help.html) : texte long, charte Leylines, clair et sombre.
-   Toutes les valeurs viennent de design/leylines/tokens.css. */
+   Toutes les valeurs viennent de src/brand/tokens.css. */
 
 @import '@fontsource/urbanist/400.css';
 @import '@fontsource/urbanist/500.css';
 @import '@fontsource/urbanist/600.css';
-@import '../../design/leylines/tokens.css';
+@import '../brand/tokens.css';
 @import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 @import '../theme/icons.css';
 
