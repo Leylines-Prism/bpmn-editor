@@ -39,6 +39,7 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
+import { setupDeepLink } from './deep-link.js'
 import { setupDiagramLibrary } from './diagram-library.js'
 import { setupFeedback } from './feedback.js'
 import { setupAnalytics, track } from './analytics.js'
@@ -140,6 +141,8 @@ const modeler = new BpmnModeler({
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
+
+setupDeepLink(modeler)
 
 async function loadInitial() {
   const saved = localStorage.getItem(LS_KEY)
