@@ -60,10 +60,30 @@ function encodedEmail(mode) {
   return email ? Buffer.from([...email].reverse().join(''), 'utf8').toString('base64') : ''
 }
 
+// Aperçu des liens partagés : les réseaux veulent une adresse absolue pour og:image.
+// SITE_URL (par exemple https://bpmn.example.com, dans .env ou l'environnement) donne
+// l'origine publique du site. Sans elle, l'image reste relative au chemin du site et og:url
+// est absente : une installation privée n'annonce aucune adresse.
+function socialPreview(mode, base) {
+  const site = (process.env.SITE_URL || loadEnv(mode, process.cwd(), '').SITE_URL || '').trim().replace(/\/+$/, '')
+  const image = `${site}${base}social-preview.png`
+  return {
+    name: 'social-preview',
+    transformIndexHtml(html) {
+      let out = html.replace(/(<meta (?:property|name)="(?:og|twitter):image" content=")social-preview\.png"/g, `$1${image}"`)
+      if (site) out = out.replace('<meta property="og:type"', `<meta property="og:url" content="${site}${base}" />\n  <meta property="og:type"`)
+      return out
+    },
+  }
+}
+
 export default defineConfig(({ mode }) => ({
   // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
   base: process.env.BASE_PATH || '/',
-  plugins: [csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode))],
+  plugins: [
+    csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode)),
+    socialPreview(mode, process.env.BASE_PATH || '/'),
+  ],
   define: { __FEEDBACK_EMAIL__: JSON.stringify(encodedEmail(mode)) },
   build: {
     outDir: mode === 'online' ? 'dist-online' : 'dist',
