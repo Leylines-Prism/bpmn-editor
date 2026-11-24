@@ -299,6 +299,14 @@
         <h3>3. Partir d'une image ou d'un PDF</h3>
         <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil ou d'une procédure en PDF. Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez à l'assistant de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF ne passent que chez OpenAI.</p>
 
+        <h3>Voir ce que l'assistant a changé</h3>
+        <p>Après chaque réponse, les formes que l'assistant a ajoutées sont entourées d'un fin contour magenta avec un point, celles qu'il a modifiées d'un contour en pointillé. Une pilule en haut du canevas résume, par exemple « IA : 2 ajoutés, 1 modifié, 1 supprimé ». Le survol de la pilule donne le nom des formes supprimées.</p>
+        <ul>
+          <li>Quand l'assistant change beaucoup d'un coup, par exemple un diagramme dessiné de zéro, aucun contour n'est posé : la pilule seule résume. Un clic sur la pilule affiche les contours, un second les masque.</li>
+          <li>Vos retouches à la main et la mise en page automatique ne sont jamais marquées. <kbd>Ctrl</kbd>+<kbd>Z</kbd> met le marquage à jour.</li>
+          <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
+        </ul>
+
         <h3>Combien ça coûte</h3>
         <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message envoie le diagramme en cours. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur.</p>
       </section>
@@ -342,7 +350,7 @@
           <li>des clés d'API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>Mes diagrammes enregistré aussi sur le serveur, accessible depuis plusieurs navigateurs,</li>
-          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
         <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">README du projet sur GitHub</a>.</p>
       </section>

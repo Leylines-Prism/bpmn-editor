@@ -150,7 +150,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   (bold, italic, size, font, color, with "Auto" for readable text on dark fills), tidy up,
   token simulation, BPMN rule checking, grid, minimap, properties panel.
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
-  images and PDF files. The model is chosen in Options.
+  images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
+  canvas, and a pill sums up the changes.
 - **Interface**: light or dark theme, English or French, resizable side panels.
 
 ## Online demo

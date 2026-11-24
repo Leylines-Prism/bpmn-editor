@@ -170,6 +170,8 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
+Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour l'assistant intégré comme pour les agents MCP.
+
 ## Diagrammes enregistrés
 
 La fenêtre « Mes diagrammes » de l'éditeur peut enregistrer les diagrammes sur ce serveur, en plus du
