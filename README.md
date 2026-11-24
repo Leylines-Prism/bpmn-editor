@@ -10,6 +10,14 @@ A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the 
 describe, and an MCP server so that agents such as Claude Code can draw in it too. It runs on your
 own machine with Docker.
 
+> [!WARNING]
+> **Not made to be exposed on the internet, by design.** The Docker version is meant for your own
+> machine or a private network, so it has no login. The risk stays limited, but publishing it means
+> a service open to anyone without authentication: your API keys can be used or stolen, and the
+> diagrams stored in the container (the BPMN files of "My diagrams") can be read or deleted. By
+> default it only answers on this machine (`127.0.0.1`). If you put it on the internet anyway, you
+> do so at your own risk.
+
 ## Run it with Docker
 
 You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose. Two images are published
@@ -61,15 +69,30 @@ docker compose up -d --build
 Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
 next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
 
-> **Keep it on your machine or a private network.** It has no accounts: anyone who reaches it can
-> use your API keys, read and delete your diagrams, and drive the editor. By default it only answers
-> on this machine (`127.0.0.1`).
+## Reach it from other machines
 
-## Serve it over HTTPS
+The container serves plain HTTP on `127.0.0.1:8080`, for this machine only. To use it from your
+other devices, keep it on a private network: [Tailscale Serve](https://tailscale.com/kb/1312/serve),
+for example, gives it an HTTPS address that only the machines of your tailnet can reach. Then tell
+the editor its new name, in the `.env` file next to the Compose file, and add a token
+`MCP_TOKEN=...` (the "Connect an agent" window generates one; from the source code, it goes in
+`mcp/.env`):
 
-The container serves plain HTTP on `127.0.0.1:8080`. To reach it at `https://bpmn.example.com`, put
-a reverse proxy in front of it. [Caddy](https://caddyserver.com/) gets the certificate for your
-domain on its own. Point the domain's DNS to the machine, then use this `Caddyfile`:
+```
+BPMN_EDITOR_ORIGINS=https://bpmn.example.com
+MCP_ALLOWED_HOSTS=bpmn.example.com
+```
+
+Run `docker compose up -d` again. Other proxies work too: they must pass the `Host` header and allow
+WebSocket on `/bridge` (details in [mcp/README.md](mcp/README.md#behind-a-domain-name)).
+
+### On the internet, at your own risk
+
+This project is not designed or tested to be exposed on the internet, and gives no guarantee if you
+do it. If you still choose to, put a login in front of the pages and set the token. Here is an
+example with [Caddy](https://caddyserver.com/), which gets the certificate for your domain on its
+own. Point the domain's DNS to the machine, set the two variables and the token above, then use
+this `Caddyfile`:
 
 ```
 bpmn.example.com {
@@ -82,23 +105,9 @@ bpmn.example.com {
 }
 ```
 
-Then tell the editor its new name, in the `.env` file next to the Compose file, and add a token
-`MCP_TOKEN=...` (the "Connect an agent" window generates one; from the source code, it goes in
-`mcp/.env`):
-
-```
-BPMN_EDITOR_ORIGINS=https://bpmn.example.com
-MCP_ALLOWED_HOSTS=bpmn.example.com
-```
-
-Run `docker compose up -d` again. Without a proxy login, anyone who finds the address can use the
-editor and your API keys, so never publish it without the login and the token.
-
-Other ways to get HTTPS: [Tailscale Serve](https://tailscale.com/kb/1312/serve) (private, for the
-machines of your tailnet) or [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
-(no open port, with Cloudflare Access for the login). Set the two variables above to the name they
-give you. Other proxies work too: they must pass the `Host` header and allow WebSocket on `/bridge`
-(details in [mcp/README.md](mcp/README.md#behind-a-domain-name)).
+Without a proxy login, anyone who finds the address can use the editor and your API keys. A login
+and a token reduce the risk, they do not remove it. [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+with Cloudflare Access is another way to put a login in front of it, with no open port.
 
 ## Connect an agent (MCP)
 

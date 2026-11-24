@@ -142,7 +142,7 @@ Le proxy inverse doit transmettre l'en-tête `Host`, accepter le passage en WebS
 ne pas retenir les réponses de `/mcp` et `/chat` (Caddy fait tout cela par défaut). Régler `MCP_TOKEN`
 pour que les clients MCP doivent envoyer `Authorization: Bearer <jeton>`. Les pages de l'éditeur et
 les diagrammes enregistrés restent ouverts à quiconque joint le site : placer une connexion devant au
-niveau du proxy, comme dans le [README principal](../README.fr.md#le-servir-en-https).
+niveau du proxy, comme dans le [README principal](../README.fr.md#sur-internet-à-vos-propres-risques).
 
 ## Lancer
 

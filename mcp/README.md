@@ -141,7 +141,7 @@ The reverse proxy must pass the `Host` header, allow WebSocket upgrades on `/bri
 the answers of `/mcp` and `/chat` (Caddy does all of this by default). Set `MCP_TOKEN` so that MCP
 clients must send `Authorization: Bearer <token>`. The editor pages and saved diagrams stay open to
 anyone who reaches the site: put a login in front of them at the proxy, as in the
-[main README](../README.md#serve-it-over-https).
+[main README](../README.md#on-the-internet-at-your-own-risk).
 
 ## Running
 

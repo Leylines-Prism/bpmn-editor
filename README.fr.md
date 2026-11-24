@@ -10,6 +10,14 @@ Un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dess
 vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi. Il
 tourne sur votre propre machine avec Docker.
 
+> [!WARNING]
+> **Pas fait pour être exposé sur internet, par conception.** La version Docker est prévue pour
+> votre propre machine ou un réseau privé, elle n'a donc pas de connexion. Le risque reste limité,
+> mais la publier revient à ouvrir à tous un service sans authentification : vos clés API peuvent
+> être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
+> diagrammes ») peuvent être lus ou supprimés. Par défaut, elle ne répond que sur cette machine
+> (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos propres risques.
+
 ## Le lancer avec Docker
 
 Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose. Deux images sont publiées
@@ -64,15 +72,31 @@ Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autr
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
 
-> **Gardez-le sur votre machine ou un réseau privé.** Il n'a pas de comptes : quiconque l'atteint
-> peut utiliser vos clés API, lire et supprimer vos diagrammes, et piloter l'éditeur. Par défaut,
-> il ne répond que sur cette machine (`127.0.0.1`).
+## Le joindre depuis d'autres machines
 
-## Le servir en HTTPS
+Le conteneur sert du HTTP simple sur `127.0.0.1:8080`, pour cette machine seulement. Pour l'utiliser
+depuis vos autres appareils, gardez-le sur un réseau privé : [Tailscale Serve](https://tailscale.com/kb/1312/serve),
+par exemple, lui donne une adresse HTTPS que seules les machines de votre tailnet peuvent joindre.
+Donnez ensuite son nouveau nom à l'éditeur, dans le fichier `.env` à côté du fichier Compose, et
+ajoutez un jeton `MCP_TOKEN=...` (la fenêtre « Connecter un agent » en génère un ; depuis le code
+source, il va dans `mcp/.env`) :
 
-Le conteneur sert du HTTP simple sur `127.0.0.1:8080`. Pour le joindre à `https://bpmn.example.com`,
-placez un proxy inverse devant. [Caddy](https://caddyserver.com/) obtient tout seul le certificat de
-votre domaine. Faites pointer le DNS du domaine vers la machine, puis utilisez ce `Caddyfile` :
+```
+BPMN_EDITOR_ORIGINS=https://bpmn.example.com
+MCP_ALLOWED_HOSTS=bpmn.example.com
+```
+
+Relancez `docker compose up -d`. D'autres proxys marchent aussi : ils doivent transmettre l'en-tête
+`Host` et accepter le WebSocket sur `/bridge` (détails dans
+[mcp/README.fr.md](mcp/README.fr.md#derrière-un-nom-de-domaine)).
+
+### Sur internet, à vos propres risques
+
+Ce projet n'est ni conçu ni testé pour être exposé sur internet, et n'offre aucune garantie si vous
+le faites. Si vous le choisissez quand même, placez une connexion devant les pages et réglez le
+jeton. Voici un exemple avec [Caddy](https://caddyserver.com/), qui obtient tout seul le certificat
+de votre domaine. Faites pointer le DNS du domaine vers la machine, réglez les deux variables et le
+jeton ci-dessus, puis utilisez ce `Caddyfile` :
 
 ```
 bpmn.example.com {
@@ -85,24 +109,9 @@ bpmn.example.com {
 }
 ```
 
-Donnez ensuite son nouveau nom à l'éditeur, dans le fichier `.env` à côté du fichier Compose, et
-ajoutez un jeton `MCP_TOKEN=...` (la fenêtre « Connecter un agent » en génère un ; depuis le code
-source, il va dans `mcp/.env`) :
-
-```
-BPMN_EDITOR_ORIGINS=https://bpmn.example.com
-MCP_ALLOWED_HOSTS=bpmn.example.com
-```
-
-Relancez `docker compose up -d`. Sans connexion au proxy, quiconque trouve l'adresse peut utiliser
-l'éditeur et vos clés API : ne le publiez jamais sans la connexion et le jeton.
-
-Autres façons d'avoir le HTTPS : [Tailscale Serve](https://tailscale.com/kb/1312/serve) (privé, pour
-les machines de votre tailnet) ou [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
-(aucun port ouvert, avec Cloudflare Access pour la connexion). Réglez les deux variables ci-dessus sur
-le nom qu'ils vous donnent. D'autres proxys marchent aussi : ils doivent transmettre l'en-tête `Host`
-et accepter le WebSocket sur `/bridge` (détails dans
-[mcp/README.fr.md](mcp/README.fr.md#derrière-un-nom-de-domaine)).
+Sans connexion au proxy, quiconque trouve l'adresse peut utiliser l'éditeur et vos clés API. Une
+connexion et un jeton réduisent le risque, ils ne le suppriment pas. [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
+avec Cloudflare Access est une autre façon de placer une connexion devant, sans port ouvert.
 
 ## Connecter un agent (MCP)
 
