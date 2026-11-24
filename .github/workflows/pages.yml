@@ -7,7 +7,7 @@
 #   variables : SITE_URL (origine publique, par défaut celle de Pages), VITE_SITE_HOST, VITE_HOST_LEGAL (mentions légales : nom, adresse et
 #               téléphone de l'hébergeur), VITE_FEEDBACK_URL, VITE_CONTACT_URL, BASE_PATH,
 #               VITE_UMAMI_URL et VITE_UMAMI_WEBSITE_ID (mesure d'audience, voir src/analytics.js)
-#   secret    : FEEDBACK_EMAIL (aussi l'adresse de « Vos droits » dans Confidentialité)
+#   secret    : FEEDBACK_EMAIL
 # Prérequis : Settings > Pages > Source réglé sur « GitHub Actions ».
 
 name: Pages
