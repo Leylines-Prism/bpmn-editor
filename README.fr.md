@@ -27,7 +27,7 @@ docker compose -f docker-compose.image.yml up -d
 
 Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` fait la même chose.
 
-- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé d'API (Mistral,
+- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Mistral,
   Anthropic, OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
   commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
   Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
@@ -58,12 +58,12 @@ cd bpmn-editor
 docker compose up -d --build
 ```
 
-Les clés d'API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autres réglages dans
+Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autres réglages dans
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
 
 > **Gardez-le sur votre machine ou un réseau privé.** Il n'a pas de comptes : quiconque l'atteint
-> peut utiliser vos clés d'API, lire et supprimer vos diagrammes, et piloter l'éditeur. Par défaut,
+> peut utiliser vos clés API, lire et supprimer vos diagrammes, et piloter l'éditeur. Par défaut,
 > il ne répond que sur cette machine (`127.0.0.1`).
 
 ## Le servir en HTTPS
@@ -93,7 +93,7 @@ MCP_ALLOWED_HOSTS=bpmn.example.com
 ```
 
 Relancez `docker compose up -d`. Sans connexion au proxy, quiconque trouve l'adresse peut utiliser
-l'éditeur et vos clés : ne le publiez jamais sans la connexion et le jeton.
+l'éditeur et vos clés API : ne le publiez jamais sans la connexion et le jeton.
 
 Autres façons d'avoir le HTTPS : [Tailscale Serve](https://tailscale.com/kb/1312/serve) (privé, pour
 les machines de votre tailnet) ou [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
@@ -111,7 +111,7 @@ utilisé : gardez-le ouvert.
 
 Un jeton facultatif protège cet accès : la même fenêtre en génère un et dit où le mettre.
 
-## Où sont gardées vos clés d'API
+## Où sont gardées vos clés API
 
 **Dans la version Docker**, le plus sûr est le serveur : le fichier `.env` à côté de
 `docker-compose.image.yml` (ou `mcp/.env` depuis le code source). La clé reste sur le serveur et
@@ -122,10 +122,10 @@ fournisseur sans l'enregistrer.
 **Dans le navigateur** (la démo en ligne, ou les clés saisies dans Options) :
 
 - La clé reste dans votre navigateur, pour ce site seulement. Les autres sites ne peuvent pas la lire.
-- « Se souvenir des clés sur votre appareil » décoché (par défaut) : la clé est gardée dans le
+- « Se souvenir des clés API sur votre appareil » décoché (par défaut) : la clé est gardée dans le
   `sessionStorage` et disparaît à la fermeture de l'onglet.
 - Coché : la clé est gardée dans le `localStorage` et reste sur l'appareil jusqu'au clic sur
-  « Effacer les clés ».
+  « Effacer les clés API ».
 - Elle n'est pas chiffrée. La chiffrer dans le navigateur ne servirait à rien : la clé pour la
   déchiffrer devrait être rangée juste à côté.
 - Ce qui la protège : la page n'exécute aucun script venu d'un autre site (politique de sécurité du
@@ -143,7 +143,7 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 
 | Réglage | Rôle |
 |---|---|
-| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés de l'assistant IA. Voir `mcp/.env.example`. |
+| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés API de l'assistant IA. Voir `mcp/.env.example`. |
 | `MCP_TOKEN` (`mcp/.env`) | Jeton que les agents doivent envoyer. La fenêtre « Connecter un agent » en génère un. |
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |
@@ -171,7 +171,7 @@ Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages). Son [guide d'utili
 explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de la
 barre d'outils l'ouvre aussi.
 
-Elle sert juste à essayer : chaque visiteur saisit sa propre clé d'API, qui reste dans son
+Elle sert juste à essayer : chaque visiteur saisit sa propre clé API, qui reste dans son
 navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et certains
 fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
 dit ce qui sort du navigateur.
@@ -180,7 +180,7 @@ La démo mesure son audience sans cookie, avec [Umami](https://umami.is) :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
 créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
 `localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
 Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
 CNIL pour les mesures d'audience exemptées de consentement.

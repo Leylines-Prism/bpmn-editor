@@ -37,7 +37,7 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
                     ◀──WebSocket── tools run in the tab
 ```
 
-- Keys from environment variables stay on the server. The browser only receives the list of models
+- API keys from environment variables stay on the server. The browser only receives the list of models
   (id and label), neither key nor provider address, and the server rejects any model not in that list.
 - A provider set up in the Options window (see below) is sent with each message: address, key and
   model. The server uses it for that call, without storing it or writing it to its log.
@@ -47,7 +47,7 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
   with their own content type `application/vnd.bpmn-chat+json`), then passed on to the model.
 - If Claude Opus or Sonnet declines a request, the API replays it on a fallback model
   (`fallbacks: "default"`). Haiku has no fallback.
-- Each message uses API credits: a key from an organization with included credits stops when they
+- Each message uses API credits: an API key from an organization with included credits stops when they
   run out, a key with a payment method is billed by usage. The same goes for OpenAI-compatible
   providers, except a local model (Ollama, LM Studio).
 
@@ -56,7 +56,7 @@ editor (chat panel) ──HTTP /chat──▶ server ──Claude API───�
 Copy `mcp/.env.example` to `mcp/.env` (excluded from git) and fill in what you need. A provider only
 shows in the menu once it is set up. Several can be set up at the same time.
 
-**Mistral**: the key is enough. The menu then offers Mistral Large and Mistral Small, first in the
+**Mistral**: the API key is enough. The menu then offers Mistral Large and Mistral Small, first in the
 list. For processing in the European Union (billed 10% more), add
 `MISTRAL_BASE_URL=https://api.eu.mistral.ai/v1`.
 
@@ -64,7 +64,7 @@ list. For processing in the European Union (billed 10% more), add
 MISTRAL_API_KEY=...
 ```
 
-**Anthropic**: the key is enough. The menu then offers Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5.
+**Anthropic**: the API key is enough. The menu then offers Claude Opus 5.5, Sonnet 5.5 and Haiku 5.5.
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
@@ -80,7 +80,7 @@ OPENAI_MODELS=openai/gpt-5=GPT-5,mistralai/mistral-large=Mistral Large
 OPENAI_LABEL=OpenRouter
 ```
 
-For a local model with Ollama, no key: `OPENAI_BASE_URL=http://localhost:11434/v1` and
+For a local model with Ollama, no API key: `OPENAI_BASE_URL=http://localhost:11434/v1` and
 `OPENAI_MODELS=qwen3:14b`. The model must support tool calls, and a small model draws less well than
 a large one.
 
@@ -91,13 +91,13 @@ up a provider in the Options window.
 
 The "Options" button of the panel opens a window with one block per provider: Mistral, Anthropic,
 OpenAI, Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address
-(prefilled for Mistral, Anthropic, OpenAI and Ollama), the key, and the models to offer. "List models" asks the provider
+(prefilled for Mistral, Anthropic, OpenAI and Ollama), the API key, and the models to offer. "List models" asks the provider
 for them, "Test" checks the address and the key. Neither button uses any credit. A provider's
 models are only offered once "Test" or "List models" has succeeded, and again after its address or
 key changes. "Assistant model" picks the model used by the chat.
 
-- Settings stay in the browser. Keys are forgotten when the tab is closed, unless "Remember keys on
-  your device" is checked. "Clear keys" removes them.
+- Settings stay in the browser. API keys are forgotten when the tab is closed, unless "Remember API keys on
+  your device" is checked. "Clear API keys" removes them.
 - Calls go through the server (`/chat` and `/chat/models` routes): the address is reached from the
   server. When it runs in docker, Ollama on the host machine is reachable at
   `http://host.docker.internal:11434/v1`.
@@ -107,7 +107,7 @@ key changes. "Assistant model" picks the model used by the chat.
 
 The `docker-compose.yml` file at the root of the repository starts the editor and this server (see
 the [main README](../README.md#run-it-with-docker)). The server reads `mcp/.env` when it exists.
-Variables can also be passed through `environment`, keys preferably through a `.env` file next to the
+Variables can also be passed through `environment`, API keys preferably through a `.env` file next to the
 compose file, never written in the compose file itself:
 
 ```yaml
@@ -223,7 +223,7 @@ They can also be placed in `mcp/.env`.
 | `ANTHROPIC_MODELS` | `claude-opus-5-5=Claude Opus 5.5,claude-sonnet-5-5=Claude Sonnet 5.5,claude-haiku-5-5=Claude Haiku 5.5` | Claude models offered, `id=Label` separated by commas (label optional) |
 | `CHAT_EFFORT` | `medium` | thinking effort of Claude models: `low`, `medium`, `high`, `xhigh` or `max` |
 | `OPENAI_BASE_URL` | `https://api.openai.com/v1` | address of the OpenAI-compatible API, without `/chat/completions` |
-| `OPENAI_API_KEY` | none | key for that provider. Optional for a local server |
+| `OPENAI_API_KEY` | none | API key for that provider. Optional for a local server |
 | `OPENAI_MODELS` | none | models offered, same format as `ANTHROPIC_MODELS`. Without it, no OpenAI-compatible provider |
 | `OPENAI_LABEL` | `OpenAI-compatible` | provider name in the menu (OpenRouter, Ollama…) |
 | `OPENAI_REASONING_EFFORT` | none | sent as is as `reasoning_effort`, for models that accept it |

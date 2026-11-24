@@ -9,16 +9,16 @@ import { trackOnce } from './analytics.js'
 
 const HINTS = {
   online: {
-    mistral: T('Create a key at console.mistral.ai. Calls go straight from this page to Mistral. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé sur console.mistral.ai. Les appels partent directement de cette page vers Mistral. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
-    anthropic: T('Create a key at console.anthropic.com. Calls go straight from this page to Anthropic.', 'Créez une clé sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.'),
-    openai: T('Create a key at platform.openai.com. OpenAI does not always allow calls made from a web page: if "Test" fails, use the docker version.', "Créez une clé sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker."),
+    mistral: T('Create an API key at console.mistral.ai. Calls go straight from this page to Mistral. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Les appels partent directement de cette page vers Mistral. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
+    anthropic: T('Create an API key at console.anthropic.com. Calls go straight from this page to Anthropic.', 'Créez une clé API sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.'),
+    openai: T('Create an API key at platform.openai.com. OpenAI does not always allow calls made from a web page: if "Test" fails, use the docker version.', "Créez une clé API sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker."),
     ollama: T('Ollama must allow this page: start it with OLLAMA_ORIGINS={origin}. Pick a model that supports tool calls.', 'Ollama doit autoriser cette page : lancez-le avec la variable OLLAMA_ORIGINS={origin}. Choisissez un modèle qui sait appeler des outils.'),
     compat: T('LiteLLM, LM Studio, vLLM… The server must allow the origin {origin} (CORS setting). An https page can only call an https address, or localhost.', "LiteLLM, LM Studio, vLLM… Le serveur doit autoriser l'origine {origin} (réglage CORS). Une page en https ne peut appeler qu'une adresse en https, ou localhost."),
   },
   server: {
-    mistral: T('Create a key at console.mistral.ai. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé sur console.mistral.ai. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
-    anthropic: T('Create a key at console.anthropic.com.', 'Créez une clé sur console.anthropic.com.'),
-    openai: T('Create a key at platform.openai.com.', 'Créez une clé sur platform.openai.com.'),
+    mistral: T('Create an API key at console.mistral.ai. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
+    anthropic: T('Create an API key at console.anthropic.com.', 'Créez une clé API sur console.anthropic.com.'),
+    openai: T('Create an API key at platform.openai.com.', 'Créez une clé API sur platform.openai.com.'),
     ollama: T('Address as seen from the server. If it runs in docker, try http://host.docker.internal:11434/v1. Pick a model that supports tool calls.', "Adresse vue depuis le serveur. S'il tourne dans docker, essayez http://host.docker.internal:11434/v1. Choisissez un modèle qui sait appeler des outils."),
     compat: T('LiteLLM, LM Studio, vLLM… Address as seen from the server.', 'LiteLLM, LM Studio, vLLM… Adresse vue depuis le serveur.'),
   },
@@ -29,12 +29,12 @@ const SITE_HOST = (import.meta.env.VITE_SITE_HOST || '').trim()
 
 const PRIVACY = {
   online:
-    T('Your keys and settings stay in your browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. ', 'Vos clés et vos réglages restent dans votre navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. ') +
+    T('Your API keys and settings stay in your browser. Your messages and your diagram go straight to the chosen provider, which bills you at its own rates. ', 'Vos clés API et vos réglages restent dans votre navigateur. Vos messages et votre diagramme partent directement chez le fournisseur choisi, qui vous facture selon son tarif. ') +
     (SITE_HOST
       ? T(`Neither this site nor its host (${SITE_HOST}) receives your keys or your diagrams.`, `Ni ce site ni son hébergeur (${SITE_HOST}) ne reçoivent vos clés ni vos diagrammes.`)
       : T('Neither this site nor its host receives your keys or your diagrams.', 'Ni ce site ni son hébergeur ne reçoivent vos clés ni vos diagrammes.')),
   server:
-    T('Your keys and settings stay in your browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés et vos réglages restent dans votre navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
+    T('Your API keys and settings stay in your browser. With each message, the key goes to your server, which passes it on to the provider without storing it. The provider receives your messages and your diagram, and bills you at its own rates.', "Vos clés API et vos réglages restent dans votre navigateur. À chaque message, la clé part vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Le fournisseur reçoit vos messages et votre diagramme, et vous facture selon son tarif."),
 }
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
@@ -50,7 +50,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
   dialog.innerHTML = `
     <form method="dialog">
       <h2 id="options-title">${T('Assistant options', "Options de l'assistant")}</h2>
-      <p class="hint">${T('Turn on one or more providers, paste the key if needed and test the connection: their models then appear in the menu below, where you pick the model of the assistant.', 'Activez un ou plusieurs fournisseurs, collez la clé si besoin et testez la connexion : leurs modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
+      <p class="hint">${T('Turn on one or more providers, paste the API key if needed and test the connection: their models then appear in the menu below, where you pick the model of the assistant.', 'Activez un ou plusieurs fournisseurs, collez la clé API si besoin et testez la connexion : leurs modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
       <div class="providers">
         ${PROVIDERS.map(
           (p) => `
@@ -59,7 +59,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
           <div class="p-body">
             ${p.customLabel ? `<label class="field"><span>${T('Display name', 'Nom affiché')}</span><input type="text" class="p-label" maxlength="60" placeholder="${T('For example: LiteLLM', 'Par exemple : LiteLLM')}" /></label>` : ''}
             <label class="field"><span>${T('Address', 'Adresse')}</span><input type="url" class="p-url" spellcheck="false" placeholder="${esc(p.baseUrl || 'http://localhost:4000/v1')}" /></label>
-            <label class="field"><span>${T('Key', 'Clé')}${p.needsKey ? '' : T(' (optional)', ' (facultative)')}</span><input type="password" class="p-key" spellcheck="false" autocomplete="off" placeholder="${esc(p.keyHint || '')}" /></label>
+            <label class="field"><span>${T('API key', 'Clé API')}${p.needsKey ? '' : T(' (optional)', ' (facultative)')}</span><input type="password" class="p-key" spellcheck="false" autocomplete="off" placeholder="${esc(p.keyHint || '')}" /></label>
             <div class="field"><span>${T('Models', 'Modèles')}</span>
               <div class="p-models"></div>
               <div class="p-add-row"><input type="text" class="p-add" spellcheck="false" placeholder="${T('Add a model by its id', 'Ajouter un modèle par son identifiant')}" aria-label="${T('Id of the model to add', 'Identifiant du modèle à ajouter')}" /><button type="button" class="btn p-add-btn">${T('Add', 'Ajouter')}</button></div>
@@ -76,9 +76,9 @@ export function createOptionsDialog({ mode, test, onSave }) {
       </div>
       <label class="field default-model"><span>${T('Assistant model', 'Modèle de l\'assistant')}</span><select id="options-default"></select></label>
       <div class="keys-row">
-        <label><input type="checkbox" id="options-remember" /> ${T('Remember keys on your device', 'Se souvenir des clés sur votre appareil')}</label>
+        <label><input type="checkbox" id="options-remember" /> ${T('Remember API keys on your device', 'Se souvenir des clés API sur votre appareil')}</label>
         <span class="grow"></span>
-        <button type="button" class="btn" id="options-forget">${T('Clear keys', 'Effacer les clés')}</button>
+        <button type="button" class="btn" id="options-forget">${T('Clear API keys', 'Effacer les clés API')}</button>
       </div>
       <p class="hint privacy">${esc(PRIVACY[mode])} ${T('Without the box above, keys are forgotten when the tab is closed.', "Sans la case ci-dessus, les clés sont oubliées à la fermeture de l'onglet.")}</p>
       <div class="actions">
@@ -168,7 +168,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
     const conn = connection(id)
     const def = PROVIDERS.find((p) => p.id === id)
     if (!conn.baseUrl) return showResult(result, false, T('Enter the address first.', "Indiquez d'abord l'adresse."))
-    if (def.needsKey && !conn.apiKey) return showResult(result, false, T('Paste the key first.', "Collez d'abord la clé."))
+    if (def.needsKey && !conn.apiKey) return showResult(result, false, T('Paste the API key first.', "Collez d'abord la clé API."))
     const buttons = el.querySelectorAll('.p-test, .p-list')
     buttons.forEach((b) => (b.disabled = true))
     showResult(result, null, T('Connecting…', 'Connexion…'))

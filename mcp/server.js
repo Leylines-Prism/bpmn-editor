@@ -306,20 +306,20 @@ app.delete('/diagrams/:id', chatCors, checkId, async (req, res) => {
 
 function chatErrorMessage(err, lang = 'en') {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
-  if (err instanceof Anthropic.AuthenticationError) return T('API key rejected. Check ANTHROPIC_API_KEY on the server.', "Clé d'API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur.")
-  if (err instanceof Anthropic.PermissionDeniedError) return T('This API key has no access to this model.', "Cette clé d'API n'a pas accès à ce modèle.")
+  if (err instanceof Anthropic.AuthenticationError) return T('API key rejected. Check ANTHROPIC_API_KEY on the server.', "Clé API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur.")
+  if (err instanceof Anthropic.PermissionDeniedError) return T('This API key has no access to this model.', "Cette clé API n'a pas accès à ce modèle.")
   if (err instanceof Anthropic.RateLimitError) return T('API usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard.")
   if (err instanceof Anthropic.BadRequestError) return T(`Request rejected by the API: ${err.message}`, `Requête refusée par l'API : ${err.message}`)
   if (err instanceof Anthropic.APIError) return T(`API error (${err.status ?? 'network'}): ${err.message}`, `Erreur de l'API (${err.status ?? 'réseau'}) : ${err.message}`)
   if (err instanceof OpenAICompatError && err.provider === 'mistral') {
-    if (err.status === 401 || err.status === 403) return T('Key rejected by Mistral. Check MISTRAL_API_KEY on the server.', 'Clé refusée par Mistral. Vérifiez MISTRAL_API_KEY sur le serveur.')
+    if (err.status === 401 || err.status === 403) return T('API key rejected by Mistral. Check MISTRAL_API_KEY on the server.', 'Clé API refusée par Mistral. Vérifiez MISTRAL_API_KEY sur le serveur.')
     if (err.status === 404) return T(`Model or address not found at Mistral. Check MISTRAL_BASE_URL and MISTRAL_MODELS (${err.message}).`, `Modèle ou adresse introuvable chez Mistral. Vérifiez MISTRAL_BASE_URL et MISTRAL_MODELS (${err.message}).`)
     if (err.status === 429) return T('Mistral usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de Mistral atteinte, ou crédits épuisés. Réessayez plus tard.")
     if (err.status === null) return T(`Mistral unreachable. Check MISTRAL_BASE_URL (${err.message}).`, `Mistral injoignable. Vérifiez MISTRAL_BASE_URL (${err.message}).`)
     return T(`Mistral error (${err.status}): ${err.message}`, `Erreur de Mistral (${err.status}) : ${err.message}`)
   }
   if (err instanceof OpenAICompatError) {
-    if (err.status === 401 || err.status === 403) return T('Key rejected by the OpenAI-compatible provider. Check OPENAI_API_KEY on the server.', 'Clé refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.')
+    if (err.status === 401 || err.status === 403) return T('API key rejected by the OpenAI-compatible provider. Check OPENAI_API_KEY on the server.', 'Clé API refusée par le fournisseur compatible OpenAI. Vérifiez OPENAI_API_KEY sur le serveur.')
     if (err.status === 404) return T(`Model or address not found at the OpenAI-compatible provider. Check OPENAI_BASE_URL and OPENAI_MODELS (${err.message}).`, `Modèle ou adresse introuvable chez le fournisseur compatible OpenAI. Vérifiez OPENAI_BASE_URL et OPENAI_MODELS (${err.message}).`)
     if (err.status === 429) return T('Provider usage limit reached, or credits used up. Try again later.', "Limite d'utilisation du fournisseur atteinte, ou crédits épuisés. Réessayez plus tard.")
     if (err.status === null) return T(`OpenAI-compatible provider unreachable. Check OPENAI_BASE_URL (${err.message}).`, `Fournisseur compatible OpenAI injoignable. Vérifiez OPENAI_BASE_URL (${err.message}).`)

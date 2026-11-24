@@ -90,7 +90,7 @@ MCP_ALLOWED_HOSTS=bpmn.example.com
 ```
 
 Run `docker compose up -d` again. Without a proxy login, anyone who finds the address can use the
-editor and your keys, so never publish it without the login and the token.
+editor and your API keys, so never publish it without the login and the token.
 
 Other ways to get HTTPS: [Tailscale Serve](https://tailscale.com/kb/1312/serve) (private, for the
 machines of your tailnet) or [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/)
@@ -116,9 +116,9 @@ then sent with each message to your server, which passes it on to the provider w
 **In the browser** (the online demo, or keys typed in Options):
 
 - The key stays in your browser, for this site only. Other sites cannot read it.
-- "Remember keys on your device" unchecked (the default): the key is kept in `sessionStorage` and
+- "Remember API keys on your device" unchecked (the default): the key is kept in `sessionStorage` and
   is gone when you close the tab.
-- Checked: the key is kept in `localStorage` and stays on the device until you click "Clear keys".
+- Checked: the key is kept in `localStorage` and stays on the device until you click "Clear API keys".
 - It is not encrypted. Encrypting it in the browser would not help: the key to decrypt it would have
   to be stored right next to it.
 - What protects it: the page runs no script from another site (Content Security Policy), and the key
@@ -135,7 +135,7 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 | Setting | What it does |
 |---|---|
-| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Keys for the AI assistant. See `mcp/.env.example`. |
+| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | API keys for the AI assistant. See `mcp/.env.example`. |
 | `MCP_TOKEN` (`mcp/.env`) | Token that agents must send. The "Connect an agent" window generates one. |
 | `BPMN_PORT` | Port of the site (8080 by default). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | The address and name of the site when it is served under a domain name (see above). |
@@ -167,7 +167,7 @@ calls from a web page. The "Privacy" link on the page says what leaves the brows
 The demo measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
-messages or keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
+messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
 `localStorage.setItem('umami.disabled', '1')` in the console excludes your own visits. Neither the
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
 CNIL (the French data protection authority) for audience measurement exempt from consent.
