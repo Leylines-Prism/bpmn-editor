@@ -169,6 +169,8 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
+What the tools add, change or remove is marked on the editor's canvas (`src/ai-changes.js`), for the built-in assistant and MCP agents alike.
+
 ## Saved diagrams
 
 The "My diagrams" window of the editor can save diagrams on this server, besides the browser. The

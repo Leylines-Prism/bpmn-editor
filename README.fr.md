@@ -160,7 +160,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   les fonds sombres), rangement, simulation de jetons, vérification des règles BPMN, grille,
   mini-carte, panneau de propriétés.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
-  déposer des images et des PDF. Le modèle se choisit dans Options.
+  déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
+  entouré sur le canevas, et une pilule résume les changements.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
 
 ## Démo en ligne

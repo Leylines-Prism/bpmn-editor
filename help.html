@@ -299,6 +299,14 @@
         <h3>3. Start from an image or a PDF</h3>
         <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool or a procedure in a PDF. Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs only work with OpenAI.</p>
 
+        <h3>See what the assistant changed</h3>
+        <p>After each answer, the shapes the assistant added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>
+        <ul>
+          <li>When the assistant changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click the pill to show the outlines, click again to hide them.</li>
+          <li>Your own edits and automatic layout are never marked. <kbd>Ctrl</kbd>+<kbd>Z</kbd> updates the marking.</li>
+          <li>The marking is cleared by the pill's cross, by your next message, or when another diagram is opened. It never appears in the file or in exports.</li>
+        </ul>
+
         <h3>What it costs</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends the current diagram. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
       </section>
@@ -342,7 +350,7 @@
           <li>API keys stored on your server, which never reach the browser,</li>
           <li>every provider, OpenAI included, with no browser blocking,</li>
           <li>My diagrams also saved on the server, available from several browsers,</li>
-          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
+          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
         <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">project README on GitHub</a>.</p>
       </section>
