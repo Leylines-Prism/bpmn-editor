@@ -7,7 +7,7 @@ you are more than welcome here.
 ## A word about how this project is made
 
 This is a personal project, maintained in spare time. Its author is not a professional developer:
-the code is written in "vibe coding" style, with Claude Code and other AI models, then tried in the
+the code is written with AI assistance, using Claude Code and other AI models, then tried in the
 browser before each change. So:
 
 - If you see something clumsy, fragile or simply wrong, say so. A short explanation in an issue

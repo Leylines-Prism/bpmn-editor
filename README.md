@@ -184,8 +184,8 @@ It is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on
 This is a personal project, maintained in spare time, and **every contribution is welcome**: bug
 reports, ideas, translations, documentation or code. If you feel like helping it grow, please do.
 
-In full transparency: its author is not a professional developer. The editor is built in "vibe
-coding" style, with Claude Code and other AI models, and each change is tried in the browser before
+In full transparency: its author is not a professional developer. The editor is built with AI
+assistance, using Claude Code and other AI models, and each change is tried in the browser before
 it is published. Reviews from experienced developers are especially appreciated.
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
