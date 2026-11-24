@@ -1,3 +1,5 @@
+![BPMN Editor : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
+
 # bpmn-editor
 
 [English](README.md) | **Français**
