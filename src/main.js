@@ -39,6 +39,7 @@ import './theme/leylines.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
+import { setupSmallScreenNotice } from './small-screen.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDeepLink } from './deep-link.js'
@@ -412,6 +413,7 @@ setupPanelToggle({
   panel: document.getElementById('properties-panel'),
   canvas: modeler.get('canvas'),
 })
+setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))

@@ -1054,3 +1054,23 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .ai-changes-close { padding: 4px 12px 4px 8px; font-size: 18px; cursor: pointer; color: var(--night-800); opacity: 0.6; }
 #canvas .ai-changes-close:hover { opacity: 1; color: var(--leyline-magenta); }
 #canvas .ai-changes-pill button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
+
+/* ── Bandeau des petits écrans : entre la barre d'outils et le canevas ── */
+#small-screen-notice {
+  display: flex; align-items: flex-start; gap: var(--space-2);
+  margin: var(--space-2) var(--space-2) 0; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  background: var(--surface-raised); color: var(--ink);
+  border: 1px solid var(--line-strong); border-left: 3px solid var(--leyline-orange);
+  border-radius: var(--radius-sm);
+  font-size: 13px; line-height: 18px; flex-shrink: 0;
+}
+#small-screen-notice[hidden] { display: none; }
+#small-screen-notice p { margin: 0; flex: 1; padding-top: 3px; }
+#small-screen-notice a { color: var(--accent); }
+#small-screen-notice .close {
+  width: 26px; height: 26px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
+  border: 0; border-radius: var(--radius-sm); background: transparent;
+  color: var(--ink-muted); font-size: 18px; line-height: 1; cursor: pointer;
+}
+#small-screen-notice .close:hover { background: var(--surface-sunken); color: var(--ink); }
+#small-screen-notice .close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
