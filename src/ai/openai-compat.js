@@ -25,7 +25,7 @@ export class OpenAICompatClient {
 
   // Envoie une requête en flux. Rappels facultatifs :
   //   onText(delta)                texte de la réponse
-  //   onReasoning()                le modèle réfléchit (champ reasoning ou reasoning_content)
+  //   onReasoning()                le modèle réfléchit (reasoning, reasoning_content ou morceau thinking)
   //   onToolStart(name)            un appel d'outil commence
   //   onToolArgs(totalLength)      taille cumulée des arguments
   // Renvoie { content, toolCalls: [{ id, name, arguments }], finishReason }.
@@ -70,13 +70,26 @@ export class OpenAICompatClient {
       const choice = chunk.choices?.[0]
       if (!choice) return
       const delta = choice.delta ?? {}
-      if (!reasoning && (delta.reasoning || delta.reasoning_content)) {
+      const addText = (text) => {
+        if (typeof text !== 'string' || !text) return
+        content += text
+        onText?.(text)
+      }
+      const signalReasoning = () => {
+        if (reasoning) return
         reasoning = true
         onReasoning?.()
       }
-      if (typeof delta.content === 'string' && delta.content) {
-        content += delta.content
-        onText?.(delta.content)
+      if (delta.reasoning || delta.reasoning_content) signalReasoning()
+      if (Array.isArray(delta.content)) {
+        // Mistral, quand le modèle réfléchit : une liste de morceaux « thinking »
+        // (non affichés) puis « text ».
+        for (const part of delta.content) {
+          if (part?.type === 'thinking') signalReasoning()
+          else if (part?.type === 'text') addText(part.text)
+        }
+      } else {
+        addText(delta.content)
       }
       for (const part of delta.tool_calls ?? []) {
         const index = part.index ?? calls.length
