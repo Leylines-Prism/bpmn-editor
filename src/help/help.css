@@ -133,6 +133,13 @@ th { font-weight: 600; background: var(--surface-sunken); }
   border-radius: var(--radius-md); background: var(--surface-raised);
 }
 .note.warn { border-left-color: var(--warm); }
+.note.responsible {
+  border-color: color-mix(in srgb, var(--warm) 45%, var(--line)); border-left-color: var(--warm);
+  background: color-mix(in srgb, var(--warm) 8%, var(--surface-raised));
+}
+.note + .note { margin-top: var(--space-3); }
+.note-title { font-weight: 600; color: var(--warm); }
+.note-title + p { margin-top: var(--space-1); }
 
 details.faq { border-bottom: 1px solid var(--line); padding: var(--space-3) 0; }
 details.faq summary { cursor: pointer; font-weight: 600; }
