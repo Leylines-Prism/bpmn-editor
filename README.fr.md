@@ -198,9 +198,9 @@ C'est un projet personnel, maintenu sur le temps libre, et **toutes les contribu
 bienvenues** : signalements de bugs, idées, traductions, documentation ou code. Si vous avez envie de
 le faire grandir, n'hésitez pas.
 
-En toute transparence : son auteur n'est pas développeur professionnel. L'éditeur est construit en
-« vibe coding », avec Claude Code et d'autres modèles d'IA, et chaque changement est essayé dans le
-navigateur avant d'être publié. Les relectures de développeurs expérimentés sont particulièrement
+En toute transparence : son auteur n'est pas développeur professionnel. Le développement de
+l'éditeur est assisté par IA, avec Claude Code et d'autres modèles, et chaque changement est essayé
+dans le navigateur avant d'être publié. Les relectures de développeurs expérimentés sont particulièrement
 appréciées.
 
 Commencez par [CONTRIBUTING.md](CONTRIBUTING.md) (en anglais). Les questions et les idées vont dans
