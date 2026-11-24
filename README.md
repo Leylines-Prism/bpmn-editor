@@ -216,6 +216,9 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
 form described in [SECURITY.md](SECURITY.md). There is no guaranteed response time, but everything
 is read.
 
+If the editor is useful to you, you can support the project with a coffee on
+[Ko-fi](https://ko-fi.com/leylines_prism).
+
 ## License
 
 The code is released under the [MIT License](LICENSE).

@@ -6,6 +6,7 @@ import { setupThemeToggle } from '../theme/theme-toggle.js'
 import { contactChoices, openSealed } from '../feedback.js'
 import { WALLPAPERS } from './wallpapers.js'
 import { createPulses } from './pulses.js'
+import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from '../support.js'
 import introLight from '../brand/leylines-logo-intro-light.svg?url'
 import introDark from '../brand/leylines-logo-intro-dark.svg?url'
 
@@ -56,6 +57,15 @@ for (const c of contactChoices()) {
   el.innerHTML = c.svg
   contacts.append(el)
 }
+
+// Dernière icône : soutenir le projet sur Ko-fi (clic compté, voir src/support.js).
+const support = document.createElement('a')
+Object.assign(support, { href: SUPPORT_URL, target: '_blank', rel: 'noopener', className: 'contact', innerHTML: CUP_ICON })
+support.dataset.support = 'vitrine'
+support.title = T('Support the project on Ko-fi', 'Soutenir le projet sur Ko-fi')
+support.setAttribute('aria-label', support.title)
+contacts.append(support)
+trackSupportClicks(contacts)
 
 // Carrousel
 const slidesBox = document.getElementById('slides')
