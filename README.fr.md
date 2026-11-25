@@ -118,16 +118,6 @@ Linux et sans élévation de privilèges. Il n'accepte que les cinq formats d'ex
 fichier correspond à son format, prend 20 Mo au plus par export et nettoie les noms de fichiers (pas
 de dossier, pas de fichier caché, pas de nom réservé par Windows).
 
-**Depuis une version précédente** : les diagrammes étaient dans un volume Docker `diagrams`, que la
-nouvelle version n'utilise plus. Copiez-les une fois dans le dossier, puis redémarrez. Le volume porte
-le nom du dossier du fichier compose (`docker volume ls` le liste), ici `bpmn-editor_diagrams` :
-
-```
-docker run --rm -v bpmn-editor_diagrams:/old:ro -v "$PWD/bpmn-data:/new" alpine:3.22 sh -c 'mkdir -p /new/diagrams && cp -a /old/diagrams/. /new/diagrams/ && chown -R 1000:1000 /new'
-```
-
-Au démarrage suivant, le serveur renomme ces fichiers au nom de leur diagramme.
-
 ## Le joindre depuis d'autres machines
 
 Le conteneur sert du HTTP simple sur `127.0.0.1:8080`, pour cette machine seulement. Pour l'utiliser

@@ -112,16 +112,6 @@ escalation. It only accepts the five export formats, checks that each file match
 20 MB at most per export, and cleans file names (no folder, no hidden file, no name reserved by
 Windows).
 
-**Coming from an older version**: the diagrams were in a `diagrams` Docker volume, which the new
-version no longer uses. Copy them once into the folder, then restart. The volume is named after the
-folder of the compose file (`docker volume ls` lists it), here `bpmn-editor_diagrams`:
-
-```
-docker run --rm -v bpmn-editor_diagrams:/old:ro -v "$PWD/bpmn-data:/new" alpine:3.22 sh -c 'mkdir -p /new/diagrams && cp -a /old/diagrams/. /new/diagrams/ && chown -R 1000:1000 /new'
-```
-
-At the next start, the server renames these files after their diagram.
-
 ## Reach it from other machines
 
 The container serves plain HTTP on `127.0.0.1:8080`, for this machine only. To use it from your
