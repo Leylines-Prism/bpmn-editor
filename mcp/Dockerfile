@@ -9,10 +9,10 @@ COPY mcp/*.js ./mcp/
 COPY LICENSE ./LICENSE
 # Les fichiers de src/ai sont des modules ES.
 RUN echo '{"type":"module"}' > src/package.json
-# Diagrammes enregistrés : dossier monté en volume par docker-compose.
-RUN mkdir -p /data/diagrams && chown -R node:node /data
+# Dossier de données (diagrammes et exports) : monté par docker-compose depuis la machine hôte.
+RUN mkdir -p /data/diagrams /data/exports && chown -R node:node /data && chmod -R 750 /data
 LABEL org.opencontainers.image.licenses="MIT"
-ENV MCP_HOST=0.0.0.0 NODE_ENV=production DIAGRAMS_DIR=/data/diagrams
+ENV MCP_HOST=0.0.0.0 NODE_ENV=production DIAGRAMS_DIR=/data/diagrams EXPORTS_DIR=/data/exports
 USER node
 EXPOSE 3333
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
