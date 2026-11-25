@@ -366,7 +366,7 @@ function ShapeColorEntry({ element, id }) {
   const setVivid = (c) => commandStack.execute('appearance.setShapeColor', {
     elements: [target], colors: { fill: c.fill, stroke: c.stroke }, textColor: edge ? undefined : VIVID_TEXT,
   })
-  const vivid = VIVID_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.fill} stroke=${c.stroke} text=${edge ? undefined : VIVID_TEXT}
+  const vivid = VIVID_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.fill} stroke=${c.stroke}
     active=${c.fill === fill && c.stroke === stroke} onClick=${() => setVivid(c)} />`)
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
