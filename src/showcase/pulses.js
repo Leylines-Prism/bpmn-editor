@@ -237,7 +237,8 @@ export function createPulses(svg, { isDark, glowTargets = () => [] }) {
     glow(lit)
   }
 
-  // Halo des icônes : allumé tant qu'une impulsion passe sous l'icône ou juste à côté.
+  // Halo des icônes : allumé tant qu'une impulsion passe sous l'icône, jusqu'à 120 px plus bas
+  // (la ligne s'éloigne des icônes sur un écran haut).
   // Les positions du dessin sont converties en pixels de l'écran, car le fond est recadré.
   function glow(points) {
     const els = [...glowTargets()]
@@ -246,7 +247,7 @@ export function createPulses(svg, { isDark, glowTargets = () => [] }) {
     const screen = m ? points.map(([x, y]) => new DOMPoint(x, y).matrixTransform(m)) : []
     for (const el of els) {
       const r = el.getBoundingClientRect()
-      const near = screen.some((p) => p.x > r.left - 12 && p.x < r.right + 12 && p.y > r.top - 40 && p.y < r.bottom + 40)
+      const near = screen.some((p) => p.x > r.left - 12 && p.x < r.right + 12 && p.y > r.top - 20 && p.y < r.bottom + 120)
       el.classList.toggle('glow', near)
     }
   }
