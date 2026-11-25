@@ -52,9 +52,6 @@ const CSS = `
 #chat-form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #0f3460; }
 #chat-input { flex: 1; resize: none; height: 60px; padding: 6px 8px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; font-size: 13px; }
 #chat-input:disabled { opacity: 0.5; }
-#chat-options { display: flex; align-items: center; gap: 6px; padding: 6px 8px 0; font-size: 12px; color: #9ca3af; }
-#chat-options[hidden] { display: none; }
-#chat-model-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 `
 
 
@@ -115,9 +112,6 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   panel.innerHTML = `
     <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
-    <div id="chat-options" hidden>
-      <span id="chat-model-name"></span>
-    </div>
     <div id="chat-attachments" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
@@ -178,8 +172,6 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const form = panel.querySelector('#chat-form')
   const input = panel.querySelector('#chat-input')
   const sendButton = panel.querySelector('#chat-send')
-  const modelBar = panel.querySelector('#chat-options')
-  const modelName = panel.querySelector('#chat-model-name')
   const titleName = panel.querySelector('.chat-title-name')
   const titleModel = panel.querySelector('.chat-title-model')
 
@@ -256,9 +248,6 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const has = (id) => id && models.some((m) => m.id === id)
     currentId = has(settings.defaultModel) ? settings.defaultModel : has(serverDefault) ? serverDefault : models[0]?.id || ''
     const model = currentModel()
-    modelName.textContent = model ? T(`Model: ${model.label}`, `Modèle : ${model.label}`) + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
-    modelName.title = T('Change it in Options', 'À changer dans Options')
-    modelBar.hidden = !model
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
     toggle.classList.toggle('has-model', !!model)
