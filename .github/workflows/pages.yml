@@ -29,10 +29,9 @@ on:
     tags: ['v*.*.*']
   workflow_dispatch:
 
+# Lecture seule par défaut : chaque job reçoit seulement les droits dont il a besoin.
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: pages
@@ -44,6 +43,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read  # configure-pages lit les réglages Pages du dépôt
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -104,6 +106,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write  # publication sur Pages
+      id-token: write  # preuve que le déploiement vient de ce workflow
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
