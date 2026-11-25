@@ -203,6 +203,8 @@ the content matches. A file is never replaced: the answer gives the name chosen,
   The editor tab (`/bridge`) and the chat do not use it: they are limited to the editor origins.
 - MCP requests whose `Host` header is not local are rejected (DNS rebinding protection, provided by
   the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
+- MCP clients send no `Origin` header. A request to `/mcp` that carries one comes from a web page
+  and is rejected unless that origin is listed in `BPMN_EDITOR_ORIGINS`.
 - Only editor pages can connect to the WebSocket: the origin must be listed in `BPMN_EDITOR_ORIGINS`
   (`http://localhost:5173` and `http://127.0.0.1:5173` by default).
 - The bridge and the chat through the server are only active in the editor during development, in

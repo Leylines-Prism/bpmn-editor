@@ -14,6 +14,7 @@ import * as z from 'zod/v4'
 
 import { createToolSet, runAnthropicTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
 import { OpenAICompatClient } from '../src/ai/openai-compat.js'
+import { relayFetch } from './relay-guard.js'
 import { buildCatalog } from './models.js'
 
 const MAX_CONVERSATIONS = 20
@@ -22,8 +23,8 @@ const TOOL_SET = createToolSet(z)
 
 // Le SDK 1.12 enverrait la clé dans « Authorization: Bearer », que l'API refuse
 // dans certains cas (« x-api-key header is required ») : on la passe en x-api-key.
-function anthropicClient({ apiKey, baseURL }) {
-  return new Anthropic({ apiKey: null, authToken: null, ...(baseURL ? { baseURL } : {}), ...(apiKey ? { defaultHeaders: { 'x-api-key': apiKey } } : {}) })
+function anthropicClient({ apiKey, baseURL, fetch }) {
+  return new Anthropic({ apiKey: null, authToken: null, ...(baseURL ? { baseURL } : {}), ...(fetch ? { fetch } : {}), ...(apiKey ? { defaultHeaders: { 'x-api-key': apiKey } } : {}) })
 }
 
 export class ChatService {
@@ -149,8 +150,9 @@ export class ChatService {
   }
 
   // Client d'un appel, avec la clé reçue. Rien n'est gardé après la réponse.
+  // Ses appels passent par relayFetch : l'adresse vient de la page.
   #customClient({ format, baseUrl, apiKey }) {
-    if (format === 'anthropic') return anthropicClient({ apiKey, baseURL: baseUrl })
-    return new OpenAICompatClient({ baseUrl, apiKey })
+    if (format === 'anthropic') return anthropicClient({ apiKey, baseURL: baseUrl, fetch: relayFetch })
+    return new OpenAICompatClient({ baseUrl, apiKey, fetch: relayFetch })
   }
 }

@@ -206,6 +206,8 @@ par exemple `{"file": "Mon processus (2).pdf"}`.
   de l'éditeur (`/bridge`) et le chat ne l'utilisent pas : ils sont limités aux origines de l'éditeur.
 - Les requêtes MCP dont l'en-tête `Host` n'est pas local sont refusées (protection contre le DNS rebinding, fournie par le SDK).
   Dans docker, les noms acceptés sont ceux de `MCP_ALLOWED_HOSTS`.
+- Les clients MCP n'envoient pas d'en-tête `Origin`. Une requête vers `/mcp` qui en porte un vient
+  d'une page web : elle est refusée si cette origine ne figure pas dans `BPMN_EDITOR_ORIGINS`.
 - Seules les pages de l'éditeur peuvent se connecter au WebSocket : l'origine doit figurer dans
   `BPMN_EDITOR_ORIGINS` (par défaut `http://localhost:5173` et `http://127.0.0.1:5173`).
 - Le pont et le chat par le serveur ne sont actifs dans l'éditeur qu'en développement, dans l'image

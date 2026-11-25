@@ -17,18 +17,18 @@ import * as z from 'zod/v4'
 
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
-import { isIP } from 'node:net'
 
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
 import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
 import { ChatService } from './chat.js'
+import { isForbiddenAddress, relayFetch } from './relay-guard.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
 import { imageCaption, isImageResult } from '../src/ai/image-result.js'
-import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
+import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
 try {
@@ -55,7 +55,13 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
 // Fichiers créés en 0640 et dossiers en 0750 : lisibles par le propriétaire et son groupe seulement.
 process.umask(0o027)
 
-const log = (...args) => console.error(new Date().toLocaleTimeString('fr-FR'), ...args)
+// Journal du serveur. Les textes qu'il reçoit peuvent venir d'un modèle ou d'une requête :
+// leurs caractères de contrôle (retours à la ligne, séquences ANSI…) sont écrits échappés,
+// pour qu'ils ne puissent ni ajouter de fausses lignes ni agir sur le terminal.
+const escapeControls = (text) =>
+  text.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
+const log = (...args) =>
+  console.error(new Date().toLocaleTimeString('fr-FR'), ...args.map((a) => (typeof a === 'string' ? escapeControls(a) : a)))
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
 const chat = new ChatService({ bridge, log })
 const TOOLS = buildTools(z)
@@ -103,7 +109,15 @@ function checkToken(req, res, next) {
   res.status(401).json({ jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized: missing or wrong MCP token' }, id: null })
 }
 
-app.post('/mcp', checkToken, async (req, res) => {
+// Les clients MCP n'envoient pas d'en-tête Origin. Une requête qui en porte un vient d'une
+// page web : seules les pages de l'éditeur sont acceptées, comme pour /chat et /bridge.
+function checkMcpOrigin(req, res, next) {
+  const origin = req.headers.origin
+  if (origin === undefined || ALLOWED_ORIGINS.includes(origin)) return next()
+  res.status(403).json({ jsonrpc: '2.0', error: { code: -32000, message: 'Origin not allowed' }, id: null })
+}
+
+app.post('/mcp', checkMcpOrigin, checkToken, async (req, res) => {
   const server = buildMcpServer()
   try {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
@@ -166,7 +180,7 @@ function readCustom(value, { needModel }) {
   const { provider, label, format, baseUrl, apiKey, model } = value
   if (!PROVIDER_IDS.has(provider) || (format !== 'anthropic' && format !== 'openai')) return null
   const url = checkBaseUrl(baseUrl)
-  if (!url || isLinkLocal(new URL(url).hostname)) return null
+  if (!url || isForbiddenAddress(new URL(url).hostname)) return null
   if (apiKey !== undefined && apiKey !== null && (typeof apiKey !== 'string' || apiKey.length > 500)) return null
   if (needModel && (typeof model !== 'string' || !model.trim() || model.length > 200)) return null
   const fallbackLabel = PROVIDERS.find((p) => p.id === provider).label
@@ -180,24 +194,17 @@ function readCustom(value, { needModel }) {
   }
 }
 
-// Adresses de lien local (169.254.0.0/16, fe80::/10) : services de métadonnées des
-// hébergeurs cloud, jamais un fournisseur de modèles. Refusées pour le relais.
-function isLinkLocal(hostname) {
-  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
-  if (isIP(host) === 4) return host.startsWith('169.254.')
-  if (isIP(host) === 6) return /^fe[89ab]/.test(host) || /^::ffff:169\.254\./.test(host)
-  return host === 'metadata.google.internal'
-}
-
 const RELAY_OFF = (req) => T(req, 'Providers set in Options are turned off on this server (CHAT_RELAY=off).', 'Les fournisseurs réglés dans Options sont désactivés sur ce serveur (CHAT_RELAY=off).')
 
 // Erreur d'un fournisseur relayé, telle qu'elle repart vers le navigateur. Le relais
-// appelle une adresse choisie par la page : le corps d'une réponse qui n'est pas une
-// erreur d'API en JSON (page HTML, service interne…) n'est jamais renvoyé, seul son statut.
+// appelle une adresse choisie par la page : seul le message d'une erreur d'API en JSON
+// est renvoyé, limité à 200 caractères. Le reste du corps (page HTML, réponse d'un
+// service interne…) n'est jamais renvoyé, seul le statut.
 function relayError(err) {
   if (!err || typeof err !== 'object' || typeof err.status !== 'number') return err
-  const parsed = err.providerJson ?? err.error
-  return parsed ? err : { name: err.name, status: err.status, message: '' }
+  // providerJson : erreurs de listModels et d'OpenAICompatClient. Sinon, SDK Anthropic.
+  const message = err.providerJson === undefined ? apiErrorMessage(err.error) : err.providerJson ? err.message : ''
+  return { name: err.name, status: err.status, message: String(message || '').slice(0, 200) }
 }
 
 // Bouton « Tester » ou « Lister » de la fenêtre Options, relayé par le serveur.
@@ -206,7 +213,7 @@ app.post('/chat/models', chatCors, async (req, res) => {
   const custom = readCustom(req.body, { needModel: false })
   if (!custom) return res.status(400).json({ error: T(req, 'Invalid settings', 'Réglages invalides') })
   try {
-    const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000) })
+    const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000), fetch: relayFetch })
     res.json({ models })
   } catch (err) {
     res.json({ error: describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })

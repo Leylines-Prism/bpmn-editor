@@ -33,7 +33,12 @@ const SHAPE_GROUP = 'appearance-shape'
 const TEXT_GROUP = 'appearance-text'
 
 const targetOf = (element) => (element.type === 'label' ? element.labelTarget : element)
-const upper = (c) => (c ? String(c).toUpperCase() : '')
+// Couleur lue dans le diagramme, en majuscules. Elle finit dans le HTML des menus : une
+// valeur qui n'a pas l'allure d'une couleur CSS (guillemets, chevrons…) est ignorée.
+const upper = (c) => {
+  const value = c ? String(c).trim().toUpperCase() : ''
+  return /^[#A-Z0-9(),.%\s-]{1,64}$/.test(value) ? value : ''
+}
 
 function fillOf(element) {
   const di = targetOf(element).di

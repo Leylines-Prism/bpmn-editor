@@ -182,6 +182,11 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const options = createOptionsDialog({
     mode,
     test: testConnection,
+    // Clés effacées : la liste des modèles utilisables change aussitôt.
+    onForget() {
+      fillModels()
+      announce()
+    },
     onSave(saved) {
       settings = saved
       const before = currentModel()
