@@ -148,6 +148,16 @@ export function setupHistory({ modeler, undoButton, redoButton }) {
     refresh()
   })
 
+  // Les boutons flottent à droite de la bascule de simulation, quelle que soit sa largeur.
+  const group = undoButton?.parentElement
+  const placeGroup = () => {
+    const toggle = modeler.get('canvas').getContainer().querySelector('.bts-toggle-mode')
+    if (group && toggle?.offsetWidth) group.style.setProperty('--history-left', `${toggle.offsetLeft + toggle.offsetWidth + 8}px`)
+  }
+  requestAnimationFrame(placeGroup)
+  const toggle = modeler.get('canvas').getContainer().querySelector('.bts-toggle-mode')
+  if (toggle && 'ResizeObserver' in window) new ResizeObserver(placeGroup).observe(toggle)
+
   undoButton?.addEventListener('click', () => undo())
   redoButton?.addEventListener('click', () => redo())
   if (undoButton) undoButton.title = T('Undo (Ctrl+Z)', 'Annuler (Ctrl+Z)')
