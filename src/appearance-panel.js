@@ -359,8 +359,22 @@ function StylePreview({ style }) {
 const ROLLER_PATHS = html`<rect x="3" y="3" width="13" height="5" rx="1.2" /><path d="M16 5.5h2.5v5H10v3" /><rect x="8.6" y="13.5" width="2.8" height="6" rx="1" />`
 
 function RollerPreview({ style }) {
-  const svg = (color) => html`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none" stroke=${color}
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ROLLER_PATHS}</svg>`
+  return html`<${PaintedIcon} style=${style} paths=${ROLLER_PATHS} viewBox="0 0 22 22" />`
+}
+
+// Pipette du bouton Copier le style, dans un carré peint avec le style de
+// l'élément sélectionné : on voit ce qui sera copié.
+const PIPETTE_PATHS = html`<path d="m2.5 21.5 1-1h2.8l8.6-8.6" /><path d="M3.5 20.5v-2.8l8.6-8.6" /><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z" />`
+
+function PipettePreview({ style }) {
+  return html`<${PaintedIcon} style=${style} paths=${PIPETTE_PATHS} viewBox="0 0 24 24" />`
+}
+
+// Icône au trait dans un carré : le carré prend le fond et le contour du style,
+// l'icône la couleur du texte. Sans style, l'icône reste seule, au trait.
+function PaintedIcon({ style, paths, viewBox }) {
+  const svg = (color) => html`<svg xmlns="http://www.w3.org/2000/svg" viewBox=${viewBox} fill="none" stroke=${color}
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`
   if (!style) return html`<span class="appearance-roller" aria-hidden="true">${svg('currentColor')}</span>`
   return html`<span class="appearance-roller is-painted" aria-hidden="true"
     style=${{ background: style.fill || '#FFFFFF', borderColor: style.stroke || '#22242A' }}>
@@ -381,7 +395,7 @@ function CopyPasteEntry({ element, id }) {
     <div class="appearance-row">
       <button type="button" class="appearance-button" id=${id + '-copy'}
         title=${T("Remember this element's colors and text formatting", 'Retenir les couleurs et la mise en forme du texte de cet élément')}
-        onClick=${() => copyStyle(eventBus, element)}>${T('Copy style', 'Copier le style')}</button>
+        onClick=${() => copyStyle(eventBus, element)}><${PipettePreview} style=${styleOf(element)} />${T('Copy style', 'Copier le style')}</button>
       <button type="button" class="appearance-button" id=${id + '-paste'} disabled=${!copied}
         title=${copied ? T('Apply the copied style to this element', 'Appliquer le style copié à cet élément') : T('Copy a style first', "Copiez d'abord un style")}
         onClick=${() => pasteStyle(commandStack, [element])}>
