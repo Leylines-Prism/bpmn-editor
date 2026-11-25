@@ -59,7 +59,12 @@
     <main>
       <div class="hero">
         <h1>BPMN Pilot guide</h1>
-        <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Draw your processes by hand, or describe them to an AI assistant that draws them for you.</p>
+        <!-- online -->
+        <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Draw your processes by hand, or describe them to an AI assistant that does it for you.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Draw your processes by hand, or describe them to an AI assistant that does it for you. An MCP agent such as Claude Code can also draw in the open editor.</p>
+        <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Open the editor</a>
           <a class="btn" href="#assistant">Let the AI draw</a>
@@ -69,17 +74,22 @@
 
       <section id="getting-started">
         <h2>Getting started</h2>
-        <p>Every new diagram starts with a small process: a start, a task and an end. That is true the first time you open the editor and each time you click <span class="ico" data-icon="new" aria-hidden="true"></span><span class="ui">New</span>. Build from there, or delete these shapes to draw something else.</p>
+        <p>A new diagram already holds a small process: a start, a task and an end, both the first time you open the editor and each time you click <span class="ico" data-icon="new" aria-hidden="true"></span><span class="ui">New</span>. Build from there, or delete these shapes to draw something else.</p>
         <figure><img src="/src/help/img/en-editeur.webp" width="1440" height="820" alt="The editor with an expense claim process: the palette on the left, the canvas, and the AI assistant panel open on the right." loading="lazy" /><figcaption>The editor, with the AI assistant panel open on the right. The Process panel is hidden here.</figcaption></figure>
         <ol>
-          <li>Pick a shape in the palette, left of the canvas, then click the canvas to place it.</li>
-          <li>Click a shape: its context menu appears next to it. It appends the next element, already connected.</li>
+          <li>Pick a shape in the palette on the left, then click the canvas to place it.</li>
+          <li>Click a shape: its context menu appears next to it and lets you append the next element, already connected.</li>
           <li>Double-click a shape to type its label.</li>
           <li>Name the file in the field on the left of the toolbar. That name is used when saving and for every export.</li>
         </ol>
-        <p>Your work is kept in the browser after every change. Reopen the page and you find it as you left it. The toolbar shows this as "Autosave".</p>
+        <p>Your work is kept in the browser after every change, and you find it as you left it when you reopen the page. The "Autosave" label in the toolbar is there to remind you.</p>
         <p>The <span class="ui">FR</span> or <span class="ui">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <!-- online -->
         <div class="note">There is no account. Your diagrams stay in your browser. If you use the assistant, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
+        <!-- /online -->
+        <!-- docker -->
+        <div class="note">There is no account. Your diagrams stay in your browser, or on your server if you save them there. If you use the assistant, only the AI provider receives them, through your server. This version does not measure its audience.</div>
+        <!-- /docker -->
       </section>
 
       <section id="drawing">
@@ -87,7 +97,7 @@
         <h3>The palette</h3>
         <p>The palette on the left holds the selection tools (hand <span class="ico bpmn-icon-hand-tool" aria-hidden="true"></span>, lasso <span class="ico bpmn-icon-lasso-tool" aria-hidden="true"></span>, space <span class="ico bpmn-icon-space-tool" aria-hidden="true"></span>, connect <span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span>) and then the shapes: events, tasks, gateways, subprocesses, data objects, pools and lanes. The <svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg> button at the bottom of the palette opens the full list of BPMN elements, with a search by name.</p>
         <h3>The context menu</h3>
-        <p>When you select an element, a set of buttons appears next to it. Which buttons you get depends on the element type. For a task, you will find:</p>
+        <p>When you select an element, a set of buttons appears next to it. They vary with its type. For a task, you will find:</p>
         <ul>
           <li><span class="ico bpmn-icon-end-event-none" aria-hidden="true"></span><span class="ico bpmn-icon-gateway-none" aria-hidden="true"></span><span class="ico bpmn-icon-task" aria-hidden="true"></span><span class="ico bpmn-icon-intermediate-event-none" aria-hidden="true"></span> <strong>First row:</strong> append an end event, a gateway, a task or an intermediate event. The new element is placed to the right, already linked by a flow.</li>
           <li><span class="ico bpmn-icon-text-annotation" aria-hidden="true"></span><span class="ui">Add text annotation</span> (the dotted bracket) adds a comment linked to the element.</li>
@@ -121,14 +131,14 @@
               <tr><td><kbd>R</kbd></td><td>Change the element's type</td></tr>
               <tr><td><kbd>H</kbd>, <kbd>L</kbd>, <kbd>S</kbd>, <kbd>C</kbd></td><td>Hand, lasso, space and connect tools</td></tr>
               <tr><td><kbd>Ctrl</kbd>+scroll</td><td>Zoom</td></tr>
-              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Update the diagram in My diagrams</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Update the saved entry in My diagrams</td></tr>
             </tbody>
           </table>
         </div>
         <h3>The minimap</h3>
         <p>The minimap shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="ui">Open minimap</span> to expand it, then <span class="ui">Close minimap</span> to collapse it.</p>
         <ul>
-          <li>The orange frame is the part of the diagram visible on screen. Drag it to move around.</li>
+          <li>The orange frame is the part visible on screen. Drag it to move around.</li>
           <li>Click anywhere else in the minimap to center the view on that point.</li>
           <li><kbd>Ctrl</kbd>+wheel over the minimap zooms the canvas.</li>
         </ul>
@@ -141,16 +151,16 @@
         <h3>Show and hide the panel</h3>
         <ul>
           <li>The <span class="ico" data-icon="panel" aria-hidden="true"></span> button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
-          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, move to the handle with <kbd>Tab</kbd> and use the left and right arrows. Double-click the handle to go back to the default width.</li>
+          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, reach it with <kbd>Tab</kbd> and use the left and right arrows. Double-click it to go back to the default width.</li>
         </ul>
         <h3>Name, ID and Executable</h3>
         <p>Every element has the <span class="ui">General</span> group.</p>
         <ul>
-          <li><span class="ui">Name</span> is the label shown on the diagram. Changing it here is the same as double-clicking the shape. The <span class="ui">Text</span> group repeats it next to the text formatting (see <a href="#colors-text">Colors and text</a>).</li>
-          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. It is not shown on the diagram. The file uses it to link elements together (a flow to its task, a pool to its process), and execution engines use it to identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
+          <li><span class="ui">Name</span> is the label shown on the canvas. Changing it here is the same as double-clicking the shape. The <span class="ui">Text</span> group repeats it next to the text formatting (see <a href="#colors-text">Colors and text</a>).</li>
+          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. Hidden on screen, it lets the file link elements together (a flow to its task, a pool to its process) and lets execution engines identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
           <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
         </ul>
-        <p>For a pool, the General group holds the name and ID of the pool, then the name and ID of the process it contains, with its Executable box. This is where you find the process settings once the diagram has pools.</p>
+        <p>For a pool, the General group holds its name and ID, then those of the process it contains, with the Executable box. So once a diagram has pools, this is where the process settings live.</p>
         <h3>Other groups</h3>
         <p>Fields are sorted into groups. Click a group title to collapse or expand it. A dot to the right of the title means the group already holds values.</p>
         <div class="table-wrap">
@@ -172,27 +182,26 @@
       <section id="colors-text">
         <h2>Colors and text</h2>
         <h3><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Colors</h3>
-        <p>With several elements selected, the brush in the context menu offers 17 ready-made colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to stay readable, and a dark fill gets light text.</p>
+        <p>With several elements selected, the brush in the context menu offers 17 ready-made colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to keep good contrast, and a dark fill gets light text.</p>
         <h3><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Text formatting</h3>
         <p>With several elements selected, the <span class="ui">A</span> button in the context menu formats their labels: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
         <h3>In the Process panel</h3>
-        <p>For a single selected element, the brush and the <span class="ui">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors already set elsewhere in the diagram, the most recent first. <span class="ui">Default</span> removes the color, and <span class="ui">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
+        <p>For a single selected element, the brush and the <span class="ui">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors used elsewhere, the most recent first. <span class="ui">Default</span> removes the color, and <span class="ui">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
         <ul>
           <li><span class="ui">Shape</span>: two rows of ready-made colors, pale fills then vivid fills that also turn the text white, then a <span class="ui">Fill</span> and a <span class="ui">Stroke</span> to set one without the other (the square opens your system's color picker). A flow only has a stroke.</li>
           <li><span class="ui">Text</span>: the <span class="ui">Label</span>, bold, italic, underline, size, font, two rows of text colors (the second one high contrast: four dark colors for light fills, four bright ones for dark fills), <span class="ui">Auto</span>, <span class="ui">Custom…</span> and <span class="ui">Default text</span>.</li>
-          <li><span class="ui">Used in this diagram</span>, under the colors of the <span class="ui">Shape</span> and <span class="ui">Text</span> groups, lists on one row the shape or text colors set in the diagram, the most recent first. One click applies it to the selected element.</li>
-          <li><span class="ui">Used in this diagram</span>, in the <span class="ui">Style</span> group, collects every style set by hand in the diagram (colors and text formatting together), the most recent first, on one row. One click applies it to the selected element.</li>
-          <li><span class="ui">Copy style</span>, in the <span class="ui">Style</span> group above the other two, remembers the element's fill, stroke, font and text color. <span class="ui">Paste style</span> applies them to another element. Its button shows the copied style: a roller in a square, the square in the shape colors, the roller in the text color. To apply it to several elements at once, select them and use the <span class="ui">Paste style</span> roller of the context menu. The browser keeps the copied style, even from one diagram to another.</li>
+          <li><span class="ui">Used in this diagram</span> lists on one row, most recent first, what is already set elsewhere: shape or text colors under the colors of the <span class="ui">Shape</span> and <span class="ui">Text</span> groups, and styles set by hand (colors and text formatting together) in the <span class="ui">Style</span> group. One click applies one of them to the selected element.</li>
+          <li><span class="ui">Copy style</span>, in the <span class="ui">Style</span> group above the other two, remembers the element's fill, stroke, font and text color. <span class="ui">Paste style</span> applies them to another element. Its button gives a preview: a roller in a square, the square in the shape colors, the roller in the text color. To handle several elements at once, select them and use the <span class="ui">Paste style</span> roller of the context menu. The browser keeps this copy, even from one diagram to another.</li>
         </ul>
         <p>Each change is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
         <figure><img src="/src/help/img/en-panneau-apparence.webp" width="300" height="1022" alt="Style, Shape and Text groups of the Process panel for a task: blue fill and stroke, bold on, a dark red text color from the high contrast row, and that style copied on the Paste style button." loading="lazy" /><figcaption>The Shape and Text groups for a selected task.</figcaption></figure>
-        <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export, and the PDF draws the other fonts in Helvetica or Times, depending on their family. A font missing from a computer is replaced by a similar one.</p>
+        <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export, which also replaces fonts with Helvetica or Times, depending on their family. A font missing from a computer is replaced by a similar one.</p>
       </section>
 
       <section id="checking">
         <h2>Check, tidy up, simulate</h2>
         <h3>BPMN correctness checks</h3>
-        <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>bpmnlint</a>. It checks the diagram while you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice: the diagram saves even if some remain.</p>
+        <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice and never block saving.</p>
         <ul>
           <li>A badge on the element flags an issue: red for an error, orange for a warning.</li>
           <li>Hover the badge to read the message. The rule name follows in brackets, for example <code>no-implicit-end</code>.</li>
@@ -236,23 +245,29 @@
             </table>
           </div>
         </details>
-        <p>To learn the notation: the <a href="https://camunda.com/bpmn/reference/" target="_blank" rel="noopener">BPMN 2.0 symbol reference by Camunda</a>, which explains each symbol with an example, and the <a href="https://bpm-conference.org/assets/docs/bpmn-poster/BPMN2_0_Poster_EN.pdf" target="_blank" rel="noopener">BPMN 2.0 poster</a> (PDF), with every symbol on one page. For video lessons, see the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French). The <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>rule documentation</a> details each check.</p>
+        <p>To learn the notation: the <a href="https://camunda.com/bpmn/reference/" target="_blank" rel="noopener">BPMN 2.0 symbol reference by Camunda</a>, which explains each symbol with an example, and the <a href="https://bpm-conference.org/assets/docs/bpmn-poster/BPMN2_0_Poster_EN.pdf" target="_blank" rel="noopener">BPMN 2.0 poster</a> (PDF), with every symbol on one page. For video lessons, see the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French). The <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">rule documentation<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a> details each check.</p>
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
-        <p>The <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Tidy up</span> button (after My diagrams) recomputes the layout of the whole diagram, from left to right. Useful after an import, or after a diagram drawn by the AI.</p>
+        <p>The <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Tidy up</span> button (after My diagrams) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="ico" data-icon="undo" aria-hidden="true"></span><span class="ui">Undo</span> brings back the previous layout.</div>
         <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>The <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. This shows whether the process ends in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
+        <p>The <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
         <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
       </section>
 
       <section id="saving">
         <h2>Saving and My diagrams</h2>
         <h3>Autosave</h3>
-        <p>The current diagram is kept in your browser one second after each change. The time shown next to "Autosave" is the time of the last save. There is only one current diagram: clicking <span class="ui">New</span> or opening a file replaces it.</p>
+        <p>The editor keeps your work in the browser one second after each change, and shows the time of the last save next to "Autosave". This autosave has a single slot: clicking <span class="ui">New</span> or opening a file replaces its content.</p>
         <h3><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</h3>
-        <p>To keep several diagrams, open <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
+        <p>To keep several processes, open <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">My diagrams</span>. Give your work a name and click <span class="ui">Save</span>. The list then lets you reopen, rename or delete each entry. <kbd>Ctrl</kbd>+<kbd>S</kbd> updates the one that is open, and <span class="ui">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="470" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The My diagrams window.</figcaption></figure>
-        <div class="note warn">My diagrams lives in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a diagram for good, or share it, export it as a .bpmn file.</div>
+        <!-- online -->
+        <div class="note warn">This list is stored in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a process for good, or share it, export it as a .bpmn file.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The <span class="ui">Save to</span> choice sets where your work goes: <span class="ui">This browser</span> or <span class="ui">Server</span>. An entry saved on the server opens from any browser that reaches it, and it is also kept as a .bpmn file (see <a href="#docker">Your files in the Docker version</a>).</p>
+        <div class="note warn">An entry saved in This browser stays on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. Choose Server to find it elsewhere, or export a .bpmn file to share it.</div>
+        <!-- /docker -->
       </section>
 
       <section id="open-export">
@@ -264,7 +279,7 @@
           <li>You can also drop a .bpmn file onto the page.</li>
           <li><span class="ico" data-icon="compare" aria-hidden="true"></span><span class="ui">Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
-        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no diagram layout, the editor computes one when it opens.</p>
+        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening.</p>
         <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
         <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="ui">Open</span>, then <span class="ui">Compare with a file…</span>, or with the <span class="ui">Before / after</span> button on the assistant's pill.</p>
         <ul>
@@ -290,39 +305,58 @@
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
+        <!-- online -->
         <p>In the Docker version, the menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
+        <!-- /docker -->
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
-        <p>Export, then Print… opens the browser's print window on the diagram alone. It is centered on one page, with 10 mm margins. The page turns to landscape if the diagram is wider than tall, portrait otherwise. Safari lets you choose the orientation in its print window. A large diagram is shrunk to fit the page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
+        <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
 
       <section id="assistant">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI assistant</h2>
-        <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. Then you touch up its work by hand, like any other diagram.</p>
+        <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. You can then touch up its work by hand, like everything else.</p>
 
         <h3>1. Choose a provider</h3>
+        <!-- online -->
         <p>The assistant uses an AI model from the provider of your choice, with your own API key. Open <span class="ui">Options</span> in the assistant panel:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The assistant uses an AI model from the provider of your choice. Open <span class="ui">Options</span> in the assistant panel. If keys are set on the server, the <span class="ui">Server models</span> choice comes first in the list: there is nothing to enter. Otherwise, choose a provider and paste your API key:</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Provider</th><th>What to know</th></tr></thead>
             <tbody>
+              <!-- online -->
               <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>The simplest in this version: create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
               <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI does not always accept calls made from a web page: if "Test" fails, this provider will not work here.</td></tr>
               <tr><td>Ollama</td><td>Free models, on your own computer. Ollama must be started with the <code>OLLAMA_ORIGINS</code> variable set to this site's address (Options gives you the exact value). Pick a model that supports tool calls.</td></tr>
               <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… The server must use https (or localhost) and allow this site's address in its CORS setting.</td></tr>
+              <!-- /online -->
+              <!-- docker -->
+              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
+              <tr><td>Anthropic (Claude)</td><td>Create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
+              <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>.</td></tr>
+              <tr><td>Ollama</td><td>Free models, on your own machine. Enter its address as the server sees it: if it runs in Docker, try <code>http://host.docker.internal:11434/v1</code>. Pick a model that supports tool calls.</td></tr>
+              <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… Enter the address as the server sees it.</td></tr>
+              <!-- /docker -->
             </tbody>
           </table>
         </div>
-        <p>Choose the provider at the top of the window, paste the key, click <span class="ui">Test</span>, then choose the model. The provider's models are offered once its connection is tested. One provider is used at a time, and switching does not erase the keys of the others. The panel shows which model is in use.</p>
+        <p>Select the provider at the top of the window, paste the key, click <span class="ui">Test</span>, then choose the model: the list fills in once the connection is tested. One provider is used at a time, and switching does not erase the keys of the others. The panel shows which model is in use.</p>
         <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Assistant options window with the Mistral provider chosen: address, API key, models, Test and List models buttons." loading="lazy" /><figcaption>Assistant options: Mistral chosen, waiting for the key.</figcaption></figure>
 
         <h3>2. Describe the process</h3>
         <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The assistant answers in the language of your message. For example:</p>
         <div class="note">"Draw the expense claim process. The employee enters the claim, their manager approves or rejects it. Above €500, accounting approves it too. Once approved, it is paid within 5 days. Use one lane per role."</div>
-        <p>Under each answer, small tags show what the assistant did to the diagram: reading, adding shapes, connections, layout… Then ask it for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself.</p>
+        <p>Under each answer, small tags show what the assistant did on the canvas: reading, adding shapes, connections, layout… Then ask it for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself.</p>
         <ul>
           <li>The input box grows with the text. The button in its corner opens a large editor, to paste long text or open a .txt or .md file. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends.</li>
-          <li><span class="ui">New chat</span> starts over. The diagram does not change.</li>
+          <li><span class="ui">New chat</span> starts over. Your drawing does not change.</li>
           <li><span class="ui">Stop</span> interrupts an answer in progress.</li>
         </ul>
 
@@ -332,7 +366,7 @@
         <h3>See what the assistant changed</h3>
         <p>After each answer, the shapes the assistant added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>
         <ul>
-          <li>When the assistant changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click the pill to show the outlines, click again to hide them.</li>
+          <li>When the assistant changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click it to show the outlines, click again to hide them.</li>
           <li>Your own edits and automatic layout are never marked. <kbd>Ctrl</kbd>+<kbd>Z</kbd> updates the marking.</li>
           <li><span class="ui">Before / after</span>, on the pill, compares the diagram from before the answer with the current one, side by side (see <a href="#compare">Compare two versions</a>).</li>
           <li><span class="ui">Undo</span>, on the pill, reverts everything the assistant changed since your message in one step, layout included. If you edited the diagram in the meantime, the editor asks you to confirm, since your edits are undone too. <kbd>Ctrl</kbd>+<kbd>Y</kbd> brings the changes back.</li>
@@ -340,12 +374,17 @@
         </ul>
 
         <h3>What it costs</h3>
-        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends the current diagram. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
+        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
       </section>
 
       <section id="keys">
         <h2>Your API keys</h2>
+        <!-- online -->
         <p>Your key never goes through this site or its host (GitHub Pages). It stays in your browser and goes straight to the chosen provider with each message. Where it is kept depends on the <span class="ui">Remember API keys on your device</span> box in Options:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The safest place for keys is the server (see the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>): they never reach the browser, and the assistant offers them under <span class="ui">Server models</span>. A key entered in Options goes to your server with each message, and the server passes it on to the provider without storing it. In the browser, it is kept according to the <span class="ui">Remember API keys on your device</span> box:</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Box</th><th>Where the key is</th><th>Until when</th></tr></thead>
@@ -355,50 +394,69 @@
             </tbody>
           </table>
         </div>
-        <p>What protects it: the page runs no script from anywhere else (a content security policy forbids it), and the key is only sent to the chosen provider. However, a malicious browser extension, or someone using your session, can read it.</p>
+        <!-- online -->
+        <p>What protects it: the page runs no script from anywhere else (a content security policy forbids it). However, a malicious browser extension, or someone using your session, can read it.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>What protects it: the page runs no script from anywhere else and only connects to your server (a content security policy enforces this). However, a malicious browser extension, or someone using your session, can read a key kept in the browser.</p>
+        <!-- /docker -->
         <div class="note warn">On a shared computer, leave the box unchecked and close the tab when you leave.</div>
         <div class="note responsible" role="note" aria-labelledby="responsible-use">
           <p class="note-title" id="responsible-use">Responsible use</p>
-          <p>Use, first and foremost, an API key dedicated to this editor, created for it alone, with a limited validity period. Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
+          <p>Preferably, use an API key created for this editor alone, with a limited validity period. Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
         </div>
       </section>
 
       <section id="privacy">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>
         <ul>
+          <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
           <li>If you use the AI assistant, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
-          <li>Like any web host, this site's host (GitHub Pages) keeps technical logs, such as your IP address.</li>
-          <li>The stable site measures its audience with Umami, without cookies (the development version measures nothing), according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the assistant, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
+          <li>Like any web host, GitHub Pages keeps technical logs, including your IP address.</li>
+          <li>The stable site counts its visits with Umami, without cookies (the development version measures nothing), according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the assistant, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
           <li>The site loads no third-party script.</li>
         </ul>
         <p>The <span class="ui">Privacy</span> link at the bottom of the canvas repeats these points in the editor.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <li>Your diagrams, settings and API keys stay in your browser, or on your server for what you save there. Nothing is sent to the author of the editor.</li>
+          <li>If you use the AI assistant, your messages, the diagram and your attached files go through your server to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>An agent connected through MCP reads and edits the open diagram. What it does with it depends on the agent and its provider.</li>
+          <li>This version does not measure its audience and loads no third-party script.</li>
+          </ul>
+          <!-- /docker -->
       </section>
 
       <section id="docker">
         <h2>Docker version and MCP agents</h2>
+        <!-- online -->
         <p>This site is the online version. The editor also comes as a Docker version, to install on your machine or private network. It adds:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>You are using the Docker version of the editor, installed on your machine or network. Compared with the online version, it adds:</p>
+        <!-- /docker -->
         <ul>
           <li>API keys stored on your server, which never reach the browser,</li>
           <li>every provider, OpenAI included, with no browser blocking,</li>
-          <li>My diagrams also saved on the server, available from several browsers,</li>
-          <li>exports also saved on the server, if you choose so,</li>
+          <li>a <span class="ui">Server</span> choice in My diagrams, to reach your saved work from several browsers,</li>
+          <li>exports dropped on the server, if you choose,</li>
           <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
         <h3>Your files in the Docker version</h3>
-        <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your files back:</p>
+        <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>
         <ul>
-          <li><code>diagrams</code>: the diagrams saved on the server with My diagrams, one .bpmn file per diagram, named after it. Renaming a diagram renames its file. Leave the hidden <code>.index.json</code> file in place: it links the files to the editor. A .bpmn file copied into this folder appears in My diagrams, under its file name.</li>
+          <li><code>diagrams</code>: what My diagrams saves on the server, one .bpmn file per diagram, named after it. Renaming an entry renames its file. Leave <code>.index.json</code> in place: this hidden file links the folder to the editor. A .bpmn copied into this folder appears in My diagrams, under its name.</li>
           <li><code>exports</code>: the exports made with the <span class="ui">Server</span> or <span class="ui">Both</span> destination. An export never replaces a file: a second <code>Order process.pdf</code> becomes <code>Order process (2).pdf</code>.</li>
         </ul>
-        <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>project README on GitHub</a>.</p>
+        <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README on GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
       </section>
 
       <section id="small-screens">
         <h2>On a phone or tablet</h2>
         <p>The editor is designed for a computer screen, a mouse and a keyboard. On a phone, it is mostly for viewing a diagram.</p>
         <ul>
-          <li><strong>What works:</strong> opening a .bpmn file or a diagram from <span class="ui">My diagrams</span>, panning and zooming with your fingers, exporting.</li>
+          <li><strong>What works:</strong> opening a .bpmn file or an entry from <span class="ui">My diagrams</span>, panning and zooming with your fingers, exporting.</li>
           <li><strong>What is difficult:</strong> placing and connecting shapes, typing labels, using the Process panel and the assistant, for lack of room.</li>
         </ul>
         <p>Below 900 pixels wide (or 500 high), a banner above the canvas says so. Close it with its cross: it does not come back in this browser. On a small screen the Process panel also starts hidden. On a tablet, the <span class="ico" data-icon="panel" aria-hidden="true"></span> button on the right of the toolbar opens it. On a phone, the toolbar is wider than the screen and its last buttons are out of reach.</p>
@@ -409,7 +467,12 @@
         <h2>FAQ</h2>
         <details class="faq">
           <summary>Do I need an account?</summary>
+          <!-- online -->
           <p>No. The editor works without an account. Only the AI assistant needs an API key from an AI provider.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>No. The editor works without an account. Only the AI assistant needs an API key, set on the server or entered in Options.</p>
+          <!-- /docker -->
         </details>
         <details class="faq">
           <summary>Can I use the editor without AI?</summary>
@@ -417,12 +480,25 @@
         </details>
         <details class="faq">
           <summary>My diagrams are gone. What happened?</summary>
-          <p>They are stored in the browser. They do not show in another browser, on another device, in private mode, or after the site's data is cleared. Export what you want to keep as .bpmn.</p>
+          <!-- online -->
+          <p>They are stored in one browser, on one device. So they do not show anywhere else, in private mode, or after the site's data is cleared. Export what you want to keep as .bpmn.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>Those saved in This browser only show there: not in another browser, in private mode, or after the site's data is cleared. Those saved on the Server stay available from any browser. Export what you want to keep elsewhere as .bpmn.</p>
+          <!-- /docker -->
         </details>
+        <!-- online -->
         <details class="faq">
           <summary>"Test" fails with OpenAI.</summary>
           <p>OpenAI sometimes refuses calls made directly from a web page. Use Mistral, Anthropic or Ollama on this site, or install the Docker version, which goes through its own server.</p>
         </details>
+        <!-- /online -->
+        <!-- docker -->
+        <details class="faq">
+          <summary>My MCP agent does not draw.</summary>
+          <p>The agent draws in the last editor tab you used: keep it open. The MCP badge in the toolbar should read "MCP: connected". Click it to get the address and the settings to paste into the agent again.</p>
+        </details>
+        <!-- /docker -->
         <details class="faq">
           <summary>The assistant drew something unexpected.</summary>
           <p>The pill's <span class="ui">Undo</span> button reverts the whole answer at once, <kbd>Ctrl</kbd>+<kbd>Z</kbd> one change at a time. You can also ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>
@@ -439,12 +515,12 @@
 
       <section id="feedback">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
-        <p>A bug, an idea, a question? The <span class="ui">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>.</p>
-        <p>Is the editor useful to you? You can <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg>support the project with a coffee on Ko-fi</a>.</p>
+        <p>A bug, an idea, a question? The <span class="ui">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+        <p>Is the editor useful to you? You can <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help">support the project with a coffee on Ko-fi<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg></a>.</p>
       </section>
 
       <footer>
-        BPMN Pilot by Leylines, built on <a href="https://bpmn.io" target="_blank" rel="noopener">bpmn.io</a>. Source code on <a href="https://github.com/Leylines-Prism/bpmn-pilot" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>. Version %APP_VERSION%.
+        BPMN Pilot by Leylines, built on <a href="https://bpmn.io" target="_blank" rel="noopener">bpmn.io</a>. Source code on <a href="https://github.com/Leylines-Prism/bpmn-pilot" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. Version %APP_VERSION%.
         <span data-channel="dev" hidden><a href="">Try the development version</a>, which follows the latest changes.</span><span data-channel="stable" hidden>This is the development version, which follows the latest changes. <a href="">Back to the stable version</a>.</span>
       </footer>
     </main>
