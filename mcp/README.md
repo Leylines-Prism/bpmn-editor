@@ -155,7 +155,7 @@ npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Then open http://localhost:5173. The badge switches to "MCP: connected".
+Then open http://localhost:5173. The badge switches to "MCP: connected", then to the agent's name once it connects ("MCP: Claude Code"). The MCP protocol only sends the client's name and version, never the model.
 
 For Claude Code, the `.mcp.json` file at the root already declares the server
 (`http://127.0.0.1:3333/mcp`).

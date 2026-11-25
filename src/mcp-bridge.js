@@ -26,6 +26,7 @@ export function connectMcpBridge(modeler, url) {
   const state = { tabId: null, badge }
   let retryDelay = RETRY_MIN_MS
   let ws = null
+  let mcpClient = null
 
   function connect() {
     setBadge(badge, 'connecting')
@@ -33,7 +34,7 @@ export function connectMcpBridge(modeler, url) {
 
     ws.addEventListener('open', () => {
       retryDelay = RETRY_MIN_MS
-      setBadge(badge, 'connected')
+      setBadge(badge, 'connected', mcpClient)
       send({ type: 'hello', title: document.title })
     })
 
@@ -46,6 +47,11 @@ export function connectMcpBridge(modeler, url) {
       }
       if (msg.type === 'welcome') {
         state.tabId = msg.id
+        return
+      }
+      if (msg.type === 'mcp-client') {
+        mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), lastCall: Number(msg.lastCall) || null }
+        if (badge.dataset.state === 'connected') setBadge(badge, 'connected', mcpClient)
         return
       }
       if (msg.type !== 'call') return
@@ -101,20 +107,41 @@ function createBadge() {
   return badge
 }
 
-function setBadge(badge, state) {
+// Noms lisibles des clients MCP courants (clientInfo.name du protocole).
+const CLIENT_NAMES = {
+  'claude-code': 'Claude Code',
+  'claude-ai': 'Claude',
+  'cursor-vscode': 'Cursor',
+  'visual-studio-code': 'VS Code',
+  'mcp-inspector': 'MCP Inspector',
+  'gemini-cli-mcp-client': 'Gemini CLI',
+  'codex-mcp-client': 'Codex',
+  'Zed': 'Zed',
+}
+export const clientLabel = (name) => CLIENT_NAMES[name] || (name.length > 24 ? name.slice(0, 23) + '…' : name)
+
+function setBadge(badge, state, client = null) {
   const states = {
     connecting: [T('MCP: connecting…', 'MCP : connexion…'), '#888'],
     connected: [T('MCP: connected', 'MCP : connecté'), '#4ade80'],
     disconnected: [T('MCP: offline', 'MCP : hors ligne'), '#888'],
   }
   const [text, color] = states[state]
-  badge.textContent = text
+  const known = state === 'connected' && client?.name
+  badge.textContent = known ? T('MCP: ', 'MCP : ') + clientLabel(client.name) : text
   badge.dataset.state = state
   badge.style.color = color
-  badge.title =
-    state === 'connected'
-      ? T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')
-      : T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
+  if (state !== 'connected') {
+    badge.title = T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
+    return
+  }
+  const lines = [T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')]
+  if (known) lines.unshift(T('Last client: ', 'Dernier client : ') + [client.name, client.version].filter(Boolean).join(' '))
+  if (client?.lastCall) {
+    const time = new Date(client.lastCall).toLocaleTimeString(document.documentElement.lang || undefined, { hour: '2-digit', minute: '2-digit' })
+    lines.splice(known ? 1 : 0, 0, T('Last tool call at ', 'Dernier appel à ') + time)
+  }
+  badge.title = lines.join('\n')
 }
 
 // ── Outils ─────────────────────────────────────────────────────────────────

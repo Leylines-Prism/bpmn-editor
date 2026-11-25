@@ -15,6 +15,7 @@ export class EditorBridge {
     this.log = log
     this.clients = new Map() // ws -> { id, title, lastActive }
     this.pending = new Map() // callId -> { resolve, reject, timer }
+    this.mcpClient = null // { name, version, lastCall } du dernier client MCP connecté
     this.wss = new WebSocketServer({ noServer: true, maxPayload: 16 * 1024 * 1024 })
     this.wss.on('connection', (ws) => this.#onConnection(ws))
   }
@@ -43,6 +44,7 @@ export class EditorBridge {
     // L'onglet apprend son identifiant, que le chat intégré joint à ses messages
     // pour que l'IA dessine dans l'onglet où l'on discute.
     ws.send(JSON.stringify({ type: 'welcome', id: client.id }))
+    if (this.mcpClient) ws.send(JSON.stringify({ type: 'mcp-client', ...this.mcpClient }))
     this.log(`[bridge] onglet ${client.id} connecté (${this.clients.size} au total)`)
 
     ws.on('message', (raw) => {
@@ -91,6 +93,29 @@ export class EditorBridge {
       if (client.id === id && ws.readyState === ws.OPEN) return { ws, client }
     }
     return null
+  }
+
+  // Nom et version annoncés par le client MCP à sa connexion (clientInfo du
+  // protocole). Le protocole ne transmet ni le modèle ni l'utilisateur.
+  noteMcpClient(info) {
+    const clean = (value) => (typeof value === 'string' ? value.replace(/[^\w .@()+/-]/g, '').trim().slice(0, 60) : '')
+    const name = clean(info?.name)
+    if (!name) return
+    this.mcpClient = { name, version: clean(info?.version), lastCall: this.mcpClient?.name === name ? this.mcpClient.lastCall : null }
+    this.log(`[mcp] client connecté : ${name} ${this.mcpClient.version}`)
+    this.#broadcastMcpClient()
+  }
+
+  // Un outil vient d'être appelé par un client MCP (pas par le chat intégré).
+  noteMcpCall() {
+    if (!this.mcpClient) this.mcpClient = { name: '', version: '', lastCall: null }
+    this.mcpClient.lastCall = Date.now()
+    this.#broadcastMcpClient()
+  }
+
+  #broadcastMcpClient() {
+    const msg = JSON.stringify({ type: 'mcp-client', ...this.mcpClient })
+    for (const ws of this.clients.keys()) if (ws.readyState === ws.OPEN) ws.send(msg)
   }
 
   hasTab(id) {
