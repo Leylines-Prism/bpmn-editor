@@ -7,8 +7,8 @@
 //   pulses : des impulsions sur les lignes, qui allument les nœuds traversés. Sur une
 //            ligne de couleur unie, l'impulsion prend la couleur du dégradé à sa position.
 //   flow   : un flux lent et discret sur toutes les lignes
-//   scroll : le dégradé des lignes défile en continu, et des impulsions immobiles, bleues
-//            ou orange, s'allument et s'éteignent çà et là dans le fond
+//   scroll : le dégradé des lignes défile en continu, et des impulsions immobiles, des
+//            couleurs du dégradé, s'allument et s'éteignent çà et là dans le fond
 //   none   : fond immobile
 
 const NS = 'http://www.w3.org/2000/svg'
@@ -134,12 +134,12 @@ export function createPulses(svg, { isDark, glowTargets = () => [] }) {
     for (const it of scrolling) it.g.setAttribute('gradientTransform', `translate(${-(s % it.period)} 0)`)
     if (now >= next) { glint(); next = now + 350 + Math.random() * 650 }
   }
-  // Impulsion immobile à un endroit tiré au hasard, hors du logo, dans l'une des deux
-  // couleurs de la charte (bleu ciel ou orange).
+  // Impulsion immobile à un endroit tiré au hasard, hors du logo, d'une couleur prise
+  // n'importe où dans le dégradé (du bleu ciel à l'orange), au cœur blanc éclatant.
   function glint() {
     let x, y
     do { x = Math.random() * 1920; y = Math.random() * 1080 } while (x > 560 && x < 1360 && y > 300 && y < 680)
-    flash(x, y, Math.random() < 0.5 ? SKY : ORANGE, { radius: 20 + Math.random() * 40 })
+    flash(x, y, leyline(Math.random()), { radius: 20 + Math.random() * 40, core: true })
   }
 
   const colorAt = (route, s, x) => {
@@ -175,24 +175,26 @@ export function createPulses(svg, { isDark, glowTargets = () => [] }) {
     items.push({ route, g, halo, core, speed, start: performance.now(), passed: new Set() })
   }
 
-  function flash(x, y, rgb, { arrival = false, radius } = {}) {
+  function flash(x, y, rgb, { arrival = false, radius, core = false } = {}) {
     // Halo d'arrivée : ambre sur fond sombre, orange profond sur fond clair (charte).
     const color = arrival ? (isDark() ? [255, 176, 102] : ORANGE) : rgb
     const id = `flash-${++serial}`
-    const g = gradient(id, [[0, 0.9], [0.45, 0.45], [1, 0]])
+    // core : un cœur blanc éclatant au centre du halo.
+    const g = gradient(id, core ? [[0, 1], [0.12, 1], [0.3, 0.75], [0.6, 0.3], [1, 0]] : [[0, 0.9], [0.45, 0.45], [1, 0]])
     paint(g, color)
+    if (core) g.children[0].setAttribute('stop-color', '#fff')
     const c = document.createElementNS(NS, 'circle')
     c.setAttribute('cx', x)
     c.setAttribute('cy', y)
     c.setAttribute('fill', `url(#${id})`)
     flashes.append(c)
-    const t0 = performance.now(), R = radius || (arrival ? 80 : 30), duration = arrival ? 1500 : 900
+    const t0 = performance.now(), R = radius || (arrival ? 80 : 30), duration = arrival || core ? 1500 : 900
     const step = (now) => {
       const t = (now - t0) / duration
       if (t >= 1 || !c.isConnected) { c.remove(); g.remove(); return }
       const e = 1 - (1 - t) ** 3
       c.setAttribute('r', 8 + (R - 8) * e)
-      c.setAttribute('opacity', (1 - t) * (arrival ? 1 : 0.8))
+      c.setAttribute('opacity', core ? Math.min(1, 1.6 * (1 - t)) : (1 - t) * (arrival ? 1 : 0.8))
       requestAnimationFrame(step)
     }
     requestAnimationFrame(step)
