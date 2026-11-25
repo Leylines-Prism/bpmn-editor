@@ -29,7 +29,7 @@ server {
     }
 
     # Serveur MCP : clients MCP (/mcp), onglets de l'éditeur (/bridge), chat intégré (/chat),
-    # diagrammes enregistrés (/diagrams).
+    # diagrammes enregistrés (/diagrams), exports (/exports).
     # Le nom d'hôte d'origine est transmis : le serveur refuse ceux qu'il ne connaît pas.
     location = /mcp {
         limit_req zone=bpmn_api burst=100 nodelay;
@@ -54,6 +54,14 @@ server {
         proxy_set_header Host $host;
         proxy_http_version 1.1;
         client_max_body_size 11m;
+    }
+    # Exports déposés dans le dossier du serveur (20 Mo au plus par fichier).
+    location = /exports {
+        limit_req zone=bpmn_api burst=100 nodelay;
+        proxy_pass $mcp;
+        proxy_set_header Host $host;
+        proxy_http_version 1.1;
+        client_max_body_size 21m;
     }
     location /chat {
         limit_req zone=bpmn_chat burst=20 nodelay;

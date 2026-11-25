@@ -21,6 +21,7 @@ import { isIP } from 'node:net'
 
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
+import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
 import { ChatService } from './chat.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
@@ -50,6 +51,9 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean)
+
+// Fichiers créés en 0640 et dossiers en 0750 : lisibles par le propriétaire et son groupe seulement.
+process.umask(0o027)
 
 const log = (...args) => console.error(new Date().toLocaleTimeString('fr-FR'), ...args)
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
@@ -303,6 +307,34 @@ app.delete('/diagrams/:id', chatCors, checkId, async (req, res) => {
     res.json({ ok: true })
   } catch (err) { failed(res, err) }
 })
+
+// ── Exports enregistrés sur le serveur ─────────────────────────────────────
+// Le menu Exporter, réglé sur « Serveur » ou « Les deux », envoie ici le fichier produit.
+// POST /exports?format=pdf&name=Mon%20processus → { file: "Mon processus.pdf" }
+
+const exportsStore = new ExportStore()
+const exportBody = express.raw({ type: 'application/octet-stream', limit: MAX_EXPORT_BYTES })
+app.options('/exports', chatCors)
+app.post('/exports', chatCors, exportBody, async (req, res) => {
+  const format = req.query.format
+  const name = DiagramStore.cleanName(req.query.name)
+  if (!name || !ExportStore.validFormat(format)) return res.status(400).json({ error: T(req, 'Invalid name or format', 'Nom ou format invalide') })
+  if (!ExportStore.validContent(format, req.body)) return res.status(400).json({ error: T(req, 'The file does not match its format', 'Le fichier ne correspond pas à son format') })
+  try {
+    res.json({ file: await exportsStore.save(name, format, req.body) })
+  } catch (err) {
+    log('[exports] erreur :', err.message)
+    res.status(500).json({ error: T(req, 'The server could not save the file', "Le serveur n'a pas pu enregistrer le fichier") })
+  }
+})
+
+// Dossier monté sans droit d'écriture pour le serveur : le dire au démarrage, avec la solution.
+for (const store of [diagrams, exportsStore]) {
+  store.ready.catch((err) => {
+    log(`[fichiers] ${store.dir} inaccessible (${err.code || err.message}).`)
+    if (err.code === 'EACCES') log('Le dossier monté doit appartenir à l\'utilisateur du conteneur : réglez PUID et PGID (voir le README).')
+  })
+}
 
 function chatErrorMessage(err, lang = 'en') {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
