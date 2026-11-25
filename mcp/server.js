@@ -103,7 +103,15 @@ function checkToken(req, res, next) {
   res.status(401).json({ jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized: missing or wrong MCP token' }, id: null })
 }
 
-app.post('/mcp', checkToken, async (req, res) => {
+// Les clients MCP n'envoient pas d'en-tête Origin. Une requête qui en porte un vient d'une
+// page web : seules les pages de l'éditeur sont acceptées, comme pour /chat et /bridge.
+function checkMcpOrigin(req, res, next) {
+  const origin = req.headers.origin
+  if (origin === undefined || ALLOWED_ORIGINS.includes(origin)) return next()
+  res.status(403).json({ jsonrpc: '2.0', error: { code: -32000, message: 'Origin not allowed' }, id: null })
+}
+
+app.post('/mcp', checkMcpOrigin, checkToken, async (req, res) => {
   const server = buildMcpServer()
   try {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
