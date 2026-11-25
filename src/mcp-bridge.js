@@ -53,7 +53,7 @@ export function connectMcpBridge(modeler, url) {
         const data = await tool(msg.args || {})
         send({ type: 'result', id: msg.id, ok: true, data })
       } catch (err) {
-        console.warn(`[MCP] ${msg.tool} :`, err)
+        console.warn('[MCP] %s :', String(msg.tool), err)
         send({ type: 'result', id: msg.id, ok: false, error: err.message || String(err) })
       }
     })
