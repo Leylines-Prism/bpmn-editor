@@ -13,10 +13,8 @@
 import htm from 'htm'
 import { h } from '@bpmn-io/properties-panel/preact'
 import { useEffect, useRef, useState } from '@bpmn-io/properties-panel/preact/hooks'
-import { TextAreaEntry, isTextAreaEntryEdited } from '@bpmn-io/properties-panel'
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
-import { getLabel } from 'bpmn-js/lib/util/LabelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
@@ -165,24 +163,6 @@ function ColorField({ id, label, value, fallback, onChange }) {
     <${ColorInput} id=${id} value=${value || fallback} onPick=${onChange} />
     <${HexInput} id=${id + '-hex'} label=${label} value=${value} onPick=${onChange} />
   </div>`
-}
-
-// ── Libellé ─────────────────────────────────────────────────────────────────
-
-function LabelEntry({ element, id }) {
-  const modeling = useService('modeling')
-  const debounce = useService('debounceInput')
-  const target = targetOf(element)
-  return html`<${TextAreaEntry}
-    id=${id}
-    element=${target}
-    label=${T('Label', 'Libellé')}
-    getValue=${() => getLabel(target) || ''}
-    setValue=${(value) => modeling.updateLabel(target, value || null)}
-    debounce=${debounce}
-    rows=${2}
-    autoResize=${true}
-  />`
 }
 
 // ── Copier et coller le style ───────────────────────────────────────────────
@@ -525,7 +505,6 @@ AppearancePropertiesProvider.prototype.getGroups = function (element) {
         id: TEXT_GROUP,
         label: T('Text', 'Texte'),
         entries: [
-          { id: 'appearance-label', component: LabelEntry, isEdited: isTextAreaEntryEdited },
           { id: 'appearance-text', component: TextStyleEntry, isEdited: () => !!(fontOf(target) || textColorOf(target)) },
         ],
       })

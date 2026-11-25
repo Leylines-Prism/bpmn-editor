@@ -157,7 +157,7 @@
         <h3>Name, ID and Executable</h3>
         <p>Every element has the <span class="ui">General</span> group.</p>
         <ul>
-          <li><span class="ui">Name</span> is the label shown on the canvas. Changing it here is the same as double-clicking the shape. The <span class="ui">Text</span> group repeats it next to the text formatting (see <a href="#colors-text">Colors and text</a>).</li>
+          <li><span class="ui">Name</span> is the label shown on the canvas. Changing it here is the same as double-clicking the shape.</li>
           <li><span class="ui">ID</span> is the technical reference of the element in the XML file. Hidden on screen, it lets the file link elements together (a flow to its task, a pool to its process) and lets execution engines identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
           <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
         </ul>
@@ -190,12 +190,12 @@
         <p>For a single selected element, the brush and the <span class="ui">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors used elsewhere, the most recent first. <span class="ui">Default</span> removes the color, and <span class="ui">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
         <ul>
           <li><span class="ui">Shape</span>: two rows of ready-made colors, pale fills then vivid fills that also turn the text white, then a <span class="ui">Fill</span> and a <span class="ui">Stroke</span> to set one without the other (the square opens your system's color picker). The field next to the square shows the color's hexadecimal code: type one, for example <code>#1E88E5</code>, then Enter to apply it. A flow only has a stroke.</li>
-          <li><span class="ui">Text</span>: the <span class="ui">Label</span>, bold, italic, underline, size, font, two rows of text colors as round dots (the first: black, a gray gradient and four dark shades for light fills; the second: white and vivid shades, three of them bright for dark fills), an <span class="ui">Other</span> row for any color, with its square and hexadecimal code as for the fill, then <span class="ui">Auto</span> and <span class="ui">Default text</span>.</li>
-          <li><span class="ui">Used in this diagram</span>, in the <span class="ui">Style</span> group, lists on one row, most recent first, the styles set by hand elsewhere (colors and text formatting together). One click applies one of them to the selected element.</li>
+          <li><span class="ui">Text</span>: bold, italic, underline, size, font, two rows of text colors as round dots (the first: black, a gray gradient and four dark shades for light fills; the second: white and vivid shades, three of them bright for dark fills), an <span class="ui">Other</span> row for any color, with its square and hexadecimal code as for the fill, then <span class="ui">Auto</span> and <span class="ui">Default text</span>.</li>
+          <li><span class="ui">Used in this diagram</span>, in the <span class="ui">Style</span> group, lists on one row, most recent first, up to 8 styles set elsewhere (colors and text formatting together), by you or by the assistant. One click applies one of them to the selected element.</li>
           <li><span class="ui">Copy style</span>, in the <span class="ui">Style</span> group above the other two, remembers the element's fill, stroke, font and text color. Its button shows an eyedropper in a square painted with the selected element's colors: that is what will be copied. <span class="ui">Paste style</span> applies the copied style to another element. Its button gives a preview: a roller in a square, the square in the shape colors, the roller in the text color. To handle several elements at once, select them and use the <span class="ui">Paste style</span> roller of the context menu. The browser keeps this copy, even from one diagram to another.</li>
         </ul>
         <p>Each change is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
-        <figure><img src="/src/help/img/en-panneau-apparence.webp" width="300" height="1022" alt="Style, Shape and Text groups of the Process panel for a task: blue fill and stroke, bold on, a dark red text color from the high contrast row, and that style copied on the Paste style button." loading="lazy" /><figcaption>The Shape and Text groups for a selected task.</figcaption></figure>
+        <figure><img src="/src/help/img/en-panneau-apparence.webp" width="298" height="732" alt="Style, Shape and Text groups of the Process panel for a task: blue fill and stroke with their hexadecimal codes, bold on, a dark red text dot, the eyedropper painted in the task colors, and that style copied on the Paste style button and in Used in this diagram." loading="lazy" /><figcaption>The Style, Shape and Text groups for a selected task.</figcaption></figure>
         <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export, which also replaces fonts with Helvetica or Times, depending on their family. A font missing from a computer is replaced by a similar one.</p>
       </section>
 
@@ -318,7 +318,7 @@
 
       <section id="assistant">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI assistant</h2>
-        <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. Ask it for example for "one color per actor" or "the exception path in red". You can then touch up its work by hand, like everything else.</p>
+        <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else.</p>
 
         <h3>1. Choose a provider</h3>
         <!-- online -->
@@ -365,6 +365,17 @@
 
         <h3>3. Start from an image or a PDF</h3>
         <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool or a procedure in a PDF. Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral.</p>
+
+        <h3>4. Color and format</h3>
+        <p>The assistant can also dress up the diagram: fill, stroke, text color, bold, italic, underline, size and font, on shapes and flows alike. It uses the same settings as the <a href="#properties">Process panel</a>, and you touch up the result by hand the same way. For example:</p>
+        <div class="note">"Give each actor its own color, in pale tones. Put the rejection path in red, and the accounting tasks in bold."</div>
+        <figure><img src="/src/help/img/en-ia-couleurs.webp" width="1003" height="873" alt="Expense report process in three lanes colored by the assistant: pale blue for the employee, orange for the manager, green for accounting. The rejection flow and the Expense rejected event are red, and the Reimburse task is dark green with bold white text." loading="lazy" /><figcaption>An expense report colored by the assistant: one shade per actor, the rejection in red, and white text picked automatically on the dark green.</figcaption></figure>
+        <ul>
+          <li>On a dark fill, it picks white or black text, whichever reads best.</li>
+          <li>The colors it sets are saved in the .bpmn file following the standard, like those set by hand. They join the <span class="ui">Used in this diagram</span> styles of the <span class="ui">Style</span> group, ready to reuse.</li>
+          <li>Each request is undone in one go with <kbd>Ctrl</kbd>+<kbd>Z</kbd>, and the "AI" pill counts recolored elements as changed.</li>
+          <li>An MCP agent (Claude Code, Claude Desktop…) can do the same, with the <code>style_elements</code> tool.</li>
+        </ul>
 
         <h3>See what the assistant changed</h3>
         <p>After each answer, the shapes the assistant added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>
@@ -444,7 +455,7 @@
           <li>every provider, OpenAI included, with no browser blocking,</li>
           <li>a <span class="ui">Server</span> choice in My diagrams, to reach your saved work from several browsers,</li>
           <li>exports dropped on the server, if you choose,</li>
-          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
+          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, color and format it, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>

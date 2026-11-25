@@ -27,7 +27,7 @@ body {
 /* La ligne de lumière : un trait fin sous la barre, du froid vers le chaud */
 #toolbar::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--leyline); pointer-events: none;
+  height: 1.5px; background: var(--leyline); pointer-events: none;
 }
 
 .brand { display: flex; align-items: center; gap: var(--space-2); margin-right: var(--space-3); }

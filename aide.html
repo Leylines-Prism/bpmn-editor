@@ -157,7 +157,7 @@
         <h3>Nom, Identifiant et Exécutable</h3>
         <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
         <ul>
-          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme. Le groupe <span class="ui">Texte</span> le reprend à côté de la mise en forme du texte (voir <a href="#couleurs-texte">Couleurs et texte</a>).</li>
+          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme.</li>
           <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Invisible à l'écran, il permet au fichier de relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus) et aux moteurs d'exécution de désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
           <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un schéma de documentation ou d'analyse, elle peut rester décochée.</li>
         </ul>
@@ -190,12 +190,12 @@
         <p>Pour un seul élément sélectionné, le pinceau et le bouton <span class="ui">A</span> du menu contextuel ouvrent un petit menu : cinq couleurs de forme ou de texte, puis, sous <span class="ui">Déjà dans le diagramme</span>, jusqu'à trois couleurs utilisées ailleurs, les plus récentes en tête. <span class="ui">Par défaut</span> retire la couleur, et <span class="ui">Plus…</span> ouvre le <a href="#proprietes">panneau Processus</a> sur son groupe <span class="ui">Forme</span> ou <span class="ui">Texte</span>, avec plus de place. Pour plusieurs éléments sélectionnés, ils ouvrent les menus complets décrits plus haut.</p>
         <ul>
           <li><span class="ui">Forme</span> : deux lignes de couleurs toutes prêtes, des fonds pâles puis des fonds vifs qui mettent aussi le texte en blanc, puis un <span class="ui">Fond</span> et un <span class="ui">Contour</span> pour régler l'un sans l'autre (le carré ouvre le sélecteur de couleur du système). Le champ à droite du carré donne le code hexadécimal de la couleur : tapez-en un, par exemple <code>#1E88E5</code>, puis Entrée pour l'appliquer. Un flux n'a qu'un contour.</li>
-          <li><span class="ui">Texte</span> : le <span class="ui">Libellé</span>, gras, italique, souligné, taille, police, deux lignes de couleurs du texte en pastilles rondes (la première : le noir, un dégradé de gris et quatre teintes foncées pour les fonds clairs ; la seconde : le blanc et des teintes vives, dont trois claires pour les fonds foncés), une ligne <span class="ui">Autre</span> pour n'importe quelle couleur, avec son carré et son code hexadécimal comme pour le fond, puis <span class="ui">Auto</span> et <span class="ui">Texte par défaut</span>.</li>
-          <li><span class="ui">Déjà dans le diagramme</span>, dans le groupe <span class="ui">Style</span>, reprend sur une ligne, du plus récent au plus ancien, les styles faits à la main ailleurs (couleurs et mise en forme du texte ensemble). Un clic applique l'un d'eux à l'élément sélectionné.</li>
+          <li><span class="ui">Texte</span> : gras, italique, souligné, taille, police, deux lignes de couleurs du texte en pastilles rondes (la première : le noir, un dégradé de gris et quatre teintes foncées pour les fonds clairs ; la seconde : le blanc et des teintes vives, dont trois claires pour les fonds foncés), une ligne <span class="ui">Autre</span> pour n'importe quelle couleur, avec son carré et son code hexadécimal comme pour le fond, puis <span class="ui">Auto</span> et <span class="ui">Texte par défaut</span>.</li>
+          <li><span class="ui">Déjà dans le diagramme</span>, dans le groupe <span class="ui">Style</span>, reprend sur une ligne, du plus récent au plus ancien, jusqu'à 8 styles faits à la main ailleurs (couleurs et mise en forme du texte ensemble), par vous ou par l'assistant. Un clic applique l'un d'eux à l'élément sélectionné.</li>
           <li><span class="ui">Copier le style</span>, dans le groupe <span class="ui">Style</span> placé avant les deux autres, retient le fond, le contour, la police et la couleur du texte de l'élément. Son bouton montre une pipette dans un carré aux couleurs de l'élément sélectionné : c'est ce qui sera copié. <span class="ui">Coller le style</span> applique le style copié à un autre élément. Son bouton en donne un aperçu : un rouleau dans un carré, le carré aux couleurs de la forme, le rouleau à la couleur du texte. Pour traiter plusieurs éléments d'un coup, sélectionnez-les et utilisez le rouleau <span class="ui">Coller le style</span> du menu contextuel. Le navigateur garde cette copie, même d'un schéma à l'autre.</li>
         </ul>
         <p>Chaque réglage s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
-        <figure><img src="/src/help/img/fr-panneau-apparence.webp" width="300" height="1022" alt="Groupes Style, Forme et Texte du panneau Processus pour une tâche : fond et contour bleus, gras activé, texte rouge sombre choisi dans la ligne à fort contraste, et ce style copié sur le bouton Coller le style." loading="lazy" /><figcaption>Les groupes Forme et Texte pour une tâche sélectionnée.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-panneau-apparence.webp" width="298" height="732" alt="Groupes Style, Forme et Texte du panneau Processus pour une tâche : fond et contour bleus avec leurs codes hexadécimaux, gras activé, pastille rouge sombre pour le texte, la pipette peinte aux couleurs de la tâche, et ce style copié sur le bouton Coller le style et dans Déjà dans le diagramme." loading="lazy" /><figcaption>Les groupes Style, Forme et Texte pour une tâche sélectionnée.</figcaption></figure>
         <p>Couleurs et styles sont enregistrés dans le fichier .bpmn selon la norme, et les autres outils bpmn.io les relisent. Le souligné n'apparaît pas dans l'export PDF, qui remplace aussi les polices par Helvetica ou Times, selon leur famille. Une police absente d'un ordinateur est remplacée par une police voisine.</p>
       </section>
 
@@ -318,7 +318,7 @@
 
       <section id="assistant">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Assistant IA</h2>
-        <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Demandez-lui par exemple « une couleur par acteur » ou « le chemin d'exception en rouge ». Son travail se retouche ensuite à la main, comme tout le reste.</p>
+        <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste.</p>
 
         <h3>1. Choisir un fournisseur</h3>
         <!-- online -->
@@ -365,6 +365,17 @@
 
         <h3>3. Partir d'une image ou d'un PDF</h3>
         <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil ou d'une procédure en PDF. Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez-lui de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral.</p>
+
+        <h3>4. Mettre en couleur et en forme</h3>
+        <p>L'assistant habille aussi le schéma : fond, contour, couleur du texte, gras, italique, souligné, taille et police, sur les formes comme sur les flux. Il utilise les mêmes réglages que le <a href="#proprietes">panneau Processus</a>, et le résultat se retouche à la main de la même façon. Par exemple :</p>
+        <div class="note">« Mets une couleur par acteur, en tons pâles. Le chemin de refus en rouge, et les tâches de la comptabilité en gras. »</div>
+        <figure><img src="/src/help/img/fr-ia-couleurs.webp" width="1003" height="873" alt="Processus de note de frais en trois couloirs colorés par l'assistant : bleu pâle pour le salarié, orangé pour le manager, vert pour la comptabilité. Le flux de refus et l'événement Note refusée sont en rouge, la tâche Rembourser en vert foncé avec un texte blanc en gras." loading="lazy" /><figcaption>Une note de frais mise en couleur par l'assistant : une teinte par acteur, le refus en rouge, et un texte blanc choisi automatiquement sur le vert foncé.</figcaption></figure>
+        <ul>
+          <li>Sur un fond foncé, il choisit un texte blanc ou noir, le plus lisible des deux.</li>
+          <li>Les couleurs posées s'enregistrent dans le fichier .bpmn selon la norme, comme celles faites à la main. Elles rejoignent les styles <span class="ui">Déjà dans le diagramme</span> du groupe <span class="ui">Style</span>, prêtes à être réutilisées.</li>
+          <li>Chaque demande s'annule en une seule fois par <kbd>Ctrl</kbd>+<kbd>Z</kbd>, et la pilule « IA » compte les éléments recolorés comme modifiés.</li>
+          <li>Un agent MCP (Claude Code, Claude Desktop…) a le même pouvoir, avec l'outil <code>style_elements</code>.</li>
+        </ul>
 
         <h3>Voir ce que l'assistant a changé</h3>
         <p>Après chaque réponse, les formes que l'assistant a ajoutées sont entourées d'un fin contour magenta avec un point, celles qu'il a modifiées d'un contour en pointillé. Une pilule en haut du canevas résume, par exemple « IA : 2 ajoutés, 1 modifié, 1 supprimé ». Survolez-la pour voir le nom des formes supprimées.</p>
@@ -444,7 +455,7 @@
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>un choix <span class="ui">Serveur</span> dans Mes diagrammes, pour retrouver vos enregistrements depuis plusieurs navigateurs,</li>
           <li>des exports déposés, au choix, sur le serveur,</li>
-          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer votre travail :</p>
