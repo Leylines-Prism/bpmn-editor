@@ -98,7 +98,7 @@
           <li><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg><span class="ui">Set color</span> (the brush) and <svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg><span class="ui">Text formatting</span> (the A button) open a small color menu for one element, or their full menu for several. They are covered in <a href="#colors-text">Colors and text</a>, with <span class="ui">Paste style</span> (the roller), shown once a style has been copied.</li>
         </ul>
         <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
-        <h3>Change element</h3>
+        <h3><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Change element</h3>
         <p>The wrench opens the <span class="ui">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
         <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, sequential multi-instance <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> and loop <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
         <h3>Keyboard shortcuts</h3>
@@ -133,7 +133,7 @@
       </section>
 
       <section id="properties">
-        <h2>Process panel</h2>
+        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Process panel</h2>
         <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
         <h3>Show and hide the panel</h3>
         <ul>
@@ -168,9 +168,9 @@
 
       <section id="colors-text">
         <h2>Colors and text</h2>
-        <h3>Colors</h3>
+        <h3><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Colors</h3>
         <p>With several elements selected, the brush in the context menu offers 17 ready-made colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to stay readable, and a dark fill gets light text.</p>
-        <h3>Text formatting</h3>
+        <h3><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Text formatting</h3>
         <p>With several elements selected, the <span class="ui">A</span> button in the context menu formats their labels: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
         <h3>In the Process panel</h3>
         <p>For a single selected element, the brush and the <span class="ui">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors already set elsewhere in the diagram, the most recent first. <span class="ui">Default</span> removes the color, and <span class="ui">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
@@ -234,10 +234,10 @@
           </div>
         </details>
         <p>To learn the notation: the <a href="https://camunda.com/bpmn/reference/" target="_blank" rel="noopener">BPMN 2.0 symbol reference by Camunda</a>, which explains each symbol with an example, and the <a href="https://bpm-conference.org/assets/docs/bpmn-poster/BPMN2_0_Poster_EN.pdf" target="_blank" rel="noopener">BPMN 2.0 poster</a> (PDF), with every symbol on one page. For video lessons, see the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French). The <a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>rule documentation</a> details each check.</p>
-        <h3>Tidy up</h3>
+        <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
         <p>The <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Tidy up</span> button (after My diagrams) recomputes the layout of the whole diagram, from left to right. Useful after an import, or after a diagram drawn by the AI.</p>
         <div class="note warn">Tidy up moves every shape and clears the undo history. The editor asks you to confirm. To keep the previous version, save it in My diagrams first.</div>
-        <h3>Simulation</h3>
+        <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
         <p>The <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A log shows the steps taken. This shows whether the process ends in every case. Click <span class="ui">Stop simulation</span> to go back to editing.</p>
         <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
       </section>
@@ -246,7 +246,7 @@
         <h2>Saving and My diagrams</h2>
         <h3>Autosave</h3>
         <p>The current diagram is kept in your browser one second after each change. The time shown next to "Autosave" is the time of the last save. There is only one current diagram: clicking <span class="ui">New</span> or opening a file replaces it.</p>
-        <h3>My diagrams</h3>
+        <h3><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</h3>
         <p>To keep several diagrams, open <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">My diagrams</span>. Save the current diagram under a name, then reopen, rename or delete your diagrams. Once a diagram is saved, <kbd>Ctrl</kbd>+<kbd>S</kbd> updates it. <span class="ui">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="470" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The My diagrams window.</figcaption></figure>
         <div class="note warn">My diagrams lives in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a diagram for good, or share it, export it as a .bpmn file.</div>
@@ -254,14 +254,14 @@
 
       <section id="open-export">
         <h2>Open, import, export</h2>
-        <h3>Open</h3>
+        <h3><span class="ico" data-icon="open" aria-hidden="true"></span>Open</h3>
         <ul>
           <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Open</span>, then <span class="ui">.bpmn or .xml file…</span>, opens a file from your disk.</li>
           <li><span class="ui">Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
           <li>You can also drop a .bpmn file onto the page.</li>
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no diagram layout, the editor computes one when it opens.</p>
-        <h3>Export</h3>
+        <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Export</h3>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Format</th><th>Use it to</th></tr></thead>
@@ -277,12 +277,12 @@
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
-        <h3>Print</h3>
+        <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
         <p>Export, then Print… opens the browser's print window on the diagram alone. It is centered on one page, with 10 mm margins. The page turns to landscape if the diagram is wider than tall, portrait otherwise. Safari lets you choose the orientation in its print window. A large diagram is shrunk to fit the page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
 
       <section id="assistant">
-        <h2>AI assistant</h2>
+        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI assistant</h2>
         <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. Then you touch up its work by hand, like any other diagram.</p>
 
         <h3>1. Choose a provider</h3>
@@ -348,7 +348,7 @@
       </section>
 
       <section id="privacy">
-        <h2>Privacy</h2>
+        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>
         <ul>
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
           <li>If you use the AI assistant, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
@@ -415,7 +415,7 @@
       </section>
 
       <section id="feedback">
-        <h2>Send feedback</h2>
+        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
         <p>A bug, an idea, a question? The <span class="ui">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-editor/issues" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>.</p>
         <p>Is the editor useful to you? You can <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg>support the project with a coffee on Ko-fi</a>.</p>
       </section>
