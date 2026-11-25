@@ -66,10 +66,21 @@ never personal.
 
 A version is a `vX.Y.Z` tag, published from the Releases page. The tag builds the Docker images.
 The online site has a stable page at its root, built from the latest tag, and a development page
-in `dev/`, built from main. The stable page is published again at each merge to main. When the tag
-sits on a commit that main has already published, the tag alone does not replace it: GitHub Pages
-keeps the deployment it already has for that commit. The new version goes online at the next merge
-to main.
+in `dev/`, built from main.
+
+GitHub Pages keeps the deployment it already has when the same commit comes back. A tag placed on
+a commit that main has already published therefore leaves the stable page on the previous version.
+To avoid that, release in this order:
+
+1. Open a pull request that bumps the version in `package.json`, `package-lock.json` and the two
+   images of `docker-compose.image.yml`.
+2. Once its checks pass, publish the release with the pull request's branch as its target (not
+   main). The tag builds the Docker images and publishes the stable page from that commit.
+3. Merge the pull request. The merge is a new commit, so the site is published again, with the
+   new tag as its stable page.
+
+Do not let main move between steps 2 and 3: the release must hold the same code as main after the
+merge.
 
 ## License
 

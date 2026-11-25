@@ -6,7 +6,8 @@
 # change). Sans aucun tag, la page stable est construite depuis main.
 # Limite : Pages repère un déploiement par son commit et garde celui déjà en ligne quand le même
 # commit revient. Un tag posé sur le commit que main vient de publier ne change donc rien : la page
-# stable passe à la nouvelle version à la fusion suivante sur main (voir CONTRIBUTING.md).
+# stable resterait sur l'ancienne version. D'où l'ordre décrit dans CONTRIBUTING.md (section Releases) : release sur
+# la branche de la PR de montée de version, puis fusion.
 #
 # La page dev garde ses diagrammes et réglages à part (SITE_CHANNEL=dev, voir vite.config.js),
 # n'est pas indexée et ne mesure pas l'audience.
