@@ -154,19 +154,21 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 ## What the editor does
 
-- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF), print
-  the diagram alone fitted to one page. The current diagram is restored when you come back.
+- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF), copy
+  as an image, print the diagram alone fitted to one page. The current diagram is restored when you
+  come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
-- **Drawing**: palette, context pad, copy and paste, 18 colors or a custom one, text formatting
-  (bold, italic, size, font, color, with "Auto" for readable text on dark fills), tidy up,
-  token simulation, BPMN rule checking, grid, minimap, properties panel with Shape and Text
-  groups (fill, stroke, label and text formatting of the selected element, custom colors reused in
-  one click, copy and paste of a whole
-  style, also onto several elements).
+- **Drawing**: palette, context pad, copy and paste, tidy up, token simulation, BPMN rule checking,
+  grid, minimap, and the Process panel for the properties of each element.
+- **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
+  picker, and text formatting (bold, italic, underline, size, font, "Auto" for readable text on dark
+  fills). The Process panel copies a style onto other elements and reuses those already in the
+  diagram in one click.
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
   images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, and a pill sums up the changes.
-- **Interface**: light or dark theme, English or French, resizable side panels.
+- **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer
+  screen: on a phone, it is mostly for viewing a diagram.
 
 ## How it differs from draw.io or Lucidchart
 
@@ -190,8 +192,8 @@ It is for a quick try only: each visitor enters their own API key, which stays i
 There is no agent connection (MCP) and no saving on a server, and some providers (OpenAI) refuse
 calls from a web page. The "Privacy" link on the page says what leaves the browser.
 
-The demo measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
-created, opened or exported, active time by range). No third-party script is loaded: the page sends
+The stable page measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
+created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
 `localStorage.setItem('umami.disabled', '1')` in the console excludes your own visits. Neither the

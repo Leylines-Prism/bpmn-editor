@@ -163,20 +163,22 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 ## Ce que fait l'éditeur
 
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
-  .xml, SVG, PNG, PDF), imprimer le diagramme seul, sur une page. Le diagramme en cours est restauré
-  quand vous revenez.
+  .xml, SVG, PNG, PDF), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
+  cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
-- **Dessin** : palette, menu contextuel, copier-coller, 18 couleurs ou une couleur libre, mise en
-  forme du texte (gras, italique, taille, police, couleur, avec « Auto » pour un texte lisible sur
-  les fonds sombres), rangement, simulation de jetons, vérification des règles BPMN, grille,
-  mini-carte, panneau de propriétés avec des groupes Forme et Texte (fond, contour, libellé et mise
-  en forme du texte de l'élément sélectionné, couleurs personnalisées reprises d'un clic, copier-coller d'un style
-  complet, aussi sur plusieurs éléments).
+- **Dessin** : palette, menu contextuel, copier-coller, rangement, simulation de jetons,
+  vérification des règles BPMN, grille, mini-carte, et le panneau Processus pour les propriétés de
+  chaque élément.
+- **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
+  toutes prêtes ou le sélecteur de couleur du système, et la mise en forme du texte (gras, italique,
+  souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
+  Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
   déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, et une pilule résume les changements.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
+  Pensé pour un écran d'ordinateur : sur un téléphone, il sert surtout à regarder un diagramme.
 
 ## En quoi il diffère de draw.io ou Lucidchart
 
@@ -203,9 +205,9 @@ navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur,
 fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
 dit ce qui sort du navigateur.
 
-La démo mesure son audience sans cookie, avec [Umami](https://umami.is) :
+La page stable mesure son audience sans cookie, avec [Umami](https://umami.is) :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
-créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
+créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
 messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
 `localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
