@@ -21,9 +21,10 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T, num } from './i18n/lang.js'
 import { getHistory, isHistoryReload } from './history.js'
+import { fontOf, textColorOf } from './label-style.js'
 
 // Outils qui modifient le diagramme.
-const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'remove_elements', 'set_diagram_xml', 'auto_layout']
+const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'style_elements', 'remove_elements', 'set_diagram_xml', 'auto_layout']
 
 // Au-delà, mode discret : plus de 15 formes changées, ou plus de la moitié
 // des formes du diagramme (à partir de 6), ou un diagramme sans forme avant l'IA.
@@ -131,6 +132,11 @@ function createTracker(modeler) {
       el.host?.id || '',
       el.waypoints ? el.source?.id || '' : el.parent?.id || '',
       el.waypoints ? el.target?.id || '' : '',
+      // Couleurs et police : un changement de style compte comme une modification.
+      el.di?.get?.('color:background-color') || '',
+      el.di?.get?.('color:border-color') || '',
+      textColorOf(el) || '',
+      JSON.stringify(fontOf(el) || {}),
     ])
   }
 

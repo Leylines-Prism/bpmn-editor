@@ -13,6 +13,7 @@ import { trackAiChanges } from './ai-changes.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
+import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
 
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
@@ -175,6 +176,8 @@ function buildTools(modeler) {
     if (eventDef) out.eventDefinition = eventDef.$type
     if (element.host) out.attachedTo = element.host.id
     if (bo.cancelActivity === false) out.interrupting = false
+    const style = styleOf(element)
+    if (style) out.style = style
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id
@@ -192,6 +195,32 @@ function buildTools(modeler) {
       if (outgoing.length) out.outgoing = outgoing
     }
     return out
+  }
+
+  // Couleurs et mise en forme du texte réglées sur l'élément, ou null s'il n'y en a pas.
+  function styleOf(element) {
+    const di = element.di
+    const out = {}
+    const fill = di?.get?.('color:background-color') || di?.get?.('bioc:fill')
+    const stroke = di?.get?.('color:border-color') || di?.get?.('bioc:stroke')
+    if (fill && !element.waypoints) out.fill = fill.toUpperCase()
+    if (stroke) out.stroke = stroke.toUpperCase()
+    const text = textColorOf(element)
+    if (text) out.textColor = text.toUpperCase()
+    const font = fontOf(element)
+    if (font?.isBold) out.bold = true
+    if (font?.isItalic) out.italic = true
+    if (font?.isUnderline) out.underline = true
+    if (font?.size) out.fontSize = font.size
+    if (font?.name) out.font = font.name
+    return Object.keys(out).length ? out : null
+  }
+
+  // #RGB ou #RRGGBB, avec ou sans dièse, en #RRGGBB. Chaîne vide : null (réglage retiré).
+  function hexColor(value) {
+    if (!value) return null
+    const hex = value.replace('#', '')
+    return '#' + (hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex).toUpperCase()
   }
 
   // Conteneur par défaut : le processus, ou le premier participant d'une collaboration.
@@ -462,6 +491,37 @@ function buildTools(modeler) {
           updated.push({ previousId: spec.id, ...describe(element) })
         }
         return { updated }
+      })
+    },
+
+    // Mêmes commandes que les groupes Forme et Texte du panneau : Ctrl+Z les annule avec le reste.
+    style_elements({ elements }) {
+      return atomic(() => {
+        const styled = []
+        for (const spec of elements) {
+          const element = getElement(spec.id)
+          const wantsText = spec.textColor !== undefined || ['bold', 'italic', 'underline', 'fontSize', 'font'].some((k) => spec[k] !== undefined)
+          if (wantsText && !hasText(element)) throw new Error(`Element has no label to format: ${spec.id}`)
+          if (spec.reset) {
+            modeling.setColor([element], { fill: null, stroke: null })
+            if (hasText(element)) resetText(commandStack, [element])
+          }
+          const colors = {}
+          if (spec.fill !== undefined && !element.waypoints) colors.fill = hexColor(spec.fill)
+          if (spec.stroke !== undefined) colors.stroke = hexColor(spec.stroke)
+          if (Object.keys(colors).length) modeling.setColor([element], colors)
+          const font = {}
+          if (spec.bold !== undefined) font.isBold = spec.bold
+          if (spec.italic !== undefined) font.isItalic = spec.italic
+          if (spec.underline !== undefined) font.isUnderline = spec.underline
+          if (spec.fontSize !== undefined) font.size = spec.fontSize
+          if (spec.font !== undefined) font.name = FONTS.find((f) => f.name === spec.font)?.name || spec.font
+          if (Object.keys(font).length) applyFont(commandStack, [element], font)
+          // Après le fond : « auto » choisit le noir ou le blanc d'après le nouveau fond.
+          if (spec.textColor !== undefined) applyTextColor(commandStack, [element], spec.textColor === 'auto' ? 'auto' : hexColor(spec.textColor))
+          styled.push({ id: element.id, style: styleOf(element) || {} })
+        }
+        return { styled }
       })
     },
 

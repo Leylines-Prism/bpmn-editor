@@ -172,6 +172,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
 | `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
+| `style_elements` | règle le fond, le contour, la couleur du texte et la police (gras, italique, souligné, taille, famille) d'éléments |
 | `remove_elements` | supprime des formes ou des connexions |
 | `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
 | `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |

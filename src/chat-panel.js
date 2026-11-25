@@ -27,6 +27,7 @@ const TOOL_LABELS = {
   add_shapes: T('adding shapes', 'ajout de formes'),
   connect_shapes: T('connections', 'connexions'),
   update_elements: T('changes', 'modification'),
+  style_elements: T('colors and text', 'couleurs et texte'),
   remove_elements: T('removal', 'suppression'),
   auto_layout: T('layout', 'mise en page'),
   validate_diagram: 'validation',

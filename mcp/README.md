@@ -171,6 +171,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
 | `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
+| `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
 | `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
