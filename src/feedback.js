@@ -13,6 +13,7 @@
 // La page vitrine (about.html) les montre aussi, en icônes.
 
 import { T } from './i18n/lang.js'
+import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from './support.js'
 
 const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-editor/issues'
 /* global __FEEDBACK_EMAIL__, __CONTACT_LINK__ */
@@ -178,11 +179,14 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
         })
         .join('')}
       <div class="actions">
+        <a class="support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis">${CUP_ICON}<span>${T('Support the project on Ko-fi', 'Soutenir le projet sur Ko-fi')}</span></a>
         <span class="grow"></span>
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
   document.body.append(dialog)
+  // Lien de soutien, discret, à gauche du bouton Fermer (clic compté, voir src/support.js).
+  trackSupportClicks(dialog)
   const open = () => { if (!dialog.open) dialog.showModal() }
   button.addEventListener('click', open)
   dialog.addEventListener('click', async (e) => {
