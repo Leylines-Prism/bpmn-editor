@@ -171,7 +171,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
           },
         },
         ...(auth
-          ? { inputs: [{ id: 'bpmn-pilot-token', type: 'promptString', description: T('BPMN Pilot MCP token', 'Jeton MCP de BPMN Pilot'), password: true }] }
+          ? { inputs: [{ id: 'bpmn-pilot-token', type: 'promptString', description: T('BPMN-Pilot MCP token', 'Jeton MCP de BPMN-Pilot'), password: true }] }
           : {}),
       }),
     )

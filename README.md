@@ -1,6 +1,6 @@
-![BPMN Pilot: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
+![BPMN-Pilot: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
 
-# BPMN Pilot
+# BPMN-Pilot
 
 [![CI](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-pilot?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-pilot/tags)
@@ -13,7 +13,7 @@
 
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
-BPMN Pilot is a BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
+BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
 describe, and an MCP server so that agents such as Claude Code can draw in it too. Use it
 [online](https://bpmn.leylines.fr), with nothing but a browser, or run it on your own machine with
 Docker.

@@ -19,7 +19,7 @@
 
 services:
   editor:
-    image: ghcr.io/leylines-prism/bpmn-pilot:1.2.0
+    image: ghcr.io/leylines-prism/bpmn-pilot:1.2.1
     ports:
       - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:8080"
     environment:
@@ -35,7 +35,7 @@ services:
     restart: unless-stopped
 
   mcp:
-    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.2.0
+    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.2.1
     environment:
       # Fournisseurs du chat intégré (voir mcp/.env.example pour le détail).
       MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
