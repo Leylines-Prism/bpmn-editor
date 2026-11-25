@@ -31,12 +31,20 @@ export function describeProviderError(err, { label, providerId, browser = false,
       return T(`Mistral cannot be reached from this page. Check your connection and the address in Options${detail}.`,
         `Mistral est injoignable depuis cette page. Vérifiez votre connexion et l'adresse dans Options${detail}.`)
     }
+    if (providerId === 'xai') {
+      return T(`xAI cannot be reached from this page. Check your connection and the address in Options${detail}.`,
+        `xAI est injoignable depuis cette page. Vérifiez votre connexion et l'adresse dans Options${detail}.`)
+    }
     if (providerId === 'anthropic') {
       return T(`Anthropic cannot be reached from this page. Check your connection and the address in Options${detail}.`,
         `Anthropic est injoignable depuis cette page. Vérifiez votre connexion et l'adresse dans Options${detail}.`)
     }
     return T(`${label} does not answer, or refuses calls from this page. Check the address, and that this server allows the origin ${origin || 'of this page'} (CORS setting).`,
       `${label} ne répond pas, ou refuse les appels de cette page. Vérifiez l'adresse, et que ce serveur autorise l'origine ${origin || 'de cette page'} (réglage CORS).`)
+  }
+  // xAI répond 400, et non 401, à une clé API inconnue.
+  if (err?.status === 400 && providerId === 'xai' && /api key/i.test(err?.message || '')) {
+    return T(`API key rejected by ${label}. Check it in Options.`, `Clé API refusée par ${label}. Vérifiez-la dans Options.`)
   }
   switch (err?.status) {
     case 401:

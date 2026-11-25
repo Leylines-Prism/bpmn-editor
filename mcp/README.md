@@ -90,8 +90,8 @@ up a provider in the Options window.
 ### Options window
 
 The "Options" button of the panel opens a window with one block per provider: Anthropic, OpenAI,
-Mistral, Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address
-(prefilled for Anthropic, OpenAI, Mistral and Ollama), the API key, and the models to offer. "List models" asks the provider
+Mistral, xAI (Grok), Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…). For each one: the address
+(prefilled for Anthropic, OpenAI, Mistral, xAI and Ollama), the API key, and the models to offer. "List models" asks the provider
 for them, "Test" checks the address and the key. Neither button uses any credit. A provider's
 models are only offered once "Test" or "List models" has succeeded, and again after its address or
 key changes. "Assistant model" picks the model used by the chat.

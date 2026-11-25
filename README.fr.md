@@ -288,7 +288,7 @@ dans le navigateur avant d'être publié. Les relectures de développeurs expér
 appréciées.
 
 **Testeurs recherchés pour les fournisseurs d'IA.** L'assistant est essayé au quotidien avec les
-modèles Anthropic seulement. OpenAI, Mistral, Ollama et les serveurs compatibles OpenAI sont pris en
+modèles Anthropic seulement. OpenAI, Mistral, xAI (Grok), Ollama et les serveurs compatibles OpenAI sont pris en
 charge d'après leur documentation, mais rarement essayés pour de vrai. Si vous utilisez l'un d'eux,
 tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues)
 ou une [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) avec le fournisseur,

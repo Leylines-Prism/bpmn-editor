@@ -268,7 +268,7 @@ assistance, using Claude Code and other AI models, and each change is tried in t
 it is published. Reviews from experienced developers are especially appreciated.
 
 **Testers wanted for AI providers.** The assistant is tried day to day with Anthropic models only.
-OpenAI, Mistral, Ollama and OpenAI-compatible servers are supported from their documentation, but
+OpenAI, Mistral, xAI (Grok), Ollama and OpenAI-compatible servers are supported from their documentation, but
 rarely tried for real. If you use one of them, any report helps, whether it works or not: open an
 [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues) or a
 [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) with the provider, the model
