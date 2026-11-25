@@ -1,24 +1,37 @@
 // Diagrammes enregistrés sur le serveur (« Mes diagrammes », version docker).
-// Chaque diagramme est un fichier <id>.bpmn, accompagné de <id>.json pour son
-// nom et sa date. Le dossier est un volume docker, ou mcp/data/diagrams en
-// développement.
+//
+// Chaque diagramme est un fichier .bpmn qui porte son nom dans l'éditeur (« Mon processus.bpmn »,
+// ou « Mon processus (2).bpmn » si le nom est pris), pour qu'on le retrouve dans un explorateur
+// de fichiers. Renommer le diagramme renomme le fichier. L'index caché .index.json relie
+// l'identifiant de chaque diagramme à son fichier et à son nom. Un .bpmn déposé à la main dans le
+// dossier apparaît dans la liste.
+// Le dossier est monté par docker-compose, ou mcp/data/diagrams en développement.
 
-import { mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { lstat, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+import { DIR_MODE, FILE_MODE, createUnique, safeBaseName } from './files.js'
 
 export const MAX_XML_BYTES = 10 * 1024 * 1024
 const MAX_NAME = 120
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/
+const INDEX = '.index.json'
+const EXT = 'bpmn'
 
 export function diagramsDir() {
   return process.env.DIAGRAMS_DIR || fileURLToPath(new URL('./data/diagrams', import.meta.url))
 }
 
 export class DiagramStore {
+  #queue = Promise.resolve()
+
   constructor(dir = diagramsDir()) {
     this.dir = dir
-    this.ready = mkdir(dir, { recursive: true })
+    this.ready = mkdir(dir, { recursive: true, mode: DIR_MODE }).then(() => this.#migrate())
+    // L'erreur (dossier sans droit d'écriture, par exemple) ressort à la première requête.
+    this.ready.catch(() => {})
   }
 
   static validId(id) {
@@ -31,65 +44,170 @@ export class DiagramStore {
     return clean || null
   }
 
-  async list() {
-    await this.ready
-    const files = (await readdir(this.dir)).filter((f) => f.endsWith('.json'))
-    const items = []
-    for (const file of files) {
-      try {
-        const meta = JSON.parse(await readFile(join(this.dir, file), 'utf8'))
-        if (DiagramStore.validId(meta.id)) items.push({ id: meta.id, name: meta.name, updatedAt: meta.updatedAt, size: meta.size })
-      } catch {}
-    }
-    return items.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''))
+  // Liste les diagrammes. Un fichier .bpmn déposé à la main dans le dossier y entre, au nom de
+  // son fichier. Un fichier supprimé à la main en sort. Taille et date viennent du fichier, pour
+  // suivre aussi les modifications faites hors de l'éditeur.
+  list() {
+    return this.#locked(async () => {
+      await this.ready
+      const index = await this.#readIndex()
+      const known = new Set(Object.values(index).map((item) => item.file))
+      let adopted = false
+      for (const file of await readdir(this.dir)) {
+        if (known.has(file) || !file.toLowerCase().endsWith(`.${EXT}`) || !(await this.#isFile(file))) continue
+        const name = DiagramStore.cleanName(file.slice(0, -EXT.length - 1))
+        if (!name) continue
+        index[randomUUID()] = { file, name }
+        adopted = true
+      }
+      if (adopted) await this.#writeIndex(index)
+      const items = []
+      for (const [id, item] of Object.entries(index)) {
+        const info = await this.#fileInfo(item.file)
+        if (info) items.push({ id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size })
+      }
+      return items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    })
   }
 
   async get(id) {
     await this.ready
+    const item = (await this.#readIndex())[id]
+    const info = item && (await this.#fileInfo(item.file))
+    // Un fichier trop gros (déposé à la main) n'est pas envoyé à l'éditeur.
+    if (!info || info.size > MAX_XML_BYTES) return null
+    const xml = await readFile(join(this.dir, item.file), 'utf8')
+    return { id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size, file: item.file, xml }
+  }
+
+  put(id, name, xml) {
+    return this.#locked(async () => {
+      await this.ready
+      const index = await this.#readIndex()
+      const old = index[id]
+      let file
+      if (old && (await this.#isFile(old.file))) {
+        file = name === old.name ? old.file : await this.#moveTo(old.file, name)
+        await this.#writeAtomic(file, xml)
+      } else {
+        file = await createUnique(this.dir, safeBaseName(name), EXT, xml)
+      }
+      index[id] = { file, name, updatedAt: new Date().toISOString(), size: Buffer.byteLength(xml) }
+      await this.#writeIndex(index)
+      return { id, ...index[id] }
+    })
+  }
+
+  rename(id, name) {
+    return this.#locked(async () => {
+      await this.ready
+      const index = await this.#readIndex()
+      const item = index[id]
+      if (!item || !(await this.#isFile(item.file))) return null
+      item.file = await this.#moveTo(item.file, name)
+      item.name = name
+      item.updatedAt = new Date().toISOString()
+      await this.#writeIndex(index)
+      return { id, ...item }
+    })
+  }
+
+  remove(id) {
+    return this.#locked(async () => {
+      await this.ready
+      const index = await this.#readIndex()
+      const item = index[id]
+      if (!item) return
+      await rm(join(this.dir, item.file), { force: true })
+      delete index[id]
+      await this.#writeIndex(index)
+    })
+  }
+
+  // Une opération d'écriture à la fois : deux enregistrements simultanés ne peuvent pas
+  // prendre le même nom de fichier ni perdre une ligne de l'index.
+  #locked(fn) {
+    const run = this.#queue.then(fn, fn)
+    this.#queue = run.catch(() => {})
+    return run
+  }
+
+  // Donne au fichier le nom tiré de « name », sans écraser un autre fichier. Le nouveau nom est
+  // d'abord réservé par un fichier vide (création exclusive), que le renommage remplace.
+  // Un fichier qui porte déjà ce nom, avec ou sans « (2) », le garde.
+  async #moveTo(file, name) {
+    const base = safeBaseName(name)
+    if (file === `${base}.${EXT}` || (file.startsWith(`${base} (`) && /^ \(\d+\)$/.test(file.slice(base.length, -EXT.length - 1)))) return file
+    const reserved = await createUnique(this.dir, base, EXT, '', { exclude: file })
+    await rename(join(this.dir, file), join(this.dir, reserved))
+    return reserved
+  }
+
+  async #isFile(file) {
+    return !!(await this.#fileInfo(file))
+  }
+
+  // Fichier ordinaire du dossier, ou null. lstat : un lien symbolique déposé dans le dossier
+  // n'est pas suivi.
+  async #fileInfo(file) {
+    if (typeof file !== 'string' || file.includes('/') || file.includes('\\') || file.startsWith('.')) return null
     try {
-      const meta = JSON.parse(await readFile(join(this.dir, `${id}.json`), 'utf8'))
-      const xml = await readFile(join(this.dir, `${id}.bpmn`), 'utf8')
-      return { ...meta, xml }
+      const info = await lstat(join(this.dir, file))
+      return info.isFile() ? info : null
     } catch (err) {
       if (err.code === 'ENOENT') return null
       throw err
     }
   }
 
-  async put(id, name, xml) {
-    await this.ready
-    const meta = { id, name, updatedAt: new Date().toISOString(), size: Buffer.byteLength(xml) }
-    // Écriture dans un fichier temporaire puis renommage : un arrêt en cours
-    // d'écriture ne laisse pas de fichier à moitié écrit.
-    await this.#write(`${id}.bpmn`, xml)
-    await this.#write(`${id}.json`, JSON.stringify(meta, null, 2))
-    return meta
-  }
-
-  async rename(id, name) {
-    await this.ready
-    let meta
+  async #readIndex() {
     try {
-      meta = JSON.parse(await readFile(join(this.dir, `${id}.json`), 'utf8'))
+      const data = JSON.parse(await readFile(join(this.dir, INDEX), 'utf8'))
+      const index = {}
+      for (const [id, item] of Object.entries(data?.diagrams ?? {})) {
+        if (DiagramStore.validId(id) && item && typeof item.file === 'string' && typeof item.name === 'string') index[id] = item
+      }
+      return index
     } catch (err) {
-      if (err.code === 'ENOENT') return null
+      if (err.code === 'ENOENT') return {}
       throw err
     }
-    meta.name = name
-    meta.updatedAt = new Date().toISOString()
-    await this.#write(`${id}.json`, JSON.stringify(meta, null, 2))
-    return meta
   }
 
-  async remove(id) {
-    await this.ready
-    await rm(join(this.dir, `${id}.json`), { force: true })
-    await rm(join(this.dir, `${id}.bpmn`), { force: true })
+  async #writeIndex(index) {
+    await this.#writeAtomic(INDEX, JSON.stringify({ version: 1, diagrams: index }, null, 2))
   }
 
-  async #write(file, content) {
+  // Écriture dans un fichier temporaire puis renommage : un arrêt en cours d'écriture ne
+  // laisse pas de fichier à moitié écrit.
+  async #writeAtomic(file, content) {
     const tmp = join(this.dir, `.${file}.${process.pid}.tmp`)
-    await writeFile(tmp, content, 'utf8')
+    await writeFile(tmp, content, { encoding: 'utf8', mode: FILE_MODE })
     await rename(tmp, join(this.dir, file))
+  }
+
+  // Anciennes versions : « <id>.bpmn » et « <id>.json » pour chaque diagramme. Les fichiers
+  // prennent le nom de leur diagramme et rejoignent l'index.
+  async #migrate() {
+    const files = await readdir(this.dir)
+    const legacy = files.filter((f) => f.endsWith('.json') && f !== INDEX && DiagramStore.validId(f.slice(0, -5)))
+    if (!legacy.length) return
+    const index = await this.#readIndex()
+    for (const json of legacy) {
+      const id = json.slice(0, -5)
+      let meta
+      try {
+        meta = JSON.parse(await readFile(join(this.dir, json), 'utf8'))
+      } catch {
+        continue
+      }
+      const old = `${id}.${EXT}`
+      if (meta?.id !== id || !(await this.#isFile(old)) || index[id]) continue
+      const name = DiagramStore.cleanName(meta.name) || id
+      const file = await this.#moveTo(old, name)
+      index[id] = { file, name, updatedAt: meta.updatedAt, size: meta.size }
+      await this.#writeIndex(index)
+      await rm(join(this.dir, json), { force: true })
+    }
   }
 }

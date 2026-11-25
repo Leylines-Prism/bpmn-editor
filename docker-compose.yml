@@ -26,6 +26,10 @@ services:
       SHOWCASE: ${SHOWCASE:-on}
     depends_on:
       - mcp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
 
   mcp:
@@ -39,13 +43,24 @@ services:
       # Pour un autre nom ou une autre adresse (proxy, nom de domaine), voir le README.
       BPMN_EDITOR_ORIGINS: ${BPMN_EDITOR_ORIGINS:-http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}}
       MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
-    # Diagrammes enregistrés sur le serveur (« Mes diagrammes ») : gardés dans ce volume.
+    # Dossier de données, à ouvrir dans un explorateur de fichiers : diagrams/ (« Mes diagrammes »)
+    # et exports/ (menu Exporter réglé sur « Serveur » ou « Les deux »). Par défaut ./bpmn-data, à
+    # côté de ce fichier. Sous Linux, créez-le avant le premier démarrage (voir le README).
     volumes:
-      - diagrams:/data
+      - ${BPMN_DATA_DIR:-./bpmn-data}:/data
+    # Le serveur tourne sous cet utilisateur, sans root : les fichiers créés lui appartiennent.
+    # Sous Linux, mettez votre uid et votre gid (commande id) si ce ne sont pas 1000.
+    user: "${PUID:-1000}:${PGID:-1000}"
+    # Durcissement : système de fichiers en lecture seule hors du dossier de données, aucune
+    # capacité Linux, pas d'élévation de privilèges.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
     # Ollama lancé sur la machine hôte : http://host.docker.internal:11434
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
-
-volumes:
-  diagrams:

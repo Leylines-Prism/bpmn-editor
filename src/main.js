@@ -21,6 +21,7 @@ import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
 import { exportPdf } from './export-pdf.js'
+import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
@@ -275,9 +276,17 @@ const library = setupDiagramLibrary({
   serverUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/diagrams') : null,
 })
 
+// Version docker : le menu Exporter peut aussi déposer les fichiers dans le dossier du serveur.
+const { deliver } = setupExportDestination({
+  menu: document.getElementById('export-menu'),
+  exportsUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/exports') : null,
+  download,
+  setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
+})
+
 document.getElementById('btn-save').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
-  download(xml, baseName() + '.bpmn', 'application/xml')
+  deliver(xml, baseName(), 'bpmn', 'application/xml')
   track('export', { format: 'bpmn' })
 })
 
@@ -297,7 +306,7 @@ for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
 
 document.getElementById('btn-save-xml').addEventListener('click', async () => {
   const { xml } = await modeler.saveXML({ format: true })
-  download(xml, baseName() + '.xml', 'application/xml')
+  deliver(xml, baseName(), 'xml', 'application/xml')
   track('export', { format: 'xml' })
 })
 
@@ -312,7 +321,7 @@ setupXmlExport({
 
 document.getElementById('btn-svg').addEventListener('click', async () => {
   const { svg } = await modeler.saveSVG()
-  download(svg, baseName() + '.svg', 'image/svg+xml')
+  deliver(svg, baseName(), 'svg', 'image/svg+xml')
   track('export', { format: 'svg' })
 })
 
@@ -333,7 +342,7 @@ document.getElementById('btn-png').addEventListener('click', async () => {
     ctx.drawImage(img, 0, 0)
     URL.revokeObjectURL(url)
     canvas.toBlob((b) => {
-      download(b, baseName() + '.png', 'image/png')
+      deliver(b, baseName(), 'png', 'image/png')
       track('export', { format: 'png' })
     }, 'image/png')
   }
@@ -348,7 +357,7 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   const button = e.currentTarget
   button.disabled = true
   try {
-    download(await exportPdf(modeler), baseName() + '.pdf', 'application/pdf')
+    await deliver(await exportPdf(modeler), baseName(), 'pdf', 'application/pdf')
     track('export', { format: 'pdf' })
   } catch (err) {
     console.error('PDF export error:', err)

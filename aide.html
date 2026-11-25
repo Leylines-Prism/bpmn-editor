@@ -268,15 +268,16 @@
             <tbody>
               <tr><td>Fichier .bpmn</td><td>Garder le diagramme, le rouvrir ici ou dans un autre outil BPMN</td></tr>
               <tr><td>Fichier .xml</td><td>Le même contenu, pour les outils qui attendent l'extension .xml</td></tr>
-              <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
               <tr><td>Image SVG</td><td>Une image nette à toutes les tailles, pour le web ou un logiciel de dessin</td></tr>
               <tr><td>Image PNG</td><td>Une image à coller dans un document, un e-mail ou une présentation</td></tr>
               <tr><td>Document PDF</td><td>Envoyer le diagramme ou l'archiver</td></tr>
+              <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
               <tr><td>Imprimer…</td><td>Imprimer le diagramme seul, sans l'éditeur autour : il tient sur une page, l'orientation suit sa forme</td></tr>
             </tbody>
           </table>
         </div>
         <p>Tous les exports prennent le nom du fichier indiqué dans la barre d'outils.</p>
+        <p>Dans la version Docker, le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Imprimer</h3>
         <p>Exporter, puis Imprimer… ouvre la fenêtre d'impression du navigateur sur le diagramme seul. Il est centré sur une page, avec des marges de 10 mm. La page passe en paysage si le diagramme est plus large que haut, en portrait sinon. Safari laisse choisir l'orientation dans sa fenêtre d'impression. Un grand diagramme est réduit pour tenir sur la page, un petit garde sa taille à l'écran. Pour un très long processus, l'export PDF ou SVG permet de zoomer.</p>
       </section>
@@ -366,7 +367,14 @@
           <li>des clés API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>Mes diagrammes enregistré aussi sur le serveur, accessible depuis plusieurs navigateurs,</li>
+          <li>les exports enregistrés aussi sur le serveur, au choix,</li>
           <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+        </ul>
+        <h3>Vos fichiers dans la version Docker</h3>
+        <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer vos fichiers :</p>
+        <ul>
+          <li><code>diagrams</code> : les diagrammes enregistrés sur le serveur avec Mes diagrammes, un fichier .bpmn par diagramme, à son nom. Renommer un diagramme renomme son fichier. Laissez en place le fichier caché <code>.index.json</code>, qui relie les fichiers à l'éditeur. Un fichier .bpmn copié dans ce dossier apparaît dans Mes diagrammes, sous son nom de fichier.</li>
+          <li><code>exports</code> : les exports faits avec la destination <span class="ui">Serveur</span> ou <span class="ui">Les deux</span>. Un export ne remplace jamais un fichier : un deuxième <code>Mon processus.pdf</code> devient <code>Mon processus (2).pdf</code>.</li>
         </ul>
         <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>README du projet sur GitHub</a>.</p>
       </section>

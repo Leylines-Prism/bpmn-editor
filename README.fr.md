@@ -38,7 +38,7 @@ sur le GitHub Container Registry, pour amd64 et arm64 :
 ### En ligne de commande
 
 ```
-mkdir bpmn-editor && cd bpmn-editor
+mkdir bpmn-editor && cd bpmn-editor && mkdir bpmn-data
 curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
@@ -50,8 +50,8 @@ Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercont
   commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
   Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
   seul l'assistant est éteint.
-- **Vos diagrammes** enregistrés avec « Mes diagrammes » sont gardés dans le volume Docker
-  `diagrams`. `docker compose -f docker-compose.image.yml down -v` les supprime.
+- **Vos fichiers** (Mes diagrammes sur le serveur, exports) sont dans le dossier `bpmn-data`, à côté
+  de `docker-compose.image.yml` : voir [Vos fichiers](#vos-fichiers-version-docker).
 - **Page vitrine** : le logo de la barre d'outils ouvre une page vitrine, avec le logo et les fonds
   d'écran de l'auteur. Pour la couper, ajoutez `SHOWCASE=off` au fichier `.env` (ou aux variables
   d'environnement de la pile), puis relancez la commande `up -d`. Le logo ouvre alors la fenêtre
@@ -68,7 +68,8 @@ Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercont
 
 Dans un outil qui déploie des piles Compose (Portainer, par exemple), créez une pile, collez-y le
 contenu de [docker-compose.image.yml](docker-compose.image.yml), et saisissez les réglages ci-dessous
-(`ANTHROPIC_API_KEY`…) comme variables d'environnement de la pile.
+(`ANTHROPIC_API_KEY`…) comme variables d'environnement de la pile. Réglez `BPMN_DATA_DIR` sur un chemin
+absolu de la machine hôte : le dossier où vous retrouverez vos fichiers.
 
 ### Depuis le code source
 
@@ -83,6 +84,39 @@ docker compose up -d --build
 Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autres réglages dans
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
+
+## Vos fichiers (version Docker)
+
+Tout ce que garde le serveur est dans un seul dossier, `bpmn-data`, à côté du fichier compose.
+Ouvrez-le avec votre explorateur de fichiers pour récupérer vos fichiers :
+
+- `bpmn-data/diagrams` : les diagrammes enregistrés sur le serveur avec « Mes diagrammes », un
+  fichier `.bpmn` par diagramme, à son nom (`Mon processus.bpmn`). Renommer un diagramme dans
+  l'éditeur renomme son fichier. Deux diagrammes de même nom donnent `Mon processus.bpmn` et
+  `Mon processus (2).bpmn`. Le fichier caché `.index.json` relie les fichiers à l'éditeur : laissez-le
+  en place. Un fichier `.bpmn` copié dans ce dossier apparaît dans Mes diagrammes, sous son nom de
+  fichier (10 Mo au plus).
+- `bpmn-data/exports` : les exports (.bpmn, .xml, SVG, PNG, PDF), quand la **Destination** en haut du
+  menu Exporter est « Serveur » ou « Les deux ». « Téléchargement », le choix par défaut, les télécharge
+  seulement dans le navigateur, comme avant. Un export ne remplace jamais un fichier : un deuxième `Mon processus.pdf`
+  devient `Mon processus (2).pdf`. « Code XML à copier » et « Imprimer » ne créent pas de fichier et
+  ne sont pas concernés.
+
+Où est le dossier :
+
+- **Docker Desktop** (Windows, macOS) : il est créé au premier démarrage, à côté du fichier compose.
+- **Linux** : créez-le avant le premier démarrage (`mkdir bpmn-data`). Le serveur tourne sous
+  l'utilisateur 1000, sans root, pour que les fichiers vous appartiennent. Si `id -u` et `id -g`
+  donnent d'autres nombres, ajoutez `PUID=` et `PGID=` avec ces nombres au fichier `.env`. Si le
+  serveur ne peut pas écrire dans le dossier, il le dit dans son journal (`docker compose logs mcp`).
+- **Ailleurs** : réglez `BPMN_DATA_DIR` sur le chemin d'un autre dossier. Dans un outil de gestion de
+  conteneurs, donnez toujours un chemin absolu.
+
+Sécurité : les fichiers ne sont lisibles que par leur propriétaire et son groupe (0640, dossiers 0750).
+Le serveur tourne sur un système de fichiers en lecture seule, sauf ce dossier, sans aucune capacité
+Linux et sans élévation de privilèges. Il n'accepte que les cinq formats d'export, vérifie que chaque
+fichier correspond à son format, prend 20 Mo au plus par export et nettoie les noms de fichiers (pas
+de dossier, pas de fichier caché, pas de nom réservé par Windows).
 
 ## Le joindre depuis d'autres machines
 
@@ -171,6 +205,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
+| `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). |
+| `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires de ses fichiers (1000 par défaut). |
 | `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
 
 ## Ce que fait l'éditeur

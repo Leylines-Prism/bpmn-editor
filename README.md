@@ -37,7 +37,7 @@ on the GitHub Container Registry, for amd64 and arm64:
 ### From the command line
 
 ```
-mkdir bpmn-editor && cd bpmn-editor
+mkdir bpmn-editor && cd bpmn-editor && mkdir bpmn-data
 curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
@@ -48,8 +48,8 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
   OpenAI, or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
   again. All the variables are listed in [mcp/.env.example](mcp/.env.example). You can also enter a
   key in the assistant's Options window. Without a key, the editor works; only the assistant is off.
-- **Your diagrams** saved with "My diagrams" are kept in the `diagrams` Docker volume.
-  `docker compose -f docker-compose.image.yml down -v` deletes them.
+- **Your files** (My diagrams on the server, exports) are in the `bpmn-data` folder, next to
+  `docker-compose.image.yml`: see [Your files](#your-files-docker-version).
 - **Showcase page**: the logo in the toolbar opens a showcase page with the author's logo and
   wallpapers. To turn it off, add `SHOWCASE=off` to the `.env` file (or the stack's environment
   variables), then run the `up -d` command again. The logo then opens the Feedback window.
@@ -65,7 +65,8 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
 
 In a tool that deploys Compose stacks (Portainer, for example), create a stack, paste the content of
 [docker-compose.image.yml](docker-compose.image.yml), and enter the settings below
-(`ANTHROPIC_API_KEY`…) as the stack's environment variables.
+(`ANTHROPIC_API_KEY`…) as the stack's environment variables. Set `BPMN_DATA_DIR` to an absolute path
+on the host, the folder where you will find your files.
 
 ### From the source code
 
@@ -79,6 +80,37 @@ docker compose up -d --build
 
 Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
 next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
+
+## Your files (Docker version)
+
+Everything the server keeps is in one folder, `bpmn-data`, next to the compose file. Open it with your
+file explorer to get your files back:
+
+- `bpmn-data/diagrams`: the diagrams saved on the server with "My diagrams", one `.bpmn` file per
+  diagram, named after it (`Order process.bpmn`). Renaming a diagram in the editor renames its file.
+  Two diagrams with the same name give `Order process.bpmn` and `Order process (2).bpmn`. The hidden
+  `.index.json` file links the files to the editor: leave it in place. A `.bpmn` file you copy into
+  this folder appears in My diagrams, under its file name (10 MB at most).
+- `bpmn-data/exports`: the exports (.bpmn, .xml, SVG, PNG, PDF), when the **Destination** at the top
+  of the Export menu is "Server" or "Both". "Download", the default, only downloads them in the browser, as before.
+  An export never replaces a file: a second `Order process.pdf` becomes `Order process (2).pdf`.
+  "XML code to copy" and "Print" do not make files and are not concerned.
+
+Where the folder is:
+
+- **Docker Desktop** (Windows, macOS): it is created at the first start, next to the compose file.
+- **Linux**: create it before the first start (`mkdir bpmn-data`). The server runs as user 1000,
+  without root, so that the files belong to you. If `id -u` and `id -g` give other numbers, add
+  `PUID=` and `PGID=` with these numbers to the `.env` file. If the server cannot write in the folder,
+  it says so in its log (`docker compose logs mcp`).
+- **Elsewhere**: set `BPMN_DATA_DIR` to the path of another folder. In a container manager, always
+  give an absolute path.
+
+Security: the files are readable by their owner and group only (0640, folders 0750). The server runs
+on a read-only file system except for this folder, without any Linux capability and without privilege
+escalation. It only accepts the five export formats, checks that each file matches its format, takes
+20 MB at most per export, and cleans file names (no folder, no hidden file, no name reserved by
+Windows).
 
 ## Reach it from other machines
 
@@ -162,6 +194,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 | `BPMN_PORT` | Port of the site (8080 by default). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | The address and name of the site when it is served under a domain name (see above). |
 | `BPMN_BIND` | Network interface the site listens on (`127.0.0.1` by default). `0.0.0.0` opens it to your network, without HTTPS. |
+| `BPMN_DATA_DIR` | Folder of the server files, My diagrams and exports (`./bpmn-data` by default). |
+| `PUID`, `PGID` | User and group the server runs as, owners of its files (1000 by default). |
 | `SHOWCASE` | `off` turns off the showcase page (`about.html`) and its wallpapers. The logo in the toolbar then opens the Feedback window. `on` by default. |
 
 ## What the editor does
