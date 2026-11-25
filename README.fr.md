@@ -1,6 +1,6 @@
-![BPMN Pilot : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
+![BPMN-Pilot : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
 
-# BPMN Pilot
+# BPMN-Pilot
 
 [![CI](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-pilot?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-pilot/tags)
@@ -13,7 +13,7 @@
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
-BPMN Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
 vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi.
 Utilisez-le [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur
 votre propre machine avec Docker.

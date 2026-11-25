@@ -37,14 +37,14 @@ jobs:
         include:
           - name: bpmn-pilot
             file: Dockerfile
-            title: BPMN Pilot
+            title: BPMN-Pilot
             description: BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant. Pairs with bpmn-pilot-mcp.
             # Adresse relative du serveur MCP, relayée par le nginx de l'éditeur (voir nginx.conf.template).
             build-args: VITE_MCP_BRIDGE_URL=/bridge
           - name: bpmn-pilot-mcp
             file: mcp/Dockerfile
-            title: BPMN Pilot MCP server
-            description: MCP server and built-in AI chat for BPMN Pilot (bpmn-pilot image).
+            title: BPMN-Pilot MCP server
+            description: MCP server and built-in AI chat for BPMN-Pilot (bpmn-pilot image).
             build-args: ''
     env:
       # Annotations posées aussi sur l'index multi-plateforme, où le registre lit la description.

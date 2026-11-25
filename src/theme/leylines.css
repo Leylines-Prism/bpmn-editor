@@ -586,7 +586,7 @@ body #chat-model:disabled { opacity: 0.5; }
 body.drop-target #canvas { outline: 2px dashed var(--accent); outline-offset: -6px; }
 
 /* Barre étroite : le champ du nom de fichier tient lieu de titre, le titre
-   « BPMN Pilot » s'efface (il reste lisible par les lecteurs d'écran). */
+   « BPMN-Pilot » s'efface (il reste lisible par les lecteurs d'écran). */
 @media (max-width: 1599px) {
   .brand { margin-right: var(--space-1); }
   .brand h1 {
