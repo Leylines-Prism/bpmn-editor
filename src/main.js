@@ -175,7 +175,7 @@ async function autosave({ quiet = false } = {}) {
     const { xml } = await modeler.saveXML({ format: true })
     localStorage.setItem(LS_KEY, xml)
     if (!quiet) setStatus(new Date().toLocaleTimeString(lang === 'fr' ? 'fr-FR' : 'en-US'))
-  } catch (e) { setStatus(T('error', 'erreur')) }
+  } catch { setStatus(T('error', 'erreur')) }
 }
 
 // Modifications non enregistrées dans « Mes diagrammes ».

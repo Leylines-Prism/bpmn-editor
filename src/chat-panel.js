@@ -207,7 +207,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       try {
         return await listModels({ ...conn, browser: true, signal: AbortSignal.timeout(15000) })
       } catch (err) {
-        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
+        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }), { cause: err })
       }
     }
     let res

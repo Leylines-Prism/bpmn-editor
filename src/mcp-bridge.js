@@ -260,7 +260,7 @@ function buildTools(modeler) {
       if (attrs.type === 'bpmn:Participant') return elementFactory.createParticipantShape({})
       return elementFactory.createShape(attrs)
     } catch (err) {
-      throw new Error(`Invalid BPMN type "${spec.type}": ${err.message}`)
+      throw new Error(`Invalid BPMN type "${spec.type}": ${err.message}`, { cause: err })
     }
   }
 
@@ -327,7 +327,7 @@ function buildTools(modeler) {
       try {
         ;({ rootElement: definitions } = await modeler.get('moddle').fromXML(xml, 'bpmn:Definitions'))
       } catch (err) {
-        throw new Error(`Unreadable BPMN XML, diagram unchanged: ${err.message}`)
+        throw new Error(`Unreadable BPMN XML, diagram unchanged: ${err.message}`, { cause: err })
       }
       if (!definitions.diagrams?.some((d) => d.plane?.bpmnElement)) {
         throw new Error('The XML contains no drawn diagram (BPMNDiagram with a BPMNPlane), diagram unchanged.')
@@ -468,7 +468,7 @@ function buildTools(modeler) {
       try {
         var warnings = await autoLayout(modeler)
       } catch (err) {
-        throw new Error(`Layout failed, diagram unchanged: ${err.message}`)
+        throw new Error(`Layout failed, diagram unchanged: ${err.message}`, { cause: err })
       }
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== canvas.getRootElement())
       return {
