@@ -56,6 +56,15 @@ cd mcp && npm install && npm start   # the MCP server and the built-in assistant
 The maintainer may ask for changes, or decline a pull request that does not fit the project. It is
 never personal.
 
+## Releases
+
+A version is a `vX.Y.Z` tag, published from the Releases page. The tag builds the Docker images.
+The online site has a stable page at its root, built from the latest tag, and a development page
+in `dev/`, built from main. The stable page is published again at each merge to main. When the tag
+sits on a commit that main has already published, the tag alone does not replace it: GitHub Pages
+keeps the deployment it already has for that commit. The new version goes online at the next merge
+to main.
+
 ## License
 
 By contributing, you agree that your contribution is released under the project's
