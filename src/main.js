@@ -430,7 +430,27 @@ loadInitial().then(() => { dirty = false })
 //   - serveur (développement, image docker, ou VITE_MCP_BRIDGE_URL définie au build) : pont vers le
 //     serveur MCP (dossier mcp/), qui fait tourner le chat (route /chat).
 // Lien « Feedback », en bas du canevas (adresses réglées au build).
-setupFeedback({ container: document.getElementById('canvas') })
+const feedback = setupFeedback({ container: document.getElementById('canvas') })
+// Image docker lancée avec SHOWCASE=off (voir nginx.conf.template) : pas de page vitrine,
+// le logo de la barre ouvre la fenêtre « Votre avis » à la place.
+if (import.meta.env.MODE !== 'online' && !import.meta.env.DEV && feedback) {
+  fetch('showcase.json', { cache: 'no-store' })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((config) => {
+      const logo = document.querySelector('.brand-logo')
+      if (config?.showcase !== 'off' || !logo) return
+      for (const name of ['href', 'target', 'rel']) logo.removeAttribute(name)
+      logo.setAttribute('role', 'button')
+      logo.tabIndex = 0
+      logo.title = T('Feedback', 'Votre avis')
+      logo.setAttribute('aria-label', T('Feedback', 'Votre avis'))
+      logo.addEventListener('click', (e) => { e.preventDefault(); feedback.open() })
+      logo.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); feedback.open() }
+      })
+    })
+    .catch(() => {})
+}
 // Page de développement en ligne : une pastille à côté du titre le dit, et mène à la page stable.
 if (IS_DEV_SITE) {
   const badge = document.createElement('a')

@@ -50,6 +50,9 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
   key in the assistant's Options window. Without a key, the editor works; only the assistant is off.
 - **Your diagrams** saved with "My diagrams" are kept in the `diagrams` Docker volume.
   `docker compose -f docker-compose.image.yml down -v` deletes them.
+- **Showcase page**: the logo in the toolbar opens a showcase page with the author's logo and
+  wallpapers. To turn it off, add `SHOWCASE=off` to the `.env` file (or the stack's environment
+  variables), then run the `up -d` command again. The logo then opens the Feedback window.
 - **Update**: change the version number of both images in `docker-compose.image.yml` (see the
   [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), then:
 
@@ -159,6 +162,7 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 | `BPMN_PORT` | Port of the site (8080 by default). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | The address and name of the site when it is served under a domain name (see above). |
 | `BPMN_BIND` | Network interface the site listens on (`127.0.0.1` by default). `0.0.0.0` opens it to your network, without HTTPS. |
+| `SHOWCASE` | `off` turns off the showcase page (`about.html`) and its wallpapers. The logo in the toolbar then opens the Feedback window. `on` by default. |
 
 ## What the editor does
 
