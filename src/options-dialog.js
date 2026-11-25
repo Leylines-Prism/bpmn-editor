@@ -44,7 +44,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&
 // mode : « online » ou « server ». serverModels : modèles réglés sur le serveur.
 // test(connection) : renvoie la liste des modèles, ou lève une erreur au message lisible.
 // onSave(settings) : appelé après l'enregistrement.
-export function createOptionsDialog({ mode, test, onSave }) {
+export function createOptionsDialog({ mode, test, onSave, onForget }) {
   const origin = location.origin
   const dialog = document.createElement('dialog')
   dialog.id = 'options-dialog'
@@ -98,6 +98,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
   document.body.append(dialog)
 
   let draft = null
+  let live = null // réglages en cours d'usage, reçus à l'ouverture
   let serverModels = []
   const blocks = new Map([...dialog.querySelectorAll('.provider:not(.server-block)')].map((el) => [el.dataset.id, el]))
   const serverBlock = dialog.querySelector('.server-block')
@@ -275,8 +276,11 @@ export function createOptionsDialog({ mode, test, onSave }) {
   defaultSelect.addEventListener('change', () => (draft.defaultModel = defaultSelect.value || null))
   dialog.querySelector('#options-forget').addEventListener('click', () => {
     forgetKeys(draft)
+    // Aussi les réglages en cours d'usage : la fenêtre peut se fermer sans Enregistrer.
+    if (live) forgetKeys(live)
     for (const el of blocks.values()) el.querySelector('.p-key').value = ''
     renderDefault()
+    onForget?.()
   })
   dialog.querySelector('#options-cancel').addEventListener('click', () => dialog.close())
   dialog.querySelector('#options-save').addEventListener('click', () => {
@@ -290,6 +294,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
 
   return {
     open(settings, { server = [] } = {}) {
+      live = settings
       draft = structuredClone(settings)
       serverModels = server
       if (server.length) providerSelect.prepend(serverOption)
