@@ -17,9 +17,11 @@ function csp(connectSrc) {
     transformIndexHtml: {
       order: 'post',
       handler(html) {
-        const hashes = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(
-          ([, code]) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`,
-        )
+        // Toutes les balises script, quelle que soit la casse ou les attributs. Celles qui
+        // chargent un fichier (src) sont couvertes par 'self' et n'ont pas d'empreinte.
+        const hashes = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script[^>]*>/gi)]
+          .filter(([, attrs]) => !/\bsrc\s*=/i.test(attrs))
+          .map(([, , code]) => `'sha256-${createHash('sha256').update(code).digest('base64')}'`)
         const policy = [
           "default-src 'self'",
           `script-src 'self' ${hashes.join(' ')}`.trim(),
