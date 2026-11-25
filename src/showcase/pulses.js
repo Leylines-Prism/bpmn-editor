@@ -6,11 +6,13 @@
 // Animations (champ « motion » de wallpapers.js) :
 //   pulses : des impulsions sur les lignes en dégradé, qui allument les nœuds traversés
 //   flow   : un flux lent et discret sur toutes les lignes
+//   scroll : le dégradé des lignes défile en continu, sans impulsion
 //   none   : fond immobile
 
 const NS = 'http://www.w3.org/2000/svg'
 const SKY = [43, 184, 255], MAGENTA = [210, 78, 142], ORANGE = [255, 126, 26]
 const START_AFTER = 2000 // les fonds s'animent quand le logo a fini son entrée
+const SCROLL_SPEED = 120 // px par seconde, dans les unités du dessin (1920 de large)
 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t))
 const leyline = (t) => {
@@ -34,9 +36,10 @@ async function svgText(url) {
 // Lignes et nœuds du dessin.
 function readGeometry(text) {
   const doc = new DOMParser().parseFromString(text, 'image/svg+xml')
-  const firstStop = {}
+  const firstStop = {}, gradients = {}
   doc.querySelectorAll('linearGradient').forEach((g) => {
     firstStop[g.id] = (g.querySelector('stop')?.getAttribute('stop-color') || '').toUpperCase()
+    gradients[g.id] = g
   })
   const seen = new Set(), lines = []
   doc.querySelectorAll('path').forEach((p) => {
@@ -45,7 +48,8 @@ function readGeometry(text) {
     seen.add(d)
     const ref = stroke.match(/url\(#([^)]+)\)/)
     // Un dégradé qui commence par l'orange se parcourt à l'envers : du bleu vers l'orange.
-    if (ref) lines.push({ d, leyline: true, reversed: firstStop[ref[1]] === '#FF7E1A' })
+    // Le tracé et son dégradé sont gardés pour le mode « scroll », qui les redessine par-dessus.
+    if (ref) lines.push({ d, leyline: true, reversed: firstStop[ref[1]] === '#FF7E1A', path: p, gradient: gradients[ref[1]] })
     else if (/^#[0-9a-f]{6}$/i.test(stroke)) lines.push({ d, leyline: false, color: hex(stroke) })
   })
   const nodes = new Map()
@@ -67,6 +71,7 @@ export function createPulses(svg, { isDark }) {
   svg.append(defs, measure, flashes, layer)
 
   let routes = [], motion = 'none', items = [], next = 0, serial = 0, startedAt = 0, loadId = 0
+  let scrolling = [] // dégradés qui défilent (mode « scroll »)
 
   async function use(url, newMotion) {
     const id = ++loadId
@@ -97,6 +102,32 @@ export function createPulses(svg, { isDark }) {
       stops.sort((a, b) => a.s - b.s)
       return { ...line, length, at, stops }
     })
+    if (motion === 'scroll') startScroll(geometry.lines)
+  }
+
+  // Mode « scroll » : chaque ligne en dégradé est redessinée à l'identique par-dessus le fond,
+  // avec un dégradé qui se répète en miroir (spreadMethod="reflect"). En le décalant, les
+  // couleurs défilent sans fin et sans saut : à décalage nul, le dessin est celui du fond.
+  function startScroll(lines) {
+    for (const line of lines) {
+      if (!line.gradient || !line.path) continue
+      const id = `scroll-${++serial}`
+      const g = document.importNode(line.gradient, true)
+      g.id = id
+      g.setAttribute('spreadMethod', 'reflect')
+      defs.append(g)
+      const path = document.importNode(line.path, true)
+      path.setAttribute('stroke', `url(#${id})`)
+      path.classList.add('scroll-line')
+      layer.append(path)
+      // Une période complète : aller puis retour du dégradé.
+      const x1 = +(g.getAttribute('x1') || 0), x2 = +(g.getAttribute('x2') || 1920)
+      scrolling.push({ g, period: 2 * Math.abs(x2 - x1) || 3840 })
+    }
+  }
+  function scroll(now) {
+    const s = ((now - startedAt) / 1000) * SCROLL_SPEED
+    for (const it of scrolling) it.g.setAttribute('gradientTransform', `translate(${-(s % it.period)} 0)`)
   }
 
   const colorAt = (route, s) => (route.leyline ? leyline(s / route.length) : route.color)
@@ -163,6 +194,7 @@ export function createPulses(svg, { isDark }) {
 
   function tick(now) {
     requestAnimationFrame(tick)
+    if (motion === 'scroll') { if (!document.hidden) scroll(now); return }
     if (motion === 'none' || !routes.length || document.hidden || now - startedAt < START_AFTER) return
     if (now >= next) spawn(now)
     for (const it of [...items]) {
@@ -187,12 +219,14 @@ export function createPulses(svg, { isDark }) {
   }
   function clear() {
     items = []
+    scrolling = []
     defs.replaceChildren(); flashes.replaceChildren(); layer.replaceChildren()
     next = 0
   }
 
   // Onglet caché : rien ne tourne, et l'animation repart propre au retour.
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) clear() })
+  // Le défilement, lui, reprend là où il en est.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && motion !== 'scroll') clear() })
   requestAnimationFrame(tick)
 
   return { use, clear }
