@@ -7,7 +7,8 @@
 //   pulses : des impulsions sur les lignes, qui allument les nœuds traversés. Sur une
 //            ligne de couleur unie, l'impulsion prend la couleur du dégradé à sa position.
 //   flow   : un flux lent et discret sur toutes les lignes
-//   scroll : le dégradé des lignes défile en continu, sans impulsion
+//   scroll : le dégradé des lignes défile en continu, et des impulsions immobiles, bleues
+//            ou orange, s'allument et s'éteignent çà et là dans le fond
 //   none   : fond immobile
 
 const NS = 'http://www.w3.org/2000/svg'
@@ -129,6 +130,14 @@ export function createPulses(svg, { isDark }) {
   function scroll(now) {
     const s = ((now - startedAt) / 1000) * SCROLL_SPEED
     for (const it of scrolling) it.g.setAttribute('gradientTransform', `translate(${-(s % it.period)} 0)`)
+    if (now >= next) { glint(); next = now + 350 + Math.random() * 650 }
+  }
+  // Impulsion immobile à un endroit tiré au hasard, hors du logo, dans l'une des deux
+  // couleurs de la charte (bleu ciel ou orange).
+  function glint() {
+    let x, y
+    do { x = Math.random() * 1920; y = Math.random() * 1080 } while (x > 560 && x < 1360 && y > 300 && y < 680)
+    flash(x, y, Math.random() < 0.5 ? SKY : ORANGE, { radius: 20 + Math.random() * 40 })
   }
 
   const colorAt = (route, s, x) => {
