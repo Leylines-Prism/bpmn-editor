@@ -4,7 +4,8 @@
 // (cercles) sont lus dans le SVG du fond : un nouveau fond s'anime sans réglage.
 //
 // Animations (champ « motion » de wallpapers.js) :
-//   pulses : des impulsions sur les lignes en dégradé, qui allument les nœuds traversés
+//   pulses : des impulsions sur les lignes, qui allument les nœuds traversés. Sur une
+//            ligne de couleur unie, l'impulsion prend la couleur du dégradé à sa position.
 //   flow   : un flux lent et discret sur toutes les lignes
 //   scroll : le dégradé des lignes défile en continu, sans impulsion
 //   none   : fond immobile
@@ -130,7 +131,12 @@ export function createPulses(svg, { isDark }) {
     for (const it of scrolling) it.g.setAttribute('gradientTransform', `translate(${-(s % it.period)} 0)`)
   }
 
-  const colorAt = (route, s) => (route.leyline ? leyline(s / route.length) : route.color)
+  const colorAt = (route, s, x) => {
+    if (route.leyline) return leyline(s / route.length)
+    // Lignes unies (grises) : couleur du dégradé horizontal là où passe l'impulsion,
+    // comme les nœuds posés sur ces lignes.
+    return motion === 'pulses' ? leyline(x / 1920) : route.color
+  }
 
   function gradient(id, stops) {
     const g = document.createElementNS(NS, 'radialGradient')
@@ -186,8 +192,10 @@ export function createPulses(svg, { isDark }) {
       if (items.length < 8) launch(pick(routes), { speed: 170, size: 0.6, opacity: 0.75 })
       next = now + 500 + Math.random() * 600
     } else {
-      const colored = routes.filter((r) => r.leyline)
-      if (items.length < 3 && colored.length) launch(pick(colored))
+      const colored = routes.filter((r) => r.leyline), plain = routes.filter((r) => !r.leyline)
+      // Les lignes en dégradé restent les plus parcourues, les lignes unies une fois sur trois.
+      const pool = plain.length && (!colored.length || Math.random() < 1 / 3) ? plain : colored
+      if (items.length < 3 && pool.length) launch(pick(pool), pool === plain ? { size: 0.8 } : undefined)
       next = now + 1300 + Math.random() * 1500
     }
   }
@@ -200,7 +208,7 @@ export function createPulses(svg, { isDark }) {
     for (const it of [...items]) {
       const s = ((now - it.start) / 1000) * it.speed
       if (s >= it.route.length) { drop(it); continue }
-      const [x, y] = it.route.at(s), rgb = colorAt(it.route, s)
+      const [x, y] = it.route.at(s), rgb = colorAt(it.route, s, x)
       it.g.setAttribute('transform', `translate(${x} ${y})`)
       paint(it.halo, rgb)
       paint(it.core, rgb, 1)
