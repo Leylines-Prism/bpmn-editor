@@ -54,9 +54,11 @@ export class OpenAICompatClient {
       let message = text.slice(0, 500) || res.statusText
       let providerJson = false
       try {
-        const data = JSON.parse(text)
-        message = apiErrorMessage(data) || message
-        providerJson = true
+        const apiMessage = apiErrorMessage(JSON.parse(text))
+        if (apiMessage) {
+          message = apiMessage
+          providerJson = true
+        }
       } catch {}
       throw new OpenAICompatError(res.status, message, { providerJson })
     }

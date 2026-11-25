@@ -114,8 +114,8 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
     data = JSON.parse(text)
   } catch {}
   if (!res.ok) {
-    const message = apiErrorMessage(data) || text.slice(0, 300) || res.statusText
-    throw new ProviderError(res.status, message, { providerJson: !!data })
+    const apiMessage = apiErrorMessage(data)
+    throw new ProviderError(res.status, apiMessage || text.slice(0, 300) || res.statusText, { providerJson: Boolean(apiMessage) })
   }
   const list = Array.isArray(data?.data) ? data.data : Array.isArray(data?.models) ? data.models : null
   if (!list) throw new ProviderError(res.status, 'unexpected response: not a list of models')

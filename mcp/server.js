@@ -28,7 +28,7 @@ import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
 import { imageCaption, isImageResult } from '../src/ai/image-result.js'
-import { PROVIDERS, checkBaseUrl, listModels } from '../src/ai/providers.js'
+import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
 try {
@@ -191,12 +191,14 @@ function readCustom(value, { needModel }) {
 const RELAY_OFF = (req) => T(req, 'Providers set in Options are turned off on this server (CHAT_RELAY=off).', 'Les fournisseurs réglés dans Options sont désactivés sur ce serveur (CHAT_RELAY=off).')
 
 // Erreur d'un fournisseur relayé, telle qu'elle repart vers le navigateur. Le relais
-// appelle une adresse choisie par la page : le corps d'une réponse qui n'est pas une
-// erreur d'API en JSON (page HTML, service interne…) n'est jamais renvoyé, seul son statut.
+// appelle une adresse choisie par la page : seul le message d'une erreur d'API en JSON
+// est renvoyé, limité à 200 caractères. Le reste du corps (page HTML, réponse d'un
+// service interne…) n'est jamais renvoyé, seul le statut.
 function relayError(err) {
   if (!err || typeof err !== 'object' || typeof err.status !== 'number') return err
-  const parsed = err.providerJson ?? err.error
-  return parsed ? err : { name: err.name, status: err.status, message: '' }
+  // providerJson : erreurs de listModels et d'OpenAICompatClient. Sinon, SDK Anthropic.
+  const message = err.providerJson === undefined ? apiErrorMessage(err.error) : err.providerJson ? err.message : ''
+  return { name: err.name, status: err.status, message: String(message || '').slice(0, 200) }
 }
 
 // Bouton « Tester » ou « Lister » de la fenêtre Options, relayé par le serveur.
