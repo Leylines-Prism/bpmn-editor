@@ -4,7 +4,7 @@
 
 Ce serveur permet à une IA (Claude Code, Claude Desktop, GitHub Copilot dans VS Code ou tout client MCP) de lire et de dessiner
 dans l'éditeur BPMN **ouvert dans le navigateur**. Les modifications apparaissent en direct sur le
-canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z, sauf `set_diagram_xml` et `auto_layout` qui rechargent tout le diagramme.
+canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z. `set_diagram_xml` et `auto_layout` rechargent tout le diagramme : un Ctrl+Z ramène le diagramme d'avant, mais les étapes plus anciennes ne s'annulent plus une par une.
 
 ## Fonctionnement
 
@@ -173,7 +173,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
 | `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
 | `remove_elements` | supprime des formes ou des connexions |
-| `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Vide l'historique d'annulation |
+| `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
 | `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.

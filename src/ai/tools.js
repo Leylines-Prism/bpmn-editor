@@ -74,7 +74,7 @@ export function buildTools(z) {
       name: 'set_diagram_xml',
       title: 'Replace the diagram',
       description:
-        "Replaces the whole open diagram with the given BPMN 2.0 XML. Warning: clears the editor's undo history.",
+        "Replaces the whole open diagram with the given BPMN 2.0 XML. The user can undo it in one step, but not the earlier changes one by one.",
       inputSchema: {
         xml: z.string().min(1).describe('Complete BPMN 2.0 XML document, with its diagram layout (BPMNDiagram)'),
       },
@@ -171,7 +171,7 @@ export function buildTools(z) {
         'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
         'Handles pools, lanes, message flows, boundary events, expanded subprocesses, annotations and groups. ' +
         'Colors are kept. Returns the layout warnings, if any. ' +
-        "Clears the editor's undo history.",
+        'The user can undo it in one step.',
       inputSchema: {},
     },
     {

@@ -23,6 +23,7 @@ import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './
 import { exportPdf } from './export-pdf.js'
 import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
+import { setupHistory } from './history.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -149,6 +150,11 @@ const modeler = new BpmnModeler({
 })
 
 setupDeepLink(modeler)
+setupHistory({
+  modeler,
+  undoButton: document.getElementById('btn-undo'),
+  redoButton: document.getElementById('btn-redo'),
+})
 
 async function loadInitial() {
   const saved = localStorage.getItem(LS_KEY)
@@ -182,7 +188,7 @@ async function autosave({ quiet = false } = {}) {
 // Modifications non enregistrées dans « Mes diagrammes ».
 let dirty = false
 
-modeler.on(['commandStack.changed', 'layout.done'], () => {
+modeler.on(['commandStack.changed', 'layout.done', 'history.restored'], () => {
   dirty = true
   clearTimeout(saveTimer)
   saveTimer = setTimeout(autosave, 1000)
@@ -381,7 +387,7 @@ document.getElementById('btn-print').addEventListener('click', async () => {
 })
 
 document.getElementById('btn-layout').addEventListener('click', async () => {
-  if (!confirm(T('Tidy up the diagram automatically? All positions will be recalculated and the undo history will be cleared.', 'Ranger le diagramme automatiquement ? Toutes les positions seront recalculées et l\'historique d\'annulation sera effacé.'))) return
+  if (!confirm(T('Tidy up the diagram automatically? All positions will be recalculated. Undo (Ctrl+Z) brings back the previous layout.', 'Ranger le diagramme automatiquement ? Toutes les positions seront recalculées. Annuler (Ctrl+Z) ramène la disposition d\'avant.'))) return
   try {
     await autoLayout(modeler)
     setStatus(T('Diagram tidied up', 'Diagramme rangé'))

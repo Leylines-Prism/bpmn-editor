@@ -216,9 +216,9 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
-- **Dessin** : palette, menu contextuel, copier-coller, rangement, simulation de jetons,
-  vérification des règles BPMN, grille, mini-carte, et le panneau Processus pour les propriétés de
-  chaque élément.
+- **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
+  simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
+  pour les propriétés de chaque élément.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
   toutes prêtes ou le sélecteur de couleur du système, et la mise en forme du texte (gras, italique,
   souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau

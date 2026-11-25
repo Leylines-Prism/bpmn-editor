@@ -204,8 +204,9 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   as an image, print the diagram alone fitted to one page. The current diagram is restored when you
   come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
-- **Drawing**: palette, context pad, copy and paste, tidy up, token simulation, BPMN rule checking,
-  grid, minimap, and the Process panel for the properties of each element.
+- **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, token
+  simulation, BPMN rule checking, grid, minimap, and the Process panel for the properties of each
+  element.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
   picker, and text formatting (bold, italic, underline, size, font, "Auto" for readable text on dark
   fills). The Process panel copies a style onto other elements and reuses those already in the

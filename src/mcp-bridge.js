@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 import { autoLayout } from './auto-layout.js'
+import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
@@ -332,7 +333,7 @@ function buildTools(modeler) {
       if (!definitions.diagrams?.some((d) => d.plane?.bpmnElement)) {
         throw new Error('The XML contains no drawn diagram (BPMNDiagram with a BPMNPlane), diagram unchanged.')
       }
-      const { warnings } = await modeler.importXML(xml)
+      const { warnings } = await reloadWithCopy(modeler, () => modeler.importXML(xml))
       fitView(canvas)
       return {
         imported: true,
