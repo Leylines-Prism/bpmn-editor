@@ -178,14 +178,14 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
             : `<a class="choice" href="${esc(c.url)}" target="_blank" rel="noopener">${inner}</a>`
         })
         .join('')}
+      <a class="choice" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis"><span class="choice-icon icon-support">${CUP_ICON}</span><span class="choice-text"><strong>${T('Buy the author a coffee', "Offrir un café à l'auteur")}</strong><span>${T('If the editor is useful to you, a small thank-you on Ko-fi.', 'Si l\'éditeur vous rend service, un petit merci sur Ko-fi.')}</span></span><span class="choice-go">${CHEVRON}</span></a>
       <div class="actions">
-        <a class="support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis" title="Ko-fi"><span class="support-disc">${CUP_ICON}</span><span>${T('Thanks for the coffee!', 'Merci pour le café !')}</span></a>
         <span class="grow"></span>
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
   document.body.append(dialog)
-  // Lien de soutien, discret, à gauche du bouton Fermer (clic compté, voir src/support.js).
+  // Dernier choix : soutenir le projet sur Ko-fi (clic compté, voir src/support.js).
   trackSupportClicks(dialog)
   const open = () => { if (!dialog.open) dialog.showModal() }
   button.addEventListener('click', open)
