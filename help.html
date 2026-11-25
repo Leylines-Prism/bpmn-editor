@@ -59,7 +59,12 @@
     <main>
       <div class="hero">
         <h1>BPMN Editor guide</h1>
+        <!-- online -->
         <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Draw your processes by hand, or describe them to an AI assistant that does it for you.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Draw your processes by hand, or describe them to an AI assistant that does it for you. An MCP agent such as Claude Code can also draw in the open editor.</p>
+        <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Open the editor</a>
           <a class="btn" href="#assistant">Let the AI draw</a>
@@ -79,7 +84,12 @@
         </ol>
         <p>Your work is kept in the browser after every change, and you find it as you left it when you reopen the page. The "Autosave" label in the toolbar is there to remind you.</p>
         <p>The <span class="ui">FR</span> or <span class="ui">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <!-- online -->
         <div class="note">There is no account. Your diagrams stay in your browser. If you use the assistant, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
+        <!-- /online -->
+        <!-- docker -->
+        <div class="note">There is no account. Your diagrams stay in your browser, or on your server if you save them there. If you use the assistant, only the AI provider receives them, through your server. This version does not measure its audience.</div>
+        <!-- /docker -->
       </section>
 
       <section id="drawing">
@@ -248,7 +258,13 @@
         <h3><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</h3>
         <p>To keep several processes, open <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">My diagrams</span>. Give your work a name and click <span class="ui">Save</span>. The list then lets you reopen, rename or delete each entry. <kbd>Ctrl</kbd>+<kbd>S</kbd> updates the one that is open, and <span class="ui">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="470" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The My diagrams window.</figcaption></figure>
+        <!-- online -->
         <div class="note warn">This list is stored in this browser, on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. To keep a process for good, or share it, export it as a .bpmn file.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The <span class="ui">Save to</span> choice sets where your work goes: <span class="ui">This browser</span> or <span class="ui">Server</span>. An entry saved on the server opens from any browser that reaches it, and it is also kept as a .bpmn file (see <a href="#docker">Your files in the Docker version</a>).</p>
+        <div class="note warn">An entry saved in This browser stays on this device. It is not synced, and it is lost if you clear the site's data or browse in private mode. Choose Server to find it elsewhere, or export a .bpmn file to share it.</div>
+        <!-- /docker -->
       </section>
 
       <section id="open-export">
@@ -276,7 +292,12 @@
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
+        <!-- online -->
         <p>In the Docker version, the menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
+        <!-- /docker -->
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
         <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
@@ -286,16 +307,30 @@
         <p>The <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, tidy it up and check it. You can then touch up its work by hand, like everything else.</p>
 
         <h3>1. Choose a provider</h3>
+        <!-- online -->
         <p>The assistant uses an AI model from the provider of your choice, with your own API key. Open <span class="ui">Options</span> in the assistant panel:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The assistant uses an AI model from the provider of your choice. Open <span class="ui">Options</span> in the assistant panel. If keys are set on the server, the <span class="ui">Server models</span> choice comes first in the list: there is nothing to enter. Otherwise, choose a provider and paste your API key:</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Provider</th><th>What to know</th></tr></thead>
             <tbody>
+              <!-- online -->
               <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>The simplest in this version: create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
               <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI does not always accept calls made from a web page: if "Test" fails, this provider will not work here.</td></tr>
               <tr><td>Ollama</td><td>Free models, on your own computer. Ollama must be started with the <code>OLLAMA_ORIGINS</code> variable set to this site's address (Options gives you the exact value). Pick a model that supports tool calls.</td></tr>
               <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… The server must use https (or localhost) and allow this site's address in its CORS setting.</td></tr>
+              <!-- /online -->
+              <!-- docker -->
+              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
+              <tr><td>Anthropic (Claude)</td><td>Create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
+              <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>.</td></tr>
+              <tr><td>Ollama</td><td>Free models, on your own machine. Enter its address as the server sees it: if it runs in Docker, try <code>http://host.docker.internal:11434/v1</code>. Pick a model that supports tool calls.</td></tr>
+              <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… Enter the address as the server sees it.</td></tr>
+              <!-- /docker -->
             </tbody>
           </table>
         </div>
@@ -329,7 +364,12 @@
 
       <section id="keys">
         <h2>Your API keys</h2>
+        <!-- online -->
         <p>Your key never goes through this site or its host (GitHub Pages). It stays in your browser and goes straight to the chosen provider with each message. Where it is kept depends on the <span class="ui">Remember API keys on your device</span> box in Options:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>The safest place for keys is the server (see the <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">project README</a>): they never reach the browser, and the assistant offers them under <span class="ui">Server models</span>. A key entered in Options goes to your server with each message, and the server passes it on to the provider without storing it. In the browser, it is kept according to the <span class="ui">Remember API keys on your device</span> box:</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Box</th><th>Where the key is</th><th>Until when</th></tr></thead>
@@ -339,7 +379,12 @@
             </tbody>
           </table>
         </div>
+        <!-- online -->
         <p>What protects it: the page runs no script from anywhere else (a content security policy forbids it). However, a malicious browser extension, or someone using your session, can read it.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>What protects it: the page runs no script from anywhere else and only connects to your server (a content security policy enforces this). However, a malicious browser extension, or someone using your session, can read a key kept in the browser.</p>
+        <!-- /docker -->
         <div class="note warn">On a shared computer, leave the box unchecked and close the tab when you leave.</div>
         <div class="note responsible" role="note" aria-labelledby="responsible-use">
           <p class="note-title" id="responsible-use">Responsible use</p>
@@ -350,6 +395,7 @@
       <section id="privacy">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>
         <ul>
+          <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
           <li>If you use the AI assistant, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
           <li>Like any web host, GitHub Pages keeps technical logs, including your IP address.</li>
@@ -357,11 +403,24 @@
           <li>The site loads no third-party script.</li>
         </ul>
         <p>The <span class="ui">Privacy</span> link at the bottom of the canvas repeats these points in the editor.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <li>Your diagrams, settings and API keys stay in your browser, or on your server for what you save there. Nothing is sent to the author of the editor.</li>
+          <li>If you use the AI assistant, your messages, the diagram and your attached files go through your server to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>An agent connected through MCP reads and edits the open diagram. What it does with it depends on the agent and its provider.</li>
+          <li>This version does not measure its audience and loads no third-party script.</li>
+          </ul>
+          <!-- /docker -->
       </section>
 
       <section id="docker">
         <h2>Docker version and MCP agents</h2>
+        <!-- online -->
         <p>This site is the online version. The editor also comes as a Docker version, to install on your machine or private network. It adds:</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>You are using the Docker version of the editor, installed on your machine or network. Compared with the online version, it adds:</p>
+        <!-- /docker -->
         <ul>
           <li>API keys stored on your server, which never reach the browser,</li>
           <li>every provider, OpenAI included, with no browser blocking,</li>
@@ -393,7 +452,12 @@
         <h2>FAQ</h2>
         <details class="faq">
           <summary>Do I need an account?</summary>
+          <!-- online -->
           <p>No. The editor works without an account. Only the AI assistant needs an API key from an AI provider.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>No. The editor works without an account. Only the AI assistant needs an API key, set on the server or entered in Options.</p>
+          <!-- /docker -->
         </details>
         <details class="faq">
           <summary>Can I use the editor without AI?</summary>
@@ -401,12 +465,25 @@
         </details>
         <details class="faq">
           <summary>My diagrams are gone. What happened?</summary>
+          <!-- online -->
           <p>They are stored in one browser, on one device. So they do not show anywhere else, in private mode, or after the site's data is cleared. Export what you want to keep as .bpmn.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>Those saved in This browser only show there: not in another browser, in private mode, or after the site's data is cleared. Those saved on the Server stay available from any browser. Export what you want to keep elsewhere as .bpmn.</p>
+          <!-- /docker -->
         </details>
+        <!-- online -->
         <details class="faq">
           <summary>"Test" fails with OpenAI.</summary>
           <p>OpenAI sometimes refuses calls made directly from a web page. Use Mistral, Anthropic or Ollama on this site, or install the Docker version, which goes through its own server.</p>
         </details>
+        <!-- /online -->
+        <!-- docker -->
+        <details class="faq">
+          <summary>My MCP agent does not draw.</summary>
+          <p>The agent draws in the last editor tab you used: keep it open. The MCP badge in the toolbar should read "MCP: connected". Click it to get the address and the settings to paste into the agent again.</p>
+        </details>
+        <!-- /docker -->
         <details class="faq">
           <summary>The assistant drew something unexpected.</summary>
           <p>Undo with <kbd>Ctrl</kbd>+<kbd>Z</kbd>, or ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>

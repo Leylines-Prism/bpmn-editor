@@ -59,7 +59,12 @@
     <main>
       <div class="hero">
         <h1>Guide de l'éditeur BPMN</h1>
+        <!-- online -->
         <p class="lead">Un éditeur BPMN 2.0 gratuit, dans votre navigateur, sans compte ni installation. Vous dessinez vos processus à la main, ou vous les décrivez à un assistant IA qui s'en charge.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p class="lead">Un éditeur BPMN 2.0 gratuit, sans compte, installé sur votre machine ou votre réseau. Vous dessinez vos processus à la main, ou vous les décrivez à un assistant IA qui s'en charge. Un agent MCP comme Claude Code peut aussi dessiner dans l'éditeur ouvert.</p>
+        <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Ouvrir l'éditeur</a>
           <a class="btn" href="#assistant">Faire dessiner par l'IA</a>
@@ -79,7 +84,12 @@
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification, et vous le retrouvez tel quel en rouvrant la page. La mention « Sauvegarde auto », dans la barre d'outils, le rappelle.</p>
         <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
+        <!-- online -->
         <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit. Ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
+        <!-- /online -->
+        <!-- docker -->
+        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur, ou sur votre serveur si vous les y enregistrez. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit, en passant par votre serveur. Cette version ne mesure pas sa fréquentation.</div>
+        <!-- /docker -->
       </section>
 
       <section id="dessiner">
@@ -248,7 +258,13 @@
         <h3><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</h3>
         <p>Pour conserver plusieurs processus, ouvrez <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">Mes diagrammes</span>. Donnez un nom à votre travail puis cliquez sur <span class="ui">Enregistrer</span>. La liste permet ensuite de rouvrir, renommer ou supprimer chaque enregistrement. <kbd>Ctrl</kbd>+<kbd>S</kbd> met à jour celui qui est ouvert, et <span class="ui">Enregistrer comme nouveau</span> en crée une copie.</p>
         <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre Mes diagrammes.</figcaption></figure>
+        <!-- online -->
         <div class="note warn">Cette liste vit dans ce navigateur, sur cet appareil. Elle n'est pas synchronisée et disparaît si vous effacez les données du site ou naviguez en mode privé. Pour conserver un processus durablement ou le transmettre, exportez-le en fichier .bpmn.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Le choix <span class="ui">Enregistrer dans</span> indique où ranger votre travail : <span class="ui">Ce navigateur</span> ou <span class="ui">Serveur</span>. Un enregistrement sur le serveur s'ouvre depuis tout navigateur qui y accède, et il est aussi rangé en fichier .bpmn (voir <a href="#docker">Vos fichiers dans la version Docker</a>).</p>
+        <div class="note warn">Un enregistrement dans Ce navigateur reste sur cet appareil. Il n'est pas synchronisé et disparaît si vous effacez les données du site ou naviguez en mode privé. Choisissez Serveur pour le retrouver ailleurs, ou exportez un fichier .bpmn pour le transmettre.</div>
+        <!-- /docker -->
       </section>
 
       <section id="ouvrir-exporter">
@@ -276,7 +292,12 @@
           </table>
         </div>
         <p>Tous les exports prennent le nom du fichier indiqué dans la barre d'outils.</p>
+        <!-- online -->
         <p>Dans la version Docker, le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
+        <!-- /docker -->
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Imprimer</h3>
         <p>Exporter, puis Imprimer…, ouvre la fenêtre d'impression du navigateur sur le diagramme seul, centré avec des marges de 10 mm. L'orientation suit sa forme : paysage s'il est plus large que haut, portrait sinon. Safari, lui, laisse ce choix dans sa fenêtre d'impression. Un grand schéma est réduit pour tenir sur une page, un petit garde sa taille à l'écran. Pour un très long processus, l'export PDF ou SVG permet de zoomer.</p>
       </section>
@@ -286,16 +307,30 @@
         <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste.</p>
 
         <h3>1. Choisir un fournisseur</h3>
+        <!-- online -->
         <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant. Si des clés sont réglées sur le serveur, le choix <span class="ui">Modèles du serveur</span> arrive en tête de la liste : il n'y a rien à saisir. Sinon, choisissez un fournisseur et collez votre clé API :</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Fournisseur</th><th>Ce qu'il faut savoir</th></tr></thead>
             <tbody>
+              <!-- online -->
               <tr><td>Mistral</td><td>Clé à créer sur <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Les appels partent directement de cette page. Pour un traitement dans l'Union européenne, remplacez l'adresse par <code>https://api.eu.mistral.ai/v1</code> (facturée 10 % de plus). Les modèles Mistral lisent aussi les images et les PDF.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>Le plus simple dans cette version : créez une clé sur <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Les modèles Claude lisent aussi les images et les PDF.</td></tr>
               <tr><td>OpenAI</td><td>Clé à créer sur <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI n'accepte pas toujours les appels faits depuis une page web : si « Tester » échoue, ce fournisseur ne marchera pas ici.</td></tr>
               <tr><td>Ollama</td><td>Des modèles gratuits, sur votre propre ordinateur. Ollama doit être lancé avec la variable <code>OLLAMA_ORIGINS</code> réglée sur l'adresse de ce site (Options vous donne la valeur exacte). Choisissez un modèle qui sait appeler des outils.</td></tr>
               <tr><td>Compatible OpenAI</td><td>LiteLLM, LM Studio, vLLM… Le serveur doit être en https (ou sur localhost) et autoriser l'adresse de ce site dans son réglage CORS.</td></tr>
+              <!-- /online -->
+              <!-- docker -->
+              <tr><td>Mistral</td><td>Clé à créer sur <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Pour un traitement dans l'Union européenne, remplacez l'adresse par <code>https://api.eu.mistral.ai/v1</code> (facturée 10 % de plus). Les modèles Mistral lisent aussi les images et les PDF.</td></tr>
+              <tr><td>Anthropic (Claude)</td><td>Clé à créer sur <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Les modèles Claude lisent aussi les images et les PDF.</td></tr>
+              <tr><td>OpenAI</td><td>Clé à créer sur <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>.</td></tr>
+              <tr><td>Ollama</td><td>Des modèles gratuits, sur votre propre machine. Indiquez son adresse telle que le serveur la voit : s'il tourne dans Docker, essayez <code>http://host.docker.internal:11434/v1</code>. Choisissez un modèle qui sait appeler des outils.</td></tr>
+              <tr><td>Compatible OpenAI</td><td>LiteLLM, LM Studio, vLLM… Indiquez l'adresse telle que le serveur la voit.</td></tr>
+              <!-- /docker -->
             </tbody>
           </table>
         </div>
@@ -329,7 +364,12 @@
 
       <section id="cles">
         <h2>Vos clés API</h2>
+        <!-- online -->
         <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés API sur votre appareil</span>, dans Options :</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Le plus sûr est de régler les clés sur le serveur (voir le <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener">README du projet</a>) : elles n'arrivent jamais au navigateur, et l'assistant les propose sous <span class="ui">Modèles du serveur</span>. Une clé saisie dans Options part à chaque message vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Dans le navigateur, elle est gardée selon la case <span class="ui">Se souvenir des clés API sur votre appareil</span> :</p>
+        <!-- /docker -->
         <div class="table-wrap">
           <table>
             <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
@@ -339,7 +379,12 @@
             </tbody>
           </table>
         </div>
+        <!-- online -->
         <p>Ce qui la protège : la page n'exécute aucun script venu d'ailleurs (une politique de sécurité du contenu l'interdit). En revanche, une extension de navigateur malveillante, ou quelqu'un qui utilise votre session, peut la lire.</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Ce qui la protège : la page n'exécute aucun script venu d'ailleurs et ne se connecte qu'à votre serveur (une politique de sécurité du contenu l'impose). En revanche, une extension de navigateur malveillante, ou quelqu'un qui utilise votre session, peut lire une clé gardée dans le navigateur.</p>
+        <!-- /docker -->
         <div class="note warn">Sur un ordinateur partagé, laissez la case décochée et fermez l'onglet en partant.</div>
         <div class="note responsible" role="note" aria-labelledby="usage-responsable">
           <p class="note-title" id="usage-responsable">Usage responsable</p>
@@ -350,6 +395,7 @@
       <section id="confidentialite">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Confidentialité</h2>
         <ul>
+          <!-- online -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
           <li>Si vous utilisez l'assistant IA, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Comme tout hébergeur web, GitHub Pages garde des journaux techniques, dont votre adresse IP.</li>
@@ -357,11 +403,24 @@
           <li>Le site ne charge aucun script tiers.</li>
         </ul>
         <p>Le lien <span class="ui">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur, ou sur votre serveur pour ce que vous y enregistrez. Rien n'est envoyé à l'auteur de l'éditeur.</li>
+          <li>Si vous utilisez l'assistant IA, vos messages, le diagramme et vos fichiers joints passent par votre serveur jusqu'au fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>Un agent connecté par MCP lit et modifie le diagramme ouvert. Ce qu'il en fait dépend de l'agent et de son fournisseur.</li>
+          <li>Cette version ne mesure pas sa fréquentation et ne charge aucun script tiers.</li>
+          </ul>
+          <!-- /docker -->
       </section>
 
       <section id="docker">
         <h2>Version Docker et agents MCP</h2>
+        <!-- online -->
         <p>Ce site est la version en ligne. L'éditeur existe aussi en version Docker, à installer sur votre machine ou votre réseau privé. Elle ajoute :</p>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Vous utilisez la version Docker de l'éditeur, installée sur votre machine ou votre réseau. Par rapport à la version en ligne, elle ajoute :</p>
+        <!-- /docker -->
         <ul>
           <li>des clés API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
@@ -393,7 +452,12 @@
         <h2>Questions fréquentes</h2>
         <details class="faq">
           <summary>Faut-il créer un compte ?</summary>
+          <!-- online -->
           <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé API chez un fournisseur d'IA.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé API, réglée sur le serveur ou saisie dans Options.</p>
+          <!-- /docker -->
         </details>
         <details class="faq">
           <summary>Puis-je utiliser l'éditeur sans l'IA ?</summary>
@@ -401,12 +465,25 @@
         </details>
         <details class="faq">
           <summary>Mes diagrammes ont disparu. Que s'est-il passé ?</summary>
+          <!-- online -->
           <p>Ils sont rangés dans un seul navigateur, sur un seul appareil. Ils n'apparaissent donc ni ailleurs, ni en navigation privée, ni après un effacement des données du site. Exportez en .bpmn ce que vous voulez garder.</p>
+          <!-- /online -->
+          <!-- docker -->
+          <p>Ceux enregistrés dans Ce navigateur ne s'affichent que là : pas dans un autre navigateur, ni en navigation privée, ni après un effacement des données du site. Ceux du Serveur restent accessibles depuis tout navigateur. Exportez en .bpmn ce que vous voulez garder ailleurs.</p>
+          <!-- /docker -->
         </details>
+        <!-- online -->
         <details class="faq">
           <summary>« Tester » échoue avec OpenAI.</summary>
           <p>OpenAI refuse parfois les appels faits directement depuis une page web. Utilisez Mistral, Anthropic ou Ollama sur ce site, ou installez la version Docker, qui passe par son propre serveur.</p>
         </details>
+        <!-- /online -->
+        <!-- docker -->
+        <details class="faq">
+          <summary>Mon agent MCP ne dessine pas.</summary>
+          <p>L'agent dessine dans le dernier onglet de l'éditeur utilisé : gardez-le ouvert. Le badge MCP de la barre d'outils doit indiquer « MCP : connecté ». Un clic dessus redonne l'adresse et les réglages à coller dans l'agent.</p>
+        </details>
+        <!-- /docker -->
         <details class="faq">
           <summary>L'assistant a dessiné quelque chose d'inattendu.</summary>
           <p>Annulez avec <kbd>Ctrl</kbd>+<kbd>Z</kbd>, ou demandez-lui la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
