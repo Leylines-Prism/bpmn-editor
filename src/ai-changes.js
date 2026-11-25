@@ -13,10 +13,14 @@
 // exemple), aucun contour n'est posé : seule la pilule résume, et un clic
 // dessus montre les contours à la demande.
 //
+// La pilule ouvre aussi la vue Avant / après (src/compare.js), à partir du diagramme
+// gardé au début du tour, et annule d'un clic tout ce que l'IA a fait depuis.
+//
 // Rien de tout cela n'est enregistré : ni dans le .bpmn, ni dans le navigateur.
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T, num } from './i18n/lang.js'
+import { getHistory, isHistoryReload } from './history.js'
 
 // Outils qui modifient le diagramme.
 const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'remove_elements', 'set_diagram_xml', 'auto_layout']
@@ -55,6 +59,13 @@ function createTracker(modeler) {
   const elementRegistry = modeler.get('elementRegistry')
   const overlays = modeler.get('overlays')
   const eventBus = modeler.get('eventBus')
+  const commandStack = modeler.get('commandStack')
+
+  // Début du tour : le diagramme d'alors, la position dans l'historique, et si le
+  // diagramme a été rechargé depuis (mise en page, remplacement, Ranger).
+  let start = null
+  // Retouches à la main depuis le début du tour : Annuler les emporte aussi.
+  let handEdits = false
 
   // id → état d'avant l'IA : { sig, name, type, shape }, ou null si l'élément n'existait pas.
   let baseline = new Map()
@@ -72,6 +83,41 @@ function createTracker(modeler) {
     render()
   })
   pill.close.addEventListener('click', () => reset())
+  pill.compare.addEventListener('click', () => openBeforeAfter())
+  pill.undo.addEventListener('click', () => undoRound())
+
+  async function openBeforeAfter() {
+    if (!start) return
+    const { openCompare } = await import('./compare.js')
+    const { xml } = await modeler.saveXML({ format: true })
+    await openCompare({
+      before: { xml: start.xml, title: T('Before the AI', "Avant l'IA") },
+      after: { xml, title: T('Now', 'Maintenant') },
+      actions: [{
+        id: 'undo',
+        label: T("Undo the AI's changes", "Annuler les changements de l'IA"),
+        title: T('Back to the diagram before the AI. Redo (Ctrl+Y) brings the changes back.', "Revient au diagramme d'avant l'IA. Rétablir (Ctrl+Y) ramène les changements."),
+        run: () => undoRound(),
+      }],
+    })
+  }
+
+  // Revient au diagramme du début du tour. Si l'historique de bpmn-js le permet, on le
+  // remonte (Ctrl+Y rétablit pas à pas). Sinon on recharge la copie du début du tour.
+  async function undoRound() {
+    if (!start) return false
+    if (handEdits && !confirm(T(
+      "Undo the AI's changes? Your own changes made since then will be undone too.",
+      "Annuler les changements de l'IA ? Vos retouches faites depuis seront annulées aussi.",
+    ))) return false
+    if (!start.reloaded) {
+      while (commandStack._stackIdx > start.stackIdx && commandStack.canUndo()) commandStack.undo()
+      return true
+    }
+    const history = getHistory()
+    if (history?.modeler === modeler) await history.restore(start.xml, start.copies)
+    return true
+  }
 
   const isTracked = (el) => el.type !== 'label' && el !== canvas.getRootElement() && el.businessObject && !el.labelTarget
 
@@ -100,6 +146,11 @@ function createTracker(modeler) {
 
   async function run(name, call) {
     if (shapesAtStart === null) shapesAtStart = countShapes()
+    if (!start) {
+      const { xml } = await modeler.saveXML({ format: true })
+      start = { xml, stackIdx: commandStack._stackIdx, copies: getHistory()?.copies() ?? 0, reloaded: false }
+      handEdits = false
+    }
     const before = snapshot()
     inTool++
     let result
@@ -193,7 +244,7 @@ function createTracker(modeler) {
       for (const el of changed) mark(el, MARKER_CHANGED)
     }
     const rec = (el) => ({ shape: !el.waypoints })
-    pill.update({ added: added.map(rec), changed: changed.map(rec), removed, quiet, drawn: shapesAtStart === 0, showing: !quiet || showOutlines })
+    pill.update({ added: added.map(rec), changed: changed.map(rec), removed, quiet, drawn: shapesAtStart === 0, showing: !quiet || showOutlines, canCompare: !!start })
     pill.root.hidden = false
   }
 
@@ -202,18 +253,24 @@ function createTracker(modeler) {
     baseline = new Map()
     shapesAtStart = null
     showOutlines = false
+    start = null
+    handEdits = false
     pill.root.hidden = true
   }
 
   // Ctrl+Z, Ctrl+Y et retouches à la main : on recalcule.
-  eventBus.on('commandStack.changed', () => {
+  eventBus.on('commandStack.changed', ({ trigger }) => {
+    if (!inTool && trigger === 'execute' && start) handEdits = true
     if (!inTool && baseline.size) render()
   })
   // Un import hors outil (nouveau diagramme, fichier ouvert) termine le tour.
   // Pendant un outil (auto_layout, set_diagram_xml), les marques sont reposées après l'appel.
+  // Annuler ou Rétablir qui recharge une copie (src/history.js) : on recalcule aussi.
   eventBus.on('import.done', () => {
-    if (inTool) {
+    if (inTool || isHistoryReload()) {
+      if (start) start.reloaded = true
       marked = []
+      if (!inTool && baseline.size) render()
       return
     }
     reset()
@@ -237,10 +294,22 @@ function createPill() {
   close.textContent = '×'
   close.title = T('Clear the marking', 'Effacer le marquage')
   close.setAttribute('aria-label', close.title)
-  root.append(button, close)
+  const compare = document.createElement('button')
+  compare.type = 'button'
+  compare.className = 'ai-changes-action'
+  compare.textContent = T('Before / after', 'Avant / après')
+  compare.title = T('Compare with the diagram before the AI', "Comparer avec le diagramme d'avant l'IA")
+  const undo = document.createElement('button')
+  undo.type = 'button'
+  undo.className = 'ai-changes-action'
+  undo.textContent = T('Undo', 'Annuler')
+  undo.title = T("Undo all the AI's changes. Redo (Ctrl+Y) brings them back.", "Annuler tous les changements de l'IA. Rétablir (Ctrl+Y) les ramène.")
+  root.append(button, compare, undo, close)
 
   // Les nombres comptent les formes. Les liaisons ne sont citées que si l'IA n'a changé qu'elles.
-  function update({ added, changed, removed, quiet, drawn, showing }) {
+  function update({ added, changed, removed, quiet, drawn, showing, canCompare }) {
+    compare.hidden = !canCompare
+    undo.hidden = !canCompare
     const shapes = (list) => list.filter((e) => e.shape).length
     const a = shapes(added)
     const c = shapes(changed)
@@ -280,6 +349,6 @@ function createPill() {
     pill.quiet = quiet
   }
 
-  const pill = { root, button, close, update, quiet: false }
+  const pill = { root, button, close, compare, undo, update, quiet: false }
   return pill
 }

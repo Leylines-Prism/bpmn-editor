@@ -1135,3 +1135,140 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 }
 #small-screen-notice .close:hover { background: var(--surface-sunken); color: var(--ink); }
 #small-screen-notice .close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+
+/* ── Vue « Avant / après » (src/compare.js) ─────────────────────────────── */
+#compare-dialog {
+  --cmp-added: #1E8E4E; --cmp-added-soft: rgba(30, 142, 78, 0.14);
+  --cmp-removed: #D23B3B; --cmp-removed-soft: rgba(210, 59, 59, 0.14);
+  --cmp-changed: #E07A10; --cmp-changed-soft: rgba(224, 122, 16, 0.16);
+  --cmp-layout: #1483C9; --cmp-layout-soft: rgba(20, 131, 201, 0.12);
+  width: calc(100vw - 32px); height: calc(100vh - 32px); max-width: none; max-height: none;
+  margin: 16px; padding: 0; box-sizing: border-box;
+  display: flex; flex-direction: column;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+}
+#compare-dialog:not([open]) { display: none; }
+#compare-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#compare-dialog .cmp-head {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+#compare-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; margin: 0; }
+#compare-dialog .cmp-grow { flex: 1; }
+#compare-dialog .cmp-legend, #compare-dialog .cmp-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+#compare-dialog .cmp-close { font-size: 20px; }
+#compare-dialog .cmp-actions .btn { border-color: var(--line-strong); background: var(--surface-raised); }
+#compare-dialog .cmp-chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px;
+  font: inherit; font-size: 13px; color: var(--ink); cursor: pointer;
+  background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-pill);
+}
+#compare-dialog .cmp-chip[aria-pressed="false"] { color: var(--ink-muted); }
+#compare-dialog .cmp-chip[aria-pressed="false"] .cmp-swatch { background: transparent; }
+#compare-dialog .cmp-chip:disabled { opacity: 0.5; cursor: default; }
+#compare-dialog .cmp-chip:focus-visible, #compare-dialog .cmp-item:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#compare-dialog .cmp-swatch {
+  width: 10px; height: 10px; border-radius: 3px; box-sizing: border-box; flex-shrink: 0;
+  border: 2px solid var(--cmp-color); background: var(--cmp-color);
+}
+#compare-dialog .cmp-chip-added, #compare-dialog .cmp-item-added { --cmp-color: var(--cmp-added); }
+#compare-dialog .cmp-chip-removed, #compare-dialog .cmp-item-removed { --cmp-color: var(--cmp-removed); }
+#compare-dialog .cmp-chip-changed, #compare-dialog .cmp-item-changed { --cmp-color: var(--cmp-changed); }
+#compare-dialog .cmp-chip-layout, #compare-dialog .cmp-item-layout { --cmp-color: var(--cmp-layout); }
+
+#compare-dialog .cmp-body {
+  flex: 1; min-height: 0; display: grid; gap: var(--space-2); padding: var(--space-2);
+  grid-template-columns: 1fr 1fr 280px;
+}
+#compare-dialog .cmp-pane {
+  position: relative; min-width: 0; min-height: 0; overflow: hidden;
+  background: var(--white); color: var(--night-800);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+}
+#compare-dialog .cmp-canvas { position: absolute; inset: 0; }
+#compare-dialog .cmp-label {
+  position: absolute; top: 10px; left: 12px; z-index: 10; pointer-events: none;
+  padding: 2px 10px; border-radius: var(--radius-pill);
+  background: var(--mist); color: var(--night-800); font-size: 13px; font-weight: 600;
+  max-width: calc(100% - 24px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+#compare-dialog .cmp-list {
+  min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-1);
+}
+#compare-dialog .cmp-item {
+  display: flex; flex-direction: column; align-items: stretch; gap: 2px; text-align: left;
+  padding: var(--space-2) var(--space-3); font: inherit; font-size: 13px; color: var(--ink); cursor: pointer;
+  background: var(--surface-raised); border: 1px solid var(--line); border-left: 3px solid var(--cmp-color);
+  border-radius: var(--radius-sm);
+}
+#compare-dialog .cmp-item:hover { border-color: var(--cmp-color); }
+#compare-dialog .cmp-item-head { display: flex; align-items: center; gap: 6px; }
+#compare-dialog .cmp-item-head strong { font-weight: 600; overflow-wrap: anywhere; }
+#compare-dialog .cmp-item-type { color: var(--ink-muted); font-size: 12px; }
+#compare-dialog .cmp-item-line { overflow-wrap: anywhere; }
+#compare-dialog .cmp-item-line del { color: var(--cmp-removed); }
+#compare-dialog .cmp-item-line ins { color: var(--cmp-added); text-decoration: none; font-weight: 600; }
+#compare-dialog .cmp-empty, #compare-dialog .cmp-error { color: var(--ink-muted); font-size: 13px; padding: var(--space-2); }
+
+/* Couleurs posées sur les formes : remplissage léger et trait de la couleur du changement */
+#compare-dialog .cmp-added:not(.djs-connection) .djs-visual > :nth-child(1) { stroke: var(--cmp-added) !important; fill: var(--cmp-added-soft) !important; }
+#compare-dialog .cmp-removed:not(.djs-connection) .djs-visual > :nth-child(1) { stroke: var(--cmp-removed) !important; fill: var(--cmp-removed-soft) !important; }
+#compare-dialog .cmp-changed:not(.djs-connection) .djs-visual > :nth-child(1) { stroke: var(--cmp-changed) !important; fill: var(--cmp-changed-soft) !important; }
+#compare-dialog .cmp-layout:not(.djs-connection) .djs-visual > :nth-child(1) { stroke: var(--cmp-layout) !important; fill: var(--cmp-layout-soft) !important; }
+#compare-dialog .djs-connection.cmp-added .djs-visual > path { stroke: var(--cmp-added) !important; }
+#compare-dialog .djs-connection.cmp-removed .djs-visual > path { stroke: var(--cmp-removed) !important; }
+#compare-dialog .djs-connection.cmp-changed .djs-visual > path { stroke: var(--cmp-changed) !important; }
+#compare-dialog .djs-connection.cmp-layout .djs-visual > path { stroke: var(--cmp-layout) !important; }
+#compare-dialog .djs-connection[class*="cmp-"]:not(.cmp-flash) .djs-visual > path { stroke-width: 2.5px !important; }
+#compare-dialog .cmp-flash .djs-visual { animation: cmp-flash 0.4s ease-in-out 3; }
+@keyframes cmp-flash { 50% { opacity: 0.25; } }
+
+/* Écran étroit : les deux versions l'une sous l'autre, la liste en dessous */
+@media (max-width: 820px) {
+  #compare-dialog { width: 100vw; height: 100dvh; margin: 0; border-radius: 0; }
+  #compare-dialog .cmp-body { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr minmax(90px, 0.6fr); }
+  #compare-dialog .cmp-chip:disabled { display: none; }
+  #compare-dialog .cmp-head { padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3); }
+}
+#canvas .ai-changes-action {
+  padding: 6px 10px; cursor: pointer !important; font-weight: 500; white-space: nowrap;
+  border-left: 1px solid var(--mist) !important; border-radius: 0;
+}
+#canvas .ai-changes-action[hidden] { display: none; }
+#canvas .ai-changes-action:hover { color: var(--leyline-magenta); }
+
+/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, à droite de la
+   bascule de simulation. Leur position horizontale suit la largeur de la bascule (--history-left). */
+#history-buttons {
+  position: absolute; top: 20px; left: var(--history-left, 210px); z-index: 100;
+  display: inline-flex; overflow: hidden;
+  border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); box-shadow: var(--elevation-1);
+}
+#history-buttons button {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 33px; padding: 0; border: 0; background: none; color: var(--night-800); cursor: pointer;
+}
+#history-buttons button + button { border-left: 1px solid var(--mist); }
+#history-buttons button::before {
+  content: ""; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
+#history-buttons button:hover:not(:disabled) { color: var(--leyline-sky-deep); background: var(--mist); }
+#history-buttons button:disabled { opacity: 0.35; cursor: default; }
+#history-buttons button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
+/* Canevas étroit : la minicarte occupe le haut à droite, les boutons passent juste en dessous. */
+@container canvas (max-width: 560px) {
+  #history-buttons { left: auto; right: 20px; top: 66px; }
+}
+/* La pilule de l'IA, centrée en haut, descend d'un cran quand elle toucherait ces boutons. */
+@container canvas (max-width: 1000px) {
+  #canvas .ai-changes-pill { top: 66px; }
+}
+@container canvas (max-width: 560px) {
+  #canvas .ai-changes-pill { top: 112px; max-width: calc(100% - 32px); }
+}

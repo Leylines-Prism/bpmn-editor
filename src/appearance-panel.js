@@ -171,9 +171,12 @@ function styleOf(element) {
 const styleKey = (style) => JSON.stringify([style.fill, style.stroke, style.textColor, style.font && Object.keys(style.font).sort().map((k) => [k, style.font[k]])])
 const isDefaultStyle = (style) => !style.fill && !style.stroke && !style.font && !style.textColor
 
-function copyStyle(element) {
+// Copie depuis le panneau ou depuis la pipette du menu contextuel : l'événement
+// met à jour l'autre endroit (bouton Coller du panneau, rouleau du menu).
+function copyStyle(eventBus, element) {
   copied = styleOf(element)
   try { localStorage.setItem(STYLE_KEY, JSON.stringify(copied)) } catch { /* stockage indisponible : le style vaut pour cette page */ }
+  eventBus.fire('appearance.styleCopied', { element, style: copied })
 }
 
 const pasteTargets = (elements) => [...new Set(elements.map(targetOf))].filter(hasAppearance)
@@ -331,12 +334,18 @@ function RollerPreview({ style }) {
 
 function CopyPasteEntry({ element, id }) {
   const commandStack = useService('commandStack')
+  const eventBus = useService('eventBus')
   const [, setVersion] = useState(0)
+  useEffect(() => {
+    const refresh = () => setVersion((v) => v + 1)
+    eventBus.on('appearance.styleCopied', refresh)
+    return () => eventBus.off('appearance.styleCopied', refresh)
+  }, [eventBus])
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="appearance-row">
       <button type="button" class="appearance-button" id=${id + '-copy'}
         title=${T("Remember this element's colors and text formatting", 'Retenir les couleurs et la mise en forme du texte de cet élément')}
-        onClick=${() => { copyStyle(element); setVersion((v) => v + 1) }}>${T('Copy style', 'Copier le style')}</button>
+        onClick=${() => copyStyle(eventBus, element)}>${T('Copy style', 'Copier le style')}</button>
       <button type="button" class="appearance-button" id=${id + '-paste'} disabled=${!copied}
         title=${copied ? T('Apply the copied style to this element', 'Appliquer le style copié à cet élément') : T('Copy a style first', "Copiez d'abord un style")}
         onClick=${() => pasteStyle(commandStack, [element])}>
@@ -347,6 +356,7 @@ function CopyPasteEntry({ element, id }) {
   </div>`
 }
 
+const PIPETTE_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2.5 21.5 1-1h2.8l8.6-8.6"/><path d="M3.5 20.5v-2.8l8.6-8.6"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>`
 const ROLLER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="13" height="5" rx="1.2"/><path d="M16 5.5h2.5v5H10v3"/><rect x="8.6" y="13.5" width="2.8" height="6" rx="1"/></svg>`
 
 // ── Couleurs de la forme ────────────────────────────────────────────────────
@@ -535,6 +545,7 @@ function AppearanceContextPad(contextPad, eventBus, propertiesPanel, commandStac
   this._popupMenu = popupMenu
   this._modeling = modeling
   this._elementRegistry = elementRegistry
+  this._eventBus = eventBus
   let layout = {}
   eventBus.on('propertiesPanel.layoutChanged', ({ layout: current }) => { layout = current || {} })
 
@@ -549,6 +560,12 @@ function AppearanceContextPad(contextPad, eventBus, propertiesPanel, commandStac
       group.querySelector('.bio-properties-panel-group-header')?.focus?.({ preventScroll: true })
     }))
   }
+
+  // Un style copié fait apparaître le rouleau : on redessine le menu ouvert.
+  eventBus.on('appearance.styleCopied', () => {
+    const target = contextPad._current?.target
+    if (target) contextPad.open(target, true)
+  })
 
   popupMenu.registerProvider(QUICK_SHAPE_MENU, { getPopupMenuEntries: (element) => this._shapeEntries(element) })
   popupMenu.registerProvider(QUICK_TEXT_MENU, { getPopupMenuEntries: (element) => this._textEntries(element) })
@@ -625,6 +642,18 @@ AppearanceContextPad.prototype._textEntries = function (element) {
   return { ...entries, ...this._moreEntries('quick-text', TEXT_GROUP, set(null), !color) }
 }
 
+// Pipette : retient le style de l'élément, comme Copier le style du panneau.
+AppearanceContextPad.prototype._copyEntry = function (element) {
+  return {
+    'copy-style': {
+      group: 'edit',
+      title: T('Copy style', 'Copier le style'),
+      html: `<div class="entry">${PIPETTE_ICON}</div>`,
+      action: { click: () => copyStyle(this._eventBus, element) },
+    },
+  }
+}
+
 AppearanceContextPad.prototype._pasteEntry = function (elements) {
   if (!copied || !pasteTargets(elements).length) return {}
   return {
@@ -650,7 +679,7 @@ AppearanceContextPad.prototype.getContextPadEntries = function (element) {
     }
     redirect('set-color', QUICK_SHAPE_MENU, T('Shape color', 'Couleur de la forme'))
     if (hasText(targetOf(element))) redirect('label-style', QUICK_TEXT_MENU, T('Text color', 'Couleur du texte'))
-    return { ...entries, ...this._pasteEntry([element]) }
+    return { ...entries, ...this._copyEntry(element), ...this._pasteEntry([element]) }
   }
 }
 

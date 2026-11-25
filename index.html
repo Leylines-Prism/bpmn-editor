@@ -54,7 +54,10 @@
     <div id="open-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-open" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
       <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Paste XML…</button>
+      <div class="menu-sep" role="separator"></div>
+      <button class="btn" id="btn-compare-file" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
+    <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
     <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
@@ -80,6 +83,10 @@
   </div>
   <div id="main">
     <div id="canvas">
+      <div id="history-buttons" role="group" aria-label="History">
+        <button type="button" id="btn-undo" data-icon="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled></button>
+        <button type="button" id="btn-redo" data-icon="redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled></button>
+      </div>
       <div id="credit">Powered by <a href="https://bpmn.io" target="_blank">bpmn.io</a></div>
     </div>
     <div id="properties-panel"></div>

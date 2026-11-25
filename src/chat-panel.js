@@ -255,7 +255,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
           : T('Chat is not set up: open Options to choose a provider, or add MISTRAL_API_KEY, ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez MISTRAL_API_KEY, ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
-      add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z, except the automatic layout.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)).classList.add('welcome')
+      add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z.`)).classList.add('welcome')
     }
   }
   function add(kind, text = '') {

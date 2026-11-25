@@ -4,6 +4,7 @@
 import { layoutProcess } from 'bpmn-auto-layout'
 import { fitView } from './fit-view.js'
 import { separateMessageFlows } from './separate-flows.js'
+import { reloadWithCopy } from './history.js'
 
 // bpmn-auto-layout se repère avec les listes incoming/outgoing des éléments,
 // or un fichier BPMN valide venu d'un autre outil peut ne pas les contenir.
@@ -53,8 +54,13 @@ function restoreColors(modeler, colors) {
 }
 
 // Recalcule toutes les positions puis recharge le diagramme. Le rechargement
-// vide l'historique d'annulation. En cas d'échec, le diagramme reste inchangé.
-export async function autoLayout(modeler) {
+// vide l'historique de bpmn-js : une copie d'avant est gardée (src/history.js),
+// et Annuler y revient d'un coup. En cas d'échec, le diagramme reste inchangé.
+export function autoLayout(modeler) {
+  return reloadWithCopy(modeler, () => layoutAndReload(modeler))
+}
+
+async function layoutAndReload(modeler) {
   ensureFlowRefs(modeler)
   const colors = readColors(modeler)
   const { xml } = await modeler.saveXML({ format: true })

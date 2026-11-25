@@ -4,8 +4,8 @@
 
 This server lets an AI (Claude Code, Claude Desktop, GitHub Copilot in VS Code or any MCP client) read and draw in the BPMN
 editor **open in the browser**. Changes show up live on the canvas, as if made by hand, and each tool
-call can be undone with a single Ctrl+Z, except `set_diagram_xml` and `auto_layout`, which reload the
-whole diagram.
+call can be undone with a single Ctrl+Z. `set_diagram_xml` and `auto_layout` reload the whole diagram: one
+Ctrl+Z brings back the diagram from before them, but earlier steps can no longer be undone one by one.
 
 ## How it works
 
@@ -172,7 +172,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
 | `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
 | `remove_elements` | removes shapes or connections |
-| `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. Clears the undo history |
+| `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
 | `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
