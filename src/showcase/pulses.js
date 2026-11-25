@@ -13,7 +13,7 @@
 const NS = 'http://www.w3.org/2000/svg'
 const SKY = [43, 184, 255], MAGENTA = [210, 78, 142], ORANGE = [255, 126, 26]
 const START_AFTER = 2000 // les fonds s'animent quand le logo a fini son entrée
-const SCROLL_SPEED = 120 // px par seconde, dans les unités du dessin (1920 de large)
+const SCROLL_SPEED = 480 // px par seconde, dans les unités du dessin (1920 de large)
 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t))
 const leyline = (t) => {
