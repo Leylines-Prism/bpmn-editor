@@ -20,6 +20,10 @@ services:
         VITE_MCP_BRIDGE_URL: /bridge
     ports:
       - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:8080"
+    environment:
+      # off : coupe la page vitrine (about.html) et ses fonds d'écran. Le logo de la barre
+      # d'outils ouvre alors la fenêtre « Votre avis ».
+      SHOWCASE: ${SHOWCASE:-on}
     depends_on:
       - mcp
     restart: unless-stopped

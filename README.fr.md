@@ -52,6 +52,10 @@ Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercont
   seul l'assistant est éteint.
 - **Vos diagrammes** enregistrés avec « Mes diagrammes » sont gardés dans le volume Docker
   `diagrams`. `docker compose -f docker-compose.image.yml down -v` les supprime.
+- **Page vitrine** : le logo de la barre d'outils ouvre une page vitrine, avec le logo et les fonds
+  d'écran de l'auteur. Pour la couper, ajoutez `SHOWCASE=off` au fichier `.env` (ou aux variables
+  d'environnement de la pile), puis relancez la commande `up -d`. Le logo ouvre alors la fenêtre
+  « Votre avis ».
 - **Mise à jour** : changez le numéro de version des deux images dans `docker-compose.image.yml`
   (voir les [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), puis :
 
@@ -167,6 +171,7 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
+| `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
 
 ## Ce que fait l'éditeur
 

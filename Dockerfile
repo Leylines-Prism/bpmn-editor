@@ -22,9 +22,16 @@ RUN npm run build
 # Image officielle épinglée (version et empreinte). nginx tourne sans root : utilisateur nginx
 # (uid 101), port 8080 dans le conteneur, fichier pid et caches dans des dossiers à lui.
 FROM nginx:1.30.7-alpine3.24@sha256:caf4e1e032a20f9c3c5e28fc7f25ffd768ad8677b4975c54193075997b3a97e3
+# La configuration du site est un modèle : au démarrage, l'image nginx y remplace ${SHOWCASE}
+# et l'écrit dans conf.d, qui doit donc appartenir à l'utilisateur nginx.
 RUN sed -i -e '/^user /d' -e 's#^pid .*#pid /tmp/nginx.pid;#' /etc/nginx/nginx.conf \
- && chown -R nginx:nginx /var/cache/nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ && rm -f /etc/nginx/conf.d/default.conf \
+ && chown -R nginx:nginx /var/cache/nginx /etc/nginx/conf.d
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+# Page vitrine (about.html) : « off » la coupe au démarrage, avec ses fonds d'écran, et le logo
+# de l'éditeur ouvre alors la fenêtre « Votre avis ». Seule SHOWCASE est remplacée dans le modèle.
+ENV SHOWCASE=on
+ENV NGINX_ENVSUBST_FILTER=^SHOWCASE$
 COPY nginx-headers.conf /etc/nginx/snippets/headers.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 # Licence du projet, hors des fichiers servis.
