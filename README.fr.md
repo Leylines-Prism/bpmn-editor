@@ -2,6 +2,11 @@
 
 # bpmn-editor
 
+[![CI](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-editor?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-editor/tags)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--editor-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-editor/pkgs/container/bpmn-editor)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 [English](README.md) | **Français**
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
