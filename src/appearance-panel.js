@@ -309,16 +309,18 @@ function StylePreview({ style }) {
   }}>A</span>`
 }
 
-// Rouleau du menu du canevas, peint avec le style copié : le manchon prend le
-// fond et le contour, et l'aperçu à côté montre la couleur et la police du
-// texte. Sans style copié, le rouleau reste au trait.
+// Rouleau du menu du canevas, dans un carré peint avec le style copié : le
+// carré prend le fond et le contour de la forme, le rouleau la couleur du
+// texte. Sans style copié, le rouleau reste seul, au trait.
+const ROLLER_PATHS = html`<rect x="3" y="3" width="13" height="5" rx="1.2" /><path d="M16 5.5h2.5v5H10v3" /><rect x="8.6" y="13.5" width="2.8" height="6" rx="1" />`
+
 function RollerPreview({ style }) {
-  const head = style ? { fill: style.fill || '#FFFFFF', stroke: style.stroke || '#22242A' } : { fill: 'none', stroke: 'currentColor' }
-  return html`<span class="appearance-roller" aria-hidden="true">
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="13" height="5" rx="1.2" fill=${head.fill} stroke=${head.stroke} /><path d="M16 5.5h2.5v5H10v3" /><rect x="8.6" y="13.5" width="2.8" height="6" rx="1" />
-    </svg>
-    ${style ? html`<${StylePreview} style=${style} />` : null}
+  const svg = (color) => html`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none" stroke=${color}
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ROLLER_PATHS}</svg>`
+  if (!style) return html`<span class="appearance-roller" aria-hidden="true">${svg('currentColor')}</span>`
+  return html`<span class="appearance-roller is-painted" aria-hidden="true"
+    style=${{ background: style.fill || '#FFFFFF', borderColor: style.stroke || '#22242A' }}>
+    ${svg(style.textColor || style.stroke || '#22242A')}
   </span>`
 }
 
