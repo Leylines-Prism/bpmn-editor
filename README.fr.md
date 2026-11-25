@@ -7,6 +7,7 @@
 [![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--editor-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-editor/pkgs/container/bpmn-editor)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-editor/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-editor)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
 
 [English](README.md) | **Français**
 
