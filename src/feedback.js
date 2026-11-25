@@ -179,7 +179,7 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
         })
         .join('')}
       <div class="actions">
-        <a class="support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis">${CUP_ICON}<span>${T('Support the project on Ko-fi', 'Soutenir le projet sur Ko-fi')}</span></a>
+        <a class="support" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis" title="Ko-fi"><span class="support-disc">${CUP_ICON}</span><span>${T('Thanks for the coffee!', 'Merci pour le café !')}</span></a>
         <span class="grow"></span>
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>

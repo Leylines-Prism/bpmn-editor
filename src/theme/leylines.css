@@ -975,8 +975,17 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   display: inline-flex; align-items: center; gap: var(--space-2);
   color: var(--ink-muted); font-size: 13px; line-height: 18px; text-decoration: none;
 }
-#feedback-dialog .support svg { width: 18px; height: 18px; flex: none; }
-#feedback-dialog .support:hover { color: var(--accent); text-decoration: underline; }
+/* Pastille ronde, comme les icônes de contact de la page Leylines (showcase.css) */
+#feedback-dialog .support-disc {
+  flex: none; width: 36px; height: 36px; display: grid; place-items: center;
+  border-radius: var(--radius-pill); border: 1.5px solid transparent;
+  --disc: color-mix(in srgb, var(--ink) 88%, transparent);
+  background: linear-gradient(var(--disc), var(--disc)) padding-box, var(--leyline) border-box;
+  color: var(--surface-raised); transition: color 0.2s;
+}
+#feedback-dialog .support svg { width: 18px; height: 18px; }
+#feedback-dialog .support:hover { color: var(--accent); }
+#feedback-dialog .support:hover .support-disc { --disc: var(--accent); color: var(--on-accent); }
 #feedback-dialog .support:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
 
 /* ── Poignées de largeur des panneaux (src/panel-resize.js) ── */

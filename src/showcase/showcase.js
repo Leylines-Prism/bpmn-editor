@@ -62,7 +62,7 @@ for (const c of contactChoices()) {
 const support = document.createElement('a')
 Object.assign(support, { href: SUPPORT_URL, target: '_blank', rel: 'noopener', className: 'contact', innerHTML: CUP_ICON })
 support.dataset.support = 'vitrine'
-support.title = T('Support the project on Ko-fi', 'Soutenir le projet sur Ko-fi')
+support.title = T('Thanks for the coffee! (Ko-fi)', 'Merci pour le café ! (Ko-fi)')
 support.setAttribute('aria-label', support.title)
 contacts.append(support)
 trackSupportClicks(contacts)
