@@ -22,7 +22,7 @@ import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
 import {
   FONTS, SIZES, TEXT_COLORS, AUTO_ICON, swatch as textSwatch, dot as textDot,
-  fontOf, textColorOf, hasText, readableOn,
+  fontOf, textColorOf, hasText,
   applyFont, applyTextColor, resetText,
 } from './label-style.js'
 
@@ -99,13 +99,8 @@ function Swatch({ title, fill, stroke, text, active, onClick, className = '' }) 
   </button>`
 }
 
-// Pastille d'une couleur de texte : le A est dans cette couleur, sur un fond
-// noir ou blanc, celui qui la fait le mieux ressortir.
-const TextSwatch = ({ color, ...props }) =>
-  html`<${Swatch} ...${props} fill=${readableOn(color)} stroke="var(--line-strong)" text=${color} className="is-text" />`
-
 // Pastille ronde d'une couleur de la palette, sans lettre : la lettre se lit mal en
-// petite taille. Le carré avec le A reste pour les couleurs déjà dans le diagramme.
+// petite taille. Les styles déjà dans le diagramme restent dans le groupe Style.
 const TextDot = ({ color, ...props }) =>
   html`<${Swatch} ...${props} fill=${color} stroke="var(--line-strong)" className="is-dot" />`
 
@@ -438,21 +433,6 @@ function UsedShapeColors({ fill, stroke, set }) {
   </div>`
 }
 
-// Couleurs de texte réglées ailleurs dans le diagramme, sur une ligne.
-function UsedTextColors({ color, onPick }) {
-  const elementRegistry = useService('elementRegistry')
-  const used = usedIn(elementRegistry, 'text')
-  if (!used.length) return null
-  const label = USED_LABEL()
-  return html`<div class="appearance-used">
-    <div class="appearance-sublabel">${label}</div>
-    <div class="appearance-swatches" role="group" aria-label=${label}>
-      ${used.map(({ value }) => html`<${TextSwatch} key=${value} title=${value} color=${value}
-        active=${color === value} onClick=${() => onPick(value)} />`)}
-    </div>
-  </div>`
-}
-
 // ── Texte ───────────────────────────────────────────────────────────────────
 
 function TextStyleEntry({ element, id }) {
@@ -496,7 +476,6 @@ function TextStyleEntry({ element, id }) {
       ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
     <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback="#22242A"
       onChange=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
