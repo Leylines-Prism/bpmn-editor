@@ -89,7 +89,6 @@ const CONTRAST_ROW = [
   { label: T('Bright cyan', 'Cyan vif'), color: '#00E5FF' },
   { label: T('Neon green', 'Vert fluo'), color: '#76FF03' },
 ]
-const TEXT_ROW_KEYS = new Set([...TEXT_ROW, ...CONTRAST_ROW].map((c) => c.color))
 
 // ── Pastille ────────────────────────────────────────────────────────────────
 
@@ -127,12 +126,38 @@ function ColorInput({ id, value, onPick }) {
   return html`<input ref=${ref} id=${id} type="color" value=${value.toLowerCase()} />`
 }
 
-// Carré de couleur qui ouvre le sélecteur du système, avec le code à côté.
+// Code hexadécimal modifiable : #RRGGBB ou #RGB, avec ou sans dièse. Appliqué à la
+// validation (Entrée ou sortie du champ). Un code invalide est refusé et l'ancien revient.
+function parseHex(text) {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(text.trim())
+  if (!m) return null
+  const hex = m[1].length === 3 ? m[1].replace(/./g, (c) => c + c) : m[1]
+  return '#' + hex.toUpperCase()
+}
+
+function HexInput({ id, value, label, onPick }) {
+  const [text, setText] = useState(value || '')
+  useEffect(() => setText(value || ''), [value])
+  const commit = () => {
+    if (!text.trim() || upper(text) === upper(value || '')) return setText(value || '')
+    const hex = parseHex(text)
+    if (hex) onPick(hex)
+    else setText(value || '')
+  }
+  return html`<input type="text" id=${id} class="appearance-color-code" value=${text} maxlength="7" spellcheck="false"
+    autocomplete="off" placeholder=${T('Default', 'Par défaut')} aria-label=${label + ' (' + T('hexadecimal code', 'code hexadécimal') + ')'}
+    title=${T('Hexadecimal code, for example #1E88E5', 'Code hexadécimal, par exemple #1E88E5')}
+    onInput=${(e) => setText(e.target.value)} onBlur=${commit}
+    onKeyDown=${(e) => { if (e.key === 'Enter') { e.preventDefault(); commit() } else if (e.key === 'Escape') setText(value || '') }} />`
+}
+
+// Carré de couleur qui ouvre le sélecteur du système, avec son code hexadécimal à
+// côté, modifiable.
 function ColorField({ id, label, value, fallback, onChange }) {
   return html`<div class="appearance-color-field">
     <label for=${id}>${label}</label>
     <${ColorInput} id=${id} value=${value || fallback} onPick=${onChange} />
-    <span class="appearance-color-code">${value || T('Default', 'Par défaut')}</span>
+    <${HexInput} id=${id + '-hex'} label=${label} value=${value} onPick=${onChange} />
   </div>`
 }
 
@@ -447,7 +472,6 @@ function TextStyleEntry({ element, id }) {
       ${options.map((o) => html`<option value=${o.value} style=${o.family ? { fontFamily: o.family } : null}>${o.label}</option>`)}
     </select>
   </div>`
-  const custom = color && !TEXT_ROW_KEYS.has(color)
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">Style</div>
     <div class="appearance-toggles" role="group" aria-label="Style">
@@ -473,18 +497,16 @@ function TextStyleEntry({ element, id }) {
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
     <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
+    <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback="#22242A"
+      onChange=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
       <button type="button" class="appearance-button" title=${T('Black or white, whichever reads best on the fill', 'Noir ou blanc, le plus lisible sur le fond')}
         onClick=${() => applyTextColor(commandStack, elements, 'auto')}>
         <span class="appearance-icon" dangerouslySetInnerHTML=${{ __html: AUTO_ICON }}></span>Auto
       </button>
-      <label class=${'appearance-button appearance-custom' + (custom ? ' is-active' : '')} title=${T('Custom color…', 'Couleur personnalisée…')}>
-        <${ColorInput} id=${id + '-custom'} value=${color || '#000000'} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
-        ${T('Custom…', 'Autre…')}
-      </label>
+      <button type="button" class="appearance-button" title=${T('Remove formatting and color', 'Retirer la mise en forme et la couleur')}
+        onClick=${() => resetText(commandStack, elements)}>${T('Default text', 'Texte par défaut')}</button>
     </div>
-    <button type="button" class="appearance-button appearance-reset" title=${T('Remove formatting and color', 'Retirer la mise en forme et la couleur')}
-      onClick=${() => resetText(commandStack, elements)}>${T('Default text', 'Texte par défaut')}</button>
   </div>`
 }
 
