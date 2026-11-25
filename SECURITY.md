@@ -13,7 +13,7 @@ Never include a real API key.
 
 ## What is in scope
 
-- The editor and the online demo (API keys kept in the browser, content sent to AI providers).
+- The editor and the online version (API keys kept in the browser, content sent to AI providers).
 - The MCP server and the built-in assistant in `mcp/` (token check, allowed origins and hosts,
   saved diagrams).
 - The Docker images published from this repository.

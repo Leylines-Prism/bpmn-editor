@@ -12,8 +12,9 @@
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
 A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
-describe, and an MCP server so that agents such as Claude Code can draw in it too. It runs on your
-own machine with Docker.
+describe, and an MCP server so that agents such as Claude Code can draw in it too. Use it
+[online](https://bpmn.leylines.fr), with nothing but a browser, or run it on your own machine with
+Docker.
 
 > [!WARNING]
 > **Not made to be exposed on the internet, by design.** The Docker version is meant for your own
@@ -129,7 +130,7 @@ An optional token protects this access: the same window generates one and tells 
 reaches the browser. A key typed in the assistant's Options window is kept in the browser as below,
 then sent with each message to your server, which passes it on to the provider without storing it.
 
-**In the browser** (the online demo, or keys typed in Options):
+**In the browser** (the online version, or keys typed in Options):
 
 - The key stays in your browser, for this site only. Other sites cannot read it.
 - "Remember API keys on your device" unchecked (the default): the key is kept in `sessionStorage` and
@@ -182,20 +183,20 @@ They are great for drawing almost anything, as a team. This editor only does BPM
 opens in other BPMN tools, can be checked and simulated, and what the AI draws is valid BPMN too. It
 has no real-time collaboration, share link or templates, though.
 
-## Online demo
+## Use it online
 
-A demo runs at https://bpmn.leylines.fr (GitHub Pages). Its [user guide](https://bpmn.leylines.fr/help.html)
-explains how to draw, save, export and use the AI assistant. The Help (?) button in the toolbar opens it
-too.
+The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no account, nothing to
+install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
+save, export and use the AI assistant. The Help (?) button in the toolbar opens it too.
 
 It comes in two pages. The root follows the released versions (the latest `vX.Y.Z` tag), and
 https://bpmn.leylines.fr/dev/ follows the main branch, with the latest changes before they are released.
 The development page keeps its own diagrams and settings in the browser, so trying it does not touch
 those of the stable page. Both show their version at the bottom of Options and of the user guide.
 
-It is for a quick try only: each visitor enters their own API key, which stays in their browser.
-There is no agent connection (MCP) and no saving on a server, and some providers (OpenAI) refuse
-calls from a web page. The "Privacy" link on the page says what leaves the browser.
+For the AI assistant, each visitor enters their own API key, which stays in their browser.
+Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
+some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser.
 
 The stable page measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
@@ -209,9 +210,9 @@ CNIL (the French data protection authority) for audience measurement exempt from
 
 `npm install`, then `npm run dev` for the editor, and `npm start` in `mcp/` for the server.
 Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/README.md).
-`npm run build:online` builds the demo as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (Umami address)
+`npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (Umami address)
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
-It is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
+The site is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
 
 ## About this project
 
