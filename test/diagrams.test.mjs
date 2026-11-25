@@ -118,3 +118,20 @@ test('diagrams of older versions are renamed after their name', async () => {
     await rm(dir, { recursive: true, force: true })
   }
 })
+
+test('a .bpmn file dropped by hand in the folder is listed and can be opened', () =>
+  withStore(async (store, dir) => {
+    await writeFile(join(dir, 'Dropped by hand.bpmn'), XML)
+    await writeFile(join(dir, 'notes.txt'), 'not a diagram')
+    await writeFile(join(dir, 'Too big.bpmn'), Buffer.alloc(10 * 1024 * 1024 + 1))
+    const list = await store.list()
+    assert.deepEqual(list.map((d) => d.name).sort(), ['Dropped by hand', 'Too big'])
+    const dropped = list.find((d) => d.name === 'Dropped by hand')
+    assert.ok(DiagramStore.validId(dropped.id))
+    assert.equal((await store.get(dropped.id)).xml, XML)
+    assert.equal(await store.get(list.find((d) => d.name === 'Too big').id), null)
+    // Listé une seule fois, même après plusieurs lectures.
+    assert.equal((await store.list()).length, 2)
+    await store.rename(dropped.id, 'Renamed')
+    assert.ok((await readdir(dir)).includes('Renamed.bpmn'))
+  }))

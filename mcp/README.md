@@ -186,7 +186,8 @@ The "My diagrams" window of the editor can save diagrams on this server, besides
 They only accept editor pages, like `/chat`. Each diagram is a `.bpmn` file named after the diagram
 (`Order process.bpmn`, then `Order process (2).bpmn`), in `DIAGRAMS_DIR` (`mcp/data/diagrams` by
 default, excluded from git, `/data/diagrams` in docker). The hidden `.index.json` file links each id to
-its file, name and date. Files of older versions (`<id>.bpmn` and `<id>.json`) are renamed at startup.
+its file, name and date. Files of older versions (`<id>.bpmn` and `<id>.json`) are renamed at startup. A `.bpmn` file copied
+into the folder by hand is added to the list under its file name. Size and date come from the file.
 
 `POST /exports?format=pdf&name=Order%20process` saves an export (body `application/octet-stream`,
 20 MB at most) in `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` in docker), for the "Server" and

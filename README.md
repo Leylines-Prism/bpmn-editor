@@ -89,7 +89,8 @@ file explorer to get your files back:
 - `bpmn-data/diagrams`: the diagrams saved on the server with "My diagrams", one `.bpmn` file per
   diagram, named after it (`Order process.bpmn`). Renaming a diagram in the editor renames its file.
   Two diagrams with the same name give `Order process.bpmn` and `Order process (2).bpmn`. The hidden
-  `.index.json` file links the files to the editor: leave it in place.
+  `.index.json` file links the files to the editor: leave it in place. A `.bpmn` file you copy into
+  this folder appears in My diagrams, under its file name (10 MB at most).
 - `bpmn-data/exports`: the exports (.bpmn, .xml, SVG, PNG, PDF), when the **Destination** at the top
   of the Export menu is "Server" or "Both". "Download" only downloads them in the browser, as before.
   An export never replaces a file: a second `Order process.pdf` becomes `Order process (2).pdf`.

@@ -3,10 +3,12 @@
 // Chaque diagramme est un fichier .bpmn qui porte son nom dans l'éditeur (« Mon processus.bpmn »,
 // ou « Mon processus (2).bpmn » si le nom est pris), pour qu'on le retrouve dans un explorateur
 // de fichiers. Renommer le diagramme renomme le fichier. L'index caché .index.json relie
-// l'identifiant de chaque diagramme à son fichier, avec son nom et sa date.
+// l'identifiant de chaque diagramme à son fichier et à son nom. Un .bpmn déposé à la main dans le
+// dossier apparaît dans la liste.
 // Le dossier est monté par docker-compose, ou mcp/data/diagrams en développement.
 
 import { lstat, mkdir, readdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -42,23 +44,40 @@ export class DiagramStore {
     return clean || null
   }
 
-  async list() {
-    await this.ready
-    const index = await this.#readIndex()
-    const items = []
-    for (const [id, item] of Object.entries(index)) {
-      // Un fichier supprimé à la main dans l'explorateur disparaît de la liste.
-      if (await this.#isFile(item.file)) items.push({ id, name: item.name, updatedAt: item.updatedAt, size: item.size })
-    }
-    return items.sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''))
+  // Liste les diagrammes. Un fichier .bpmn déposé à la main dans le dossier y entre, au nom de
+  // son fichier. Un fichier supprimé à la main en sort. Taille et date viennent du fichier, pour
+  // suivre aussi les modifications faites hors de l'éditeur.
+  list() {
+    return this.#locked(async () => {
+      await this.ready
+      const index = await this.#readIndex()
+      const known = new Set(Object.values(index).map((item) => item.file))
+      let adopted = false
+      for (const file of await readdir(this.dir)) {
+        if (known.has(file) || !file.toLowerCase().endsWith(`.${EXT}`) || !(await this.#isFile(file))) continue
+        const name = DiagramStore.cleanName(file.slice(0, -EXT.length - 1))
+        if (!name) continue
+        index[randomUUID()] = { file, name }
+        adopted = true
+      }
+      if (adopted) await this.#writeIndex(index)
+      const items = []
+      for (const [id, item] of Object.entries(index)) {
+        const info = await this.#fileInfo(item.file)
+        if (info) items.push({ id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size })
+      }
+      return items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    })
   }
 
   async get(id) {
     await this.ready
     const item = (await this.#readIndex())[id]
-    if (!item || !(await this.#isFile(item.file))) return null
+    const info = item && (await this.#fileInfo(item.file))
+    // Un fichier trop gros (déposé à la main) n'est pas envoyé à l'éditeur.
+    if (!info || info.size > MAX_XML_BYTES) return null
     const xml = await readFile(join(this.dir, item.file), 'utf8')
-    return { id, name: item.name, updatedAt: item.updatedAt, size: item.size, file: item.file, xml }
+    return { id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size, file: item.file, xml }
   }
 
   put(id, name, xml) {
@@ -125,12 +144,18 @@ export class DiagramStore {
   }
 
   async #isFile(file) {
-    if (typeof file !== 'string' || file.includes('/') || file.includes('\\') || file.startsWith('.')) return false
+    return !!(await this.#fileInfo(file))
+  }
+
+  // Fichier ordinaire du dossier, ou null. lstat : un lien symbolique déposé dans le dossier
+  // n'est pas suivi.
+  async #fileInfo(file) {
+    if (typeof file !== 'string' || file.includes('/') || file.includes('\\') || file.startsWith('.')) return null
     try {
-      // lstat : un lien symbolique déposé dans le dossier n'est pas suivi.
-      return (await lstat(join(this.dir, file))).isFile()
+      const info = await lstat(join(this.dir, file))
+      return info.isFile() ? info : null
     } catch (err) {
-      if (err.code === 'ENOENT') return false
+      if (err.code === 'ENOENT') return null
       throw err
     }
   }

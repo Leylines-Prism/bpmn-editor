@@ -94,7 +94,8 @@ Ouvrez-le avec votre explorateur de fichiers pour récupérer vos fichiers :
   fichier `.bpmn` par diagramme, à son nom (`Mon processus.bpmn`). Renommer un diagramme dans
   l'éditeur renomme son fichier. Deux diagrammes de même nom donnent `Mon processus.bpmn` et
   `Mon processus (2).bpmn`. Le fichier caché `.index.json` relie les fichiers à l'éditeur : laissez-le
-  en place.
+  en place. Un fichier `.bpmn` copié dans ce dossier apparaît dans Mes diagrammes, sous son nom de
+  fichier (10 Mo au plus).
 - `bpmn-data/exports` : les exports (.bpmn, .xml, SVG, PNG, PDF), quand la **Destination** en haut du
   menu Exporter est « Serveur » ou « Les deux ». « Téléchargement » les télécharge seulement dans le
   navigateur, comme avant. Un export ne remplace jamais un fichier : un deuxième `Mon processus.pdf`

@@ -189,7 +189,8 @@ comme `/chat`. Chaque diagramme est un fichier `.bpmn` au nom du diagramme (`Mon
 puis `Mon processus (2).bpmn`), dans `DIAGRAMS_DIR` (`mcp/data/diagrams` par défaut, exclu de git,
 `/data/diagrams` en docker). Le fichier caché `.index.json` relie chaque identifiant à son fichier, son
 nom et sa date. Les fichiers des versions précédentes (`<id>.bpmn` et `<id>.json`) sont renommés au
-démarrage.
+démarrage. Un fichier `.bpmn` copié à la main dans le dossier entre dans la liste sous son nom de
+fichier. Taille et date viennent du fichier.
 
 `POST /exports?format=pdf&name=Mon%20processus` enregistre un export (corps `application/octet-stream`,
 20 Mo au plus) dans `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` en docker), pour les
