@@ -74,6 +74,7 @@ function buildMcpServer() {
       { title: tool.title, description: tool.description, inputSchema: tool.inputSchema },
       async (args) => {
         try {
+          bridge.noteMcpCall()
           const data = await bridge.call(tool.name, args ?? {})
           if (isImageResult(data)) {
             return {
@@ -118,6 +119,9 @@ function checkMcpOrigin(req, res, next) {
 }
 
 app.post('/mcp', checkMcpOrigin, checkToken, async (req, res) => {
+  // À la connexion, le client MCP se présente (nom et version, rien d'autre) :
+  // l'éditeur l'affiche sur son badge MCP.
+  if (req.body?.method === 'initialize') bridge.noteMcpClient(req.body.params?.clientInfo)
   const server = buildMcpServer()
   try {
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })

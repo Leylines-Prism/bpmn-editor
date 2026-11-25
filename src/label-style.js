@@ -258,6 +258,11 @@ export function resetText(commandStack, elements) {
 export const swatch = (color) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${color}" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><text x="12" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="${readableOn(color)}">A</text></svg>`
 
+// Pastille ronde d'une couleur de texte, sans lettre : lisible même en petite taille.
+// Le carré avec la lettre (swatch) reste pour les couleurs déjà dans le diagramme.
+export const dot = (color) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="9" fill="${color}" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/></svg>`
+
 export const AUTO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FFFFFF" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><path d="M2.75 21.25 21.25 2.75V18a3.25 3.25 0 0 1-3.25 3.25Z" fill="#0C1120"/><text x="8.5" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#000">A</text><text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#FFF">A</text></svg>`
 
 const CUSTOM_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><defs><linearGradient id="text-color-gradient" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0D4372"/><stop offset="0.5" stop-color="#880E4F"/><stop offset="1" stop-color="#714800"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="4" fill="url(#text-color-gradient)" stroke="rgba(12,17,32,0.35)" stroke-width="1.5" stroke-dasharray="3 2"/></svg>`
@@ -337,7 +342,7 @@ LabelStylePopupProvider.prototype.getPopupMenuEntries = function (elements) {
   TEXT_COLORS.forEach((c, i) => {
     entries[`label-color-${i}`] = {
       title: c.label,
-      imageHtml: swatch(c.color),
+      imageHtml: dot(c.color),
       className: cls(color === c.color),
       group: colorGroup,
       action: () => this._applyColor(elements, c.color),

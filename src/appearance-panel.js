@@ -13,16 +13,14 @@
 import htm from 'htm'
 import { h } from '@bpmn-io/properties-panel/preact'
 import { useEffect, useRef, useState } from '@bpmn-io/properties-panel/preact/hooks'
-import { TextAreaEntry, isTextAreaEntryEdited } from '@bpmn-io/properties-panel'
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
-import { getLabel } from 'bpmn-js/lib/util/LabelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
 import {
-  FONTS, SIZES, TEXT_COLORS, AUTO_ICON, swatch as textSwatch,
-  fontOf, textColorOf, hasText, readableOn,
+  FONTS, SIZES, TEXT_COLORS, AUTO_ICON, swatch as textSwatch, dot as textDot,
+  fontOf, textColorOf, hasText,
   applyFont, applyTextColor, resetText,
 } from './label-style.js'
 
@@ -61,7 +59,6 @@ function hasAppearance(element) {
 // Une seule ligne de couleurs toutes prêtes. La palette complète reste dans le
 // pinceau du menu contextuel.
 const SHAPE_ROW = [0, 1, 2, 6, 9, 11, 13, 15].map((i) => COLORS[i])
-const TEXT_ROW = [0, 1, 2, 3, 7, 12, 14, 16].map((i) => TEXT_COLORS[i])
 
 // Seconde ligne de la forme : fonds vifs, contour plus foncé de la même teinte
 // et texte blanc (au moins 5:1 avec le blanc), posés en une seule étape.
@@ -77,19 +74,30 @@ const VIVID_ROW = [
   { label: T('Charcoal', 'Anthracite'), fill: '#37474F', stroke: '#1E272B' },
 ]
 
-// Seconde ligne du texte : quatre couleurs foncées pour les fonds clairs (au
-// moins 6.6:1 sur blanc), quatre claires pour les fonds foncés (au moins 13:1 sur noir).
-const CONTRAST_ROW = [
+// Couleurs du texte, sur deux lignes sans doublon. Première ligne : le noir et un
+// dégradé de gris, puis quatre teintes foncées pour les fonds clairs (au moins 6.6:1
+// sur blanc). Seconde ligne : le blanc et des teintes vives, dont trois claires pour
+// les fonds foncés (au moins 13:1 sur noir).
+const TEXT_ROW = [
   { label: T('Black', 'Noir'), color: '#000000' },
+  { label: T('Dark gray', 'Gris foncé'), color: '#424242' },
+  { label: T('Gray', 'Gris'), color: '#757575' },
+  { label: T('Light gray', 'Gris clair'), color: '#BDBDBD' },
   { label: T('Navy', 'Bleu nuit'), color: '#0D47A1' },
   { label: T('Forest green', 'Vert forêt'), color: '#1B5E20' },
   { label: T('Dark red', 'Rouge sombre'), color: '#B71C1C' },
+  { label: T('Dark purple', 'Violet foncé'), color: '#4A148C' },
+]
+const CONTRAST_ROW = [
   { label: T('White', 'Blanc'), color: '#FFFFFF' },
   { label: T('Bright yellow', 'Jaune vif'), color: '#FFEB3B' },
   { label: T('Bright cyan', 'Cyan vif'), color: '#00E5FF' },
   { label: T('Neon green', 'Vert fluo'), color: '#76FF03' },
+  { label: T('Blue', 'Bleu'), color: '#1E88E5' },
+  { label: T('Orange', 'Orange'), color: '#E65100' },
+  { label: T('Raspberry', 'Framboise'), color: '#AD1457' },
+  { label: T('Brown', 'Brun'), color: '#6D4C41' },
 ]
-const TEXT_ROW_KEYS = new Set([...TEXT_ROW, ...CONTRAST_ROW].map((c) => c.color))
 
 // ── Pastille ────────────────────────────────────────────────────────────────
 
@@ -100,10 +108,10 @@ function Swatch({ title, fill, stroke, text, active, onClick, className = '' }) 
   </button>`
 }
 
-// Pastille d'une couleur de texte : le A est dans cette couleur, sur un fond
-// noir ou blanc, celui qui la fait le mieux ressortir.
-const TextSwatch = ({ color, ...props }) =>
-  html`<${Swatch} ...${props} fill=${readableOn(color)} stroke="var(--line-strong)" text=${color} className="is-text" />`
+// Pastille ronde d'une couleur de la palette, sans lettre : la lettre se lit mal en
+// petite taille. Les styles déjà dans le diagramme restent dans le groupe Style.
+const TextDot = ({ color, ...props }) =>
+  html`<${Swatch} ...${props} fill=${color} stroke="var(--line-strong)" className="is-dot" />`
 
 // Sélecteur de couleur du système. Le Preact du panneau change onChange en
 // « input » pour les champs : chaque mouvement dans le sélecteur ferait une
@@ -122,31 +130,39 @@ function ColorInput({ id, value, onPick }) {
   return html`<input ref=${ref} id=${id} type="color" value=${value.toLowerCase()} />`
 }
 
-// Carré de couleur qui ouvre le sélecteur du système, avec le code à côté.
+// Code hexadécimal modifiable : #RRGGBB ou #RGB, avec ou sans dièse. Appliqué à la
+// validation (Entrée ou sortie du champ). Un code invalide est refusé et l'ancien revient.
+function parseHex(text) {
+  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(text.trim())
+  if (!m) return null
+  const hex = m[1].length === 3 ? m[1].replace(/./g, (c) => c + c) : m[1]
+  return '#' + hex.toUpperCase()
+}
+
+function HexInput({ id, value, label, onPick }) {
+  const [text, setText] = useState(value || '')
+  useEffect(() => setText(value || ''), [value])
+  const commit = () => {
+    if (!text.trim() || upper(text) === upper(value || '')) return setText(value || '')
+    const hex = parseHex(text)
+    if (hex) onPick(hex)
+    else setText(value || '')
+  }
+  return html`<input type="text" id=${id} class="appearance-color-code" value=${text} maxlength="7" spellcheck="false"
+    autocomplete="off" placeholder=${T('Default', 'Par défaut')} aria-label=${label + ' (' + T('hexadecimal code', 'code hexadécimal') + ')'}
+    title=${T('Hexadecimal code, for example #1E88E5', 'Code hexadécimal, par exemple #1E88E5')}
+    onInput=${(e) => setText(e.target.value)} onBlur=${commit}
+    onKeyDown=${(e) => { if (e.key === 'Enter') { e.preventDefault(); commit() } else if (e.key === 'Escape') setText(value || '') }} />`
+}
+
+// Carré de couleur qui ouvre le sélecteur du système, avec son code hexadécimal à
+// côté, modifiable.
 function ColorField({ id, label, value, fallback, onChange }) {
   return html`<div class="appearance-color-field">
     <label for=${id}>${label}</label>
     <${ColorInput} id=${id} value=${value || fallback} onPick=${onChange} />
-    <span class="appearance-color-code">${value || T('Default', 'Par défaut')}</span>
+    <${HexInput} id=${id + '-hex'} label=${label} value=${value} onPick=${onChange} />
   </div>`
-}
-
-// ── Libellé ─────────────────────────────────────────────────────────────────
-
-function LabelEntry({ element, id }) {
-  const modeling = useService('modeling')
-  const debounce = useService('debounceInput')
-  const target = targetOf(element)
-  return html`<${TextAreaEntry}
-    id=${id}
-    element=${target}
-    label=${T('Label', 'Libellé')}
-    getValue=${() => getLabel(target) || ''}
-    setValue=${(value) => modeling.updateLabel(target, value || null)}
-    debounce=${debounce}
-    rows=${2}
-    autoResize=${true}
-  />`
 }
 
 // ── Copier et coller le style ───────────────────────────────────────────────
@@ -323,8 +339,22 @@ function StylePreview({ style }) {
 const ROLLER_PATHS = html`<rect x="3" y="3" width="13" height="5" rx="1.2" /><path d="M16 5.5h2.5v5H10v3" /><rect x="8.6" y="13.5" width="2.8" height="6" rx="1" />`
 
 function RollerPreview({ style }) {
-  const svg = (color) => html`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22" fill="none" stroke=${color}
-    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ROLLER_PATHS}</svg>`
+  return html`<${PaintedIcon} style=${style} paths=${ROLLER_PATHS} viewBox="0 0 22 22" />`
+}
+
+// Pipette du bouton Copier le style, dans un carré peint avec le style de
+// l'élément sélectionné : on voit ce qui sera copié.
+const PIPETTE_PATHS = html`<path d="m2.5 21.5 1-1h2.8l8.6-8.6" /><path d="M3.5 20.5v-2.8l8.6-8.6" /><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z" />`
+
+function PipettePreview({ style }) {
+  return html`<${PaintedIcon} style=${style} paths=${PIPETTE_PATHS} viewBox="0 0 24 24" />`
+}
+
+// Icône au trait dans un carré : le carré prend le fond et le contour du style,
+// l'icône la couleur du texte. Sans style, l'icône reste seule, au trait.
+function PaintedIcon({ style, paths, viewBox }) {
+  const svg = (color) => html`<svg xmlns="http://www.w3.org/2000/svg" viewBox=${viewBox} fill="none" stroke=${color}
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`
   if (!style) return html`<span class="appearance-roller" aria-hidden="true">${svg('currentColor')}</span>`
   return html`<span class="appearance-roller is-painted" aria-hidden="true"
     style=${{ background: style.fill || '#FFFFFF', borderColor: style.stroke || '#22242A' }}>
@@ -345,7 +375,7 @@ function CopyPasteEntry({ element, id }) {
     <div class="appearance-row">
       <button type="button" class="appearance-button" id=${id + '-copy'}
         title=${T("Remember this element's colors and text formatting", 'Retenir les couleurs et la mise en forme du texte de cet élément')}
-        onClick=${() => copyStyle(eventBus, element)}>${T('Copy style', 'Copier le style')}</button>
+        onClick=${() => copyStyle(eventBus, element)}><${PipettePreview} style=${styleOf(element)} />${T('Copy style', 'Copier le style')}</button>
       <button type="button" class="appearance-button" id=${id + '-paste'} disabled=${!copied}
         title=${copied ? T('Apply the copied style to this element', 'Appliquer le style copié à cet élément') : T('Copy a style first', "Copiez d'abord un style")}
         onClick=${() => pasteStyle(commandStack, [element])}>
@@ -387,39 +417,8 @@ function ShapeColorEntry({ element, id }) {
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
-    <${UsedShapeColors} fill=${fill} stroke=${stroke} set=${set} />
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
-  </div>`
-}
-
-// Couleurs de forme réglées ailleurs dans le diagramme, sur une ligne.
-function UsedShapeColors({ fill, stroke, set }) {
-  const elementRegistry = useService('elementRegistry')
-  const used = usedIn(elementRegistry, 'shape')
-  if (!used.length) return null
-  const label = USED_LABEL()
-  return html`<div class="appearance-used">
-    <div class="appearance-sublabel">${label}</div>
-    <div class="appearance-swatches" role="group" aria-label=${label}>
-      ${used.map(({ key, value }) => html`<${Swatch} key=${key} title=${shapeTitle(value)} fill=${value.fill} stroke=${value.stroke}
-        active=${upper(value.fill) === fill && upper(value.stroke) === stroke} onClick=${() => set({ fill: value.fill, stroke: value.stroke })} />`)}
-    </div>
-  </div>`
-}
-
-// Couleurs de texte réglées ailleurs dans le diagramme, sur une ligne.
-function UsedTextColors({ color, onPick }) {
-  const elementRegistry = useService('elementRegistry')
-  const used = usedIn(elementRegistry, 'text')
-  if (!used.length) return null
-  const label = USED_LABEL()
-  return html`<div class="appearance-used">
-    <div class="appearance-sublabel">${label}</div>
-    <div class="appearance-swatches" role="group" aria-label=${label}>
-      ${used.map(({ value }) => html`<${TextSwatch} key=${value} title=${value} color=${value}
-        active=${color === value} onClick=${() => onPick(value)} />`)}
-    </div>
   </div>`
 }
 
@@ -442,7 +441,6 @@ function TextStyleEntry({ element, id }) {
       ${options.map((o) => html`<option value=${o.value} style=${o.family ? { fontFamily: o.family } : null}>${o.label}</option>`)}
     </select>
   </div>`
-  const custom = color && !TEXT_ROW_KEYS.has(color)
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">Style</div>
     <div class="appearance-toggles" role="group" aria-label="Style">
@@ -460,26 +458,23 @@ function TextStyleEntry({ element, id }) {
     </div>
     <div class="bio-properties-panel-label">${T('Text color', 'Couleur du texte')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Text color', 'Couleur du texte')}>
-      ${TEXT_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
+      ${TEXT_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
-      ${CONTRAST_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
+    <div class="appearance-swatches" role="group" aria-label=${T('More text colors', 'Autres couleurs du texte')}>
+      ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
+    <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback="#22242A"
+      onChange=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
       <button type="button" class="appearance-button" title=${T('Black or white, whichever reads best on the fill', 'Noir ou blanc, le plus lisible sur le fond')}
         onClick=${() => applyTextColor(commandStack, elements, 'auto')}>
         <span class="appearance-icon" dangerouslySetInnerHTML=${{ __html: AUTO_ICON }}></span>Auto
       </button>
-      <label class=${'appearance-button appearance-custom' + (custom ? ' is-active' : '')} title=${T('Custom color…', 'Couleur personnalisée…')}>
-        <${ColorInput} id=${id + '-custom'} value=${color || '#000000'} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
-        ${T('Custom…', 'Autre…')}
-      </label>
+      <button type="button" class="appearance-button" title=${T('Remove formatting and color', 'Retirer la mise en forme et la couleur')}
+        onClick=${() => resetText(commandStack, elements)}>${T('Default text', 'Texte par défaut')}</button>
     </div>
-    <button type="button" class="appearance-button appearance-reset" title=${T('Remove formatting and color', 'Retirer la mise en forme et la couleur')}
-      onClick=${() => resetText(commandStack, elements)}>${T('Default text', 'Texte par défaut')}</button>
   </div>`
 }
 
@@ -510,7 +505,6 @@ AppearancePropertiesProvider.prototype.getGroups = function (element) {
         id: TEXT_GROUP,
         label: T('Text', 'Texte'),
         entries: [
-          { id: 'appearance-label', component: LabelEntry, isEdited: isTextAreaEntryEdited },
           { id: 'appearance-text', component: TextStyleEntry, isEdited: () => !!(fontOf(target) || textColorOf(target)) },
         ],
       })
@@ -536,7 +530,7 @@ const QUICK_SHAPE_MENU = 'quick-shape-color'
 const QUICK_TEXT_MENU = 'quick-text-color'
 
 const shapeIcon = (fill, stroke) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${fill || '#FFFFFF'}" stroke="${stroke || '#22242A'}" stroke-width="2"/></svg>`
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2.5" y="2.5" width="19" height="19" rx="4" fill="${fill || '#FFFFFF'}" stroke="${stroke || '#22242A'}" stroke-width="3"/></svg>`
 
 function AppearanceContextPad(contextPad, eventBus, propertiesPanel, commandStack, popupMenu, modeling, elementRegistry) {
   contextPad.registerProvider(LOW_PRIORITY, this)
@@ -628,7 +622,7 @@ AppearanceContextPad.prototype._textEntries = function (element) {
   const entries = {}
   QUICK_TEXT.forEach((c, i) => {
     entries[`quick-text-${i}`] = {
-      title: c.label, imageHtml: textSwatch(c.color), className: color === c.color ? 'is-active' : '',
+      title: c.label, imageHtml: textDot(c.color), className: color === c.color ? 'is-active' : '',
       group: { id: 'quick' }, action: set(c.color),
     }
   })

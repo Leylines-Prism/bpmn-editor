@@ -27,7 +27,7 @@ body {
 /* La ligne de lumière : un trait fin sous la barre, du froid vers le chaud */
 #toolbar::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--leyline); pointer-events: none;
+  height: 1.5px; background: var(--leyline); pointer-events: none;
 }
 
 .brand { display: flex; align-items: center; gap: var(--space-2); margin-right: var(--space-3); }
@@ -128,6 +128,16 @@ a.btn { text-decoration: none; }
 #toolbar #btn-chat:hover { background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat.active { background: linear-gradient(var(--accent-soft), var(--accent-soft)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat::before { width: 18px; height: 18px; }
+/* Modèle choisi, en petit après « Assistant IA » */
+#toolbar #btn-chat .chat-btn-model {
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding-left: var(--space-2); margin-left: 2px; border-left: 1px solid var(--line-strong);
+  font-size: 11px; font-weight: 500; color: var(--ink-muted);
+}
+#toolbar #btn-chat .chat-btn-model[hidden] { display: none; }
+#toolbar #btn-chat .chat-btn-short,
+#toolbar #btn-chat.has-model .chat-btn-full { display: none; }
+#toolbar #btn-chat.has-model .chat-btn-short { display: inline; }
 
 /* Indicateur du serveur MCP : le seul nœud lumineux de l'interface, quand
    une IA est branchée. Les couleurs posées en ligne par le pont sont remplacées. */
@@ -242,7 +252,7 @@ a.btn { text-decoration: none; }
 #canvas .bjsl-button-inactive { color: var(--night-800); opacity: 0.7; }
 
 /* Erreurs du processus lui-même : badge fixe en bas à gauche du canevas, hors du diagramme */
-#canvas .lint-process-badge { position: absolute; left: 20px; bottom: 20px; z-index: 500; }
+#canvas .lint-process-badge { position: absolute; left: 20px; bottom: 44px; z-index: 500; }
 #canvas .lint-process-badge:empty { display: none; }
 #canvas .lint-process-badge .bjsl-overlay {
   display: inline-flex; align-items: center; gap: 8px;
@@ -274,6 +284,13 @@ a.btn { text-decoration: none; }
   font-size: 11px; line-height: 16px; font-weight: 500; color: var(--night-800); opacity: 0.6;
 }
 #credit a { color: inherit; text-decoration: none; }
+/* Version : petit encadré discret en bas à gauche du canevas, toujours clair comme lui. */
+#app-version {
+  position: absolute; left: 16px; bottom: 12px; z-index: 100;
+  padding: 1px 6px; border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); color: var(--night-800); opacity: 0.6;
+  font-size: 11px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums;
+}
 #credit a:hover { text-decoration: underline; }
 /* Canevas étroit (téléphone) : la licence de bpmn-js veut le filigrane bpmn.io entièrement
    visible, sans rien par-dessus. Le crédit texte, redondant, s'efface, et les pastilles de
@@ -460,20 +477,6 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #chat-panel #chat-send:hover { filter: brightness(1.08); }
 #chat-panel #chat-reset { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }
 #chat-panel #chat-reset:hover { color: var(--ink); }
-body #chat-options {
-  gap: var(--space-2); padding: var(--space-2) var(--space-3) 0;
-  border-top: 1px solid var(--line);
-  font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted);
-}
-body #chat-options:not([hidden]) + #chat-form { border-top: 0; }
-body #chat-model {
-  height: 28px; padding: 0 var(--space-2);
-  border-radius: var(--radius-sm); border: 1px solid var(--line-strong);
-  background: var(--surface); color: var(--ink);
-  font-family: var(--font-sans); font-size: 13px; line-height: 20px;
-}
-body #chat-model:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent); }
-body #chat-model:disabled { opacity: 0.5; }
 
 @media (prefers-reduced-motion: reduce) {
   .btn { transition: none; }
@@ -577,7 +580,6 @@ body #chat-model:disabled { opacity: 0.5; }
 #options-dialog .p-result.ok { color: var(--accent); }
 #options-dialog .p-result.failed { color: var(--magenta); }
 #options-dialog .keys-row, #options-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
-#options-dialog .app-version { color: var(--ink-muted); font-size: 12px; }
 #options-dialog .keys-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; cursor: pointer; }
 #options-dialog .grow { flex: 1; }
 #chat-panel #chat-settings { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }
@@ -643,6 +645,10 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   font: 700 12px/1 Arial, Helvetica, sans-serif;
 }
 #properties-panel .appearance-swatch.is-text .appearance-swatch-color { font-size: 16px; }
+/* Couleurs de forme : contour épais, pour bien voir la couleur du contour à côté du fond. */
+#properties-panel .appearance-swatch:not(.is-text):not(.is-dot) .appearance-swatch-color { border-width: 3px; }
+#properties-panel .appearance-swatch.is-dot { border-radius: 50%; }
+#properties-panel .appearance-swatch.is-dot .appearance-swatch-color { border-radius: 50%; }
 #properties-panel .appearance-swatch:hover { border-color: var(--line-strong); }
 #properties-panel .appearance-swatch.is-active { border-color: var(--accent); }
 #properties-panel .appearance-swatch:focus-visible,
@@ -654,7 +660,13 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   width: 40px; height: 28px; padding: 2px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
   background: var(--surface-raised); cursor: pointer;
 }
-#properties-panel .appearance-color-code { font-family: var(--font-mono); color: var(--ink-muted); }
+#properties-panel .appearance-color-code {
+  min-width: 0; height: 28px; padding: 0 6px; box-sizing: border-box;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: 12px var(--font-mono); text-transform: uppercase;
+}
+#properties-panel .appearance-color-code::placeholder { color: var(--ink-muted); text-transform: none; font-family: var(--font-sans); }
+#properties-panel .appearance-color-code:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 #properties-panel .appearance-toggles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
 #properties-panel .appearance-toggle,
 #properties-panel .appearance-button {
@@ -820,6 +832,9 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
    pour laisser la place au nom du fichier et aux boutons de droite. */
 @media (max-width: 1440px) {
   #btn-layout, #btn-simulation { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+  #toolbar #btn-chat .chat-btn-model { display: none; }
+  #toolbar #btn-chat.has-model .chat-btn-full { display: inline; }
+  #toolbar #btn-chat.has-model .chat-btn-short { display: none; }
 }
 
 /* ── Fenêtre « Connecter un agent » (src/mcp-connect.js) ───────────────── */
@@ -1067,6 +1082,10 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #chat-panel header #chat-settings,
 #chat-panel header #chat-reset { color: var(--ink); }
 #chat-panel header { gap: var(--space-2); }
+#chat-panel header .chat-title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+#chat-panel header .chat-title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#chat-panel header .chat-title-model { font-size: 11px; font-weight: 500; color: var(--ink-muted); }
+#chat-panel header .chat-title-model[hidden] { display: none; }
 
 /* Champ du nom de fichier : creusé (fond enfoncé, ombre intérieure) pour se
    distinguer des boutons relevés de la barre. */

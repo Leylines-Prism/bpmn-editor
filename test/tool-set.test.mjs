@@ -38,3 +38,13 @@ test('an error thrown by the editor becomes a tool error', async () => {
   assert.equal(result.isError, true)
   assert.match(result.content, /boom/)
 })
+
+test('style_elements accepts hexadecimal colors and refuses color names', async () => {
+  let ran = 0
+  const run = (input) => runTool({ toolSet, name: 'style_elements', input, executeTool: async () => { ran++; return { styled: [] } }, ...quiet })
+  assert.equal((await run({ elements: [{ id: 'Task_1', fill: '#1e88e5', stroke: 'c00', textColor: 'auto', bold: true, fontSize: 14, font: 'Georgia' }] })).isError, false)
+  assert.equal((await run({ elements: [{ id: 'Task_1', fill: '' }] })).isError, false)
+  assert.equal((await run({ elements: [{ id: 'Task_1', fill: 'red' }] })).isError, true)
+  assert.equal((await run({ elements: [{ id: 'Task_1', font: 'Wingdings' }] })).isError, true)
+  assert.equal(ran, 2)
+})

@@ -250,8 +250,8 @@ la barre d'outils l'ouvre aussi.
 Le site existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
 https://bpmn.leylines.fr/dev/ suit la branche main, avec les dernières modifications avant leur
 publication. La page de développement garde ses propres diagrammes et réglages dans le navigateur :
-l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas des Options
-et du guide d'utilisation.
+l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas à gauche
+du canevas et du guide d'utilisation.
 
 Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
 rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et

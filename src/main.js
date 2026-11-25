@@ -499,6 +499,14 @@ if (IS_DEV_SITE) {
   )
   document.querySelector('#toolbar .brand').append(badge)
 }
+// Version, dans un petit encadré discret en bas à gauche du canevas.
+if (APP_VERSION) {
+  const version = document.createElement('div')
+  version.id = 'app-version'
+  version.textContent = APP_VERSION
+  version.title = T('BPMN-Pilot version', 'Version de BPMN-Pilot')
+  document.getElementById('canvas').append(version)
+}
 if (import.meta.env.MODE === 'online') {
   // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js). Pas sur la page de
   // développement : seule la page stable est mesurée.

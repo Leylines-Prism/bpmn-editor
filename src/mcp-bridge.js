@@ -13,6 +13,7 @@ import { trackAiChanges } from './ai-changes.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
+import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
 
 const RETRY_MIN_MS = 1000
 const RETRY_MAX_MS = 15000
@@ -25,6 +26,7 @@ export function connectMcpBridge(modeler, url) {
   const state = { tabId: null, badge }
   let retryDelay = RETRY_MIN_MS
   let ws = null
+  let mcpClient = null
 
   function connect() {
     setBadge(badge, 'connecting')
@@ -32,7 +34,7 @@ export function connectMcpBridge(modeler, url) {
 
     ws.addEventListener('open', () => {
       retryDelay = RETRY_MIN_MS
-      setBadge(badge, 'connected')
+      setBadge(badge, 'connected', mcpClient)
       send({ type: 'hello', title: document.title })
     })
 
@@ -45,6 +47,11 @@ export function connectMcpBridge(modeler, url) {
       }
       if (msg.type === 'welcome') {
         state.tabId = msg.id
+        return
+      }
+      if (msg.type === 'mcp-client') {
+        mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), lastCall: Number(msg.lastCall) || null }
+        if (badge.dataset.state === 'connected') setBadge(badge, 'connected', mcpClient)
         return
       }
       if (msg.type !== 'call') return
@@ -100,20 +107,41 @@ function createBadge() {
   return badge
 }
 
-function setBadge(badge, state) {
+// Noms lisibles des clients MCP courants (clientInfo.name du protocole).
+const CLIENT_NAMES = {
+  'claude-code': 'Claude Code',
+  'claude-ai': 'Claude',
+  'cursor-vscode': 'Cursor',
+  'visual-studio-code': 'VS Code',
+  'mcp-inspector': 'MCP Inspector',
+  'gemini-cli-mcp-client': 'Gemini CLI',
+  'codex-mcp-client': 'Codex',
+  'Zed': 'Zed',
+}
+export const clientLabel = (name) => CLIENT_NAMES[name] || (name.length > 24 ? name.slice(0, 23) + '…' : name)
+
+function setBadge(badge, state, client = null) {
   const states = {
     connecting: [T('MCP: connecting…', 'MCP : connexion…'), '#888'],
     connected: [T('MCP: connected', 'MCP : connecté'), '#4ade80'],
     disconnected: [T('MCP: offline', 'MCP : hors ligne'), '#888'],
   }
   const [text, color] = states[state]
-  badge.textContent = text
+  const known = state === 'connected' && client?.name
+  badge.textContent = known ? T('MCP: ', 'MCP : ') + clientLabel(client.name) : text
   badge.dataset.state = state
   badge.style.color = color
-  badge.title =
-    state === 'connected'
-      ? T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')
-      : T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
+  if (state !== 'connected') {
+    badge.title = T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
+    return
+  }
+  const lines = [T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')]
+  if (known) lines.unshift(T('Last client: ', 'Dernier client : ') + [client.name, client.version].filter(Boolean).join(' '))
+  if (client?.lastCall) {
+    const time = new Date(client.lastCall).toLocaleTimeString(document.documentElement.lang || undefined, { hour: '2-digit', minute: '2-digit' })
+    lines.splice(known ? 1 : 0, 0, T('Last tool call at ', 'Dernier appel à ') + time)
+  }
+  badge.title = lines.join('\n')
 }
 
 // ── Outils ─────────────────────────────────────────────────────────────────
@@ -175,6 +203,8 @@ function buildTools(modeler) {
     if (eventDef) out.eventDefinition = eventDef.$type
     if (element.host) out.attachedTo = element.host.id
     if (bo.cancelActivity === false) out.interrupting = false
+    const style = styleOf(element)
+    if (style) out.style = style
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id
@@ -192,6 +222,32 @@ function buildTools(modeler) {
       if (outgoing.length) out.outgoing = outgoing
     }
     return out
+  }
+
+  // Couleurs et mise en forme du texte réglées sur l'élément, ou null s'il n'y en a pas.
+  function styleOf(element) {
+    const di = element.di
+    const out = {}
+    const fill = di?.get?.('color:background-color') || di?.get?.('bioc:fill')
+    const stroke = di?.get?.('color:border-color') || di?.get?.('bioc:stroke')
+    if (fill && !element.waypoints) out.fill = fill.toUpperCase()
+    if (stroke) out.stroke = stroke.toUpperCase()
+    const text = textColorOf(element)
+    if (text) out.textColor = text.toUpperCase()
+    const font = fontOf(element)
+    if (font?.isBold) out.bold = true
+    if (font?.isItalic) out.italic = true
+    if (font?.isUnderline) out.underline = true
+    if (font?.size) out.fontSize = font.size
+    if (font?.name) out.font = font.name
+    return Object.keys(out).length ? out : null
+  }
+
+  // #RGB ou #RRGGBB, avec ou sans dièse, en #RRGGBB. Chaîne vide : null (réglage retiré).
+  function hexColor(value) {
+    if (!value) return null
+    const hex = value.replace('#', '')
+    return '#' + (hex.length === 3 ? hex.replace(/./g, (c) => c + c) : hex).toUpperCase()
   }
 
   // Conteneur par défaut : le processus, ou le premier participant d'une collaboration.
@@ -462,6 +518,37 @@ function buildTools(modeler) {
           updated.push({ previousId: spec.id, ...describe(element) })
         }
         return { updated }
+      })
+    },
+
+    // Mêmes commandes que les groupes Forme et Texte du panneau : Ctrl+Z les annule avec le reste.
+    style_elements({ elements }) {
+      return atomic(() => {
+        const styled = []
+        for (const spec of elements) {
+          const element = getElement(spec.id)
+          const wantsText = spec.textColor !== undefined || ['bold', 'italic', 'underline', 'fontSize', 'font'].some((k) => spec[k] !== undefined)
+          if (wantsText && !hasText(element)) throw new Error(`Element has no label to format: ${spec.id}`)
+          if (spec.reset) {
+            modeling.setColor([element], { fill: null, stroke: null })
+            if (hasText(element)) resetText(commandStack, [element])
+          }
+          const colors = {}
+          if (spec.fill !== undefined && !element.waypoints) colors.fill = hexColor(spec.fill)
+          if (spec.stroke !== undefined) colors.stroke = hexColor(spec.stroke)
+          if (Object.keys(colors).length) modeling.setColor([element], colors)
+          const font = {}
+          if (spec.bold !== undefined) font.isBold = spec.bold
+          if (spec.italic !== undefined) font.isItalic = spec.italic
+          if (spec.underline !== undefined) font.isUnderline = spec.underline
+          if (spec.fontSize !== undefined) font.size = spec.fontSize
+          if (spec.font !== undefined) font.name = FONTS.find((f) => f.name === spec.font)?.name || spec.font
+          if (Object.keys(font).length) applyFont(commandStack, [element], font)
+          // Après le fond : « auto » choisit le noir ou le blanc d'après le nouveau fond.
+          if (spec.textColor !== undefined) applyTextColor(commandStack, [element], spec.textColor === 'auto' ? 'auto' : hexColor(spec.textColor))
+          styled.push({ id: element.id, style: styleOf(element) || {} })
+        }
+        return { styled }
       })
     },
 

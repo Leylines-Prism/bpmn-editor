@@ -27,6 +27,7 @@ const TOOL_LABELS = {
   add_shapes: T('adding shapes', 'ajout de formes'),
   connect_shapes: T('connections', 'connexions'),
   update_elements: T('changes', 'modification'),
+  style_elements: T('colors and text', 'couleurs et texte'),
   remove_elements: T('removal', 'suppression'),
   auto_layout: T('layout', 'mise en page'),
   validate_diagram: 'validation',
@@ -51,9 +52,6 @@ const CSS = `
 #chat-form { display: flex; gap: 6px; padding: 8px; border-top: 1px solid #0f3460; }
 #chat-input { flex: 1; resize: none; height: 60px; padding: 6px 8px; border-radius: 4px; border: 1px solid #0f3460; background: #1a1a2e; color: #e0e0e0; font: inherit; font-size: 13px; }
 #chat-input:disabled { opacity: 0.5; }
-#chat-options { display: flex; align-items: center; gap: 6px; padding: 6px 8px 0; font-size: 12px; color: #9ca3af; }
-#chat-options[hidden] { display: none; }
-#chat-model-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 `
 
 
@@ -112,11 +110,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
-    <div id="chat-options" hidden>
-      <span id="chat-model-name"></span>
-    </div>
     <div id="chat-attachments" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
@@ -147,7 +142,21 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.textContent = T('AI assistant', 'Assistant IA')
+  // « Assistant IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
+  const toggleFull = document.createElement('span')
+  toggleFull.className = 'chat-btn-full'
+  toggleFull.textContent = T('AI assistant', 'Assistant IA')
+  const toggleShort = document.createElement('span')
+  toggleShort.className = 'chat-btn-short'
+  toggleShort.textContent = T('AI', 'IA')
+  toggleShort.setAttribute('aria-hidden', 'true')
+  toggle.append(toggleFull, toggleShort)
+  toggle.setAttribute('aria-label', T('AI assistant', 'Assistant IA'))
+  // Le modèle choisi, en petit à côté du nom (masqué sur écran étroit).
+  const toggleModel = document.createElement('span')
+  toggleModel.className = 'chat-btn-model'
+  toggleModel.hidden = true
+  toggle.append(toggleModel)
   // À droite de la barre, juste après le badge MCP (version docker), ou en tête
   // du groupe de droite quand il n'y a pas de badge (version en ligne).
   const badge = document.getElementById('mcp-status')
@@ -163,8 +172,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const form = panel.querySelector('#chat-form')
   const input = panel.querySelector('#chat-input')
   const sendButton = panel.querySelector('#chat-send')
-  const modelBar = panel.querySelector('#chat-options')
-  const modelName = panel.querySelector('#chat-model-name')
+  const titleName = panel.querySelector('.chat-title-name')
+  const titleModel = panel.querySelector('.chat-title-model')
 
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
@@ -239,9 +248,15 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const has = (id) => id && models.some((m) => m.id === id)
     currentId = has(settings.defaultModel) ? settings.defaultModel : has(serverDefault) ? serverDefault : models[0]?.id || ''
     const model = currentModel()
-    modelName.textContent = model ? T(`Model: ${model.label}`, `Modèle : ${model.label}`) + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
-    modelName.title = T('Change it in Options', 'À changer dans Options')
-    modelBar.hidden = !model
+    toggleModel.textContent = model ? model.label : ''
+    toggleModel.hidden = !model
+    toggle.classList.toggle('has-model', !!model)
+    // En-tête du panneau : « Assistant » et le modèle dessous, ou « Assistant IA » sans modèle.
+    titleName.textContent = model ? T('Assistant', 'Assistant') : T('AI assistant', 'Assistant IA')
+    titleModel.textContent = model ? model.label : ''
+    titleModel.hidden = !model
+    titleModel.title = toggle.title
+    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
   }
   let serverDefault = null
 
@@ -293,6 +308,21 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add('notice', T('Server unreachable. Start it with: cd mcp && npm start', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start'))
     }
   }
+
+  // Dès le chargement, le bouton affiche le modèle choisi, sans attendre
+  // l'ouverture du panneau (les messages d'accueil viennent à l'ouverture).
+  async function showModelEarly() {
+    if (mode !== 'online') {
+      try {
+        const status = await (await fetch(chatUrl)).json()
+        if (checked) return
+        serverModels = Array.isArray(status.models) ? status.models : []
+        serverDefault = status.model
+      } catch { return }
+    }
+    fillModels()
+  }
+  showModelEarly()
 
   toggle.addEventListener('click', () => {
     const open = panel.classList.toggle('open')

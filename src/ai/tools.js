@@ -25,7 +25,12 @@ Deadlines and exceptions on a task: add a boundary event with attachTo (for exam
 then draw the exception path from it with "after".
 
 Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates are the centre of the shape.
+Colors and text formatting: style_elements sets the fill, stroke, text color and font of shapes and connections.
+Use them sparingly and consistently, for example one color per actor or to highlight an exception path.
 To start from scratch or import a complete diagram, use set_diagram_xml.`
+
+// Polices proposées par l'éditeur (src/label-style.js, FONTS), recopiées ici : ce module n'importe rien.
+export const FONT_NAMES = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Palatino Linotype', 'Comic Sans MS']
 
 // Renvoie la liste des outils, décrits avec le zod fourni : buildTools(z).
 export function buildTools(z) {
@@ -48,6 +53,11 @@ export function buildTools(z) {
         'SignalEventDefinition, ErrorEventDefinition, EscalationEventDefinition, ConditionalEventDefinition, ' +
         'TerminateEventDefinition',
     )
+
+  const color = z
+    .string()
+    .regex(/^(#?[0-9a-fA-F]{6}|#?[0-9a-fA-F]{3}|)$/)
+    .describe('Hexadecimal color such as #1E88E5, or an empty string')
 
   return [
     {
@@ -159,6 +169,38 @@ export function buildTools(z) {
               name: z.string().optional().describe('New label. Empty string to clear it'),
               type: bpmnType.optional(),
               eventDefinition: eventDefinition.optional(),
+            }),
+          )
+          .min(1),
+      },
+    },
+    {
+      name: 'style_elements',
+      title: 'Style elements',
+      description:
+        'Sets the colors and text formatting of shapes and connections, like the editor\'s Shape and Text panels. ' +
+        'Each field is optional: only the fields given change. An empty string removes that setting. ' +
+        'Colors are hexadecimal, for example #1E88E5. A connection only has a stroke. ' +
+        'For a dark fill, set textColor to "auto" (or #FFFFFF) so the label stays readable. ' +
+        'reset: true removes every color and text formatting of the element first. ' +
+        'Returns the resulting style of each element. The user can undo it in one step.',
+      inputSchema: {
+        elements: z
+          .array(
+            z.object({
+              id: elementId,
+              reset: z.boolean().optional().describe('Remove all colors and text formatting before applying the other fields'),
+              fill: color.optional().describe('Shape fill color. Empty string for the default'),
+              stroke: color.optional().describe('Shape outline or connection line color. Empty string for the default'),
+              textColor: z
+                .union([color, z.literal('auto')])
+                .optional()
+                .describe('Label color, or "auto" for black or white, whichever reads best on the fill. Empty string for the default'),
+              bold: z.boolean().optional(),
+              italic: z.boolean().optional(),
+              underline: z.boolean().optional(),
+              fontSize: z.number().int().min(8).max(48).optional().describe('Label font size in points. The editor offers 10, 12, 14, 18 and 24'),
+              font: z.enum(FONT_NAMES).optional().describe('Label font'),
             }),
           )
           .min(1),
