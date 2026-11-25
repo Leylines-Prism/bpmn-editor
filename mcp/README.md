@@ -183,9 +183,16 @@ What the tools add, change or remove is marked on the editor's canvas (`src/ai-c
 
 The "My diagrams" window of the editor can save diagrams on this server, besides the browser. The
 `/diagrams` routes list, read, save (`PUT`, BPMN XML body, 10 MB at most), rename and delete them.
-They only accept editor pages, like `/chat`. Each diagram is a `<id>.bpmn` file with a `<id>.json`
-file for its name and date, in `DIAGRAMS_DIR` (`mcp/data/diagrams` by default, excluded from git; the
-`diagrams` volume in docker).
+They only accept editor pages, like `/chat`. Each diagram is a `.bpmn` file named after the diagram
+(`Order process.bpmn`, then `Order process (2).bpmn`), in `DIAGRAMS_DIR` (`mcp/data/diagrams` by
+default, excluded from git, `/data/diagrams` in docker). The hidden `.index.json` file links each id to
+its file, name and date. Files of older versions (`<id>.bpmn` and `<id>.json`) are renamed at startup.
+
+`POST /exports?format=pdf&name=Order%20process` saves an export (body `application/octet-stream`,
+20 MB at most) in `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` in docker), for the "Server" and
+"Both" destinations of the Export menu. Formats: `bpmn`, `xml`, `svg`, `png`, `pdf`, with a check that
+the content matches. A file is never replaced: the answer gives the name chosen, such as
+`{"file": "Order process (2).pdf"}`.
 
 ## Security
 

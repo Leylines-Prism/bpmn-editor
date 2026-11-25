@@ -268,15 +268,16 @@
             <tbody>
               <tr><td>.bpmn file</td><td>Keep the diagram, reopen it here or in another BPMN tool</td></tr>
               <tr><td>.xml file</td><td>The same content, for tools that expect the .xml extension</td></tr>
-              <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
+              <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
+        <p>In the Docker version, the menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
         <p>Export, then Print… opens the browser's print window on the diagram alone. It is centered on one page, with 10 mm margins. The page turns to landscape if the diagram is wider than tall, portrait otherwise. Safari lets you choose the orientation in its print window. A large diagram is shrunk to fit the page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
@@ -366,7 +367,14 @@
           <li>API keys stored on your server, which never reach the browser,</li>
           <li>every provider, OpenAI included, with no browser blocking,</li>
           <li>My diagrams also saved on the server, available from several browsers,</li>
+          <li>exports also saved on the server, if you choose so,</li>
           <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
+        </ul>
+        <h3>Your files in the Docker version</h3>
+        <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your files back:</p>
+        <ul>
+          <li><code>diagrams</code>: the diagrams saved on the server with My diagrams, one .bpmn file per diagram, named after it. Renaming a diagram renames its file. Leave the hidden <code>.index.json</code> file in place: it links the files to the editor.</li>
+          <li><code>exports</code>: the exports made with the <span class="ui">Server</span> or <span class="ui">Both</span> destination. An export never replaces a file: a second <code>Order process.pdf</code> becomes <code>Order process (2).pdf</code>.</li>
         </ul>
         <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-editor#readme" target="_blank" rel="noopener"><svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>project README on GitHub</a>.</p>
       </section>

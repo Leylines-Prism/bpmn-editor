@@ -185,9 +185,17 @@ Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas d
 La fenêtre « Mes diagrammes » de l'éditeur peut enregistrer les diagrammes sur ce serveur, en plus du
 navigateur. Les routes `/diagrams` les listent, les lisent, les enregistrent (`PUT`, corps en XML
 BPMN, 10 Mo au plus), les renomment et les suppriment. Elles n'acceptent que les pages de l'éditeur,
-comme `/chat`. Chaque diagramme est un fichier `<id>.bpmn` accompagné de `<id>.json` pour son nom et
-sa date, dans `DIAGRAMS_DIR` (`mcp/data/diagrams` par défaut, exclu de git ; le volume `diagrams` en
-docker).
+comme `/chat`. Chaque diagramme est un fichier `.bpmn` au nom du diagramme (`Mon processus.bpmn`,
+puis `Mon processus (2).bpmn`), dans `DIAGRAMS_DIR` (`mcp/data/diagrams` par défaut, exclu de git,
+`/data/diagrams` en docker). Le fichier caché `.index.json` relie chaque identifiant à son fichier, son
+nom et sa date. Les fichiers des versions précédentes (`<id>.bpmn` et `<id>.json`) sont renommés au
+démarrage.
+
+`POST /exports?format=pdf&name=Mon%20processus` enregistre un export (corps `application/octet-stream`,
+20 Mo au plus) dans `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` en docker), pour les
+destinations « Serveur » et « Les deux » du menu Exporter. Formats : `bpmn`, `xml`, `svg`, `png`,
+`pdf`, avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
+par exemple `{"file": "Mon processus (2).pdf"}`.
 
 ## Sécurité
 
