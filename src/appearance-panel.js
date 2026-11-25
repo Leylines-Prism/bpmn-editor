@@ -304,6 +304,19 @@ function StylePreview({ style }) {
   }}>A</span>`
 }
 
+// Rouleau du menu du canevas, peint avec le style copié : le manchon prend le
+// fond et le contour, et l'aperçu à côté montre la couleur et la police du
+// texte. Sans style copié, le rouleau reste au trait.
+function RollerPreview({ style }) {
+  const head = style ? { fill: style.fill || '#FFFFFF', stroke: style.stroke || '#22242A' } : { fill: 'none', stroke: 'currentColor' }
+  return html`<span class="appearance-roller" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="13" height="5" rx="1.2" fill=${head.fill} stroke=${head.stroke} /><path d="M16 5.5h2.5v5H10v3" /><rect x="8.6" y="13.5" width="2.8" height="6" rx="1" />
+    </svg>
+    ${style ? html`<${StylePreview} style=${style} />` : null}
+  </span>`
+}
+
 function CopyPasteEntry({ element, id }) {
   const commandStack = useService('commandStack')
   const [, setVersion] = useState(0)
@@ -315,7 +328,7 @@ function CopyPasteEntry({ element, id }) {
       <button type="button" class="appearance-button" id=${id + '-paste'} disabled=${!copied}
         title=${copied ? T('Apply the copied style to this element', 'Appliquer le style copié à cet élément') : T('Copy a style first', "Copiez d'abord un style")}
         onClick=${() => pasteStyle(commandStack, [element])}>
-        ${copied ? html`<${StylePreview} style=${copied} />` : null}${T('Paste style', 'Coller le style')}
+        <${RollerPreview} style=${copied} />${T('Paste style', 'Coller le style')}
       </button>
     </div>
     <${UsedStyles} element=${element} />
