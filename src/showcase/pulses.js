@@ -4,13 +4,17 @@
 // (cercles) sont lus dans le SVG du fond : un nouveau fond s'anime sans réglage.
 //
 // Animations (champ « motion » de wallpapers.js) :
-//   pulses : des impulsions sur les lignes en dégradé, qui allument les nœuds traversés
+//   pulses : des impulsions sur les lignes, qui allument les nœuds traversés. Sur une
+//            ligne de couleur unie, l'impulsion prend la couleur du dégradé à sa position.
 //   flow   : un flux lent et discret sur toutes les lignes
+//   scroll : le dégradé des lignes défile en continu, et des impulsions immobiles, des
+//            couleurs du dégradé, s'allument et s'éteignent çà et là dans le fond
 //   none   : fond immobile
 
 const NS = 'http://www.w3.org/2000/svg'
 const SKY = [43, 184, 255], MAGENTA = [210, 78, 142], ORANGE = [255, 126, 26]
 const START_AFTER = 2000 // les fonds s'animent quand le logo a fini son entrée
+const SCROLL_SPEED = 960 // px par seconde, dans les unités du dessin (1920 de large)
 
 const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t))
 const leyline = (t) => {
@@ -34,9 +38,10 @@ async function svgText(url) {
 // Lignes et nœuds du dessin.
 function readGeometry(text) {
   const doc = new DOMParser().parseFromString(text, 'image/svg+xml')
-  const firstStop = {}
+  const firstStop = {}, gradients = {}
   doc.querySelectorAll('linearGradient').forEach((g) => {
     firstStop[g.id] = (g.querySelector('stop')?.getAttribute('stop-color') || '').toUpperCase()
+    gradients[g.id] = g
   })
   const seen = new Set(), lines = []
   doc.querySelectorAll('path').forEach((p) => {
@@ -45,7 +50,8 @@ function readGeometry(text) {
     seen.add(d)
     const ref = stroke.match(/url\(#([^)]+)\)/)
     // Un dégradé qui commence par l'orange se parcourt à l'envers : du bleu vers l'orange.
-    if (ref) lines.push({ d, leyline: true, reversed: firstStop[ref[1]] === '#FF7E1A' })
+    // Le tracé et son dégradé sont gardés pour le mode « scroll », qui les redessine par-dessus.
+    if (ref) lines.push({ d, leyline: true, reversed: firstStop[ref[1]] === '#FF7E1A', path: p, gradient: gradients[ref[1]] })
     else if (/^#[0-9a-f]{6}$/i.test(stroke)) lines.push({ d, leyline: false, color: hex(stroke) })
   })
   const nodes = new Map()
@@ -58,7 +64,9 @@ function readGeometry(text) {
   return { lines, nodes: [...nodes.values()] }
 }
 
-export function createPulses(svg, { isDark }) {
+// glowTargets : éléments de la page (les icônes de contact) qui s'entourent d'un halo
+// multicolore quand une impulsion passe juste devant eux.
+export function createPulses(svg, { isDark, glowTargets = () => [] }) {
   const defs = document.createElementNS(NS, 'defs')
   const measure = document.createElementNS(NS, 'g')
   const flashes = document.createElementNS(NS, 'g')
@@ -67,6 +75,7 @@ export function createPulses(svg, { isDark }) {
   svg.append(defs, measure, flashes, layer)
 
   let routes = [], motion = 'none', items = [], next = 0, serial = 0, startedAt = 0, loadId = 0
+  let scrolling = [] // dégradés qui défilent (mode « scroll »)
 
   async function use(url, newMotion) {
     const id = ++loadId
@@ -97,9 +106,48 @@ export function createPulses(svg, { isDark }) {
       stops.sort((a, b) => a.s - b.s)
       return { ...line, length, at, stops }
     })
+    if (motion === 'scroll') startScroll(geometry.lines)
   }
 
-  const colorAt = (route, s) => (route.leyline ? leyline(s / route.length) : route.color)
+  // Mode « scroll » : chaque ligne en dégradé est redessinée à l'identique par-dessus le fond,
+  // avec un dégradé qui se répète en miroir (spreadMethod="reflect"). En le décalant, les
+  // couleurs défilent sans fin et sans saut : à décalage nul, le dessin est celui du fond.
+  function startScroll(lines) {
+    for (const line of lines) {
+      if (!line.gradient || !line.path) continue
+      const id = `scroll-${++serial}`
+      const g = document.importNode(line.gradient, true)
+      g.id = id
+      g.setAttribute('spreadMethod', 'reflect')
+      defs.append(g)
+      const path = document.importNode(line.path, true)
+      path.setAttribute('stroke', `url(#${id})`)
+      path.classList.add('scroll-line')
+      layer.append(path)
+      // Une période complète : aller puis retour du dégradé.
+      const x1 = +(g.getAttribute('x1') || 0), x2 = +(g.getAttribute('x2') || 1920)
+      scrolling.push({ g, period: 2 * Math.abs(x2 - x1) || 3840 })
+    }
+  }
+  function scroll(now) {
+    const s = ((now - startedAt) / 1000) * SCROLL_SPEED
+    for (const it of scrolling) it.g.setAttribute('gradientTransform', `translate(${-(s % it.period)} 0)`)
+    if (now >= next) { glint(); next = now + 350 + Math.random() * 650 }
+  }
+  // Impulsion immobile à un endroit tiré au hasard, hors du logo, d'une couleur prise
+  // n'importe où dans le dégradé (du bleu ciel à l'orange), au cœur blanc éclatant.
+  function glint() {
+    let x, y
+    do { x = Math.random() * 1920; y = Math.random() * 1080 } while (x > 560 && x < 1360 && y > 300 && y < 680)
+    flash(x, y, leyline(Math.random()), { radius: 20 + Math.random() * 40, core: true })
+  }
+
+  const colorAt = (route, s, x) => {
+    if (route.leyline) return leyline(s / route.length)
+    // Lignes unies (grises) : couleur du dégradé horizontal là où passe l'impulsion,
+    // comme les nœuds posés sur ces lignes.
+    return motion === 'pulses' ? leyline(x / 1920) : route.color
+  }
 
   function gradient(id, stops) {
     const g = document.createElementNS(NS, 'radialGradient')
@@ -127,24 +175,26 @@ export function createPulses(svg, { isDark }) {
     items.push({ route, g, halo, core, speed, start: performance.now(), passed: new Set() })
   }
 
-  function flash(x, y, rgb, { arrival = false, radius } = {}) {
+  function flash(x, y, rgb, { arrival = false, radius, core = false } = {}) {
     // Halo d'arrivée : ambre sur fond sombre, orange profond sur fond clair (charte).
     const color = arrival ? (isDark() ? [255, 176, 102] : ORANGE) : rgb
     const id = `flash-${++serial}`
-    const g = gradient(id, [[0, 0.9], [0.45, 0.45], [1, 0]])
+    // core : un cœur blanc éclatant au centre du halo.
+    const g = gradient(id, core ? [[0, 1], [0.12, 1], [0.3, 0.75], [0.6, 0.3], [1, 0]] : [[0, 0.9], [0.45, 0.45], [1, 0]])
     paint(g, color)
+    if (core) g.children[0].setAttribute('stop-color', '#fff')
     const c = document.createElementNS(NS, 'circle')
     c.setAttribute('cx', x)
     c.setAttribute('cy', y)
     c.setAttribute('fill', `url(#${id})`)
     flashes.append(c)
-    const t0 = performance.now(), R = radius || (arrival ? 80 : 30), duration = arrival ? 1500 : 900
+    const t0 = performance.now(), R = radius || (arrival ? 80 : 30), duration = arrival || core ? 1500 : 900
     const step = (now) => {
       const t = (now - t0) / duration
       if (t >= 1 || !c.isConnected) { c.remove(); g.remove(); return }
       const e = 1 - (1 - t) ** 3
       c.setAttribute('r', 8 + (R - 8) * e)
-      c.setAttribute('opacity', (1 - t) * (arrival ? 1 : 0.8))
+      c.setAttribute('opacity', core ? Math.min(1, 1.6 * (1 - t)) : (1 - t) * (arrival ? 1 : 0.8))
       requestAnimationFrame(step)
     }
     requestAnimationFrame(step)
@@ -155,21 +205,26 @@ export function createPulses(svg, { isDark }) {
       if (items.length < 8) launch(pick(routes), { speed: 170, size: 0.6, opacity: 0.75 })
       next = now + 500 + Math.random() * 600
     } else {
-      const colored = routes.filter((r) => r.leyline)
-      if (items.length < 3 && colored.length) launch(pick(colored))
+      const colored = routes.filter((r) => r.leyline), plain = routes.filter((r) => !r.leyline)
+      // Les lignes en dégradé restent les plus parcourues, les lignes unies une fois sur trois.
+      const pool = plain.length && (!colored.length || Math.random() < 1 / 3) ? plain : colored
+      if (items.length < 3 && pool.length) launch(pick(pool), pool === plain ? { size: 0.8 } : undefined)
       next = now + 1300 + Math.random() * 1500
     }
   }
 
   function tick(now) {
     requestAnimationFrame(tick)
-    if (motion === 'none' || !routes.length || document.hidden || now - startedAt < START_AFTER) return
+    if (motion === 'scroll') { glow([]); if (!document.hidden) scroll(now); return }
+    if (motion === 'none' || !routes.length || document.hidden || now - startedAt < START_AFTER) return glow([])
     if (now >= next) spawn(now)
+    const lit = []
     for (const it of [...items]) {
       const s = ((now - it.start) / 1000) * it.speed
       if (s >= it.route.length) { drop(it); continue }
-      const [x, y] = it.route.at(s), rgb = colorAt(it.route, s)
+      const [x, y] = it.route.at(s), rgb = colorAt(it.route, s, x)
       it.g.setAttribute('transform', `translate(${x} ${y})`)
+      lit.push([x, y])
       paint(it.halo, rgb)
       paint(it.core, rgb, 1)
       // Nœuds traversés : le grand nœud d'arrivée s'allume en halo ambre ou orange.
@@ -179,6 +234,22 @@ export function createPulses(svg, { isDark }) {
         })
       }
     }
+    glow(lit)
+  }
+
+  // Halo des icônes : allumé tant qu'une impulsion passe sous l'icône, jusqu'à 120 px plus bas
+  // (la ligne s'éloigne des icônes sur un écran haut).
+  // Les positions du dessin sont converties en pixels de l'écran, car le fond est recadré.
+  function glow(points) {
+    const els = [...glowTargets()]
+    if (!els.length) return
+    const m = points.length ? svg.getScreenCTM() : null
+    const screen = m ? points.map(([x, y]) => new DOMPoint(x, y).matrixTransform(m)) : []
+    for (const el of els) {
+      const r = el.getBoundingClientRect()
+      const near = screen.some((p) => p.x > r.left - 12 && p.x < r.right + 12 && p.y > r.top - 20 && p.y < r.bottom + 120)
+      el.classList.toggle('glow', near)
+    }
   }
 
   function drop(it) {
@@ -187,12 +258,14 @@ export function createPulses(svg, { isDark }) {
   }
   function clear() {
     items = []
+    scrolling = []
     defs.replaceChildren(); flashes.replaceChildren(); layer.replaceChildren()
     next = 0
   }
 
   // Onglet caché : rien ne tourne, et l'animation repart propre au retour.
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) clear() })
+  // Le défilement, lui, reprend là où il en est.
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && motion !== 'scroll') clear() })
   requestAnimationFrame(tick)
 
   return { use, clear }
