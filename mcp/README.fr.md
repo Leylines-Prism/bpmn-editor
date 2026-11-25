@@ -32,7 +32,7 @@ Le bouton « Arrêter » interrompt la réponse en cours. « Nouvelle discussion
 
 ```
 éditeur (panneau de chat) ──HTTP /chat──▶ serveur ──API Claude──────────────▶ Claude
-                                                  └─API compatible OpenAI──▶ OpenAI, OpenRouter, Ollama…
+                                                  └─API compatible OpenAI──▶ Mistral, OpenAI, OpenRouter, Ollama…
                           ◀──WebSocket── outils exécutés dans l'onglet
 ```
 
@@ -167,7 +167,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 |---|---|
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
-| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec le format OpenAI, l'assistant intégré ne peut pas la recevoir) |
+| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, l'assistant intégré ne peut pas la recevoir) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
@@ -199,8 +199,9 @@ docker).
   Dans docker, les noms acceptés sont ceux de `MCP_ALLOWED_HOSTS`.
 - Seules les pages de l'éditeur peuvent se connecter au WebSocket : l'origine doit figurer dans
   `BPMN_EDITOR_ORIGINS` (par défaut `http://localhost:5173` et `http://127.0.0.1:5173`).
-- Le pont et le panneau de chat ne sont actifs dans l'éditeur qu'en développement, dans l'image
-  docker du compose, ou si `VITE_MCP_BRIDGE_URL` est définie au build.
+- Le pont et le chat par le serveur ne sont actifs dans l'éditeur qu'en développement, dans l'image
+  docker du compose, ou si `VITE_MCP_BRIDGE_URL` est définie au build. La version en ligne n'a pas
+  de pont : son chat tourne dans la page.
 - Les routes `/chat` et `/chat/models` appellent l'adresse qu'on leur donne : elles n'acceptent que les
   pages de l'éditeur, et le serveur ne doit pas être exposé sur un réseau public.
 - Les routes `/diagrams` n'ont pas non plus d'authentification : quiconque atteint une page de l'éditeur
