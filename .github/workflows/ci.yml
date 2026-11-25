@@ -1,11 +1,14 @@
 # Vérifie chaque PR avant fusion : le code passe ESLint et les tests, l'éditeur, la version en
 # ligne, le serveur MCP et les deux images Docker se construisent. Aucun secret, rien n'est publié.
 # C'est le contrôle à exiger dans la règle de protection de main (Settings > Rules > Rulesets).
+# Il repasse aussi sur main après chaque fusion, pour que le badge CI du README ait un statut.
 
 name: CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -13,7 +16,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Sur main, chaque fusion garde son run complet : le badge ne montre jamais « cancelled ».
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 # Actions épinglées par empreinte de commit, comme dans pages.yml et docker.yml.
 
