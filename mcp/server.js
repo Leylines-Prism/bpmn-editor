@@ -67,7 +67,7 @@ const chat = new ChatService({ bridge, log })
 const TOOLS = buildTools(z)
 
 function buildMcpServer() {
-  const server = new McpServer({ name: 'bpmn-editor', version: '0.1.0' }, { instructions: INSTRUCTIONS })
+  const server = new McpServer({ name: 'bpmn-pilot', version: '0.1.0' }, { instructions: INSTRUCTIONS })
   for (const tool of TOOLS) {
     server.registerTool(
       tool.name,

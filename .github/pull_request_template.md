@@ -14,4 +14,4 @@ The headings below are a guide, not a form. Remove what does not apply.
 <!-- What you did in the browser, and the case that should fail (an invalid file, an empty
 diagram). Screenshots are welcome for anything visible. -->
 
-See [CONTRIBUTING.md](https://github.com/Leylines-Prism/bpmn-editor/blob/main/CONTRIBUTING.md) for more.
+See [CONTRIBUTING.md](https://github.com/Leylines-Prism/bpmn-pilot/blob/main/CONTRIBUTING.md) for more.

@@ -47,8 +47,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
         <ol class="steps">
           <li><p class="hint">${T('In Claude Desktop, open Settings, then Developer, then Edit config.', 'Dans Claude Desktop, ouvrez Réglages, puis Développeur, puis Modifier la configuration.')}</p></li>
           <li><p class="hint">${T(
-            'In the claude_desktop_config.json file that opens, paste this block. If the file already has a "mcpServers" block, add only the "bpmn-editor" entry inside it.',
-            'Dans le fichier claude_desktop_config.json qui s\'ouvre, collez ce bloc. Si le fichier a déjà un bloc « mcpServers », ajoutez seulement l\'entrée « bpmn-editor » dedans.',
+            'In the claude_desktop_config.json file that opens, paste this block. If the file already has a "mcpServers" block, add only the "bpmn-pilot" entry inside it.',
+            'Dans le fichier claude_desktop_config.json qui s\'ouvre, collez ce bloc. Si le fichier a déjà un bloc « mcpServers », ajoutez seulement l\'entrée « bpmn-pilot » dedans.',
           )}</p>${code('mcp-claude-desktop')}</li>
           <li><p class="hint">${T('Save, then quit and restart Claude Desktop.', 'Enregistrez, puis quittez et relancez Claude Desktop.')}</p></li>
         </ol>
@@ -61,8 +61,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
             'Dans VS Code, ouvrez la palette de commandes (Ctrl+Maj+P), puis lancez « MCP: Open User Configuration ». L\'éditeur est alors disponible dans tous vos projets. Pour un seul projet, créez plutôt un fichier .vscode/mcp.json dans son dossier.',
           )}</p></li>
           <li><p class="hint">${T(
-            'Paste this block in the mcp.json file. If the file already has a "servers" block, add only the "bpmn-editor" entry inside it. Then save.',
-            'Collez ce bloc dans le fichier mcp.json. Si le fichier a déjà un bloc « servers », ajoutez seulement l\'entrée « bpmn-editor » dedans. Puis enregistrez.',
+            'Paste this block in the mcp.json file. If the file already has a "servers" block, add only the "bpmn-pilot" entry inside it. Then save.',
+            'Collez ce bloc dans le fichier mcp.json. Si le fichier a déjà un bloc « servers », ajoutez seulement l\'entrée « bpmn-pilot » dedans. Puis enregistrez.',
           )}</p>${code('mcp-vscode')}</li>
           <li><p class="hint" id="mcp-vscode-start"></p></li>
         </ol>
@@ -145,13 +145,13 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     set('mcp-url', mcpUrl)
     set(
       'mcp-claude-code',
-      `claude mcp add --transport http bpmn-editor ${mcpUrl}` + (auth ? ` --header "Authorization: Bearer ${value}"` : ''),
+      `claude mcp add --transport http bpmn-pilot ${mcpUrl}` + (auth ? ` --header "Authorization: Bearer ${value}"` : ''),
     )
     set(
       'mcp-claude-desktop',
       compact({
         mcpServers: {
-          'bpmn-editor': {
+          'bpmn-pilot': {
             command: 'npx',
             args: ['-y', 'mcp-remote', mcpUrl, ...(auth ? ['--header', `Authorization: Bearer ${value}`] : [])],
           },
@@ -164,25 +164,25 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
       'mcp-vscode',
       compact({
         servers: {
-          'bpmn-editor': {
+          'bpmn-pilot': {
             type: 'http',
             url: mcpUrl,
-            ...(auth ? { headers: { Authorization: 'Bearer ${input:bpmn-editor-token}' } } : {}),
+            ...(auth ? { headers: { Authorization: 'Bearer ${input:bpmn-pilot-token}' } } : {}),
           },
         },
         ...(auth
-          ? { inputs: [{ id: 'bpmn-editor-token', type: 'promptString', description: T('BPMN editor MCP token', 'Jeton MCP de l\'éditeur BPMN'), password: true }] }
+          ? { inputs: [{ id: 'bpmn-pilot-token', type: 'promptString', description: T('BPMN Pilot MCP token', 'Jeton MCP de BPMN Pilot'), password: true }] }
           : {}),
       }),
     )
     $('#mcp-vscode-start').textContent = auth
-      ? T('Open the Copilot chat in Agent mode. The first time, VS Code asks for the MCP token: paste it (see "Protect the access with a token" below). The bpmn-editor tools then show in the tools menu of the chat.',
-          'Ouvrez le chat Copilot en mode Agent. La première fois, VS Code demande le jeton MCP : collez-le (voir « Protéger l\'accès par un jeton » plus bas). Les outils bpmn-editor apparaissent alors dans le menu des outils du chat.')
-      : T('Open the Copilot chat in Agent mode: the bpmn-editor tools show in the tools menu of the chat. If VS Code shows a "Start" link above the server in mcp.json, click it.',
-          'Ouvrez le chat Copilot en mode Agent : les outils bpmn-editor apparaissent dans le menu des outils du chat. Si VS Code affiche un lien « Start » au-dessus du serveur dans mcp.json, cliquez dessus.')
+      ? T('Open the Copilot chat in Agent mode. The first time, VS Code asks for the MCP token: paste it (see "Protect the access with a token" below). The bpmn-pilot tools then show in the tools menu of the chat.',
+          'Ouvrez le chat Copilot en mode Agent. La première fois, VS Code demande le jeton MCP : collez-le (voir « Protéger l\'accès par un jeton » plus bas). Les outils bpmn-pilot apparaissent alors dans le menu des outils du chat.')
+      : T('Open the Copilot chat in Agent mode: the bpmn-pilot tools show in the tools menu of the chat. If VS Code shows a "Start" link above the server in mcp.json, click it.',
+          'Ouvrez le chat Copilot en mode Agent : les outils bpmn-pilot apparaissent dans le menu des outils du chat. Si VS Code affiche un lien « Start » au-dessus du serveur dans mcp.json, cliquez dessus.')
     set(
       'mcp-generic',
-      compact({ mcpServers: { 'bpmn-editor': { type: 'http', url: mcpUrl, ...(header ? { headers: header } : {}) } } }),
+      compact({ mcpServers: { 'bpmn-pilot': { type: 'http', url: mcpUrl, ...(header ? { headers: header } : {}) } } }),
     )
 
     $('#mcp-auth').textContent = serverAuth

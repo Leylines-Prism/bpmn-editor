@@ -16,7 +16,7 @@ const root = document.documentElement
 const isDark = () => root.dataset.theme === 'dark' || (root.dataset.theme !== 'light' && systemDark.matches)
 
 // Textes de la page
-document.title = T('Leylines · BPMN Editor', 'Leylines · Éditeur BPMN')
+document.title = T('Leylines · BPMN Pilot', 'Leylines · BPMN Pilot')
 document.querySelector('#open-editor').textContent = T('Open the editor', "Ouvrir l'éditeur")
 document.querySelector('#prev').setAttribute('aria-label', T('Previous wallpaper', 'Fond précédent'))
 document.querySelector('#next').setAttribute('aria-label', T('Next wallpaper', 'Fond suivant'))
