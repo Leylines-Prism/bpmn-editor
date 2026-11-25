@@ -242,7 +242,7 @@ a.btn { text-decoration: none; }
 #canvas .bjsl-button-inactive { color: var(--night-800); opacity: 0.7; }
 
 /* Erreurs du processus lui-même : badge fixe en bas à gauche du canevas, hors du diagramme */
-#canvas .lint-process-badge { position: absolute; left: 20px; bottom: 20px; z-index: 500; }
+#canvas .lint-process-badge { position: absolute; left: 20px; bottom: 44px; z-index: 500; }
 #canvas .lint-process-badge:empty { display: none; }
 #canvas .lint-process-badge .bjsl-overlay {
   display: inline-flex; align-items: center; gap: 8px;
@@ -274,6 +274,13 @@ a.btn { text-decoration: none; }
   font-size: 11px; line-height: 16px; font-weight: 500; color: var(--night-800); opacity: 0.6;
 }
 #credit a { color: inherit; text-decoration: none; }
+/* Version : petit encadré discret en bas à gauche du canevas, toujours clair comme lui. */
+#app-version {
+  position: absolute; left: 16px; bottom: 12px; z-index: 100;
+  padding: 1px 6px; border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); color: var(--night-800); opacity: 0.6;
+  font-size: 11px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums;
+}
 #credit a:hover { text-decoration: underline; }
 /* Canevas étroit (téléphone) : la licence de bpmn-js veut le filigrane bpmn.io entièrement
    visible, sans rien par-dessus. Le crédit texte, redondant, s'efface, et les pastilles de
@@ -577,7 +584,6 @@ body #chat-model:disabled { opacity: 0.5; }
 #options-dialog .p-result.ok { color: var(--accent); }
 #options-dialog .p-result.failed { color: var(--magenta); }
 #options-dialog .keys-row, #options-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
-#options-dialog .app-version { color: var(--ink-muted); font-size: 12px; }
 #options-dialog .keys-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; cursor: pointer; }
 #options-dialog .grow { flex: 1; }
 #chat-panel #chat-settings { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }
