@@ -531,16 +531,11 @@ body #chat-model:disabled { opacity: 0.5; }
 #options-dialog .hint { color: var(--ink-muted); font-size: 13px; line-height: 18px; }
 #options-dialog .providers { display: flex; flex-direction: column; gap: var(--space-2); }
 #options-dialog .provider {
-  border: 1px solid var(--line); border-radius: var(--radius-md);
-  padding: 0 var(--space-4); margin: 0; min-width: 0; background: var(--surface);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4); min-width: 0; background: var(--surface);
 }
-#options-dialog .provider.on { border-color: var(--line-strong); }
-/* Légende dans la carte : la case et le nom sur la première ligne. */
-#options-dialog legend { float: left; width: 100%; padding: var(--space-2) 0; font-weight: 600; }
-#options-dialog legend + * { clear: both; }
-#options-dialog legend label { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; }
-#options-dialog .p-body { display: none; flex-direction: column; gap: var(--space-2); padding: 0 0 var(--space-3); }
-#options-dialog .provider.on .p-body { display: flex; }
+#options-dialog .provider[hidden] { display: none; }
+#options-dialog .p-body { display: flex; flex-direction: column; gap: var(--space-2); }
 #options-dialog .field { display: flex; flex-direction: column; gap: var(--space-1); font-size: 13px; font-weight: 500; color: var(--ink-muted); }
 #options-dialog input[type="text"], #options-dialog input[type="url"], #options-dialog input[type="password"], #options-dialog select {
   height: 32px; padding: 0 var(--space-2); min-width: 0;

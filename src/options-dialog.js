@@ -1,5 +1,6 @@
-// Fenêtre Options de l'assistant : un bloc par fournisseur (adresse, clé,
-// modèles), un bouton Tester, un bouton Lister, et le modèle par défaut.
+// Fenêtre Options de l'assistant : le choix du fournisseur, son bloc (adresse, clé,
+// modèles, boutons Tester et Lister), et le modèle de l'assistant. Un seul fournisseur
+// est actif à la fois : les adresses et les clés des autres restent gardées.
 // Même fenêtre en ligne et en version docker ; seul le texte sur la vie privée change.
 
 import { PROVIDERS } from './ai/providers.js'
@@ -51,12 +52,17 @@ export function createOptionsDialog({ mode, test, onSave }) {
   dialog.innerHTML = `
     <form method="dialog">
       <h2 id="options-title">${T('Assistant options', "Options de l'assistant")}</h2>
-      <p class="hint">${T('Turn on one or more providers, paste the API key if needed and test the connection: their models then appear in the menu below, where you pick the model of the assistant.', 'Activez un ou plusieurs fournisseurs, collez la clé API si besoin et testez la connexion : leurs modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
+      <p class="hint">${T('Choose a provider, paste the API key if needed and test the connection: its models then appear in the menu below, where you pick the model of the assistant.', 'Choisissez un fournisseur, collez la clé API si besoin et testez la connexion : ses modèles apparaissent alors dans le menu du bas, où vous choisissez le modèle de l\'assistant.')}</p>
+      <label class="field"><span>${T('Provider', 'Fournisseur')}</span><select id="options-provider">
+        ${PROVIDERS.map((p) => `<option value="${p.id}">${esc(p.id === 'compat' ? T('OpenAI-compatible', 'Compatible OpenAI') : p.label)}</option>`).join('')}
+      </select></label>
       <div class="providers">
+        <div class="provider server-block" data-id="server" hidden>
+          <p class="hint">${T('Models set up on the server, in mcp/.env. The server holds their keys.', 'Modèles réglés sur le serveur, dans mcp/.env. Le serveur garde leurs clés.')}</p>
+        </div>
         ${PROVIDERS.map(
           (p) => `
-        <fieldset class="provider" data-id="${p.id}">
-          <legend><label><input type="checkbox" class="p-enabled" /> ${esc(p.id === 'compat' ? T('OpenAI-compatible', 'Compatible OpenAI') : p.label)}</label></legend>
+        <div class="provider" data-id="${p.id}" hidden>
           <div class="p-body">
             ${p.customLabel ? `<label class="field"><span>${T('Display name', 'Nom affiché')}</span><input type="text" class="p-label" maxlength="60" placeholder="${T('For example: LiteLLM', 'Par exemple : LiteLLM')}" /></label>` : ''}
             <label class="field"><span>${T('Address', 'Adresse')}</span><input type="url" class="p-url" spellcheck="false" placeholder="${esc(p.baseUrl || 'http://localhost:4000/v1')}" /></label>
@@ -72,7 +78,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
             </div>
             <p class="hint p-hint">${esc(HINTS[mode][p.id]).replaceAll('{origin}', esc(origin))}</p>
           </div>
-        </fieldset>`,
+        </div>`,
         ).join('')}
       </div>
       <label class="field default-model"><span>${T('Assistant model', 'Modèle de l\'assistant')}</span><select id="options-default"></select></label>
@@ -93,14 +99,17 @@ export function createOptionsDialog({ mode, test, onSave }) {
 
   let draft = null
   let serverModels = []
-  const blocks = new Map([...dialog.querySelectorAll('.provider')].map((el) => [el.dataset.id, el]))
+  const blocks = new Map([...dialog.querySelectorAll('.provider:not(.server-block)')].map((el) => [el.dataset.id, el]))
+  const serverBlock = dialog.querySelector('.server-block')
+  const providerSelect = dialog.querySelector('#options-provider')
+  // Choix « Modèles du serveur » : seulement si le serveur en propose (version docker).
+  const serverOption = new Option(T('Server models', 'Modèles du serveur'), 'server')
   const defaultSelect = dialog.querySelector('#options-default')
   const remember = dialog.querySelector('#options-remember')
 
   const read = (id) => {
     const el = blocks.get(id)
     const s = draft.providers[id]
-    s.enabled = el.querySelector('.p-enabled').checked
     s.baseUrl = el.querySelector('.p-url').value.trim()
     s.apiKey = el.querySelector('.p-key').value.trim()
     const label = el.querySelector('.p-label')
@@ -126,7 +135,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
   }
 
   function renderDefault() {
-    const options = [...serverModels.map((m) => ({ ...m, providerLabel: `${m.providerLabel} ${T('(server)', '(serveur)')}` })), ...userModels(draft)]
+    const options = draft.active === 'server' ? serverModels : userModels(draft)
     defaultSelect.replaceChildren()
     const groups = new Map()
     for (const m of options) {
@@ -139,7 +148,7 @@ export function createOptionsDialog({ mode, test, onSave }) {
       }
       group.append(new Option(m.label, m.id))
     }
-    if (!options.length) defaultSelect.append(new Option(T('No model yet: turn on a provider and test its connection', 'Aucun modèle pour l\'instant : activez un fournisseur et testez sa connexion'), ''))
+    if (!options.length) defaultSelect.append(new Option(T('No model yet: test the connection of the provider', 'Aucun modèle pour l\'instant : testez la connexion du fournisseur'), ''))
     defaultSelect.value = options.some((m) => m.id === draft.defaultModel) ? draft.defaultModel : options[0]?.id || ''
     defaultSelect.disabled = !options.length
   }
@@ -147,12 +156,10 @@ export function createOptionsDialog({ mode, test, onSave }) {
   function renderBlock(id) {
     const el = blocks.get(id)
     const s = draft.providers[id]
-    el.querySelector('.p-enabled').checked = s.enabled
     el.querySelector('.p-url').value = s.baseUrl
     el.querySelector('.p-key').value = s.apiKey
     const label = el.querySelector('.p-label')
     if (label) label.value = s.label
-    el.classList.toggle('on', s.enabled)
     showStatus(id)
     renderModels(id)
   }
@@ -202,13 +209,12 @@ export function createOptionsDialog({ mode, test, onSave }) {
     }
   }
 
-  // État d'un bloc activé : connexion déjà testée, ou test à faire avant que ses modèles
+  // État d'un bloc : connexion déjà testée, ou test à faire avant que ses modèles
   // soient proposés.
   function showStatus(id) {
     const el = blocks.get(id)
     const s = draft.providers[id]
     const result = el.querySelector('.p-result')
-    if (!s.enabled) return showResult(result, null, '')
     if (s.verified) showResult(result, true, T('Connection tested.', 'Connexion testée.'))
     else showResult(result, null, T('Test the connection to offer its models.', 'Testez la connexion pour proposer ses modèles.'))
   }
@@ -218,13 +224,20 @@ export function createOptionsDialog({ mode, test, onSave }) {
     el.className = `p-result${ok === true ? ' ok' : ok === false ? ' failed' : ''}`
   }
 
+  // Affiche le bloc du fournisseur actif, et lui seul.
+  function showActive() {
+    providerSelect.value = draft.active
+    serverBlock.hidden = draft.active !== 'server'
+    for (const [id, el] of blocks) el.hidden = id !== draft.active
+  }
+
+  providerSelect.addEventListener('change', () => {
+    draft.active = providerSelect.value
+    showActive()
+    renderDefault()
+  })
+
   for (const [id, el] of blocks) {
-    el.querySelector('.p-enabled').addEventListener('change', (e) => {
-      read(id)
-      el.classList.toggle('on', e.target.checked)
-      showStatus(id)
-      renderDefault()
-    })
     for (const input of el.querySelectorAll('.p-url, .p-key, .p-label')) {
       input.addEventListener('input', () => {
         read(id)
@@ -279,7 +292,13 @@ export function createOptionsDialog({ mode, test, onSave }) {
     open(settings, { server = [] } = {}) {
       draft = structuredClone(settings)
       serverModels = server
+      if (server.length) providerSelect.prepend(serverOption)
+      else serverOption.remove()
+      // Sans choix enregistré (ou avec les modèles du serveur, absents ici) : ceux du
+      // serveur s'il en a, sinon le premier fournisseur de la liste.
+      if (!draft.active || (draft.active === 'server' && !server.length)) draft.active = server.length ? 'server' : PROVIDERS[0].id
       for (const id of blocks.keys()) renderBlock(id)
+      showActive()
       remember.checked = draft.remember
       renderDefault()
       dialog.showModal()
