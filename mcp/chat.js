@@ -5,8 +5,8 @@
 // avec les mêmes outils que le serveur MCP, les exécute dans cet onglet par le
 // pont WebSocket, et renvoie au fil de l'eau le texte et les outils appelés.
 //
-// Fournisseurs : Mistral, Anthropic (API Claude) et toute API compatible OpenAI.
-// Les clés restent ici, côté serveur (MISTRAL_API_KEY, ANTHROPIC_API_KEY, OPENAI_API_KEY).
+// Fournisseurs : Anthropic (API Claude), toute API compatible OpenAI, et Mistral.
+// Les clés restent ici, côté serveur (ANTHROPIC_API_KEY, OPENAI_API_KEY, MISTRAL_API_KEY).
 
 import Anthropic from '@anthropic-ai/sdk'
 import { randomUUID } from 'node:crypto'

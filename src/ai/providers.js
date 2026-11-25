@@ -4,20 +4,8 @@
 // Ce module n'importe rien : il utilise le fetch de l'environnement.
 
 // format : « anthropic » (API Claude) ou « openai » (route /chat/completions).
-// Mistral vient en premier, devant les fournisseurs américains.
+// Ordre de la liste : Anthropic, OpenAI, Mistral, Ollama, puis les serveurs compatibles.
 export const PROVIDERS = [
-  {
-    id: 'mistral',
-    label: 'Mistral',
-    format: 'openai',
-    baseUrl: 'https://api.mistral.ai/v1',
-    needsKey: true,
-    keyHint: '',
-    models: [
-      { id: 'mistral-large-latest', label: 'Mistral Large' },
-      { id: 'mistral-small-latest', label: 'Mistral Small' },
-    ],
-  },
   {
     id: 'anthropic',
     label: 'Anthropic',
@@ -32,6 +20,18 @@ export const PROVIDERS = [
     ],
   },
   { id: 'openai', label: 'OpenAI', format: 'openai', baseUrl: 'https://api.openai.com/v1', needsKey: true, keyHint: 'sk-…', models: [] },
+  {
+    id: 'mistral',
+    label: 'Mistral',
+    format: 'openai',
+    baseUrl: 'https://api.mistral.ai/v1',
+    needsKey: true,
+    keyHint: '',
+    models: [
+      { id: 'mistral-large-latest', label: 'Mistral Large' },
+      { id: 'mistral-small-latest', label: 'Mistral Small' },
+    ],
+  },
   { id: 'ollama', label: 'Ollama', format: 'openai', baseUrl: 'http://localhost:11434/v1', needsKey: false, models: [] },
   { id: 'compat', label: 'OpenAI-compatible', format: 'openai', baseUrl: '', needsKey: false, models: [], customLabel: true },
 ]

@@ -45,8 +45,8 @@ docker compose -f docker-compose.image.yml up -d
 
 Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` fait la même chose.
 
-- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Mistral,
-  Anthropic, OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
+- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Anthropic,
+  OpenAI, Mistral, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
   commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
   Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
   seul l'assistant est éteint.
@@ -288,7 +288,7 @@ dans le navigateur avant d'être publié. Les relectures de développeurs expér
 appréciées.
 
 **Testeurs recherchés pour les fournisseurs d'IA.** L'assistant est essayé au quotidien avec les
-modèles Anthropic seulement. Mistral, OpenAI, Ollama et les serveurs compatibles OpenAI sont pris en
+modèles Anthropic seulement. OpenAI, Mistral, Ollama et les serveurs compatibles OpenAI sont pris en
 charge d'après leur documentation, mais rarement essayés pour de vrai. Si vous utilisez l'un d'eux,
 tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues)
 ou une [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) avec le fournisseur,
