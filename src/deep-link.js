@@ -5,7 +5,14 @@
 // encore, sinon il revient à la racine et nettoie l'adresse.
 // D'après l'exemple deep-linking de bpmn-io/bpmn-js-examples.
 
-const readId = () => decodeURIComponent(location.hash.slice(1))
+// Un hash mal encodé (#%) se lit comme un hash vide : il ne doit pas bloquer l'import.
+function readId() {
+  try {
+    return decodeURIComponent(location.hash.slice(1))
+  } catch {
+    return ''
+  }
+}
 
 function urlFor(id) {
   return location.pathname + location.search + (id ? '#' + encodeURIComponent(id) : '')
