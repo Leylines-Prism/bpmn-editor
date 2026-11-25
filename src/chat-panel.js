@@ -149,6 +149,11 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.id = 'btn-chat'
   toggle.type = 'button'
   toggle.textContent = T('AI assistant', 'Assistant IA')
+  // Le modèle choisi, en petit à côté du nom (masqué sur écran étroit).
+  const toggleModel = document.createElement('span')
+  toggleModel.className = 'chat-btn-model'
+  toggleModel.hidden = true
+  toggle.append(toggleModel)
   // À droite de la barre, juste après le badge MCP (version docker), ou en tête
   // du groupe de droite quand il n'y a pas de badge (version en ligne).
   const badge = document.getElementById('mcp-status')
@@ -243,6 +248,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     modelName.textContent = model ? T(`Model: ${model.label}`, `Modèle : ${model.label}`) + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
     modelName.title = T('Change it in Options', 'À changer dans Options')
     modelBar.hidden = !model
+    toggleModel.textContent = model ? model.label : ''
+    toggleModel.hidden = !model
+    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
   }
   let serverDefault = null
 
@@ -294,6 +302,21 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add('notice', T('Server unreachable. Start it with: cd mcp && npm start', 'Serveur injoignable. Lancez-le avec : cd mcp && npm start'))
     }
   }
+
+  // Dès le chargement, le bouton affiche le modèle choisi, sans attendre
+  // l'ouverture du panneau (les messages d'accueil viennent à l'ouverture).
+  async function showModelEarly() {
+    if (mode !== 'online') {
+      try {
+        const status = await (await fetch(chatUrl)).json()
+        if (checked) return
+        serverModels = Array.isArray(status.models) ? status.models : []
+        serverDefault = status.model
+      } catch { return }
+    }
+    fillModels()
+  }
+  showModelEarly()
 
   toggle.addEventListener('click', () => {
     const open = panel.classList.toggle('open')
