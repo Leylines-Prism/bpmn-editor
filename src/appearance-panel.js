@@ -57,7 +57,34 @@ function hasAppearance(element) {
 // pinceau du menu contextuel.
 const SHAPE_ROW = [0, 1, 2, 6, 9, 11, 13, 15].map((i) => COLORS[i])
 const TEXT_ROW = [0, 1, 2, 3, 7, 12, 14, 16].map((i) => TEXT_COLORS[i])
-const TEXT_ROW_KEYS = new Set(TEXT_ROW.map((c) => c.color))
+
+// Seconde ligne de la forme : fonds vifs, contour plus foncé de la même teinte
+// et texte blanc (au moins 5:1 avec le blanc), posés en une seule étape.
+const VIVID_TEXT = '#FFFFFF'
+const VIVID_ROW = [
+  { label: T('Vivid blue', 'Bleu vif'), fill: '#1565C0', stroke: '#0C386A' },
+  { label: T('Vivid green', 'Vert vif'), fill: '#2E7D32', stroke: '#19451C' },
+  { label: T('Vivid red', 'Rouge vif'), fill: '#C62828', stroke: '#6D1616' },
+  { label: T('Raspberry', 'Framboise'), fill: '#AD1457', stroke: '#5F0B30' },
+  { label: T('Vivid purple', 'Violet vif'), fill: '#6A1B9A', stroke: '#3A0F55' },
+  { label: T('Vivid teal', 'Turquoise vif'), fill: '#00695C', stroke: '#003A33' },
+  { label: T('Rust', 'Rouille'), fill: '#BF360C', stroke: '#691E07' },
+  { label: T('Charcoal', 'Anthracite'), fill: '#37474F', stroke: '#1E272B' },
+]
+
+// Seconde ligne du texte : quatre couleurs foncées pour les fonds clairs (au
+// moins 6.6:1 sur blanc), quatre claires pour les fonds foncés (au moins 13:1 sur noir).
+const CONTRAST_ROW = [
+  { label: T('Black', 'Noir'), color: '#000000' },
+  { label: T('Navy', 'Bleu nuit'), color: '#0D47A1' },
+  { label: T('Forest green', 'Vert forêt'), color: '#1B5E20' },
+  { label: T('Dark red', 'Rouge sombre'), color: '#B71C1C' },
+  { label: T('White', 'Blanc'), color: '#FFFFFF' },
+  { label: T('Bright yellow', 'Jaune vif'), color: '#FFEB3B' },
+  { label: T('Bright cyan', 'Cyan vif'), color: '#00E5FF' },
+  { label: T('Neon green', 'Vert fluo'), color: '#76FF03' },
+]
+const TEXT_ROW_KEYS = new Set([...TEXT_ROW, ...CONTRAST_ROW].map((c) => c.color))
 
 // ── Pastille ────────────────────────────────────────────────────────────────
 
@@ -155,6 +182,22 @@ function registerPasteStyle(commandStack, modeling) {
   })
 }
 registerPasteStyle.$inject = ['commandStack', 'modeling']
+
+// Couleurs de la forme et, si besoin, couleur du texte, en une seule étape
+// d'annulation. textColor : une couleur, null pour la retirer, undefined pour
+// ne pas y toucher.
+function registerShapeColor(commandStack, modeling) {
+  commandStack.registerHandler('appearance.setShapeColor', function () {
+    this.preExecute = ({ elements, colors, textColor }) => {
+      modeling.setColor(elements, colors)
+      const texts = textColor === undefined ? [] : elements.filter(hasText)
+      if (texts.length) commandStack.execute('element.setLabelColor', { elements: texts, colors: texts.map(() => textColor) })
+    }
+    this.execute = () => []
+    this.revert = () => []
+  })
+}
+registerShapeColor.$inject = ['commandStack', 'modeling']
 
 function pasteStyle(commandStack, elements, style = copied) {
   const targets = pasteTargets(elements)
@@ -285,6 +328,7 @@ const ROLLER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="
 
 function ShapeColorEntry({ element, id }) {
   const modeling = useService('modeling')
+  const commandStack = useService('commandStack')
   const target = targetOf(element)
   const edge = isConnection(target)
   const fill = fillOf(target)
@@ -292,10 +336,25 @@ function ShapeColorEntry({ element, id }) {
   const set = (colors) => modeling.setColor([target], colors)
   const swatches = SHAPE_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.fill} stroke=${c.stroke}
     active=${c.fill ? upper(c.fill) === fill && upper(c.stroke) === stroke : !fill && !stroke}
-    onClick=${() => set({ fill: c.fill, stroke: c.stroke })} />`)
+    onClick=${() => setPale(c)} />`)
+  // Un fond vif met le texte en blanc. Revenir à un fond pâle retire ce blanc,
+  // illisible sur fond clair. Un flux n'a pas de fond : son libellé reste tel quel.
+  const whiteText = upper(textColorOf(target)) === VIVID_TEXT
+  const setPale = (c) => commandStack.execute('appearance.setShapeColor', {
+    elements: [target], colors: { fill: c.fill, stroke: c.stroke }, textColor: whiteText && !edge ? null : undefined,
+  })
+  const setVivid = (c) => commandStack.execute('appearance.setShapeColor', {
+    elements: [target], colors: { fill: c.fill, stroke: c.stroke }, textColor: edge ? undefined : VIVID_TEXT,
+  })
+  const vivid = VIVID_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.fill} stroke=${c.stroke} text=${edge ? undefined : VIVID_TEXT}
+    active=${c.fill === fill && c.stroke === stroke} onClick=${() => setVivid(c)} />`)
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
+    <div class="appearance-used">
+      <div class="appearance-sublabel">${T('Vivid', 'Vives')}</div>
+      <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
+    </div>
     <${UsedShapeColors} fill=${fill} stroke=${stroke} set=${set} />
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
@@ -371,6 +430,13 @@ function TextStyleEntry({ element, id }) {
     <div class="appearance-swatches" role="group" aria-label=${T('Text color', 'Couleur du texte')}>
       ${TEXT_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.color} stroke="var(--line-strong)" text=${readableOn(c.color)}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
+    </div>
+    <div class="appearance-used">
+      <div class="appearance-sublabel">${T('High contrast', 'Fort contraste')}</div>
+      <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
+        ${CONTRAST_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.color} stroke="var(--line-strong)" text=${readableOn(c.color)}
+          active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
+      </div>
     </div>
     <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
@@ -570,7 +636,7 @@ AppearanceContextPad.prototype.getContextPadEntries = function (element) {
 }
 
 export const AppearancePanelModule = {
-  __init__: ['appearancePropertiesProvider', 'appearanceContextPad', registerPasteStyle, trackRecentStyles],
+  __init__: ['appearancePropertiesProvider', 'appearanceContextPad', registerPasteStyle, registerShapeColor, trackRecentStyles],
   appearancePropertiesProvider: ['type', AppearancePropertiesProvider],
   appearanceContextPad: ['type', AppearanceContextPad],
 }
