@@ -35,3 +35,9 @@ test('an unknown CHAT_MODEL keeps the first model and gives a warning', () => {
   assert.equal(defaultKey, 'mistral:small')
   assert.equal(warnings.length, 1)
 })
+
+test('the menu lists Anthropic, then OpenAI, then Mistral', () => {
+  const { models, defaultKey } = buildCatalog({ MISTRAL_API_KEY: 'k', MISTRAL_MODELS: 'small', OPENAI_MODELS: 'gpt', ANTHROPIC_API_KEY: 'k', ANTHROPIC_MODELS: 'big' })
+  assert.deepEqual(models.map((m) => m.provider), ['anthropic', 'openai', 'mistral'])
+  assert.equal(defaultKey, 'anthropic:big')
+})

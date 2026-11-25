@@ -11,16 +11,18 @@ import { APP_VERSION } from './site-channel.js'
 
 const HINTS = {
   online: {
-    mistral: T('Create an API key at console.mistral.ai. Calls go straight from this page to Mistral. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Les appels partent directement de cette page vers Mistral. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
     anthropic: T('Create an API key at console.anthropic.com. Calls go straight from this page to Anthropic.', 'Créez une clé API sur console.anthropic.com. Les appels partent directement de cette page vers Anthropic.'),
     openai: T('Create an API key at platform.openai.com. OpenAI does not always allow calls made from a web page: if "Test" fails, use the docker version.', "Créez une clé API sur platform.openai.com. OpenAI n'autorise pas toujours les appels faits depuis une page : si « Tester » échoue, utilisez la version docker."),
+    mistral: T('Create an API key at console.mistral.ai. Calls go straight from this page to Mistral. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Les appels partent directement de cette page vers Mistral. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
+    xai: T('Create an API key at console.x.ai. Calls go straight from this page to xAI. Grok reads PNG and JPEG images, not PDF files.', "Créez une clé API sur console.x.ai. Les appels partent directement de cette page vers xAI. Grok lit les images PNG et JPEG, pas les PDF."),
     ollama: T('Ollama must allow this page: start it with OLLAMA_ORIGINS={origin}. Pick a model that supports tool calls.', 'Ollama doit autoriser cette page : lancez-le avec la variable OLLAMA_ORIGINS={origin}. Choisissez un modèle qui sait appeler des outils.'),
     compat: T('LiteLLM, LM Studio, vLLM… The server must allow the origin {origin} (CORS setting). An https page can only call an https address, or localhost.', "LiteLLM, LM Studio, vLLM… Le serveur doit autoriser l'origine {origin} (réglage CORS). Une page en https ne peut appeler qu'une adresse en https, ou localhost."),
   },
   server: {
-    mistral: T('Create an API key at console.mistral.ai. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
     anthropic: T('Create an API key at console.anthropic.com.', 'Créez une clé API sur console.anthropic.com.'),
     openai: T('Create an API key at platform.openai.com.', 'Créez une clé API sur platform.openai.com.'),
+    mistral: T('Create an API key at console.mistral.ai. For processing in the European Union, use the address https://api.eu.mistral.ai/v1 (billed 10% more).', "Créez une clé API sur console.mistral.ai. Pour un traitement dans l'Union européenne, utilisez l'adresse https://api.eu.mistral.ai/v1 (facturée 10 % de plus)."),
+    xai: T('Create an API key at console.x.ai. Grok reads PNG and JPEG images, not PDF files.', 'Créez une clé API sur console.x.ai. Grok lit les images PNG et JPEG, pas les PDF.'),
     ollama: T('Address as seen from the server. If it runs in docker, try http://host.docker.internal:11434/v1. Pick a model that supports tool calls.', "Adresse vue depuis le serveur. S'il tourne dans docker, essayez http://host.docker.internal:11434/v1. Choisissez un modèle qui sait appeler des outils."),
     compat: T('LiteLLM, LM Studio, vLLM… Address as seen from the server.', 'LiteLLM, LM Studio, vLLM… Adresse vue depuis le serveur.'),
   },

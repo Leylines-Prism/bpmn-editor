@@ -332,16 +332,18 @@
             <thead><tr><th>Provider</th><th>What to know</th></tr></thead>
             <tbody>
               <!-- online -->
-              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>The simplest in this version: create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
               <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>. OpenAI does not always accept calls made from a web page: if "Test" fails, this provider will not work here.</td></tr>
+              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. Calls go straight from this page. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
+              <tr><td>xAI (Grok)</td><td>Create a key at <a href="https://console.x.ai" target="_blank" rel="noopener">console.x.ai</a>. Calls go straight from this page. Grok reads PNG and JPEG images, not PDF files. Its models always think before answering, which makes them slower.</td></tr>
               <tr><td>Ollama</td><td>Free models, on your own computer. Ollama must be started with the <code>OLLAMA_ORIGINS</code> variable set to this site's address (Options gives you the exact value). Pick a model that supports tool calls.</td></tr>
               <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… The server must use https (or localhost) and allow this site's address in its CORS setting.</td></tr>
               <!-- /online -->
               <!-- docker -->
-              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
               <tr><td>Anthropic (Claude)</td><td>Create a key at <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Claude models also read images and PDFs.</td></tr>
               <tr><td>OpenAI</td><td>Create a key at <a href="https://platform.openai.com" target="_blank" rel="noopener">platform.openai.com</a>.</td></tr>
+              <tr><td>Mistral</td><td>Create a key at <a href="https://console.mistral.ai" target="_blank" rel="noopener">console.mistral.ai</a>. For processing in the European Union, change the address to <code>https://api.eu.mistral.ai/v1</code> (billed 10% more). Mistral models also read images and PDFs.</td></tr>
+              <tr><td>xAI (Grok)</td><td>Create a key at <a href="https://console.x.ai" target="_blank" rel="noopener">console.x.ai</a>. Grok reads PNG and JPEG images, not PDF files. Its models always think before answering, which makes them slower.</td></tr>
               <tr><td>Ollama</td><td>Free models, on your own machine. Enter its address as the server sees it: if it runs in Docker, try <code>http://host.docker.internal:11434/v1</code>. Pick a model that supports tool calls.</td></tr>
               <tr><td>OpenAI-compatible</td><td>LiteLLM, LM Studio, vLLM… Enter the address as the server sees it.</td></tr>
               <!-- /docker -->
@@ -349,7 +351,7 @@
           </table>
         </div>
         <p>Select the provider at the top of the window, paste the key, click <span class="ui">Test</span>, then choose the model: the list fills in once the connection is tested. One provider is used at a time, and switching does not erase the keys of the others. The panel shows which model is in use.</p>
-        <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Assistant options window with the Mistral provider chosen: address, API key, models, Test and List models buttons." loading="lazy" /><figcaption>Assistant options: Mistral chosen, waiting for the key.</figcaption></figure>
+        <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Assistant options window with the Anthropic provider chosen: address, API key, models, Test and List models buttons." loading="lazy" /><figcaption>Assistant options: Mistral chosen, waiting for the key.</figcaption></figure>
 
         <h3>2. Describe the process</h3>
         <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The assistant answers in the language of your message. For example:</p>
@@ -491,7 +493,7 @@
         <!-- online -->
         <details class="faq">
           <summary>"Test" fails with OpenAI.</summary>
-          <p>OpenAI sometimes refuses calls made directly from a web page. Use Mistral, Anthropic or Ollama on this site, or install the Docker version, which goes through its own server.</p>
+          <p>OpenAI sometimes refuses calls made directly from a web page. Use Anthropic, Mistral, xAI or Ollama on this site, or install the Docker version, which goes through its own server.</p>
         </details>
         <!-- /online -->
         <!-- docker -->

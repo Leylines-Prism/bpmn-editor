@@ -44,8 +44,8 @@ docker compose -f docker-compose.image.yml up -d
 
 Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` does the same.
 
-- **AI assistant**: create a `.env` file in the same folder with your API key (Mistral, Anthropic,
-  OpenAI, or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
+- **AI assistant**: create a `.env` file in the same folder with your API key (Anthropic, OpenAI,
+  Mistral, or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
   again. All the variables are listed in [mcp/.env.example](mcp/.env.example). You can also enter a
   key in the assistant's Options window. Without a key, the editor works; only the assistant is off.
 - **Your files** (My diagrams on the server, exports) are in the `bpmn-data` folder, next to
@@ -268,7 +268,7 @@ assistance, using Claude Code and other AI models, and each change is tried in t
 it is published. Reviews from experienced developers are especially appreciated.
 
 **Testers wanted for AI providers.** The assistant is tried day to day with Anthropic models only.
-Mistral, OpenAI, Ollama and OpenAI-compatible servers are supported from their documentation, but
+OpenAI, Mistral, xAI (Grok), Ollama and OpenAI-compatible servers are supported from their documentation, but
 rarely tried for real. If you use one of them, any report helps, whether it works or not: open an
 [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues) or a
 [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) with the provider, the model

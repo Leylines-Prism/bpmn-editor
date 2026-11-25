@@ -4,20 +4,8 @@
 // Ce module n'importe rien : il utilise le fetch de l'environnement.
 
 // format : « anthropic » (API Claude) ou « openai » (route /chat/completions).
-// Mistral vient en premier, devant les fournisseurs américains.
+// Ordre de la liste : Anthropic, OpenAI, Mistral, xAI, Ollama, puis les serveurs compatibles.
 export const PROVIDERS = [
-  {
-    id: 'mistral',
-    label: 'Mistral',
-    format: 'openai',
-    baseUrl: 'https://api.mistral.ai/v1',
-    needsKey: true,
-    keyHint: '',
-    models: [
-      { id: 'mistral-large-latest', label: 'Mistral Large' },
-      { id: 'mistral-small-latest', label: 'Mistral Small' },
-    ],
-  },
   {
     id: 'anthropic',
     label: 'Anthropic',
@@ -32,6 +20,30 @@ export const PROVIDERS = [
     ],
   },
   { id: 'openai', label: 'OpenAI', format: 'openai', baseUrl: 'https://api.openai.com/v1', needsKey: true, keyHint: 'sk-…', models: [] },
+  {
+    id: 'mistral',
+    label: 'Mistral',
+    format: 'openai',
+    baseUrl: 'https://api.mistral.ai/v1',
+    needsKey: true,
+    keyHint: '',
+    models: [
+      { id: 'mistral-large-latest', label: 'Mistral Large' },
+      { id: 'mistral-small-latest', label: 'Mistral Small' },
+    ],
+  },
+  {
+    id: 'xai',
+    label: 'xAI (Grok)',
+    format: 'openai',
+    baseUrl: 'https://api.x.ai/v1',
+    needsKey: true,
+    keyHint: 'xai-…',
+    models: [
+      { id: 'grok-4.7', label: 'Grok 4.7' },
+      { id: 'grok-4.3', label: 'Grok 4.3' },
+    ],
+  },
   { id: 'ollama', label: 'Ollama', format: 'openai', baseUrl: 'http://localhost:11434/v1', needsKey: false, models: [] },
   { id: 'compat', label: 'OpenAI-compatible', format: 'openai', baseUrl: '', needsKey: false, models: [], customLabel: true },
 ]
@@ -69,6 +81,16 @@ export function apiErrorMessage(data) {
   return ''
 }
 
+// Adresse de l'API xAI (api.x.ai ou une variante régionale comme us.api.x.ai).
+function isXai(base) {
+  try {
+    const host = new URL(base).hostname
+    return host === 'api.x.ai' || host.endsWith('.api.x.ai')
+  } catch {
+    return false
+  }
+}
+
 export const trimUrl = (url) => String(url ?? '').trim().replace(/\/+$/, '')
 
 // Adresse http(s) valide, sans identifiants. Renvoie l'adresse nettoyée ou null.
@@ -100,7 +122,9 @@ export function authHeaders({ format, apiKey, browser = false }) {
 // Sert aussi de test de connexion : la requête ne consomme aucun crédit.
 export async function listModels({ format, baseUrl, apiKey, browser = false, signal, fetch: doFetch = fetch }) {
   const base = trimUrl(baseUrl)
-  const url = format === 'anthropic' ? `${base}/v1/models?limit=1000` : `${base}/models`
+  // xAI : /models liste aussi les modèles d'image et de vidéo, /language-models
+  // seulement ceux qui savent converser.
+  const url = format === 'anthropic' ? `${base}/v1/models?limit=1000` : isXai(base) ? `${base}/language-models` : `${base}/models`
   let res
   try {
     res = await doFetch(url, { headers: { Accept: 'application/json', ...authHeaders({ format, apiKey, browser }) }, signal })
@@ -123,6 +147,8 @@ export async function listModels({ format, baseUrl, apiKey, browser = false, sig
     // Mistral décrit les capacités de chaque modèle : on écarte ceux qui ne savent
     // pas converser ou appeler des outils (embeddings, OCR, modération…).
     .filter((m) => m?.capabilities?.completion_chat !== false && m?.capabilities?.function_calling !== false)
+    // xAI donne les sorties de chaque modèle : on garde ceux qui répondent en texte.
+    .filter((m) => !Array.isArray(m?.output_modalities) || m.output_modalities.includes('text'))
     .map((m) => ({ id: String(m.id ?? m.name ?? ''), label: String(m.display_name || m.id || m.name || '') }))
     .filter((m) => m.id)
     .sort((a, b) => a.label.localeCompare(b.label))

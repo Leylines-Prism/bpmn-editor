@@ -251,8 +251,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add(
         'notice',
         mode === 'online'
-          ? T('To start, open Options and choose a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et choisissez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
-          : T('Chat is not set up: open Options to choose a provider, or add MISTRAL_API_KEY, ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez MISTRAL_API_KEY, ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
+          ? T('To start, open Options and choose a provider: Anthropic, OpenAI, Mistral, xAI (Grok), Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et choisissez un fournisseur : Anthropic, OpenAI, Mistral, xAI (Grok), Ollama ou un serveur compatible OpenAI.')
+          : T('Chat is not set up: open Options to choose a provider, or add ANTHROPIC_API_KEY, OPENAI_MODELS or MISTRAL_API_KEY to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez ANTHROPIC_API_KEY, OPENAI_MODELS ou MISTRAL_API_KEY dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
       add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z.`)).classList.add('welcome')
@@ -532,6 +532,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     if (attachments.some((a) => !supports(caps, a.kind))) {
       add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic, OpenAI or Mistral model, or paste the text of the document.`,
         `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic, OpenAI ou Mistral, ou collez le texte du document.`))
+      return
+    }
+    // xAI n'accepte que les images PNG et JPEG.
+    if (caps.providerId === 'xai' && attachments.some((a) => a.kind === 'image' && a.mediaType !== 'image/png' && a.mediaType !== 'image/jpeg')) {
+      add('error', T(`${model.providerLabel || model.label} only reads PNG and JPEG images. Convert the image, or take a screenshot of it.`,
+        `${model.providerLabel || model.label} ne lit que les images PNG et JPEG. Convertissez l'image, ou faites-en une capture d'écran.`))
       return
     }
     input.value = ''
