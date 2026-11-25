@@ -148,7 +148,16 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.textContent = T('AI assistant', 'Assistant IA')
+  // « Assistant IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
+  const toggleFull = document.createElement('span')
+  toggleFull.className = 'chat-btn-full'
+  toggleFull.textContent = T('AI assistant', 'Assistant IA')
+  const toggleShort = document.createElement('span')
+  toggleShort.className = 'chat-btn-short'
+  toggleShort.textContent = T('AI', 'IA')
+  toggleShort.setAttribute('aria-hidden', 'true')
+  toggle.append(toggleFull, toggleShort)
+  toggle.setAttribute('aria-label', T('AI assistant', 'Assistant IA'))
   // Le modèle choisi, en petit à côté du nom (masqué sur écran étroit).
   const toggleModel = document.createElement('span')
   toggleModel.className = 'chat-btn-model'
@@ -250,6 +259,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     modelBar.hidden = !model
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
+    toggle.classList.toggle('has-model', !!model)
     toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
   }
   let serverDefault = null
