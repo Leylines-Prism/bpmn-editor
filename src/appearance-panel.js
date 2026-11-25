@@ -423,24 +423,8 @@ function ShapeColorEntry({ element, id }) {
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
-    <${UsedShapeColors} fill=${fill} stroke=${stroke} set=${set} />
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
-  </div>`
-}
-
-// Couleurs de forme réglées ailleurs dans le diagramme, sur une ligne.
-function UsedShapeColors({ fill, stroke, set }) {
-  const elementRegistry = useService('elementRegistry')
-  const used = usedIn(elementRegistry, 'shape')
-  if (!used.length) return null
-  const label = USED_LABEL()
-  return html`<div class="appearance-used">
-    <div class="appearance-sublabel">${label}</div>
-    <div class="appearance-swatches" role="group" aria-label=${label}>
-      ${used.map(({ key, value }) => html`<${Swatch} key=${key} title=${shapeTitle(value)} fill=${value.fill} stroke=${value.stroke}
-        active=${upper(value.fill) === fill && upper(value.stroke) === stroke} onClick=${() => set({ fill: value.fill, stroke: value.stroke })} />`)}
-    </div>
   </div>`
 }
 
