@@ -262,8 +262,18 @@
           <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Open</span>, then <span class="ui">.bpmn or .xml file…</span>, opens a file from your disk.</li>
           <li><span class="ui">Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
           <li>You can also drop a .bpmn file onto the page.</li>
+          <li><span class="ico" data-icon="compare" aria-hidden="true"></span><span class="ui">Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no diagram layout, the editor computes one when it opens.</p>
+        <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
+        <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="ui">Open</span>, then <span class="ui">Compare with a file…</span>, or with the <span class="ui">Before / after</span> button on the assistant's pill.</p>
+        <ul>
+          <li>In green, what was added (on the right). In red, what was removed (on the left). In orange, what was changed, on both sides.</li>
+          <li>In blue, on request, what only moved or changed color. Click a chip at the top to show or hide a kind of difference.</li>
+          <li>The list on the right details each difference, for example "Name: Approve → Check the receipts". A click centers both views on the element.</li>
+          <li>Both views scroll and zoom together. <kbd>Esc</kbd> closes the window.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-avant-apres.webp" width="1440" height="720" alt="Before and after window: the diagram before the assistant on the left, the current diagram on the right, with an added element in green, a removed one in red, a changed one in orange, and the list of differences." loading="lazy" /><figcaption>The Before and after window, opened from the assistant's pill.</figcaption></figure>
         <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Export</h3>
         <div class="table-wrap">
           <table>
@@ -324,6 +334,8 @@
         <ul>
           <li>When the assistant changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click the pill to show the outlines, click again to hide them.</li>
           <li>Your own edits and automatic layout are never marked. <kbd>Ctrl</kbd>+<kbd>Z</kbd> updates the marking.</li>
+          <li><span class="ui">Before / after</span>, on the pill, compares the diagram from before the answer with the current one, side by side (see <a href="#compare">Compare two versions</a>).</li>
+          <li><span class="ui">Undo</span>, on the pill, reverts everything the assistant changed since your message in one step, layout included. If you edited the diagram in the meantime, the editor asks you to confirm, since your edits are undone too. <kbd>Ctrl</kbd>+<kbd>Y</kbd> brings the changes back.</li>
           <li>The marking is cleared by the pill's cross, by your next message, or when another diagram is opened. It never appears in the file or in exports.</li>
         </ul>
 
@@ -413,7 +425,7 @@
         </details>
         <details class="faq">
           <summary>The assistant drew something unexpected.</summary>
-          <p>Undo with <kbd>Ctrl</kbd>+<kbd>Z</kbd>, or ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>
+          <p>The pill's <span class="ui">Undo</span> button reverts the whole answer at once, <kbd>Ctrl</kbd>+<kbd>Z</kbd> one change at a time. You can also ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>
         </details>
         <details class="faq">
           <summary>Can I open my files in another BPMN tool?</summary>

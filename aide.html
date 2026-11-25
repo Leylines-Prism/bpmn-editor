@@ -262,8 +262,18 @@
           <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Ouvrir</span>, puis <span class="ui">Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
           <li><span class="ui">Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
           <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
+          <li><span class="ico" data-icon="compare" aria-hidden="true"></span><span class="ui">Comparer avec un fichier…</span> montre les différences entre un fichier de votre disque et le diagramme ouvert, sans rien changer (voir ci-dessous).</li>
         </ul>
         <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, l'éditeur la calcule à l'ouverture.</p>
+        <h3 id="comparer"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer deux versions</h3>
+        <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="ui">Ouvrir</span>, puis <span class="ui">Comparer avec un fichier…</span>, ou par le bouton <span class="ui">Avant / après</span> de la pilule de l'assistant.</p>
+        <ul>
+          <li>En vert, ce qui a été ajouté (à droite). En rouge, ce qui a été supprimé (à gauche). En orange, ce qui a été modifié, des deux côtés.</li>
+          <li>En bleu, sur demande, ce qui a seulement bougé ou changé de couleur. Cliquez sur une pastille du haut pour afficher ou masquer un type de différence.</li>
+          <li>La liste de droite détaille chaque différence, par exemple « Nom : Valider la note → Vérifier les justificatifs ». Un clic centre les deux vues sur l'élément.</li>
+          <li>Les deux vues défilent et zooment ensemble. <kbd>Échap</kbd> ferme la fenêtre.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-avant-apres.webp" width="1440" height="720" alt="Fenêtre Avant / après : le diagramme d'avant l'assistant à gauche, le diagramme actuel à droite, avec un élément ajouté en vert, un supprimé en rouge, un modifié en orange, et la liste des différences." loading="lazy" /><figcaption>La fenêtre Avant / après, ouverte depuis la pilule de l'assistant.</figcaption></figure>
         <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</h3>
         <div class="table-wrap">
           <table>
@@ -324,6 +334,8 @@
         <ul>
           <li>Quand l'assistant change beaucoup d'un coup, par exemple un diagramme dessiné de zéro, aucun contour n'est posé : la pilule seule résume. Un clic sur la pilule affiche les contours, un second les masque.</li>
           <li>Vos retouches à la main et la mise en page automatique ne sont jamais marquées. <kbd>Ctrl</kbd>+<kbd>Z</kbd> met le marquage à jour.</li>
+          <li><span class="ui">Avant / après</span>, sur la pilule, compare le diagramme d'avant la réponse avec le diagramme actuel, côte à côte (voir <a href="#comparer">Comparer deux versions</a>).</li>
+          <li><span class="ui">Annuler</span>, sur la pilule, défait d'un coup tout ce que l'assistant a changé depuis votre message, mise en page comprise. Si vous avez retouché le diagramme entre-temps, l'éditeur demande confirmation, car vos retouches partent aussi. <kbd>Ctrl</kbd>+<kbd>Y</kbd> ramène les changements.</li>
           <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
         </ul>
 
@@ -413,7 +425,7 @@
         </details>
         <details class="faq">
           <summary>L'assistant a dessiné quelque chose d'inattendu.</summary>
-          <p>Annulez avec <kbd>Ctrl</kbd>+<kbd>Z</kbd>, ou demandez-lui la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
+          <p>Le bouton <span class="ui">Annuler</span> de la pilule défait toute la réponse d'un coup, <kbd>Ctrl</kbd>+<kbd>Z</kbd> un changement à la fois. Vous pouvez aussi lui demander la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
         </details>
         <details class="faq">
           <summary>Puis-je ouvrir mes fichiers dans un autre outil BPMN ?</summary>

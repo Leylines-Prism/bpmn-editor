@@ -207,13 +207,16 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, token
   simulation, BPMN rule checking, grid, minimap, and the Process panel for the properties of each
   element.
+- **Compare**: two versions side by side, with what was added, removed or changed in color and the
+  list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
   picker, and text formatting (bold, italic, underline, size, font, "Auto" for readable text on dark
   fills). The Process panel copies a style onto other elements and reuses those already in the
   diagram in one click.
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
   images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
-  canvas, and a pill sums up the changes.
+  canvas, a pill sums up the changes, and one click shows the before and after or undoes the whole
+  answer.
 - **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer
   screen: on a phone, it is mostly for viewing a diagram.
 

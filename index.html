@@ -54,7 +54,10 @@
     <div id="open-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-open" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
       <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Paste XML…</button>
+      <div class="menu-sep" role="separator"></div>
+      <button class="btn" id="btn-compare-file" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
+    <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
     <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">

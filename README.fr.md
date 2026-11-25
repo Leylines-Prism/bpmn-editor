@@ -219,13 +219,16 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
+- **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
+  et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
   toutes prêtes ou le sélecteur de couleur du système, et la mise en forme du texte (gras, italique,
   souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
   Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
   déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
-  entouré sur le canevas, et une pilule résume les changements.
+  entouré sur le canevas, une pilule résume les changements, et un clic montre l'avant et l'après ou
+  annule toute la réponse.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
   Pensé pour un écran d'ordinateur : sur un téléphone, il sert surtout à regarder un diagramme.
 

@@ -11,6 +11,7 @@ const FR = {
   '#btn-open-menu': { text: 'Ouvrir' },
   '#btn-open': { text: 'Fichier .bpmn ou .xml…' },
   '#btn-import-xml': { text: 'Coller du XML…' },
+  '#btn-compare-file': { text: 'Comparer avec un fichier…' },
   '#btn-undo': { title: 'Annuler (Ctrl+Z)', 'aria-label': 'Annuler' },
   '#btn-redo': { title: 'Rétablir (Ctrl+Y)', 'aria-label': 'Rétablir' },
   '#btn-export': { text: 'Exporter' },

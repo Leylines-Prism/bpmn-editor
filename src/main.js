@@ -260,6 +260,27 @@ setupXmlDialog({
 })
 setupFileDrop({ onFile: importFile })
 
+// Ouvrir > Comparer avec un fichier : le fichier choisi à gauche, le diagramme ouvert à droite.
+document.getElementById('btn-compare-file').addEventListener('click', () => {
+  document.getElementById('compare-input').click()
+})
+document.getElementById('compare-input').addEventListener('change', async (e) => {
+  const file = e.target.files[0]
+  e.target.value = ''
+  if (!file) return
+  if (!/\.(bpmn|xml)$/i.test(file.name)) {
+    alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
+    return
+  }
+  const { xml } = await modeler.saveXML({ format: true })
+  const { openCompare } = await import('./compare.js')
+  await openCompare({
+    title: T('Compare', 'Comparer'),
+    before: { xml: await file.text(), title: file.name },
+    after: { xml, title: T('Open diagram', 'Diagramme ouvert') + ' · ' + baseName() },
+  })
+})
+
 // Adresse du serveur mcp/ (pont, chat, diagrammes) : en développement, dans l'image
 // docker (adresse relative « /bridge », relayée par nginx), ou VITE_MCP_BRIDGE_URL.
 // Pas de serveur dans la version en ligne.
