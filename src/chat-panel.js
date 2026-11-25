@@ -113,7 +113,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span>${T('AI assistant', 'Assistant IA')}</span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-options" hidden>
       <span id="chat-model-name"></span>
@@ -180,6 +180,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const sendButton = panel.querySelector('#chat-send')
   const modelBar = panel.querySelector('#chat-options')
   const modelName = panel.querySelector('#chat-model-name')
+  const titleName = panel.querySelector('.chat-title-name')
+  const titleModel = panel.querySelector('.chat-title-model')
 
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
@@ -260,6 +262,11 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
     toggle.classList.toggle('has-model', !!model)
+    // En-tête du panneau : « Assistant » et le modèle dessous, ou « Assistant IA » sans modèle.
+    titleName.textContent = model ? T('Assistant', 'Assistant') : T('AI assistant', 'Assistant IA')
+    titleModel.textContent = model ? model.label : ''
+    titleModel.hidden = !model
+    titleModel.title = toggle.title
     toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
   }
   let serverDefault = null

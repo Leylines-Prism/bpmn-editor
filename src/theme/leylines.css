@@ -1096,6 +1096,10 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #chat-panel header #chat-settings,
 #chat-panel header #chat-reset { color: var(--ink); }
 #chat-panel header { gap: var(--space-2); }
+#chat-panel header .chat-title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
+#chat-panel header .chat-title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#chat-panel header .chat-title-model { font-size: 11px; font-weight: 500; color: var(--ink-muted); }
+#chat-panel header .chat-title-model[hidden] { display: none; }
 
 /* Champ du nom de fichier : creusé (fond enfoncé, ombre intérieure) pour se
    distinguer des boutons relevés de la barre. */
