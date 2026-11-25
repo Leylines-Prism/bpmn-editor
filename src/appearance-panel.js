@@ -61,7 +61,6 @@ function hasAppearance(element) {
 // Une seule ligne de couleurs toutes prêtes. La palette complète reste dans le
 // pinceau du menu contextuel.
 const SHAPE_ROW = [0, 1, 2, 6, 9, 11, 13, 15].map((i) => COLORS[i])
-const TEXT_ROW = [0, 1, 2, 3, 7, 12, 14, 16].map((i) => TEXT_COLORS[i])
 
 // Seconde ligne de la forme : fonds vifs, contour plus foncé de la même teinte
 // et texte blanc (au moins 5:1 avec le blanc), posés en une seule étape.
@@ -77,17 +76,29 @@ const VIVID_ROW = [
   { label: T('Charcoal', 'Anthracite'), fill: '#37474F', stroke: '#1E272B' },
 ]
 
-// Seconde ligne du texte : quatre couleurs foncées pour les fonds clairs (au
-// moins 6.6:1 sur blanc), quatre claires pour les fonds foncés (au moins 13:1 sur noir).
-const CONTRAST_ROW = [
+// Couleurs du texte, sur deux lignes sans doublon. Première ligne : le noir et un
+// dégradé de gris, puis quatre teintes foncées pour les fonds clairs (au moins 6.6:1
+// sur blanc). Seconde ligne : le blanc et des teintes vives, dont trois claires pour
+// les fonds foncés (au moins 13:1 sur noir).
+const TEXT_ROW = [
   { label: T('Black', 'Noir'), color: '#000000' },
+  { label: T('Dark gray', 'Gris foncé'), color: '#424242' },
+  { label: T('Gray', 'Gris'), color: '#757575' },
+  { label: T('Light gray', 'Gris clair'), color: '#BDBDBD' },
   { label: T('Navy', 'Bleu nuit'), color: '#0D47A1' },
   { label: T('Forest green', 'Vert forêt'), color: '#1B5E20' },
   { label: T('Dark red', 'Rouge sombre'), color: '#B71C1C' },
+  { label: T('Dark purple', 'Violet foncé'), color: '#4A148C' },
+]
+const CONTRAST_ROW = [
   { label: T('White', 'Blanc'), color: '#FFFFFF' },
   { label: T('Bright yellow', 'Jaune vif'), color: '#FFEB3B' },
   { label: T('Bright cyan', 'Cyan vif'), color: '#00E5FF' },
   { label: T('Neon green', 'Vert fluo'), color: '#76FF03' },
+  { label: T('Blue', 'Bleu'), color: '#1E88E5' },
+  { label: T('Orange', 'Orange'), color: '#E65100' },
+  { label: T('Raspberry', 'Framboise'), color: '#AD1457' },
+  { label: T('Brown', 'Brun'), color: '#6D4C41' },
 ]
 
 // ── Pastille ────────────────────────────────────────────────────────────────
@@ -472,7 +483,7 @@ function TextStyleEntry({ element, id }) {
       ${TEXT_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
+    <div class="appearance-swatches" role="group" aria-label=${T('More text colors', 'Autres couleurs du texte')}>
       ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
