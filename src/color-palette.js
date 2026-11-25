@@ -2,7 +2,7 @@ import { T } from './i18n/lang.js'
 
 // Palette élargie du sélecteur de couleurs (pinceau du menu contextuel).
 //
-// bpmn-js-color-picker ne propose que 6 couleurs. On lui passe ici 18 teintes
+// bpmn-js-color-picker ne propose que 6 couleurs. On lui passe ici 17 teintes
 // (fond pâle, trait foncé et lisible), et on ajoute une entrée « Couleur
 // personnalisée… » qui ouvre le sélecteur de couleur du système.
 

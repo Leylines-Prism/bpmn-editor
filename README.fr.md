@@ -2,13 +2,19 @@
 
 # bpmn-editor
 
+[![CI](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-editor?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-editor/tags)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--editor-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-editor/pkgs/container/bpmn-editor)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
 [English](README.md) | **Français**
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
 Un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
-vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi. Il
-tourne sur votre propre machine avec Docker.
+vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi.
+Utilisez-le [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur
+votre propre machine avec Docker.
 
 > [!WARNING]
 > **Pas fait pour être exposé sur internet, par conception.** La version Docker est prévue pour
@@ -130,7 +136,7 @@ n'arrive jamais au navigateur. Une clé saisie dans la fenêtre Options de l'ass
 navigateur comme ci-dessous, puis envoyée à chaque message à votre serveur, qui la transmet au
 fournisseur sans l'enregistrer.
 
-**Dans le navigateur** (la démo en ligne, ou les clés saisies dans Options) :
+**Dans le navigateur** (la version en ligne, ou les clés saisies dans Options) :
 
 - La clé reste dans votre navigateur, pour ce site seulement. Les autres sites ne peuvent pas la lire.
 - « Se souvenir des clés API sur votre appareil » décoché (par défaut) : la clé est gardée dans le
@@ -163,20 +169,22 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 ## Ce que fait l'éditeur
 
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
-  .xml, SVG, PNG, PDF), imprimer le diagramme seul, sur une page. Le diagramme en cours est restauré
-  quand vous revenez.
+  .xml, SVG, PNG, PDF), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
+  cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
-- **Dessin** : palette, menu contextuel, copier-coller, 18 couleurs ou une couleur libre, mise en
-  forme du texte (gras, italique, taille, police, couleur, avec « Auto » pour un texte lisible sur
-  les fonds sombres), rangement, simulation de jetons, vérification des règles BPMN, grille,
-  mini-carte, panneau de propriétés avec des groupes Forme et Texte (fond, contour, libellé et mise
-  en forme du texte de l'élément sélectionné, couleurs personnalisées reprises d'un clic, copier-coller d'un style
-  complet, aussi sur plusieurs éléments).
+- **Dessin** : palette, menu contextuel, copier-coller, rangement, simulation de jetons,
+  vérification des règles BPMN, grille, mini-carte, et le panneau Processus pour les propriétés de
+  chaque élément.
+- **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
+  toutes prêtes ou le sélecteur de couleur du système, et la mise en forme du texte (gras, italique,
+  souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
+  Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
   déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, et une pilule résume les changements.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
+  Pensé pour un écran d'ordinateur : sur un téléphone, il sert surtout à regarder un diagramme.
 
 ## En quoi il diffère de draw.io ou Lucidchart
 
@@ -186,26 +194,27 @@ BPMN, le fichier .bpmn s'ouvre donc dans d'autres outils BPMN, se vérifie et se
 dessine l'IA est aussi du BPMN valide. En revanche, pas de collaboration en temps réel, de lien de
 partage ni de modèles.
 
-## Démo en ligne
+## L'utiliser en ligne
 
-Une démo tourne sur https://bpmn.leylines.fr (GitHub Pages). Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
-explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de la
-barre d'outils l'ouvre aussi.
+L'éditeur est ouvert à tous sur https://bpmn.leylines.fr (GitHub Pages) : sans compte, sans
+installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
+explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de
+la barre d'outils l'ouvre aussi.
 
-Elle existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
+Le site existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
 https://bpmn.leylines.fr/dev/ suit la branche main, avec les dernières modifications avant leur
 publication. La page de développement garde ses propres diagrammes et réglages dans le navigateur :
 l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas des Options
 et du guide d'utilisation.
 
-Elle sert juste à essayer : chaque visiteur saisit sa propre clé API, qui reste dans son
-navigateur. Pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et certains
-fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
+Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
+rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
+certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
 dit ce qui sort du navigateur.
 
-La démo mesure son audience sans cookie, avec [Umami](https://umami.is) :
+La page stable mesure son audience sans cookie, avec [Umami](https://umami.is) :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
-créé, ouvert ou exporté, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
+créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
 messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
 `localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
@@ -216,9 +225,9 @@ CNIL pour les mesures d'audience exemptées de consentement.
 
 `npm install`, puis `npm run dev` pour l'éditeur, et `npm start` dans `mcp/` pour le serveur.
 Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
-`npm run build:online` construit la démo en site statique dans `dist-online/` (`BASE_PATH` règle son
+`npm run build:online` construit la version en ligne en site statique dans `dist-online/` (`BASE_PATH` règle son
 chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
-d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Elle est publiée par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
+d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
 
 ## À propos du projet

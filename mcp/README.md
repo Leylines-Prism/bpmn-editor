@@ -33,7 +33,7 @@ shows it above the input. Switching provider starts a new conversation, without 
 
 ```
 editor (chat panel) ──HTTP /chat──▶ server ──Claude API──────────────▶ Claude
-                                           └─OpenAI-compatible API──▶ OpenAI, OpenRouter, Ollama…
+                                           └─OpenAI-compatible API──▶ Mistral, OpenAI, OpenRouter, Ollama…
                     ◀──WebSocket── tools run in the tab
 ```
 
@@ -166,7 +166,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 |---|---|
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
-| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with the OpenAI format, the built-in assistant cannot receive it) |
+| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with OpenAI-compatible providers, Mistral included, the built-in assistant cannot receive it) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
@@ -197,8 +197,9 @@ file for its name and date, in `DIAGRAMS_DIR` (`mcp/data/diagrams` by default, e
   the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
 - Only editor pages can connect to the WebSocket: the origin must be listed in `BPMN_EDITOR_ORIGINS`
   (`http://localhost:5173` and `http://127.0.0.1:5173` by default).
-- The bridge and the chat panel are only active in the editor during development, in the docker
-  image built by the compose file, or when `VITE_MCP_BRIDGE_URL` is set at build time.
+- The bridge and the chat through the server are only active in the editor during development, in
+  the docker image built by the compose file, or when `VITE_MCP_BRIDGE_URL` is set at build time. The
+  online build has no bridge: its chat runs in the page.
 - The `/chat` and `/chat/models` routes call the address they are given: they only accept editor
   pages, and the server must not be exposed on a public network.
 - The `/diagrams` routes have no authentication either: anyone who reaches an editor page served by

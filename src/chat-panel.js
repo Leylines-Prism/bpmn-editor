@@ -245,7 +245,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         'notice',
         mode === 'online'
           ? T('To start, open Options and turn on a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
-          : T('Chat is not set up: open Options to set up a provider, or add ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
+          : T('Chat is not set up: open Options to set up a provider, or add MISTRAL_API_KEY, ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez MISTRAL_API_KEY, ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
       add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z, except the automatic layout.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)).classList.add('welcome')
