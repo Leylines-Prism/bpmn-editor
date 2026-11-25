@@ -55,7 +55,13 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
 // Fichiers créés en 0640 et dossiers en 0750 : lisibles par le propriétaire et son groupe seulement.
 process.umask(0o027)
 
-const log = (...args) => console.error(new Date().toLocaleTimeString('fr-FR'), ...args)
+// Journal du serveur. Les textes qu'il reçoit peuvent venir d'un modèle ou d'une requête :
+// leurs caractères de contrôle (retours à la ligne, séquences ANSI…) sont écrits échappés,
+// pour qu'ils ne puissent ni ajouter de fausses lignes ni agir sur le terminal.
+const escapeControls = (text) =>
+  text.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
+const log = (...args) =>
+  console.error(new Date().toLocaleTimeString('fr-FR'), ...args.map((a) => (typeof a === 'string' ? escapeControls(a) : a)))
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
 const chat = new ChatService({ bridge, log })
 const TOOLS = buildTools(z)
