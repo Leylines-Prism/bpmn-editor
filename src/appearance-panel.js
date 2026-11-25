@@ -21,7 +21,7 @@ import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
 import {
-  FONTS, SIZES, TEXT_COLORS, AUTO_ICON, swatch as textSwatch,
+  FONTS, SIZES, TEXT_COLORS, AUTO_ICON, swatch as textSwatch, dot as textDot,
   fontOf, textColorOf, hasText, readableOn,
   applyFont, applyTextColor, resetText,
 } from './label-style.js'
@@ -104,6 +104,11 @@ function Swatch({ title, fill, stroke, text, active, onClick, className = '' }) 
 // noir ou blanc, celui qui la fait le mieux ressortir.
 const TextSwatch = ({ color, ...props }) =>
   html`<${Swatch} ...${props} fill=${readableOn(color)} stroke="var(--line-strong)" text=${color} className="is-text" />`
+
+// Pastille ronde d'une couleur de la palette, sans lettre : la lettre se lit mal en
+// petite taille. Le carré avec le A reste pour les couleurs déjà dans le diagramme.
+const TextDot = ({ color, ...props }) =>
+  html`<${Swatch} ...${props} fill=${color} stroke="var(--line-strong)" className="is-dot" />`
 
 // Sélecteur de couleur du système. Le Preact du panneau change onChange en
 // « input » pour les champs : chaque mouvement dans le sélecteur ferait une
@@ -460,11 +465,11 @@ function TextStyleEntry({ element, id }) {
     </div>
     <div class="bio-properties-panel-label">${T('Text color', 'Couleur du texte')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Text color', 'Couleur du texte')}>
-      ${TEXT_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
+      ${TEXT_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
     <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
-      ${CONTRAST_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
+      ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
     <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
@@ -628,7 +633,7 @@ AppearanceContextPad.prototype._textEntries = function (element) {
   const entries = {}
   QUICK_TEXT.forEach((c, i) => {
     entries[`quick-text-${i}`] = {
-      title: c.label, imageHtml: textSwatch(c.color), className: color === c.color ? 'is-active' : '',
+      title: c.label, imageHtml: textDot(c.color), className: color === c.color ? 'is-active' : '',
       group: { id: 'quick' }, action: set(c.color),
     }
   })
