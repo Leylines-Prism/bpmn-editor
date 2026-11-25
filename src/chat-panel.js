@@ -24,6 +24,7 @@ const TOOL_LABELS = {
   get_diagram_xml: T('reading the XML', 'lecture du XML'),
   get_diagram_image: T('looking at the diagram', 'coup d\'œil au diagramme'),
   set_diagram_xml: T('replacing the diagram', 'remplacement du diagramme'),
+  export_diagram: 'export',
   add_shapes: T('adding shapes', 'ajout de formes'),
   connect_shapes: T('connections', 'connexions'),
   update_elements: T('changes', 'modification'),

@@ -20,8 +20,9 @@ const RETRY_MAX_MS = 15000
 
 // Renvoie l'état du pont : tabId est l'identifiant que le serveur a donné à
 // cet onglet, null tant que le pont n'est pas relié.
-export function connectMcpBridge(modeler, url) {
-  const tools = createTools(modeler)
+// options.exportDiagram : voir createTools.
+export function connectMcpBridge(modeler, url, options = {}) {
+  const tools = createTools(modeler, options)
   const badge = createBadge()
   const state = { tabId: null, badge }
   let retryDelay = RETRY_MIN_MS
@@ -147,11 +148,12 @@ function setBadge(badge, state, client = null) {
 // ── Outils ─────────────────────────────────────────────────────────────────
 
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
-export function createTools(modeler) {
-  return trackAiChanges(modeler, buildTools(modeler))
+// options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
+export function createTools(modeler, { exportDiagram } = {}) {
+  return trackAiChanges(modeler, buildTools(modeler, exportDiagram))
 }
 
-function buildTools(modeler) {
+function buildTools(modeler, exportDiagram) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
@@ -375,6 +377,12 @@ function buildTools(modeler) {
     // { image: { mediaType, data (base64), width, height } }
     get_diagram_image() {
       return renderDiagramPng(modeler)
+    },
+
+    // Produit le fichier comme le menu Exporter. Rien ne se télécharge sans clic de l'utilisateur.
+    export_diagram({ format, name }) {
+      if (!exportDiagram) throw new Error('Exporting is not available in this editor.')
+      return exportDiagram({ format, name })
     },
 
     async set_diagram_xml({ xml }) {

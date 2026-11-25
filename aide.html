@@ -312,6 +312,12 @@
         <!-- docker -->
         <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /docker -->
+        <h3>Exports demandés à l'IA</h3>
+        <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="ui">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
+        <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
+        <!-- docker -->
+        <p>Le fichier est aussi déposé dans le dossier exports du serveur, quel que soit le choix Destination, sans jamais remplacer un fichier existant.</p>
+        <!-- /docker -->
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Imprimer</h3>
         <p>Exporter, puis Imprimer…, ouvre la fenêtre d'impression du navigateur sur le diagramme seul, centré avec des marges de 10 mm. L'orientation suit sa forme : paysage s'il est plus large que haut, portrait sinon. Safari, lui, laisse ce choix dans sa fenêtre d'impression. Un grand schéma est réduit pour tenir sur une page, un petit garde sa taille à l'écran. Pour un très long processus, l'export PDF ou SVG permet de zoomer.</p>
       </section>
