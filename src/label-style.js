@@ -255,7 +255,7 @@ export function resetText(commandStack, elements) {
 
 // ── Menu « Mise en forme du texte » ─────────────────────────────────────────
 
-const swatch = (color) =>
+export const swatch = (color) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${color}" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><text x="12" y="16.5" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="${readableOn(color)}">A</text></svg>`
 
 export const AUTO_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="#FFFFFF" stroke="rgba(12,17,32,0.35)" stroke-width="1.5"/><path d="M2.75 21.25 21.25 2.75V18a3.25 3.25 0 0 1-3.25 3.25Z" fill="#0C1120"/><text x="8.5" y="12" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#000">A</text><text x="16" y="19" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#FFF">A</text></svg>`

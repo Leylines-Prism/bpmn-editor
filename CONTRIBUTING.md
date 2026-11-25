@@ -37,6 +37,9 @@ npm run dev          # the editor, at http://localhost:5173
 cd mcp && npm install && npm start   # the MCP server and the built-in assistant
 ```
 
+`npm run lint` checks the code with ESLint, and `npm test` runs the automated tests (Node.js test
+runner, files in `test/`). Both run in CI on every pull request.
+
 `npm run dev:online` runs the editor as the online version (no server, API keys in the browser). The
 [README](README.md) and [mcp/README.md](mcp/README.md) explain the rest.
 
@@ -46,6 +49,9 @@ cd mcp && npm install && npm start   # the MCP server and the built-in assistant
   (screenshots are welcome for anything visible).
 - Try your change in the browser, including the case that should fail (an invalid file, an empty
   diagram), and check the console for errors.
+- Add or update automated tests in `test/` for any major new functionality, and for a bug fix
+  when the bug can be reproduced outside the browser. `npm test` must pass.
+- `npm run lint` must pass without errors.
 - Dependencies use exact versions in `package.json` (no `^` or `~`).
 - The user interface is in English and French: give both texts, with the `T('English', 'Français')` helper of `src/i18n/lang.js`.
 - Commit messages, pull requests and issues are written in English.

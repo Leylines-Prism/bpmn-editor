@@ -121,6 +121,11 @@ kbd { border-bottom-width: 2px; }
 }
 svg.ico { overflow: visible; }
 .ico + .ui, .ico + strong { margin-left: 4px; }
+/* Devant un titre de section qui correspond à un bouton : un peu plus grand, et décollé du texte. */
+h2 > .ico, h3 > .ico { margin: 0 10px 0 0; }
+h2 > .ico, h2 > .ico[data-icon] { width: 26px; height: 26px; vertical-align: -4px; }
+h2 > .ico[class*="bpmn-icon-"] { font-size: 26px; line-height: 26px; }
+h3 > .ico { vertical-align: -3px; }
 
 table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
 th, td { text-align: left; vertical-align: top; padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line); }

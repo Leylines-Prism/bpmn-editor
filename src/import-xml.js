@@ -70,7 +70,7 @@ export async function importDiagram(modeler, xml) {
         fitView(modeler.get('canvas'))
       } catch {}
     }
-    throw new Error(explain(err))
+    throw new Error(explain(err), { cause: err })
   }
 }
 

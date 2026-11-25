@@ -16,7 +16,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
   dialog.id = 'mcp-connect-dialog'
   document.body.appendChild(dialog)
 
-  const code = (id, text) =>
+  const code = (id) =>
     `<div class="snippet"><pre id="${id}"><code></code></pre><button type="button" class="btn" data-copy="${id}">${T('Copy', 'Copier')}</button></div>`
 
   const AGENTS = [
@@ -129,7 +129,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
   // JSON lisible mais court : listes de textes et petits objets sur une ligne.
   const compact = (value) =>
     JSON.stringify(value, null, 2)
-      .replace(/\[\s+([^\[\]{}]*?)\s+\]/g, (_, inner) => `[${inner.split(/,\s+/).join(', ')}]`)
+      .replace(/\[\s+([^[\]{}]*?)\s+\]/g, (_, inner) => `[${inner.split(/,\s+/).join(', ')}]`)
       .replace(/\{\s+("[^"{}]+": "[^"{}]*")\s+\}/g, '{ $1 }')
 
   const tokenInput = $('#mcp-token')

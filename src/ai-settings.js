@@ -26,15 +26,20 @@ function write(storage, key, value) {
   } catch {}
 }
 
-// Réglages par défaut : rien d'activé, Anthropic et OpenAI préremplis.
+// Fournisseur actif : un seul à la fois. « server » désigne les modèles réglés sur le
+// serveur (version docker). null : rien de choisi pour l'instant.
+const isProviderChoice = (id) => id === 'server' || PROVIDERS.some((p) => p.id === id)
+
+// Réglages par défaut : aucun fournisseur choisi, Anthropic et Mistral préremplis.
 export function defaultSettings() {
   return {
     remember: false,
+    active: null,
     defaultModel: null,
     providers: Object.fromEntries(
       PROVIDERS.map((p) => [
         p.id,
-        { enabled: false, verified: false, baseUrl: p.baseUrl, label: p.customLabel ? '' : p.label, models: p.models.map((m) => ({ ...m, on: true })), apiKey: '' },
+        { verified: false, baseUrl: p.baseUrl, label: p.customLabel ? '' : p.label, models: p.models.map((m) => ({ ...m, on: true })), apiKey: '' },
       ]),
     ),
   }
@@ -50,7 +55,6 @@ export function loadSettings() {
       const s = saved.providers?.[p.id]
       if (!s) continue
       const target = settings.providers[p.id]
-      target.enabled = !!s.enabled
       target.verified = !!s.verified
       if (typeof s.baseUrl === 'string') target.baseUrl = s.baseUrl
       if (typeof s.label === 'string' && p.customLabel) target.label = s.label
@@ -60,12 +64,23 @@ export function loadSettings() {
           .map((m) => ({ id: m.id, label: typeof m.label === 'string' && m.label ? m.label : m.id, on: !!m.on }))
       }
     }
+    settings.active = isProviderChoice(saved.active) ? saved.active : formerActive(saved)
   }
   const keys = read(settings.remember ? localStorage : sessionStorage, KEYS_KEY) || {}
   for (const p of PROVIDERS) {
     if (typeof keys[p.id] === 'string') settings.providers[p.id].apiKey = keys[p.id]
   }
   return settings
+}
+
+// Réglages enregistrés avant le choix unique, où plusieurs fournisseurs pouvaient être
+// cochés : le fournisseur actif devient celui du modèle choisi.
+function formerActive(saved) {
+  const model = typeof saved.defaultModel === 'string' ? saved.defaultModel : ''
+  const fromModel = model.match(/^user:([^:]+):/)?.[1]
+  if (fromModel && PROVIDERS.some((p) => p.id === fromModel)) return fromModel
+  if (model) return 'server'
+  return PROVIDERS.find((p) => saved.providers?.[p.id]?.enabled)?.id ?? null
 }
 
 export function saveSettings(settings) {
@@ -76,7 +91,7 @@ export function saveSettings(settings) {
     providers[p.id] = rest
     if (apiKey) keys[p.id] = apiKey
   }
-  write(localStorage, SETTINGS_KEY, { remember: settings.remember, defaultModel: settings.defaultModel, providers })
+  write(localStorage, SETTINGS_KEY, { remember: settings.remember, active: settings.active, defaultModel: settings.defaultModel, providers })
   // Les clés ne sont écrites qu'à un seul endroit : on efface l'autre.
   const hasKeys = Object.keys(keys).length > 0
   write(settings.remember ? localStorage : sessionStorage, KEYS_KEY, hasKeys ? keys : null)
@@ -90,12 +105,12 @@ export function forgetKeys(settings) {
   write(sessionStorage, KEYS_KEY, null)
 }
 
-// Un bloc est utilisable s'il est activé, a une adresse, une clé si besoin, et si
-// sa connexion a été testée avec succès (Tester ou Lister les modèles).
+// Un fournisseur est utilisable s'il est le fournisseur actif, a une adresse, une clé si
+// besoin, et si sa connexion a été testée avec succès (Tester ou Lister les modèles).
 export function isUsable(providerId, settings) {
   const def = PROVIDERS.find((p) => p.id === providerId)
   const s = settings.providers[providerId]
-  return !!(s.enabled && s.verified && s.baseUrl.trim() && (!def.needsKey || s.apiKey.trim()))
+  return !!(settings.active === providerId && s.verified && s.baseUrl.trim() && (!def.needsKey || s.apiKey.trim()))
 }
 
 export const providerLabel = (providerId, settings) =>
@@ -103,7 +118,7 @@ export const providerLabel = (providerId, settings) =>
   (providerId === 'compat' ? T('OpenAI-compatible', 'Compatible OpenAI') : PROVIDERS.find((p) => p.id === providerId)?.label) ||
   providerId
 
-// Modèles cochés des blocs utilisables, pour le menu du panneau.
+// Modèles cochés du fournisseur actif, s'il est utilisable.
 export function userModels(settings) {
   const list = []
   for (const p of PROVIDERS) {

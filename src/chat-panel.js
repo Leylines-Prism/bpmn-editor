@@ -170,7 +170,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   let checked = false
   let settings = loadSettings()
   let serverModels = [] // { id, label, provider, providerLabel }, envoyés par le serveur
-  let models = [] // serverModels puis modèles de la fenêtre Options
+  let models = [] // modèles du fournisseur actif : serverModels ou ceux de la fenêtre Options
   let currentId = '' // modèle de l'assistant, choisi dans la fenêtre Options
   // Discussion en cours : sur le serveur ({ id }) ou dans la page ({ messages }).
   // kind « server:anthropic », « local:openai »… : l'historique ne passe pas d'un format à l'autre.
@@ -207,7 +207,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       try {
         return await listModels({ ...conn, browser: true, signal: AbortSignal.timeout(15000) })
       } catch (err) {
-        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
+        throw new Error(describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }), { cause: err })
       }
     }
     let res
@@ -225,10 +225,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     return data.models
   }
 
-  // Modèles disponibles : ceux du serveur, puis ceux des fournisseurs testés dans
-  // Options. Le modèle de l'assistant se choisit dans Options ; le panneau l'affiche.
+  // Modèles du fournisseur actif choisi dans Options : ceux du serveur, ou ceux du
+  // fournisseur testé. Sans choix, ceux du serveur s'il en a. Le modèle de l'assistant
+  // se choisit dans Options ; le panneau l'affiche.
   function fillModels() {
-    models = [...serverModels.map((m) => ({ ...m, source: 'server' })), ...userModels(settings)]
+    const useServer = settings.active === 'server' || (!settings.active && serverModels.length > 0)
+    models = useServer ? serverModels.map((m) => ({ ...m, source: 'server' })) : userModels(settings)
     const has = (id) => id && models.some((m) => m.id === id)
     currentId = has(settings.defaultModel) ? settings.defaultModel : has(serverDefault) ? serverDefault : models[0]?.id || ''
     const model = currentModel()
@@ -244,8 +246,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       add(
         'notice',
         mode === 'online'
-          ? T('To start, open Options and turn on a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et activez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
-          : T('Chat is not set up: open Options to set up a provider, or add MISTRAL_API_KEY, ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour régler un fournisseur, ou ajoutez MISTRAL_API_KEY, ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
+          ? T('To start, open Options and choose a provider: Mistral, Anthropic, OpenAI, Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et choisissez un fournisseur : Mistral, Anthropic, OpenAI, Ollama ou un serveur compatible OpenAI.')
+          : T('Chat is not set up: open Options to choose a provider, or add MISTRAL_API_KEY, ANTHROPIC_API_KEY or OPENAI_MODELS to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez MISTRAL_API_KEY, ANTHROPIC_API_KEY ou OPENAI_MODELS dans mcp/.env puis relancez le serveur."),
       )
     } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
       add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z, except the automatic layout.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z, sauf la mise en page automatique.`)).classList.add('welcome')
