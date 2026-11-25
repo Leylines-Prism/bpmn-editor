@@ -649,6 +649,8 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   font: 700 12px/1 Arial, Helvetica, sans-serif;
 }
 #properties-panel .appearance-swatch.is-text .appearance-swatch-color { font-size: 16px; }
+/* Couleurs de forme : contour épais, pour bien voir la couleur du contour à côté du fond. */
+#properties-panel .appearance-swatch:not(.is-text):not(.is-dot) .appearance-swatch-color { border-width: 3px; }
 #properties-panel .appearance-swatch.is-dot { border-radius: 50%; }
 #properties-panel .appearance-swatch.is-dot .appearance-swatch-color { border-radius: 50%; }
 #properties-panel .appearance-swatch:hover { border-color: var(--line-strong); }

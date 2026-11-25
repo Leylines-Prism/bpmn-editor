@@ -537,7 +537,7 @@ const QUICK_SHAPE_MENU = 'quick-shape-color'
 const QUICK_TEXT_MENU = 'quick-text-color'
 
 const shapeIcon = (fill, stroke) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2" y="2" width="20" height="20" rx="4" fill="${fill || '#FFFFFF'}" stroke="${stroke || '#22242A'}" stroke-width="2"/></svg>`
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22"><rect x="2.5" y="2.5" width="19" height="19" rx="4" fill="${fill || '#FFFFFF'}" stroke="${stroke || '#22242A'}" stroke-width="3"/></svg>`
 
 function AppearanceContextPad(contextPad, eventBus, propertiesPanel, commandStack, popupMenu, modeling, elementRegistry) {
   contextPad.registerProvider(LOW_PRIORITY, this)
