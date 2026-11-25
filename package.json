@@ -12,7 +12,8 @@
     "lint:pack": "bpmnlint-pack-config -c .bpmnlintrc -o src/packed-lint-config.js -t es",
     "predev": "npm run lint:pack",
     "prebuild": "npm run lint:pack",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test \"test/*.test.mjs\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",

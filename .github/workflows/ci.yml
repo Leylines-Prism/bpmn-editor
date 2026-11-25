@@ -1,4 +1,4 @@
-# Vérifie chaque PR avant fusion : le code passe ESLint, l'éditeur, la version en
+# Vérifie chaque PR avant fusion : le code passe ESLint et les tests, l'éditeur, la version en
 # ligne, le serveur MCP et les deux images Docker se construisent. Aucun secret, rien n'est publié.
 # C'est le contrôle à exiger dans la règle de protection de main (Settings > Rules > Rulesets).
 
@@ -33,6 +33,7 @@ jobs:
             mcp/package-lock.json
       - run: npm ci
       - run: npm run lint
+      - run: npm test
       - run: npm run build
       - run: npm run build:online
       - run: npm ci --omit=dev
