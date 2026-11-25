@@ -14,7 +14,7 @@ function readMode() {
     const value = localStorage.getItem(KEY)
     if (MODES.includes(value)) return value
   } catch {}
-  return 'both'
+  return 'download'
 }
 
 // menu : le menu Exporter. exportsUrl : adresse de la route /exports, ou rien.

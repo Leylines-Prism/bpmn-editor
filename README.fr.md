@@ -97,8 +97,8 @@ Ouvrez-le avec votre explorateur de fichiers pour récupérer vos fichiers :
   en place. Un fichier `.bpmn` copié dans ce dossier apparaît dans Mes diagrammes, sous son nom de
   fichier (10 Mo au plus).
 - `bpmn-data/exports` : les exports (.bpmn, .xml, SVG, PNG, PDF), quand la **Destination** en haut du
-  menu Exporter est « Serveur » ou « Les deux ». « Téléchargement » les télécharge seulement dans le
-  navigateur, comme avant. Un export ne remplace jamais un fichier : un deuxième `Mon processus.pdf`
+  menu Exporter est « Serveur » ou « Les deux ». « Téléchargement », le choix par défaut, les télécharge
+  seulement dans le navigateur, comme avant. Un export ne remplace jamais un fichier : un deuxième `Mon processus.pdf`
   devient `Mon processus (2).pdf`. « Code XML à copier » et « Imprimer » ne créent pas de fichier et
   ne sont pas concernés.
 

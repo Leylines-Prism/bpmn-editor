@@ -92,7 +92,7 @@ file explorer to get your files back:
   `.index.json` file links the files to the editor: leave it in place. A `.bpmn` file you copy into
   this folder appears in My diagrams, under its file name (10 MB at most).
 - `bpmn-data/exports`: the exports (.bpmn, .xml, SVG, PNG, PDF), when the **Destination** at the top
-  of the Export menu is "Server" or "Both". "Download" only downloads them in the browser, as before.
+  of the Export menu is "Server" or "Both". "Download", the default, only downloads them in the browser, as before.
   An export never replaces a file: a second `Order process.pdf` becomes `Order process (2).pdf`.
   "XML code to copy" and "Print" do not make files and are not concerned.
 
