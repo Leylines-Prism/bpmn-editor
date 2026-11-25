@@ -5,7 +5,7 @@
 Please do not open a public issue for a security problem.
 
 Use the **Report a vulnerability** button in the
-[Security tab](https://github.com/Leylines-Prism/bpmn-editor/security) of this repository. The
+[Security tab](https://github.com/Leylines-Prism/bpmn-pilot/security) of this repository. The
 report stays private until a fix is published.
 
 Useful details: the version or commit, how to reproduce it, and what an attacker could do with it.

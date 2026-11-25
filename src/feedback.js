@@ -15,7 +15,7 @@
 import { T } from './i18n/lang.js'
 import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from './support.js'
 
-const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-editor/issues'
+const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-pilot/issues'
 /* global __FEEDBACK_EMAIL__, __CONTACT_LINK__ */
 // contact : { sealed, linkedin, host }, où seul sealed est chiffré (l'icône et le texte
 // du choix en dépendent, pas le profil).

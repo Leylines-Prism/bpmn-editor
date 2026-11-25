@@ -35,7 +35,7 @@ ENV NGINX_ENVSUBST_FILTER=^SHOWCASE$
 COPY nginx-headers.conf /etc/nginx/snippets/headers.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 # Licence du projet, hors des fichiers servis.
-COPY LICENSE /usr/share/licenses/bpmn-editor/LICENSE
+COPY LICENSE /usr/share/licenses/bpmn-pilot/LICENSE
 LABEL org.opencontainers.image.licenses="MIT"
 USER nginx
 EXPOSE 8080

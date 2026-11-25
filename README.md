@@ -1,19 +1,19 @@
-![BPMN Editor: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
+![BPMN Pilot: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
 
-# bpmn-editor
+# BPMN Pilot
 
-[![CI](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-editor?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-editor/tags)
-[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--editor-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-editor/pkgs/container/bpmn-editor)
+[![CI](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-pilot?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-pilot/tags)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--pilot-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-pilot/pkgs/container/bpmn-pilot)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-editor/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-editor)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-pilot/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-pilot)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
 
 **English** | [Français](README.fr.md)
 
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
-A BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
+BPMN Pilot is a BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
 describe, and an MCP server so that agents such as Claude Code can draw in it too. Use it
 [online](https://bpmn.leylines.fr), with nothing but a browser, or run it on your own machine with
 Docker.
@@ -31,18 +31,18 @@ Docker.
 You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose. Two images are published
 on the GitHub Container Registry, for amd64 and arm64:
 
-- `ghcr.io/leylines-prism/bpmn-editor`: the editor.
-- `ghcr.io/leylines-prism/bpmn-editor-mcp`: its server (AI assistant, MCP for agents, "My diagrams").
+- `ghcr.io/leylines-prism/bpmn-pilot`: the editor.
+- `ghcr.io/leylines-prism/bpmn-pilot-mcp`: its server (AI assistant, MCP for agents, "My diagrams").
 
 ### From the command line
 
 ```
-mkdir bpmn-editor && cd bpmn-editor && mkdir bpmn-data
-curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
+mkdir bpmn-pilot && cd bpmn-pilot && mkdir bpmn-data
+curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
 
-Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` does the same.
+Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` does the same.
 
 - **AI assistant**: create a `.env` file in the same folder with your API key (Mistral, Anthropic,
   OpenAI, or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
@@ -54,7 +54,7 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
   wallpapers. To turn it off, add `SHOWCASE=off` to the `.env` file (or the stack's environment
   variables), then run the `up -d` command again. The logo then opens the Feedback window.
 - **Update**: change the version number of both images in `docker-compose.image.yml` (see the
-  [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), then:
+  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)), then:
 
   ```
   docker compose -f docker-compose.image.yml pull
@@ -73,8 +73,8 @@ on the host, the folder where you will find your files.
 To change the code, or to build the images yourself:
 
 ```
-git clone https://github.com/Leylines-Prism/bpmn-editor.git
-cd bpmn-editor
+git clone https://github.com/Leylines-Prism/bpmn-pilot.git
+cd bpmn-pilot
 docker compose up -d --build
 ```
 
@@ -266,13 +266,13 @@ it is published. Reviews from experienced developers are especially appreciated.
 **Testers wanted for AI providers.** The assistant is tried day to day with Anthropic models only.
 Mistral, OpenAI, Ollama and OpenAI-compatible servers are supported from their documentation, but
 rarely tried for real. If you use one of them, any report helps, whether it works or not: open an
-[issue](https://github.com/Leylines-Prism/bpmn-editor/issues) or a
-[discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) with the provider, the model
+[issue](https://github.com/Leylines-Prism/bpmn-pilot/issues) or a
+[discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) with the provider, the model
 and what you tried (drawing, images, PDF files).
 
 Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
-[Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), bugs to the
-[issues](https://github.com/Leylines-Prism/bpmn-editor/issues), and security problems to the private
+[Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), bugs to the
+[issues](https://github.com/Leylines-Prism/bpmn-pilot/issues), and security problems to the private
 form described in [SECURITY.md](SECURITY.md). There is no guaranteed response time, but everything
 is read.
 

@@ -21,7 +21,7 @@ There is no guaranteed response time, but every issue and pull request is read.
 ## Where to start
 
 - **A bug**: open an issue with the "Bug report" form.
-- **An idea or a question**: start a [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions),
+- **An idea or a question**: start a [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions),
   or open an issue with the "Idea" form.
 - **A security problem**: never in public. See [SECURITY.md](SECURITY.md).
 - **Something to code**: look at the issues labelled `good first issue` or `help wanted`. For a

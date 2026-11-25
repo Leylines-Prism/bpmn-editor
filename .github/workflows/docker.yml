@@ -1,6 +1,6 @@
 # Publie les deux images Docker sur le GitHub Container Registry à chaque tag de version (vX.Y.Z) :
-#   ghcr.io/<propriétaire>/bpmn-editor      l'éditeur (nginx)
-#   ghcr.io/<propriétaire>/bpmn-editor-mcp  le serveur MCP et le chat intégré (Node)
+#   ghcr.io/<propriétaire>/bpmn-pilot       l'éditeur (nginx)
+#   ghcr.io/<propriétaire>/bpmn-pilot-mcp  le serveur MCP et le chat intégré (Node)
 #
 # Tags d'image pour v1.2.3 : 1.2.3, 1.2, 1 et latest. Une préversion (v1.3.0-rc.1) n'a que le sien.
 # Lancement manuel (Actions > Docker > Run workflow) : choisir un tag de version dans « Use workflow from ».
@@ -35,16 +35,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: bpmn-editor
+          - name: bpmn-pilot
             file: Dockerfile
-            title: BPMN editor
-            description: BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant. Pairs with bpmn-editor-mcp.
+            title: BPMN Pilot
+            description: BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant. Pairs with bpmn-pilot-mcp.
             # Adresse relative du serveur MCP, relayée par le nginx de l'éditeur (voir nginx.conf.template).
             build-args: VITE_MCP_BRIDGE_URL=/bridge
-          - name: bpmn-editor-mcp
+          - name: bpmn-pilot-mcp
             file: mcp/Dockerfile
-            title: BPMN editor MCP server
-            description: MCP server and built-in AI chat for the BPMN editor (bpmn-editor image).
+            title: BPMN Pilot MCP server
+            description: MCP server and built-in AI chat for BPMN Pilot (bpmn-pilot image).
             build-args: ''
     env:
       # Annotations posées aussi sur l'index multi-plateforme, où le registre lit la description.
