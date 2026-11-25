@@ -88,12 +88,17 @@ const TEXT_ROW_KEYS = new Set([...TEXT_ROW, ...CONTRAST_ROW].map((c) => c.color)
 
 // ── Pastille ────────────────────────────────────────────────────────────────
 
-function Swatch({ title, fill, stroke, text, active, onClick }) {
-  return html`<button type="button" class=${'appearance-swatch' + (active ? ' is-active' : '')}
+function Swatch({ title, fill, stroke, text, active, onClick, className = '' }) {
+  return html`<button type="button" class=${'appearance-swatch' + (className && ' ' + className) + (active ? ' is-active' : '')}
     title=${title} aria-label=${title} aria-pressed=${active ? 'true' : 'false'} onClick=${onClick}>
     <span class="appearance-swatch-color" style=${{ background: fill || '#FFFFFF', borderColor: stroke || '#22242A', color: text || stroke || '#22242A' }}>${text ? 'A' : ''}</span>
   </button>`
 }
+
+// Pastille d'une couleur de texte : le A est dans cette couleur, sur un fond
+// noir ou blanc, celui qui la fait le mieux ressortir.
+const TextSwatch = ({ color, ...props }) =>
+  html`<${Swatch} ...${props} fill=${readableOn(color)} stroke="var(--line-strong)" text=${color} className="is-text" />`
 
 // Sélecteur de couleur du système. Le Preact du panneau change onChange en
 // « input » pour les champs : chaque mouvement dans le sélecteur ferait une
@@ -364,10 +369,7 @@ function ShapeColorEntry({ element, id }) {
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
-    <div class="appearance-used">
-      <div class="appearance-sublabel">${T('Vivid', 'Vives')}</div>
-      <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
-    </div>
+    <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
     <${UsedShapeColors} fill=${fill} stroke=${stroke} set=${set} />
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
@@ -398,7 +400,7 @@ function UsedTextColors({ color, onPick }) {
   return html`<div class="appearance-used">
     <div class="appearance-sublabel">${label}</div>
     <div class="appearance-swatches" role="group" aria-label=${label}>
-      ${used.map(({ value }) => html`<${Swatch} key=${value} title=${value} fill=${value} stroke="var(--line-strong)" text=${readableOn(value)}
+      ${used.map(({ value }) => html`<${TextSwatch} key=${value} title=${value} color=${value}
         active=${color === value} onClick=${() => onPick(value)} />`)}
     </div>
   </div>`
@@ -441,15 +443,12 @@ function TextStyleEntry({ element, id }) {
     </div>
     <div class="bio-properties-panel-label">${T('Text color', 'Couleur du texte')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Text color', 'Couleur du texte')}>
-      ${TEXT_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.color} stroke="var(--line-strong)" text=${readableOn(c.color)}
+      ${TEXT_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <div class="appearance-used">
-      <div class="appearance-sublabel">${T('High contrast', 'Fort contraste')}</div>
-      <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
-        ${CONTRAST_ROW.map((c, i) => html`<${Swatch} key=${i} title=${c.label} fill=${c.color} stroke="var(--line-strong)" text=${readableOn(c.color)}
-          active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
-      </div>
+    <div class="appearance-swatches" role="group" aria-label=${T('High contrast text colors', 'Couleurs de texte à fort contraste')}>
+      ${CONTRAST_ROW.map((c, i) => html`<${TextSwatch} key=${i} title=${c.label} color=${c.color}
+        active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
     <${UsedTextColors} color=${color} onPick=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
