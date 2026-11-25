@@ -1,7 +1,7 @@
 // Diagrammes enregistrés sur le serveur (mcp/diagrams.js), dans un dossier temporaire.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { mkdtemp, readdir, rm } from 'node:fs/promises'
+import { mkdtemp, readdir, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { DiagramStore } from '../mcp/diagrams.js'
@@ -44,7 +44,7 @@ test('a diagram can be saved, listed, read, renamed and removed', () =>
 
     await store.remove('d1')
     assert.equal(await store.get('d1'), null)
-    assert.deepEqual(await readdir(dir), [])
+    assert.deepEqual(await readdir(dir), ['.index.json'])
   }))
 
 test('a missing diagram reads and renames as null', () =>
@@ -52,3 +52,69 @@ test('a missing diagram reads and renames as null', () =>
     assert.equal(await store.get('missing'), null)
     assert.equal(await store.rename('missing', 'Name'), null)
   }))
+
+test('files take the name of their diagram, and renaming renames the file', () =>
+  withStore(async (store, dir) => {
+    await store.put('d1', 'Order process', XML)
+    assert.ok((await readdir(dir)).includes('Order process.bpmn'))
+    await store.put('d2', 'order process', XML)
+    await store.put('d3', 'Order process', XML)
+    const files = (await readdir(dir)).filter((f) => !f.startsWith('.')).sort()
+    assert.deepEqual(files, ['Order process (3).bpmn', 'Order process.bpmn', 'order process (2).bpmn'])
+
+    await store.rename('d1', 'Invoices')
+    assert.ok((await readdir(dir)).includes('Invoices.bpmn'))
+    assert.ok(!(await readdir(dir)).includes('Order process.bpmn'))
+    assert.equal((await store.get('d1')).xml, XML)
+
+    // Même nom, fichier inchangé ; sauvegarde sous un nouveau nom : le fichier suit.
+    await store.put('d2', 'order process', XML + ' ')
+    assert.equal((await store.get('d2')).file, 'order process (2).bpmn')
+    await store.put('d2', 'Payments', XML)
+    assert.equal((await store.get('d2')).file, 'Payments.bpmn')
+  }))
+
+test('names that could leave the folder or clash with Windows stay inside', () =>
+  withStore(async (store, dir) => {
+    await store.put('a', '../../etc/passwd', XML)
+    await store.put('b', '.hidden', XML)
+    await store.put('c', 'CON', XML)
+    await store.put('d', 'a:b*c?', XML)
+    const files = (await readdir(dir)).filter((f) => f !== '.index.json').sort()
+    assert.deepEqual(files, ['_CON.bpmn', 'a-b-c-.bpmn', 'etc-passwd.bpmn', 'hidden.bpmn'])
+  }))
+
+test('a file deleted by hand leaves the list, and a symlink is never followed', () =>
+  withStore(async (store, dir) => {
+    await store.put('d1', 'One', XML)
+    await rm(join(dir, 'One.bpmn'))
+    assert.deepEqual(await store.list(), [])
+    assert.equal(await store.get('d1'), null)
+
+    await store.put('d2', 'Two', XML)
+    await rm(join(dir, 'Two.bpmn'))
+    await symlink('/etc/hostname', join(dir, 'Two.bpmn'))
+    assert.equal(await store.get('d2'), null)
+  }))
+
+test('concurrent saves never share a file', () =>
+  withStore(async (store, dir) => {
+    await Promise.all(['a', 'b', 'c', 'd', 'e'].map((id) => store.put(id, 'Same', XML)))
+    assert.equal((await readdir(dir)).filter((f) => f.endsWith('.bpmn')).length, 5)
+    assert.equal((await store.list()).length, 5)
+  }))
+
+test('diagrams of older versions are renamed after their name', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'bpmn-diagrams-'))
+  try {
+    await writeFile(join(dir, 'abc-1.bpmn'), XML)
+    await writeFile(join(dir, 'abc-1.json'), JSON.stringify({ id: 'abc-1', name: 'Old one', updatedAt: '2026-01-01T00:00:00.000Z', size: 1 }))
+    const store = new DiagramStore(dir)
+    assert.deepEqual((await store.list()).map((d) => d.name), ['Old one'])
+    assert.deepEqual((await readdir(dir)).sort(), ['.index.json', 'Old one.bpmn'])
+    assert.equal((await store.get('abc-1')).xml, XML)
+    assert.match(await readFile(join(dir, '.index.json'), 'utf8'), /Old one\.bpmn/)
+  } finally {
+    await rm(dir, { recursive: true, force: true })
+  }
+})
