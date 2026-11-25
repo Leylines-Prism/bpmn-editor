@@ -64,6 +64,14 @@ body { background: var(--surface); color: var(--ink); font-family: var(--font-sa
   border: 2px solid transparent; border-top-color: var(--accent);
   animation: contact-spin 0.8s linear infinite;
 }
+/* Halo multicolore quand une impulsion du fond passe devant l'icône (pulses.js) :
+   bleu ciel à gauche, magenta en haut et en bas, orange à droite, comme la ligne de lumière. */
+.contact { transition: color 0.2s, box-shadow 0.9s ease-out; }
+.contact.glow {
+  transition: color 0.2s, box-shadow 0.15s ease-in;
+  box-shadow: -7px 0 16px 1px rgb(43 184 255 / 0.75), 7px 0 16px 1px rgb(255 126 26 / 0.75),
+    0 -6px 16px rgb(210 78 142 / 0.6), 0 6px 16px rgb(210 78 142 / 0.6);
+}
 .contact[data-state="error"] { background: linear-gradient(var(--disc), var(--disc)) padding-box, var(--warm) border-box; }
 @keyframes contact-spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) {

@@ -64,7 +64,9 @@ function readGeometry(text) {
   return { lines, nodes: [...nodes.values()] }
 }
 
-export function createPulses(svg, { isDark }) {
+// glowTargets : éléments de la page (les icônes de contact) qui s'entourent d'un halo
+// multicolore quand une impulsion passe juste devant eux.
+export function createPulses(svg, { isDark, glowTargets = () => [] }) {
   const defs = document.createElementNS(NS, 'defs')
   const measure = document.createElementNS(NS, 'g')
   const flashes = document.createElementNS(NS, 'g')
@@ -211,14 +213,16 @@ export function createPulses(svg, { isDark }) {
 
   function tick(now) {
     requestAnimationFrame(tick)
-    if (motion === 'scroll') { if (!document.hidden) scroll(now); return }
-    if (motion === 'none' || !routes.length || document.hidden || now - startedAt < START_AFTER) return
+    if (motion === 'scroll') { glow([]); if (!document.hidden) scroll(now); return }
+    if (motion === 'none' || !routes.length || document.hidden || now - startedAt < START_AFTER) return glow([])
     if (now >= next) spawn(now)
+    const lit = []
     for (const it of [...items]) {
       const s = ((now - it.start) / 1000) * it.speed
       if (s >= it.route.length) { drop(it); continue }
       const [x, y] = it.route.at(s), rgb = colorAt(it.route, s, x)
       it.g.setAttribute('transform', `translate(${x} ${y})`)
+      lit.push([x, y])
       paint(it.halo, rgb)
       paint(it.core, rgb, 1)
       // Nœuds traversés : le grand nœud d'arrivée s'allume en halo ambre ou orange.
@@ -227,6 +231,21 @@ export function createPulses(svg, { isDark }) {
           if (!it.passed.has(i) && s >= st.s - 1) { it.passed.add(i); flash(st.x, st.y, rgb, { arrival: st.size >= 60 && st.s > it.route.length / 2 }) }
         })
       }
+    }
+    glow(lit)
+  }
+
+  // Halo des icônes : allumé tant qu'une impulsion passe sous l'icône ou juste à côté.
+  // Les positions du dessin sont converties en pixels de l'écran, car le fond est recadré.
+  function glow(points) {
+    const els = [...glowTargets()]
+    if (!els.length) return
+    const m = points.length ? svg.getScreenCTM() : null
+    const screen = m ? points.map(([x, y]) => new DOMPoint(x, y).matrixTransform(m)) : []
+    for (const el of els) {
+      const r = el.getBoundingClientRect()
+      const near = screen.some((p) => p.x > r.left - 12 && p.x < r.right + 12 && p.y > r.top - 40 && p.y < r.bottom + 40)
+      el.classList.toggle('glow', near)
     }
   }
 

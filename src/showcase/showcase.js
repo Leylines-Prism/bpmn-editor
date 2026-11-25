@@ -77,7 +77,7 @@ const slides = WALLPAPERS.map((w) => {
   slidesBox.append(el)
   return el
 })
-const pulses = reduceMotion ? null : createPulses(document.getElementById('pulses'), { isDark })
+const pulses = reduceMotion ? null : createPulses(document.getElementById('pulses'), { isDark, glowTargets: () => contacts.children })
 let index = 0
 
 function paintSlides() {
