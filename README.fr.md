@@ -1,19 +1,19 @@
-![BPMN Editor : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
+![BPMN Pilot : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
 
-# bpmn-editor
+# BPMN Pilot
 
-[![CI](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-editor/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-editor?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-editor/tags)
-[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--editor-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-editor/pkgs/container/bpmn-editor)
+[![CI](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Leylines-Prism/bpmn-pilot/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/Leylines-Prism/bpmn-pilot?sort=semver&label=version)](https://github.com/Leylines-Prism/bpmn-pilot/tags)
+[![ghcr.io](https://img.shields.io/badge/ghcr.io-leylines--prism%2Fbpmn--pilot-blue?logo=docker&logoColor=white)](https://github.com/Leylines-Prism/bpmn-pilot/pkgs/container/bpmn-pilot)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-editor/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-editor)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-pilot/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-pilot)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
 
 [English](README.md) | **Français**
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
-Un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
+BPMN Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
 vous décrivez, et un serveur MCP pour que des agents comme Claude Code puissent y dessiner aussi.
 Utilisez-le [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur
 votre propre machine avec Docker.
@@ -31,19 +31,19 @@ votre propre machine avec Docker.
 Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose. Deux images sont publiées
 sur le GitHub Container Registry, pour amd64 et arm64 :
 
-- `ghcr.io/leylines-prism/bpmn-editor` : l'éditeur.
-- `ghcr.io/leylines-prism/bpmn-editor-mcp` : son serveur (assistant IA, MCP pour les agents,
+- `ghcr.io/leylines-prism/bpmn-pilot` : l'éditeur.
+- `ghcr.io/leylines-prism/bpmn-pilot-mcp` : son serveur (assistant IA, MCP pour les agents,
   « Mes diagrammes »).
 
 ### En ligne de commande
 
 ```
-mkdir bpmn-editor && cd bpmn-editor && mkdir bpmn-data
-curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml
+mkdir bpmn-pilot && cd bpmn-pilot && mkdir bpmn-data
+curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
 
-Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-editor/main/docker-compose.image.yml` fait la même chose.
+Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` fait la même chose.
 
 - **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Mistral,
   Anthropic, OpenAI, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
@@ -57,7 +57,7 @@ Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercont
   d'environnement de la pile), puis relancez la commande `up -d`. Le logo ouvre alors la fenêtre
   « Votre avis ».
 - **Mise à jour** : changez le numéro de version des deux images dans `docker-compose.image.yml`
-  (voir les [versions](https://github.com/Leylines-Prism/bpmn-editor/tags)), puis :
+  (voir les [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)), puis :
 
   ```
   docker compose -f docker-compose.image.yml pull
@@ -76,8 +76,8 @@ absolu de la machine hôte : le dossier où vous retrouverez vos fichiers.
 Pour modifier le code, ou construire les images vous-même :
 
 ```
-git clone https://github.com/Leylines-Prism/bpmn-editor.git
-cd bpmn-editor
+git clone https://github.com/Leylines-Prism/bpmn-pilot.git
+cd bpmn-pilot
 docker compose up -d --build
 ```
 
@@ -287,13 +287,13 @@ appréciées.
 **Testeurs recherchés pour les fournisseurs d'IA.** L'assistant est essayé au quotidien avec les
 modèles Anthropic seulement. Mistral, OpenAI, Ollama et les serveurs compatibles OpenAI sont pris en
 charge d'après leur documentation, mais rarement essayés pour de vrai. Si vous utilisez l'un d'eux,
-tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-editor/issues)
-ou une [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) avec le fournisseur,
+tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues)
+ou une [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) avec le fournisseur,
 le modèle et ce que vous avez essayé (dessin, images, PDF).
 
 Commencez par [CONTRIBUTING.md](CONTRIBUTING.md) (en anglais). Les questions et les idées vont dans
-les [Discussions](https://github.com/Leylines-Prism/bpmn-editor/discussions), les bugs dans les
-[issues](https://github.com/Leylines-Prism/bpmn-editor/issues), et les failles de sécurité passent
+les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les bugs dans les
+[issues](https://github.com/Leylines-Prism/bpmn-pilot/issues), et les failles de sécurité passent
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 

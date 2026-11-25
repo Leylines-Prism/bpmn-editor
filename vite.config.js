@@ -170,7 +170,7 @@ function helpEdition(mode) {
 const APP_VERSION = appVersion()
 
 export default defineConfig(async ({ mode }) => ({
-  // Chemin du site : « / » par défaut, « /bpmn-editor/ » sur GitHub Pages (réglé par le workflow).
+  // Chemin du site : « / » par défaut, « /bpmn-pilot/ » sur GitHub Pages (réglé par le workflow).
   base: process.env.BASE_PATH || '/',
   plugins: [
     csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode)),

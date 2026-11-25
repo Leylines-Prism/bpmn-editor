@@ -4,7 +4,7 @@ labels: [enhancement]
 body:
   - type: markdown
     attributes:
-      value: For an open question or a first rough idea, a [discussion](https://github.com/Leylines-Prism/bpmn-editor/discussions) works well too.
+      value: For an open question or a first rough idea, a [discussion](https://github.com/Leylines-Prism/bpmn-pilot/discussions) works well too.
   - type: textarea
     id: need
     attributes:

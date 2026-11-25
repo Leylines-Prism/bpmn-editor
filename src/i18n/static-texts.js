@@ -4,7 +4,7 @@
 import { lang, setLang } from './lang.js'
 
 const FR = {
-  'h1': { text: 'Éditeur BPMN' },
+  'h1': { text: 'BPMN Pilot' },
   '#file-name-field': { title: "Nom du fichier pour l'enregistrement et les exports" },
   '#file-name': { 'aria-label': 'Nom du fichier', placeholder: 'Nom du fichier' },
   '#btn-new': { text: 'Nouveau' },
@@ -30,7 +30,7 @@ const FR = {
 export function applyStaticTexts(save) {
   document.documentElement.lang = lang
   if (lang === 'fr') {
-    document.title = 'Éditeur BPMN · Leylines'
+    document.title = 'BPMN Pilot · Leylines'
     for (const [selector, attrs] of Object.entries(FR)) {
       const el = document.querySelector(selector)
       if (!el) continue
