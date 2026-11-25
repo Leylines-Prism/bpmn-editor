@@ -142,6 +142,31 @@ function siteChannel(channel, version) {
   }
 }
 
+// Pages d'aide : un même fichier pour les deux versions. Un passage propre à l'une s'écrit
+// entre <!-- online --> et <!-- /online -->, ou entre <!-- docker --> et <!-- /docker -->.
+// Le build en ligne (mode « online ») garde les passages online, tous les autres modes
+// (image docker, npm run dev) gardent les passages docker. L'autre version disparaît de la page.
+function helpEdition(mode) {
+  const keep = mode === 'online' ? 'online' : 'docker'
+  return {
+    name: 'help-edition',
+    transformIndexHtml(html) {
+      let out = html
+      for (const edition of ['online', 'docker']) {
+        const open = `<!-- ${edition} -->`
+        const close = `<!-- /${edition} -->`
+        for (let start = out.indexOf(open); start !== -1; start = out.indexOf(open, start)) {
+          const end = out.indexOf(close, start)
+          if (end === -1) throw new Error(`help-edition: ${open} sans ${close}`)
+          const body = edition === keep ? out.slice(start + open.length, end) : ''
+          out = out.slice(0, start) + body + out.slice(end + close.length)
+        }
+      }
+      return out
+    },
+  }
+}
+
 const APP_VERSION = appVersion()
 
 export default defineConfig(async ({ mode }) => ({
@@ -151,6 +176,7 @@ export default defineConfig(async ({ mode }) => ({
     csp(mode === 'online' ? ONLINE_CONNECT : serverConnect(mode)),
     socialPreview(mode, process.env.BASE_PATH || '/'),
     siteChannel(process.env.SITE_CHANNEL || '', APP_VERSION),
+    helpEdition(mode),
   ],
   define: {
     ...(await sealedContacts(mode)),
