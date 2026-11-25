@@ -17,12 +17,12 @@ import * as z from 'zod/v4'
 
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
-import { isIP } from 'node:net'
 
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
 import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
 import { ChatService } from './chat.js'
+import { isForbiddenAddress, relayFetch } from './relay-guard.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { describeProviderError } from '../src/ai/errors.js'
@@ -174,7 +174,7 @@ function readCustom(value, { needModel }) {
   const { provider, label, format, baseUrl, apiKey, model } = value
   if (!PROVIDER_IDS.has(provider) || (format !== 'anthropic' && format !== 'openai')) return null
   const url = checkBaseUrl(baseUrl)
-  if (!url || isLinkLocal(new URL(url).hostname)) return null
+  if (!url || isForbiddenAddress(new URL(url).hostname)) return null
   if (apiKey !== undefined && apiKey !== null && (typeof apiKey !== 'string' || apiKey.length > 500)) return null
   if (needModel && (typeof model !== 'string' || !model.trim() || model.length > 200)) return null
   const fallbackLabel = PROVIDERS.find((p) => p.id === provider).label
@@ -186,15 +186,6 @@ function readCustom(value, { needModel }) {
     apiKey: apiKey || null,
     model: needModel ? model.trim() : undefined,
   }
-}
-
-// Adresses de lien local (169.254.0.0/16, fe80::/10) : services de métadonnées des
-// hébergeurs cloud, jamais un fournisseur de modèles. Refusées pour le relais.
-function isLinkLocal(hostname) {
-  const host = hostname.replace(/^\[|\]$/g, '').toLowerCase()
-  if (isIP(host) === 4) return host.startsWith('169.254.')
-  if (isIP(host) === 6) return /^fe[89ab]/.test(host) || /^::ffff:169\.254\./.test(host)
-  return host === 'metadata.google.internal'
 }
 
 const RELAY_OFF = (req) => T(req, 'Providers set in Options are turned off on this server (CHAT_RELAY=off).', 'Les fournisseurs réglés dans Options sont désactivés sur ce serveur (CHAT_RELAY=off).')
@@ -214,7 +205,7 @@ app.post('/chat/models', chatCors, async (req, res) => {
   const custom = readCustom(req.body, { needModel: false })
   if (!custom) return res.status(400).json({ error: T(req, 'Invalid settings', 'Réglages invalides') })
   try {
-    const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000) })
+    const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000), fetch: relayFetch })
     res.json({ models })
   } catch (err) {
     res.json({ error: describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })

@@ -18,9 +18,11 @@ export class OpenAICompatError extends Error {
 }
 
 export class OpenAICompatClient {
-  constructor({ baseUrl, apiKey }) {
+  // fetch : fonction d'appel, celle du navigateur ou de Node par défaut.
+  constructor({ baseUrl, apiKey, fetch: doFetch }) {
     this.baseUrl = baseUrl.replace(/\/+$/, '')
     this.apiKey = apiKey || null
+    this.fetch = doFetch || ((...args) => globalThis.fetch(...args))
   }
 
   // Envoie une requête en flux. Rappels facultatifs :
@@ -32,7 +34,7 @@ export class OpenAICompatClient {
   async stream(body, { signal, onText, onReasoning, onToolStart, onToolArgs } = {}) {
     let res
     try {
-      res = await fetch(`${this.baseUrl}/chat/completions`, {
+      res = await this.fetch(`${this.baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
