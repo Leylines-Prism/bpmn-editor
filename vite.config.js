@@ -151,7 +151,18 @@ function helpEdition(mode) {
   return {
     name: 'help-edition',
     transformIndexHtml(html) {
-      return html.replace(/<!-- (online|docker) -->([\s\S]*?)<!-- \/\1 -->/g, (_, edition, body) => (edition === keep ? body : ''))
+      let out = html
+      for (const edition of ['online', 'docker']) {
+        const open = `<!-- ${edition} -->`
+        const close = `<!-- /${edition} -->`
+        for (let start = out.indexOf(open); start !== -1; start = out.indexOf(open, start)) {
+          const end = out.indexOf(close, start)
+          if (end === -1) throw new Error(`help-edition: ${open} sans ${close}`)
+          const body = edition === keep ? out.slice(start + open.length, end) : ''
+          out = out.slice(0, start) + body + out.slice(end + close.length)
+        }
+      }
+      return out
     },
   }
 }
