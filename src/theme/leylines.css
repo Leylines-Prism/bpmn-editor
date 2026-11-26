@@ -328,6 +328,15 @@ a.btn { text-decoration: none; }
 #privacy-button { border-color: var(--line); color: var(--ink-muted); }
 #privacy-button svg { color: var(--accent); }
 #feedback-button ~ #privacy-button { bottom: 94px; }
+/* « Votre avis » porte le fin trait leyline (ciel, magenta, orange) du bouton Co-pilote IA. */
+#feedback-button {
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
+}
+#feedback-button:hover {
+  border-color: transparent;
+  background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box;
+}
 .brand-logo.clickable { cursor: pointer; border-radius: var(--radius-sm); }
 .brand-logo.clickable:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 
