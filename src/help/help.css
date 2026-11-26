@@ -146,9 +146,37 @@ th { font-weight: 600; background: var(--surface-sunken); }
 .note-title { font-weight: 600; color: var(--warm); }
 .note-title + p { margin-top: var(--space-1); }
 
-details.faq { border-bottom: 1px solid var(--line); padding: var(--space-3) 0; }
-details.faq summary { cursor: pointer; font-weight: 600; }
-details.faq summary + * { margin-top: var(--space-2); }
+/* Sections dépliables : un bandeau cliquable, avec « Afficher » ou « Masquer »
+   et un chevron à droite, pour qu'on comprenne qu'il s'ouvre. */
+details.faq { margin: var(--space-3) 0 var(--space-4); }
+details.faq summary {
+  display: flex; align-items: center; gap: var(--space-3);
+  list-style: none; cursor: pointer; font-weight: 600;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+details.faq summary::-webkit-details-marker { display: none; }
+details.faq summary:hover { border-color: var(--accent); background: var(--accent-soft); }
+details.faq summary:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+details.faq summary::before {
+  content: 'Show'; order: 2; margin-left: auto; flex-shrink: 0;
+  font-size: 14px; font-weight: 500; color: var(--accent);
+}
+details.faq[open] summary::before { content: 'Hide'; }
+:lang(fr) details.faq summary::before { content: 'Afficher'; }
+:lang(fr) details.faq[open] summary::before { content: 'Masquer'; }
+details.faq summary::after {
+  content: ''; order: 3; flex-shrink: 0; width: 8px; height: 8px; margin: 0 4px 4px 0;
+  border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg); transition: transform 150ms ease;
+}
+details.faq[open] summary::after { transform: rotate(-135deg); margin: 4px 4px 0 0; }
+@media (prefers-reduced-motion: reduce) {
+  details.faq summary, details.faq summary::after { transition: none; }
+}
+details.faq summary + * { margin-top: var(--space-3); }
 
 /* Petite icône dans le texte (tasse du lien de soutien) */
 .icon-inline { width: 1.1em; height: 1.1em; vertical-align: -0.2em; margin-left: 0.3em; }
