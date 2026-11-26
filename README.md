@@ -47,7 +47,7 @@ everything it is connected to, and uses BPMN diagrams in its own workflows:
   exports folder, for the next step: a document, a ticket, a repository.
 
 For example, an agent connected to your mailbox and document archive can turn years of past exchanges
-into a process map. The tools run in an editor tab, which only needs to stay open.
+into a process map in mere seconds, with the help of a few prompts. The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
 > **Docker version only: not made to be exposed on the internet, by design.** This concerns running

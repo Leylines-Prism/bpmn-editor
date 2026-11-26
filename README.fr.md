@@ -48,7 +48,7 @@ avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses pr
   exports du serveur, pour l'étape suivante : un document, un ticket, un dépôt.
 
 Par exemple, un agent relié à votre messagerie et à vos archives peut tirer une carte des processus de
-plusieurs années d'échanges. Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester
+plusieurs années d'échanges en quelques secondes, à l'aide de quelques prompts. Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester
 ouvert.
 
 > [!WARNING]
