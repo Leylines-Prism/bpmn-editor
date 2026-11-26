@@ -2,8 +2,7 @@
 
 **English** | [Français](online-privacy.fr.md)
 
-This page sums up a review of the online version (https://bpmn.leylines.fr, and the development page
-https://dev.bpmn.leylines.fr), done on 2026-11-26 on version v1.2.2. It traces where each piece of data lives and where it can go.
+This page sums up a review of the online version (https://bpmn.leylines.fr), done on 2026-11-26 on version v1.2.2. It traces where each piece of data lives and where it can go.
 It does not cover the Docker version, which has its own server (see the [README](../README.md)).
 
 ## In short

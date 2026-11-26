@@ -265,10 +265,7 @@ The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no ac
 install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
 save, export and use the AI assistant. The Help (?) button in the toolbar opens it too.
 
-It comes in two pages. The root follows the released versions (the latest `vX.Y.Z` tag), and
-https://dev.bpmn.leylines.fr follows the main branch, with the latest changes before they are released.
-The development page lives on its own address, so it keeps its own diagrams, settings and API keys in
-the browser: trying it does not touch those of the stable page, and its code cannot read them. Both show their version in the bottom left corner of the canvas and of the user guide.
+It follows the released versions (the latest `vX.Y.Z` tag) and shows its version in the bottom left corner of the canvas and of the user guide.
 
 For the AI assistant, each visitor enters their own API key, which stays in their browser.
 Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
