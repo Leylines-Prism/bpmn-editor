@@ -15,7 +15,7 @@ It does not cover the Docker version, which has its own server (see the [README]
   provider you chose, straight from your browser.
 - When you use the AI assistant, your message, your attachments and the diagram it reads go straight to
   that provider, under its own terms.
-- The only other request is an audience count without cookies, which never contains a diagram, a
+- The only other request is anonymous usage statistics without cookies, which never contain a diagram, a
   message or a key.
 
 Entering an API key on this page is safe within the limits listed below. Still, always use an API key
@@ -40,11 +40,10 @@ created for this editor alone, with a limited validity period and a spending lim
    host sees your IP address and the files requested.
 2. **The AI provider you chose**, only when you use the assistant or list its models: Anthropic, OpenAI,
    Mistral, xAI, Ollama on your own machine, or the "OpenAI-compatible" address you enter yourself.
-3. **Audience measurement** with [Umami](https://umami.is), on the stable page only: the page address
+3. **Anonymous usage statistics** (audience measurement), on the stable page only: the page address
    (without the part after `#`), the referring site, the browser language, the screen size, and the name
    of an action, with at most an export format or a provider name. No cookie, no diagram, no message, no
-   key. It is turned off by "Do Not Track", "Global Privacy Control", and by
-   `localStorage.setItem('umami.disabled', '1')`. The code is in [src/analytics.js](../src/analytics.js).
+   key. It is turned off by "Do Not Track" and "Global Privacy Control". The code is in [src/analytics.js](../src/analytics.js).
 
 The MCP connection, server storage and server exports do not exist in the online version: their server
 address is forced to empty when the online version is built ([src/main.js](../src/main.js)).

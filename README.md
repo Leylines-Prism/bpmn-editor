@@ -31,8 +31,8 @@ with nothing but a browser, or run it on your own machine with Docker.
 >   straight from your browser, never to a server of this project.
 > - **When you use the assistant**, your message and the diagram go straight to that provider, under
 >   its own terms. Nothing goes through a middleman.
-> - **The only other request** is an audience count without cookies, which never contains a diagram, a
->   message or a key.
+> - **The only other request** is anonymous usage statistics without cookies, which never contain a
+>   diagram, a message or a key.
 >
 > Still, always use an API key created for this editor alone, with a limited validity period and a
 > spending limit. Details, limits and how to check it yourself:

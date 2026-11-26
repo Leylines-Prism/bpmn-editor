@@ -41,11 +41,10 @@ dépense (voir [Bonnes pratiques](#bonnes-pratiques)).
 2. **Le fournisseur d'IA choisi**, seulement quand vous utilisez l'assistant ou listez ses modèles :
    Anthropic, OpenAI, Mistral, xAI, Ollama sur votre propre machine, ou l'adresse « compatible OpenAI » que
    vous saisissez vous-même.
-3. **La mesure d'audience** par [Umami](https://umami.is), sur la page stable seulement : l'adresse de la
+3. **La mesure d'audience anonyme** (statistiques d'usage), sur la page stable seulement : l'adresse de la
    page (sans la partie après `#`), le site de provenance, la langue du navigateur, la taille de l'écran et
    le nom d'une action, avec au plus un format d'export ou un nom de fournisseur. Ni cookie, ni diagramme,
-   ni message, ni clé. Elle est coupée par « Do Not Track », « Global Privacy Control », et par
-   `localStorage.setItem('umami.disabled', '1')`. Le code est dans [src/analytics.js](../src/analytics.js).
+   ni message, ni clé. Elle est coupée par « Do Not Track » et « Global Privacy Control ». Le code est dans [src/analytics.js](../src/analytics.js).
 
 La connexion MCP, l'enregistrement et les exports sur serveur n'existent pas dans la version en ligne :
 leur adresse de serveur est forcée à vide quand la version en ligne est construite
