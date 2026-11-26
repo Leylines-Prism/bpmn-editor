@@ -617,7 +617,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
     const attachments = pending.slice()
     const model = currentModel()
-    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.provider }
+    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.providerId || model.provider }
     if (attachments.some((a) => !supports(caps, a.kind))) {
       add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic, OpenAI or Mistral model, or paste the text of the document.`,
         `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic, OpenAI ou Mistral, ou collez le texte du document.`))

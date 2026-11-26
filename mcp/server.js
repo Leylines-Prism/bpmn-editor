@@ -18,6 +18,7 @@ import * as z from 'zod/v4'
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
 
+import { LOCAL_HOSTS, LOCKED_MESSAGE, mcpAccess } from './auth.js'
 import { EditorBridge } from './bridge.js'
 import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
 import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
@@ -26,7 +27,7 @@ import { isForbiddenAddress, relayFetch } from './relay-guard.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { buildPrompts } from '../src/ai/prompts.js'
-import { describeProviderError } from '../src/ai/errors.js'
+import { attachmentRefused, describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
 import { imageCaption, isImageResult } from '../src/ai/image-result.js'
 import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels, providerBaseUrl } from '../src/ai/providers.js'
@@ -37,7 +38,6 @@ try {
 } catch {}
 
 const HOST = process.env.MCP_HOST || '127.0.0.1'
-const LOCAL_HOSTS = ['127.0.0.1', 'localhost', '::1']
 const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
   .split(',')
   .map((s) => s.trim())
@@ -45,6 +45,8 @@ const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
 const PORT = Number(process.env.MCP_PORT || 3333)
 // Jeton facultatif demandé aux clients MCP (en-tête Authorization: Bearer …).
 const MCP_TOKEN = (process.env.MCP_TOKEN || '').trim()
+// Sans jeton, /mcp est fermé dès que le serveur accepte un nom non local (voir auth.js).
+const MCP_ACCESS = mcpAccess({ host: HOST, allowedHosts: ALLOWED_HOSTS, token: MCP_TOKEN, auth: process.env.MCP_AUTH })
 // Relais des fournisseurs réglés dans la fenêtre Options. CHAT_RELAY=off le coupe : seuls
 // les modèles configurés sur le serveur restent proposés.
 const RELAY = !/^(off|false|0|no)$/i.test((process.env.CHAT_RELAY || '').trim())
@@ -111,6 +113,9 @@ const app = createMcpExpressApp(
 )
 
 function checkToken(req, res, next) {
+  if (MCP_ACCESS.locked) {
+    return res.status(401).json({ jsonrpc: '2.0', error: { code: -32001, message: LOCKED_MESSAGE }, id: null })
+  }
   if (!MCP_TOKEN) return next()
   const given = Buffer.from((req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim())
   const expected = Buffer.from(MCP_TOKEN)
@@ -183,7 +188,7 @@ function chatCors(req, res, next) {
 }
 app.options('/chat', chatCors)
 app.options('/chat/models', chatCors)
-app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), relay: RELAY, mcpAuth: Boolean(MCP_TOKEN) }))
+app.get('/chat', chatCors, (req, res) => res.json({ ...chat.status(), relay: RELAY, mcpAuth: Boolean(MCP_TOKEN), mcpLocked: MCP_ACCESS.locked }))
 
 // Fournisseur réglé dans la fenêtre Options : { provider, format, baseUrl, apiKey, model? }.
 // La clé n'est ni enregistrée ni écrite dans le journal. Renvoie null si invalide.
@@ -290,6 +295,13 @@ function checkId(req, res, next) {
   if (!DiagramStore.validId(req.params.id)) return res.status(400).json({ error: 'Invalid id' })
   next()
 }
+// Dossiers de données sans droit d'écriture : cas courant d'un dossier monté créé par Docker
+// au nom de root, alors que le conteneur tourne sous l'utilisateur 1000.
+const NOT_WRITABLE = ['EACCES', 'EPERM', 'EROFS']
+const DATA_DIR_HINT = {
+  en: 'With Docker, the mounted data folder must belong to the user the container runs as (1000:1000 by default): chown -R 1000:1000 on the host folder, then restart.',
+  fr: "Avec Docker, le dossier de données monté doit appartenir à l'utilisateur du conteneur (1000:1000 par défaut) : chown -R 1000:1000 sur le dossier de l'hôte, puis redémarrez.",
+}
 const failed = (res, err) => {
   log('[diagrams] erreur :', err.message)
   res.status(500).json({ error: 'Storage error' })
@@ -344,7 +356,12 @@ app.post('/exports', chatCors, exportBody, async (req, res) => {
     res.json({ file: await exportsStore.save(name, format, req.body) })
   } catch (err) {
     log('[exports] erreur :', err.message)
-    res.status(500).json({ error: T(req, 'The server could not save the file', "Le serveur n'a pas pu enregistrer le fichier") })
+    res.status(500).json({
+      error: NOT_WRITABLE.includes(err.code)
+        ? T(req, `The server cannot write to its exports folder (${exportsStore.dir}). ${DATA_DIR_HINT.en}`,
+            `Le serveur ne peut pas écrire dans son dossier d'exports (${exportsStore.dir}). ${DATA_DIR_HINT.fr}`)
+        : T(req, 'The server could not save the file', "Le serveur n'a pas pu enregistrer le fichier"),
+    })
   }
 })
 
@@ -358,6 +375,8 @@ for (const store of [diagrams, exportsStore]) {
 
 function chatErrorMessage(err, lang = 'en') {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
+  const refused = attachmentRefused(err, lang)
+  if (refused) return refused
   if (err instanceof Anthropic.AuthenticationError) return T('API key rejected. Check ANTHROPIC_API_KEY on the server.', "Clé API refusée. Vérifiez ANTHROPIC_API_KEY sur le serveur.")
   if (err instanceof Anthropic.PermissionDeniedError) return T('This API key has no access to this model.', "Cette clé API n'a pas accès à ce modèle.")
   if (err instanceof Anthropic.RateLimitError) return T('API usage limit reached, or credits used up. Try again later.', "Limite d'utilisation de l'API atteinte, ou crédits épuisés. Réessayez plus tard.")
@@ -387,11 +406,13 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   }
   log(`Serveur MCP BPMN prêt sur http://${HOST}:${PORT}/mcp`)
   if (MCP_TOKEN) log('Les clients MCP doivent fournir le jeton MCP_TOKEN.')
-  const publicHosts = LOCAL_HOSTS.includes(HOST) ? [] : ALLOWED_HOSTS.filter((h) => !LOCAL_HOSTS.includes(h))
-  if (publicHosts.length && !MCP_TOKEN) {
-    log(`ATTENTION : le serveur accepte le nom ${publicHosts.join(', ')} mais MCP_TOKEN est vide.`)
+  const publicHosts = MCP_ACCESS.publicHosts.join(', ')
+  if (MCP_ACCESS.locked) {
+    log(`ATTENTION : le serveur accepte le nom ${publicHosts} mais MCP_TOKEN est vide : /mcp est fermé (réponse 401).`)
+    log('Réglez MCP_TOKEN (la fenêtre « Connecter un agent » en génère un), ou MCP_AUTH=off pour ouvrir /mcp sans jeton.')
+  } else if (MCP_ACCESS.openOnPurpose) {
+    log(`ATTENTION : MCP_AUTH=off, /mcp est ouvert sans jeton sous le nom ${publicHosts}.`)
     log('Quiconque atteint cette adresse peut piloter l\'éditeur, utiliser les clés d\'API du serveur et lire les diagrammes.')
-    log('Réglez MCP_TOKEN, et placez le site derrière une authentification (voir le README).')
   }
   if (!RELAY) log('Relais des fournisseurs de la fenêtre Options désactivé (CHAT_RELAY=off).')
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)

@@ -83,7 +83,7 @@ sur le GitHub Container Registry, pour amd64 et arm64 :
 ### En ligne de commande
 
 ```
-mkdir bpmn-pilot && cd bpmn-pilot && mkdir bpmn-data
+mkdir bpmn-pilot && cd bpmn-pilot
 curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
@@ -149,11 +149,15 @@ Ouvrez-le avec votre explorateur de fichiers pour récupérer vos fichiers :
 
 Où est le dossier :
 
-- **Docker Desktop** (Windows, macOS) : il est créé au premier démarrage, à côté du fichier compose.
-- **Linux** : créez-le avant le premier démarrage (`mkdir bpmn-data`). Le serveur tourne sous
-  l'utilisateur 1000, sans root, pour que les fichiers vous appartiennent. Si `id -u` et `id -g`
-  donnent d'autres nombres, ajoutez `PUID=` et `PGID=` avec ces nombres au fichier `.env`. Si le
-  serveur ne peut pas écrire dans le dossier, il le dit dans son journal (`docker compose logs mcp`).
+- Il est créé au premier démarrage, à côté du fichier compose, sous Docker Desktop (Windows, macOS)
+  comme sous Linux. Un court service `data-init` le prépare avant le serveur (crée `diagrams/` et
+  `exports/`, les donne à l'utilisateur du serveur), puis s'arrête : son état « Exited (0) » est
+  normal.
+- **Linux** : le serveur tourne sous l'utilisateur 1000, sans root, pour que les fichiers vous
+  appartiennent. Si `id -u` et `id -g` donnent d'autres nombres, ajoutez `PUID=` et `PGID=` avec ces
+  nombres au fichier `.env`. Si le serveur ne peut toujours pas écrire dans le dossier, il le dit dans
+  son journal au démarrage (`docker compose logs mcp`) et dans l'erreur de l'export, avec le dossier
+  en cause.
 - **Ailleurs** : réglez `BPMN_DATA_DIR` sur le chemin d'un autre dossier. Dans un outil de gestion de
   conteneurs, donnez toujours un chemin absolu.
 
@@ -163,6 +167,23 @@ Linux et sans élévation de privilèges. Il n'accepte que les cinq formats d'ex
 fichier correspond à son format, prend 20 Mo au plus par export et nettoie les noms de fichiers (pas
 de dossier, pas de fichier caché, pas de nom réservé par Windows).
 
+## En cas de problème (version Docker)
+
+- **Le journal du serveur** dit ce qu'il ne peut pas faire au démarrage :
+  `docker compose -f docker-compose.image.yml logs mcp` (sans `-f …` depuis le code source, ou le
+  journal du conteneur dans votre outil de gestion de conteneurs).
+- **Un export vers le serveur, ou un enregistrement dans Mes diagrammes, échoue** : le serveur ne
+  peut pas écrire dans son dossier de données, et l'erreur le nomme. Le service `data-init` prépare ce
+  dossier à chaque démarrage ; si l'erreur reste, le dossier appartient à un autre utilisateur que
+  `PUID`:`PGID` (1000:1000 par défaut).
+- **Un agent reçoit une erreur 401 « MCP is closed »** : l'éditeur est servi sous un autre nom que
+  localhost sans `MCP_TOKEN`. Réglez le jeton (voir [Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)).
+- **Que sait faire mon modèle ?** `docker compose -f docker-compose.image.yml exec mcp node mcp/check-providers.js`
+  essaie chaque modèle réglé sur le serveur avec de vrais appels : réponse, appel d'outil, image, PDF.
+  Elle distingue une erreur de réglage (clé, adresse, nom du modèle, refus du fournisseur) d'une limite
+  du modèle (pas d'appel d'outil, pas de vision, pas de PDF), pour quelques centaines de jetons par
+  modèle. Elle ne couvre pas les fournisseurs saisis dans la fenêtre Options, qui restent dans le navigateur.
+
 ## Le joindre depuis d'autres machines
 
 Le conteneur sert du HTTP simple sur `127.0.0.1:8080`, pour cette machine seulement. Pour l'utiliser
@@ -170,7 +191,9 @@ depuis vos autres appareils, gardez-le sur un réseau privé : [Tailscale Serve]
 par exemple, lui donne une adresse HTTPS que seules les machines de votre tailnet peuvent joindre.
 Donnez ensuite son nouveau nom à l'éditeur, dans le fichier `.env` à côté du fichier Compose, et
 ajoutez un jeton `MCP_TOKEN=...` (la fenêtre « Connecter un agent » en génère un ; depuis le code
-source, il va dans `mcp/.env`) :
+source, il va dans `mcp/.env`). Le jeton est obligatoire ici : dès que `MCP_ALLOWED_HOSTS` contient un
+autre nom que localhost, `/mcp` répond 401 tant que `MCP_TOKEN` n'est pas réglé. `MCP_AUTH=off`
+l'ouvre sans jeton, pour un réseau de confiance ou derrière un proxy qui authentifie déjà `/mcp` :
 
 ```
 BPMN_EDITOR_ORIGINS=https://bpmn.example.com
@@ -211,7 +234,10 @@ utiliser (`http://localhost:8080/mcp`, ou `https://votre-domaine/mcp`), et le r�
 Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor ou un autre client MCP. L'agent dessine dans le dernier onglet de l'éditeur
 utilisé : gardez-le ouvert.
 
-Un jeton facultatif protège cet accès : la même fenêtre en génère un et dit où le mettre.
+Un jeton protège cet accès : la même fenêtre en génère un et dit où le mettre. Il est facultatif
+sur `localhost`, et obligatoire dès que l'éditeur est servi sous un autre nom (voir
+[Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). Sans lui, la fenêtre
+indique que MCP est fermé, et l'agent reçoit une erreur 401 qui nomme `MCP_TOKEN`.
 
 ## Où sont gardées vos clés API
 
@@ -246,11 +272,13 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | Réglage | Rôle |
 |---|---|
 | `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés API de l'assistant IA. Voir `mcp/.env.example`. |
-| `MCP_TOKEN` (`mcp/.env`) | Jeton que les agents doivent envoyer. La fenêtre « Connecter un agent » en génère un. |
+| `MCP_TOKEN` (`mcp/.env`) | Jeton que les agents doivent envoyer. La fenêtre « Connecter un agent » en génère un. Obligatoire quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost. |
+| `MCP_AUTH` (`mcp/.env`) | `off` ouvre `/mcp` sans jeton sous un autre nom que localhost. Seulement sur un réseau de confiance, ou derrière un proxy qui authentifie `/mcp`. |
 | `BPMN_PORT` | Port du site (8080 par défaut). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | L'adresse et le nom du site quand il est servi sous un nom de domaine (voir plus haut). |
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
-| `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). |
+| `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). Dans un outil de gestion de conteneurs, un chemin absolu. |
+| `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires du dossier de données (1000 par défaut). |
 | `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires de ses fichiers (1000 par défaut). |
 | `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
 

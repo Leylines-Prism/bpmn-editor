@@ -381,7 +381,7 @@
         <h3>3. Partir d'un fichier</h3>
         <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil, d'une procédure en PDF ou en Word, d'une liste d'étapes dans un tableur, ou d'un export d'un autre outil. Collez le fichier (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-le sur le panneau, ou choisissez-le avec le trombone, puis demandez-lui de le dessiner. Jusqu'à 5 fichiers par message.</p>
         <ul>
-          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, 5 Mo au plus) et <strong>PDF</strong> (20 Mo au plus) partent tels quels chez le modèle. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral.</li>
+          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, 5 Mo au plus) et <strong>PDF</strong> (20 Mo au plus) partent tels quels chez le modèle. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral. Un serveur compatible OpenAI (Ollama, LiteLLM, vLLM…) reçoit les images, pas les PDF. Si le modèle choisi ne lit pas les images, l'assistant le dit au lieu d'une erreur technique.</li>
           <li><strong>Documents bureautiques</strong> (Word, Excel, PowerPoint, et leurs équivalents OpenDocument : <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.odt</code>, <code>.ods</code>, <code>.odp</code>) et <strong>fichiers texte</strong> (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML, journaux, e-mails) sont lus dans votre navigateur, et seul leur texte part avec le message : les tableaux deviennent des lignes, chaque feuille et chaque diapositive garde son nom. Tous les fournisseurs les lisent. Les images contenues dans un document sont laissées de côté.</li>
         </ul>
         <p>Un message compte au plus 100 000 caractères, texte des fichiers compris. Le bouton <em>Agrandir la zone de saisie</em>, en haut à droite du champ, ouvre un éditeur plus grand, où <em>Ouvrir un fichier…</em> insère le texte d'un de ces fichiers, pour l'élaguer avant l'envoi.</p>
@@ -607,6 +607,15 @@
         <details class="faq">
           <summary>Mon agent MCP ne dessine pas.</summary>
           <p>L'agent dessine dans le dernier onglet de l'éditeur utilisé : gardez-le ouvert. Le badge MCP de la barre d'outils doit indiquer « MCP : prêt » : l'onglet est relié au serveur et attend un agent. Dès qu'un agent se connecte, il affiche son nom à la place, par exemple « MCP : Claude Code », et son survol donne sa version et l'heure de son dernier appel. Le protocole MCP ne transmet que ce nom et cette version : ni le modèle utilisé, ni le compte. Un clic dessus redonne l'adresse et les réglages à coller dans l'agent.</p>
+          <p>Si l'agent reçoit une erreur 401 « MCP is closed », l'éditeur est servi sous un autre nom que localhost sans jeton : le serveur ferme alors l'accès MCP. Générez un jeton dans la fenêtre <span class="ui">Connecter un agent</span>, ajoutez-le aux variables du serveur (<code>MCP_TOKEN</code>), relancez, puis collez le nouveau réglage dans l'agent.</p>
+        </details>
+        <details class="faq">
+          <summary>Un export vers le serveur, ou un enregistrement dans Mes diagrammes, échoue.</summary>
+          <p>Le serveur ne peut pas écrire dans son dossier de données : le message d'erreur donne le dossier en cause. Le service <code>data-init</code> du fichier compose prépare ce dossier à chaque démarrage. Si l'erreur reste, le dossier appartient à un autre utilisateur que celui du serveur (1000 par défaut, ou <code>PUID</code> et <code>PGID</code>) : le journal <code>docker compose logs mcp</code> le précise.</p>
+        </details>
+        <details class="faq">
+          <summary>Comment vérifier ce que sait faire mon modèle ?</summary>
+          <p>La commande <code>docker compose exec mcp node mcp/check-providers.js</code> essaie chaque modèle réglé sur le serveur : réponse, appel d'outil, image, PDF. Elle distingue une erreur de réglage (clé, adresse, nom du modèle) d'une limite du modèle, et coûte quelques centaines de jetons par modèle.</p>
         </details>
         <!-- /docker -->
         <details class="faq">

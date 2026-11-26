@@ -15,6 +15,23 @@ const isLocalhost = (url) => {
   }
 }
 
+// Pièce jointe refusée par le modèle (400 qui parle d'image, de vision ou de PDF) : c'est une
+// limite du modèle choisi, pas un réglage. Renvoie le message, ou null.
+export function attachmentRefused(err, lang = 'en') {
+  if (err?.status !== 400) return null
+  const text = err?.message || ''
+  const T = (en, fr) => (lang === 'fr' ? fr : en)
+  if (/\bpdf\b|document_url|file_data|\bfile\b.*not supported/i.test(text)) {
+    return T(`This model cannot read PDF files. Choose a model that reads them, or paste the text of the document (${text}).`,
+      `Ce modèle ne sait pas lire les PDF. Choisissez un modèle qui les lit, ou collez le texte du document (${text}).`)
+  }
+  if (/image|vision|multimodal|multi-modal/i.test(text)) {
+    return T(`This model cannot read images. Choose a model with vision, or describe the image in text (${text}).`,
+      `Ce modèle ne sait pas lire les images. Choisissez un modèle avec vision, ou décrivez l'image en texte (${text}).`)
+  }
+  return null
+}
+
 export function describeProviderError(err, { label, providerId, baseUrl = '', browser = false, origin = '', lang = 'en' } = {}) {
   const fr = lang === 'fr'
   const T = (en, frText) => (fr ? frText : en)
@@ -72,7 +89,7 @@ export function describeProviderError(err, { label, providerId, baseUrl = '', br
       return T(`${label} usage limit reached, or credits used up. Try again later.`,
         `Limite d'utilisation de ${label} atteinte, ou crédits épuisés. Réessayez plus tard.`)
     case 400:
-      return T(`Request rejected by ${label}${detail}.`, `Requête refusée par ${label}${detail}.`)
+      return attachmentRefused(err, lang) || T(`Request rejected by ${label}${detail}.`, `Requête refusée par ${label}${detail}.`)
     case undefined:
       return err?.message || String(err)
     default:

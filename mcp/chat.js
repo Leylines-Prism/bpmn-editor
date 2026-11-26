@@ -18,6 +18,14 @@ import { relayFetch } from './relay-guard.js'
 import { buildCatalog } from './models.js'
 
 const MAX_CONVERSATIONS = 20
+
+const openaiHost = (url) => {
+  try {
+    return new URL(url || 'https://api.openai.com/v1').hostname
+  } catch {
+    return ''
+  }
+}
 const TOOL_SET = createToolSet(z)
 
 
@@ -46,6 +54,9 @@ export class ChatService {
         })
       : null
     this.openaiEffort = process.env.OPENAI_REASONING_EFFORT || null
+    // OPENAI_BASE_URL sert aussi à Ollama, LiteLLM, vLLM… Seule l'API d'OpenAI lit les PDF :
+    // les autres serveurs sont vus comme « compat » pour les pièces jointes.
+    this.openaiProviderId = openaiHost(process.env.OPENAI_BASE_URL) === 'api.openai.com' ? 'openai' : 'compat'
     // Mistral passe par le même client : son API suit le format /chat/completions.
     this.mistral = process.env.MISTRAL_API_KEY
       ? new OpenAICompatClient({
@@ -66,8 +77,13 @@ export class ChatService {
       enabled: this.enabled,
       relay: true, // accepte aussi les fournisseurs réglés dans la fenêtre Options
       model: this.defaultKey,
-      models: this.models.map(({ key, label, provider, providerLabel }) => ({ id: key, label, provider, providerLabel })),
+      models: this.models.map(({ key, label, provider, providerLabel }) => ({ id: key, label, provider, providerLabel, providerId: this.providerId(provider) })),
     }
+  }
+
+  // Fournisseur au sens des pièces jointes (voir supports() dans src/ai/attachments.js).
+  providerId(provider) {
+    return provider === 'openai' ? this.openaiProviderId : provider
   }
 
   hasModel(key) {

@@ -5,7 +5,8 @@
   "type": "module",
   "description": "Serveur MCP qui pilote l'éditeur BPMN ouvert dans le navigateur",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "check-providers": "node check-providers.js"
   },
   "engines": {
     "node": ">=20"

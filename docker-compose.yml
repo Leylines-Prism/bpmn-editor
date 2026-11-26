@@ -32,6 +32,37 @@ services:
       - no-new-privileges:true
     restart: unless-stopped
 
+  # Prépare le dossier de données avant le serveur, puis s'arrête (état « Exited 0 » attendu) :
+  # le crée s'il manque, avec diagrams/ et exports/, et le donne à l'utilisateur du serveur.
+  # Sans lui, un dossier créé par Docker appartient à root et le serveur ne peut pas y écrire.
+  data-init:
+    build:
+      context: .
+      dockerfile: mcp/Dockerfile
+    user: "0:0"
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        mkdir -p /data/diagrams /data/exports &&
+        chown "$$PUID:$$PGID" /data /data/diagrams /data/exports ||
+        echo "data-init - could not prepare /data, check the owner of the data folder"
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+    volumes:
+      - ${BPMN_DATA_DIR:-./bpmn-data}:/data
+    read_only: true
+    network_mode: none
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+
   mcp:
     build:
       context: .
@@ -45,12 +76,15 @@ services:
       MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
     # Dossier de données, à ouvrir dans un explorateur de fichiers : diagrams/ (« Mes diagrammes »)
     # et exports/ (menu Exporter réglé sur « Serveur » ou « Les deux »). Par défaut ./bpmn-data, à
-    # côté de ce fichier. Sous Linux, créez-le avant le premier démarrage (voir le README).
+    # côté de ce fichier. Le service data-init le crée et le prépare au démarrage.
     volumes:
       - ${BPMN_DATA_DIR:-./bpmn-data}:/data
     # Le serveur tourne sous cet utilisateur, sans root : les fichiers créés lui appartiennent.
     # Sous Linux, mettez votre uid et votre gid (commande id) si ce ne sont pas 1000.
     user: "${PUID:-1000}:${PGID:-1000}"
+    depends_on:
+      data-init:
+        condition: service_completed_successfully
     # Durcissement : système de fichiers en lecture seule hors du dossier de données, aucune
     # capacité Linux, pas d'élévation de privilèges.
     read_only: true
