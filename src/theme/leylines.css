@@ -1367,8 +1367,9 @@ body.presenting #canvas .djs-container { cursor: grab; }
 }
 #presentation-bar[hidden], #presentation-hint[hidden] { display: none; }
 #presentation-bar .btn.icon-only { font-size: 18px; }
+/* En haut, sous la barre : le bas du schéma garde la commande de vitesse de la simulation. */
 #presentation-hint {
-  position: fixed; left: 50%; bottom: var(--space-4); transform: translateX(-50%); z-index: 20;
+  position: fixed; left: 50%; top: calc(var(--space-4) + 52px); transform: translateX(-50%); z-index: 20;
   padding: 6px 14px; border-radius: var(--radius-pill);
   border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink-muted);
   font-size: 13px; line-height: 18px; white-space: nowrap; pointer-events: none;
@@ -1377,3 +1378,7 @@ body.presenting #canvas .djs-container { cursor: grab; }
 #presentation-hint.fade { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { #presentation-hint { transition: none; } }
 @media (max-width: 560px) { #presentation-hint { white-space: normal; width: calc(100vw - 32px); text-align: center; } }
+
+/* Pendant la simulation, la commande de vitesse (en bas au centre) prend la place de la
+   pastille « Aucun problème » de la vérification, qui la couvrait : le diagramme n'est pas modifiable à ce moment. */
+#canvas .bjs-container.simulation .bjsl-button { display: none; }
