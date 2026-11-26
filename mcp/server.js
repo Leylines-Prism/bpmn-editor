@@ -25,6 +25,7 @@ import { ChatService } from './chat.js'
 import { isForbiddenAddress, relayFetch } from './relay-guard.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
+import { buildPrompts } from '../src/ai/prompts.js'
 import { describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
 import { imageCaption, isImageResult } from '../src/ai/image-result.js'
@@ -65,6 +66,7 @@ const log = (...args) =>
 const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
 const chat = new ChatService({ bridge, log })
 const TOOLS = buildTools(z)
+const PROMPTS = buildPrompts(z)
 
 function buildMcpServer() {
   const server = new McpServer({ name: 'bpmn-pilot', version: '0.1.0' }, { instructions: INSTRUCTIONS })
@@ -91,6 +93,13 @@ function buildMcpServer() {
           return { content: [{ type: 'text', text: `Erreur : ${err.message}` }], isError: true }
         }
       },
+    )
+  }
+  for (const prompt of PROMPTS) {
+    server.registerPrompt(
+      prompt.name,
+      { title: prompt.title, description: prompt.description, argsSchema: prompt.argsSchema },
+      (args) => ({ messages: [{ role: 'user', content: { type: 'text', text: prompt.text(args ?? {}) } }] }),
     )
   }
   return server
