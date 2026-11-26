@@ -9,12 +9,18 @@
 //   - carte de chaleur de la dernière simulation, s'il y en a une ;
 //   - axes d'amélioration déduits des constats, par priorité, avec l'effet attendu ;
 //   - événements de fin (part des instances si une simulation a tourné), activités par
-//     couloir, séquence des éléments.
+//     couloir, séquence des éléments ;
+//   - après une simulation, les éléments les plus traversés, le passage par branche de
+//     passerelle et ce qui n'est jamais atteint ;
+//   - les six contrôles de qualité (src/diagram-checks.js), calculés dans la page ;
+//   - l'analyse du Co-pilote IA, si elle a été enregistrée (src/copilot-analysis.js), et les
+//     probabilités qu'il a proposées et que personne n'a encore revues.
 // Le menu Expert et l'outil get_process_report passent par ici.
 
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
+import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
 
 const LEVELS = ['error', 'warning', 'todo']
 const LEVEL_LABEL = {
@@ -31,6 +37,21 @@ const SOURCE_LABEL = {
   bpmnlint: () => 'bpmnlint',
   check: () => T('Check', 'Contrôle'),
   simulation: () => 'Simulation',
+  copilot: () => T('AI co-pilot', 'Co-pilote IA'),
+}
+const POINT_LABEL = {
+  bottleneck: () => T('Bottleneck', 'Goulot'),
+  rare_path: () => T('Rare path', 'Chemin rare'),
+  risk: () => T('Risk', 'Risque'),
+  improvement: () => T('Improvement', 'Piste d\'amélioration'),
+}
+export const CHECK_LABEL = {
+  xml: () => T('Well-formed XML', 'XML bien formé'),
+  metamodel: () => T('Conforms to the BPMN 2.0 metamodel', 'Conforme au métamodèle BPMN 2.0'),
+  references: () => T('References and scopes', 'Références et portées'),
+  di: () => T('Every element drawn (DI)', 'Chaque élément dessiné (DI)'),
+  reimport: () => T('Reimported by bpmn-js', 'Réimport par bpmn-js'),
+  lint: () => T('bpmnlint rules', 'Règles bpmnlint'),
 }
 const COLORS = {
   error: { strong: '#DC2626', soft: '#FEF2F2', text: '#FFFFFF' },
@@ -126,8 +147,9 @@ function allLanes(laneSets, out = []) {
 
 // ── Construction ────────────────────────────────────────────────────────────
 
-// options : { name (nom du fichier), simulation (résultat de la carte de chaleur), lint (résultats bpmnlint) }
-export async function buildReport(modeler, { name = '', simulation = null, lint = null } = {}) {
+// options : { name (nom du fichier), simulation (résultat de la carte de chaleur), lint (résultats
+// bpmnlint), checks (rapport de checkDiagram, src/diagram-checks.js) }
+export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null } = {}) {
   const definitions = modeler.getDefinitions()
   const translate = modeler.get('translate')
   const { processes, participants } = collectContainers(definitions)
@@ -305,6 +327,20 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     }
   }
 
+  // Probabilités proposées par le Co-pilote IA et pas encore revues : un constat par passerelle.
+  for (const n of nodes) {
+    if (!isGateway(n)) continue
+    const branches = out(n)
+    const ai = branches.filter(isAiProbability)
+    if (!ai.length) continue
+    add({
+      kind: 'ai-probability', level: 'todo', element: n, source: 'copilot',
+      title: T('Probabilities proposed by the AI co-pilot', 'Probabilités proposées par le Co-pilote IA'),
+      detail: T(`${ai.length} of ${branches.length} branch(es) to review: Properties panel, Simulation group, on each flow.`,
+        `${ai.length} branche(s) sur ${branches.length} à revoir : panneau Propriétés, groupe Simulation, sur chaque flux.`),
+    })
+  }
+
   findings.sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level))
   const worst = new Map()
   for (const f of findings) {
@@ -324,7 +360,7 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     const level = list[0].level
     const elements = [...new Map(list.flatMap((f) => f.elements || (f.element ? [f.element] : [])).map((e) => [e.id, e])).values()]
     const axis = axisFor(kind, list, elements, { quoted, simulation })
-    if (axis) axes.push({ ...axis, level, source: kind === 'rework' ? 'simulation' : 'check' })
+    if (axis) axes.push({ ...axis, level, source: kind === 'rework' ? 'simulation' : kind === 'ai-probability' ? 'copilot' : 'check' })
   }
   axes.sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level))
 
@@ -368,6 +404,61 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     activities: (l.flowNodeRef || []).filter(isActivity).sort((a, b) => (number.get(a.id) || 0) - (number.get(b.id) || 0)).map(ref),
   }))
 
+  // ── Carte de chaleur : les chiffres que la simulation a comptés ──
+  let heat = null
+  if (simulation?.runs) {
+    const runs = simulation.runs
+    const count = (bo) => simulation.nodes[bo.id] || 0
+    const top = nodes.filter((n) => isActivity(n) && count(n) > 0)
+      .sort((a, b) => count(b) - count(a)).slice(0, 5)
+      .map((n) => ({ id: n.id, name: ref(n), count: count(n), perInstance: count(n) / runs }))
+    const branches = []
+    for (const g of nodes) {
+      if (!isGateway(g) || is(g, 'bpmn:ParallelGateway') || out(g).length < 2) continue
+      const flowsOut = out(g)
+      const total = flowsOut.reduce((a, f) => a + (simulation.flows[f.id] || 0), 0)
+      for (const f of flowsOut) {
+        const passes = simulation.flows[f.id] || 0
+        const p = Number(f.get ? f.get('bpmnpilot:probability') : NaN)
+        branches.push({
+          gateway: clean(g.name) || typeLabel(g),
+          branch: clean(f.name),
+          target: f.targetRef ? ref(f.targetRef) : '',
+          probability: Number.isFinite(p) ? p : null,
+          ai: isAiProbability(f),
+          count: passes,
+          share: total ? passes / total : 0,
+        })
+      }
+    }
+    const never = nodes.filter((n) => !count(n) && !is(n, 'bpmn:BoundaryEvent') && !isGateway(n)).map(ref)
+    heat = { top, branches, never }
+  }
+
+  // ── Contrôles de qualité ──
+  const checkRows = (checks?.checks || []).map((c) => ({
+    id: c.id,
+    label: CHECK_LABEL[c.id] ? CHECK_LABEL[c.id]() : c.id,
+    ok: !!c.ok,
+    skipped: !!c.skipped,
+    problems: c.ok || c.skipped ? 0 : (c.problems?.length || 0) + (c.more || 0),
+    first: c.ok || c.skipped ? [] : (c.problems || []).slice(0, 3).map((p) => clean(p.message)),
+  }))
+
+  // ── Analyse du Co-pilote IA ──
+  const saved = readAnalysis(definitions)
+  const nameOf = (id) => {
+    const bo = byId.get(id) || findAny(definitions, id)
+    return bo ? (is(bo, 'bpmn:FlowNode') ? ref(bo) : clean(bo.name) || typeLabel(bo)) : id
+  }
+  const analysis = saved && {
+    author: saved.author,
+    date: saved.date ? new Date(saved.date) : null,
+    stale: !!saved.fingerprint && saved.fingerprint !== structureFingerprint(definitions),
+    summary: saved.summary,
+    points: saved.points.map((p) => ({ kind: p.kind, label: POINT_LABEL[p.kind](), elements: p.elements.map(nameOf), elementIds: p.elements, text: p.text })),
+  }
+
   const title = clean(participants.map((p) => p.name).filter(Boolean).join(' · '))
     || clean(processes.map((p) => p.name).filter(Boolean).join(' · '))
     || clean(name) || T('Process', 'Processus')
@@ -401,6 +492,9 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     simulation: simulation?.runs
       ? { runs: simulation.runs, source: simulation.source, truncated: simulation.truncated || 0, nodes: { ...simulation.nodes }, flows: { ...simulation.flows } }
       : null,
+    heat,
+    checks: checkRows,
+    analysis,
     flagged: Object.fromEntries(worst),
   }
 }
@@ -463,6 +557,14 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
         'Traiter la cause des retours : informations demandées plus tôt, contrôle en amont.'),
       effect: T(`Up to ${num(top.count - simulation.runs)} executions avoided for ${num(simulation.runs)} instances.`,
         `Jusqu'à ${num(top.count - simulation.runs)} exécutions évitées pour ${num(simulation.runs)} instances.`),
+    }
+  }
+  if (kind === 'ai-probability') {
+    return {
+      title: T('Review the proposed probabilities', 'Revoir les probabilités proposées'),
+      change: T(`Check the branches of ${quoted(elements)} against what you know of the process, then keep or correct each value.`,
+        `Confronter les branches de ${quoted(elements)} à ce que vous savez du processus, puis valider ou corriger chaque valeur.`),
+      effect: T('The simulation and the heatmap rest on reviewed figures.', 'La simulation et la carte de chaleur reposent sur des chiffres revus.'),
     }
   }
   if (kind === 'doc') {
@@ -538,6 +640,39 @@ export function reportToMarkdown(r) {
     lines.push(`| ${T('Priority', 'Priorité')} | ${T('Area', 'Axe')} | ${T('Proposed change', 'Modification proposée')} | ${T('Expected effect', 'Effet attendu')} |`, '|---|---|---|---|')
     r.axes.forEach((a, i) => lines.push(`| **${PRIORITY_LABEL[a.level]().toUpperCase()}** | ${i + 1}. ${mdCell(a.title)} | ${mdCell(a.change)} | ${mdCell(a.effect)} |`))
   } else lines.push(T('Nothing to improve from the checks.', 'Rien à améliorer d\'après les contrôles.'))
+  if (r.analysis) {
+    const a = r.analysis
+    lines.push('', `## ${T('AI co-pilot analysis', 'Analyse du Co-pilote IA')}`, '')
+    lines.push(`*${analysisByline(a)}*`)
+    if (a.stale) lines.push('', `> ${staleText()}`)
+    if (a.summary) lines.push('', a.summary)
+    if (a.points.length) {
+      lines.push('', `| ${T('Kind', 'Nature')} | ${T('Elements', 'Éléments')} | ${T('Point', 'Point')} |`, '|---|---|---|')
+      for (const p of a.points) lines.push(`| **${mdCell(p.label)}** | ${mdCell(p.elements.join(' · '))} | ${mdCell(p.text)} |`)
+    }
+  }
+  if (r.heat) {
+    const h = r.heat
+    lines.push('', `## ${T('Heatmap', 'Carte de chaleur')}`, '')
+    lines.push(heatIntro(r.simulation))
+    if (h.top.length) {
+      lines.push('', `### ${T('Most traversed activities', 'Activités les plus traversées')}`, '')
+      lines.push(`| ${T('Activity', 'Activité')} | ${T('Passes', 'Passages')} | ${T('Per instance', 'Par instance')} |`, '|---|---|---|')
+      for (const t of h.top) lines.push(`| ${mdCell(t.name)} | ${num(t.count)} | ${fmt(t.perInstance)} |`)
+    }
+    if (h.branches.length) {
+      lines.push('', `### ${T('Gateway branches', 'Branches des passerelles')}`, '')
+      lines.push(`| ${T('Gateway', 'Passerelle')} | ${T('Branch', 'Branche')} | ${T('Probability set', 'Probabilité saisie')} | ${T('Passes', 'Passages')} | ${T('Observed share', 'Part observée')} |`, '|---|---|---|---|---|')
+      for (const b of h.branches) lines.push(`| ${mdCell(b.gateway)} | ${mdCell(branchText(b))} | ${probabilityText(b)} | ${num(b.count)} | ${Math.round(b.share * 100)} % |`)
+    }
+    lines.push('', `${T('**Never reached**:', '**Jamais atteints** :')} ${h.never.length ? mdCell(h.never.join(' · ')) : T('none', 'aucun')}.`)
+    if (r.simulation.truncated) lines.push('', truncatedText(r.simulation.truncated))
+  }
+  if (r.checks.length) {
+    lines.push('', `## ${T('Quality checks', 'Contrôles de qualité')}`, '')
+    lines.push(`| ${T('Check', 'Contrôle')} | ${T('Result', 'Résultat')} | ${T('First problems', 'Premiers problèmes')} |`, '|---|---|---|')
+    for (const c of r.checks) lines.push(`| ${mdCell(c.label)} | ${checkResult(c)} | ${mdCell(c.first.join(' · '))} |`)
+  }
   if (r.ends.length) {
     lines.push('', `## ${T('End events', 'Événements de fin')}`, '')
     lines.push(`| ${T('End event', 'Événement de fin')} | ${T('Lane', 'Couloir')} |${r.simulation ? ` ${T('Share of instances', 'Part des instances')} |` : ''}`, `|---|---|${r.simulation ? '---|' : ''}`)
@@ -560,14 +695,30 @@ export function reportToMarkdown(r) {
   return lines.join('\n') + '\n'
 }
 
+const analysisByline = (a) => {
+  const when = a.date && !Number.isNaN(a.date.getTime()) ? dateText(a.date) : ''
+  const who = a.author ? ` (${a.author})` : ''
+  return T(`Written by the AI co-pilot${who}${when ? ` on ${when}` : ''}. To be validated by the process owner.`,
+    `Rédigée par le Co-pilote IA${who}${when ? ` le ${when}` : ''}. À valider par le responsable du processus.`)
+}
+const staleText = () => T('The diagram has changed since this analysis: run it again for an up-to-date reading.',
+  'Le diagramme a changé depuis cette analyse : relancez-la pour une lecture à jour.')
+const heatIntro = (sim) => sim.source === 'batch'
+  ? T(`${num(sim.runs)} tokens computed from the gateway probabilities.`, `${num(sim.runs)} jetons calculés selon les probabilités des passerelles.`)
+  : T(`${num(sim.runs)} token(s) played during the simulation.`, `${num(sim.runs)} jeton(s) joué(s) pendant la simulation.`)
+const truncatedText = (n) => T(`${num(n)} instance(s) stopped after 5,000 steps: check for a loop without exit.`, `${num(n)} instance(s) arrêtée(s) après 5 000 étapes : vérifiez qu'aucune boucle n'est sans sortie.`)
+const branchText = (b) => [b.branch, b.target].filter(Boolean).join(' → ')
+const probabilityText = (b) => (b.probability === null ? T('shared', 'partagée') : `${num(b.probability)} %${b.ai ? T(' (AI, to review)', ' (IA, à revoir)') : ''}`)
+const checkResult = (c) => (c.skipped ? T('not run', 'non fait') : c.ok ? 'OK' : T(`${c.problems} problem(s)`, `${c.problems} problème(s)`))
+
 function dateText(date) {
   return date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 // ── PDF ─────────────────────────────────────────────────────────────────────
 
-// Les polices standard de jsPDF (WinAnsi) n'ont pas les espaces fines insécables.
-const pdfText = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ')
+// Les polices standard de jsPDF (WinAnsi) n'ont ni les espaces fines insécables ni la flèche.
+const pdfText = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/\u2192/g, '>')
 
 function hex(c) {
   const v = parseInt(c.slice(1), 16)
@@ -740,6 +891,13 @@ export async function reportToPdf(modeler, r) {
     y += 8
   }
 
+  const subsection = (title) => {
+    if (y > H - M - 20) { doc.addPage(); y = M + 4 }
+    doc.setFont('helvetica', 'bold').setFontSize(9.5).setTextColor(...ink)
+    doc.text(pdfText(title), M, y + 3)
+    y += 5
+  }
+
   const baseTable = {
     margin: { left: M, right: M, top: M },
     theme: 'grid',
@@ -785,9 +943,7 @@ export async function reportToPdf(modeler, r) {
     section(T('Heatmap', 'Carte de chaleur'))
     const sim = r.simulation
     doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...ink)
-    doc.text(pdfText(sim.source === 'batch'
-      ? T(`${num(sim.runs)} tokens computed from the gateway probabilities.`, `${num(sim.runs)} jetons calculés selon les probabilités des passerelles.`)
-      : T(`${num(sim.runs)} token(s) played during the simulation.`, `${num(sim.runs)} jeton(s) joué(s) pendant la simulation.`)), M, y + 2)
+    doc.text(pdfText(heatIntro(sim)), M, y + 2)
     y += 5
     await drawDiagram(await heatSvg(modeler, sim), H - y - M - 22, 0.6)
     // Légende : dégradé, bornes et lecture.
@@ -806,9 +962,33 @@ export async function reportToPdf(modeler, r) {
     y += 10
     if (sim.truncated) {
       doc.setTextColor(...hex(COLORS.warning.strong))
-      doc.text(pdfText(T(`${num(sim.truncated)} instance(s) stopped after 5,000 steps: check for a loop without exit.`, `${num(sim.truncated)} instance(s) arrêtée(s) après 5 000 étapes : vérifiez qu'aucune boucle n'est sans sortie.`)), M, y)
+      doc.text(pdfText(truncatedText(sim.truncated)), M, y)
       y += 6
     }
+    const h = r.heat
+    if (h?.top.length) {
+      subsection(T('Most traversed activities', 'Activités les plus traversées'))
+      table({
+        head: [[T('Activity', 'Activité'), T('Passes', 'Passages'), T('Per instance', 'Par instance')]],
+        body: h.top.map((t) => [pdfText(t.name), num(t.count), fmt(t.perInstance)]),
+        columnStyles: { 0: { fontStyle: 'bold' }, 1: { cellWidth: 30, halign: 'right' }, 2: { cellWidth: 30, halign: 'right' } },
+      })
+    }
+    if (h?.branches.length) {
+      subsection(T('Gateway branches', 'Branches des passerelles'))
+      table({
+        head: [[T('Gateway', 'Passerelle'), T('Branch', 'Branche'), T('Probability set', 'Probabilité saisie'), T('Passes', 'Passages'), T('Observed share', 'Part observée')]],
+        body: h.branches.map((b) => [pdfText(b.gateway), pdfText(branchText(b)), pdfText(probabilityText(b)), num(b.count), `${Math.round(b.share * 100)} %`]),
+        columnStyles: { 0: { cellWidth: 60, fontStyle: 'bold' }, 2: { cellWidth: 40 }, 3: { cellWidth: 24, halign: 'right' }, 4: { cellWidth: 28, halign: 'right' } },
+        didParseCell: (d) => {
+          if (d.section === 'body' && d.column.index === 2 && h.branches[d.row.index].ai) {
+            d.cell.styles.fillColor = hex(COLORS.todo.soft)
+            d.cell.styles.textColor = hex('#A16207')
+          }
+        },
+      })
+    }
+    if (h) note(T('Never reached: ', 'Jamais atteints : ') + (h.never.length ? h.never.join(' · ') : T('none', 'aucun')) + '.')
   }
 
   section(T('Improvement areas', 'Axes d\'amélioration'))
@@ -820,6 +1000,48 @@ export async function reportToPdf(modeler, r) {
       ...levelHooks(r.axes.map((a) => a.level), r.axes.map((a) => PRIORITY_LABEL[a.level]())),
     })
   } else note(T('Nothing to improve from the checks.', 'Rien à améliorer d\'après les contrôles.'))
+
+  if (r.analysis) {
+    const a = r.analysis
+    section(T('AI co-pilot analysis', 'Analyse du Co-pilote IA'))
+    doc.setFont('helvetica', 'italic').setFontSize(8).setTextColor(...muted)
+    doc.text(pdfText(analysisByline(a)), M, y + 2.5)
+    y += 6.5
+    if (a.stale) {
+      doc.setFont('helvetica', 'bold').setTextColor(...hex(COLORS.warning.strong))
+      doc.text(pdfText(staleText()), M, y + 1)
+      y += 5
+    }
+    if (a.summary) {
+      doc.setFont('helvetica', 'normal').setFontSize(9).setTextColor(...ink)
+      const wrapped = doc.splitTextToSize(pdfText(a.summary), W - 2 * M)
+      if (y + wrapped.length * 4.2 > H - M) { doc.addPage(); y = M + 4 }
+      doc.text(wrapped, M, y + 2)
+      y += wrapped.length * 4.2 + 3
+    }
+    if (a.points.length) {
+      table({
+        head: [[T('Kind', 'Nature'), T('Elements', 'Éléments'), T('Point', 'Point')]],
+        body: a.points.map((p) => [pdfText(p.label), pdfText(p.elements.join(' · ') || '–'), pdfText(p.text)]),
+        columnStyles: { 0: { cellWidth: 34, fontStyle: 'bold', textColor: blue }, 1: { cellWidth: 62 } },
+      })
+    }
+  }
+
+  if (r.checks.length) {
+    section(T('Quality checks', 'Contrôles de qualité'))
+    table({
+      head: [[T('Check', 'Contrôle'), T('Result', 'Résultat'), T('First problems', 'Premiers problèmes')]],
+      body: r.checks.map((c) => [pdfText(c.label), pdfText(checkResult(c)), pdfText(c.first.join('\n') || '–')]),
+      columnStyles: { 0: { cellWidth: 70, fontStyle: 'bold' }, 1: { cellWidth: 32 } },
+      didParseCell: (d) => {
+        if (d.section !== 'body' || d.column.index !== 1) return
+        const c = r.checks[d.row.index]
+        d.cell.styles.fontStyle = 'bold'
+        d.cell.styles.textColor = c.skipped ? muted : c.ok ? [21, 128, 61] : hex(COLORS.error.strong)
+      },
+    })
+  }
 
   if (r.ends.length) {
     section(T('End events', 'Événements de fin'))
@@ -890,8 +1112,10 @@ export async function reportToPdf(modeler, r) {
 
   function note(text) {
     doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...muted)
-    doc.text(pdfText(text), M, y)
-    y += 6
+    const lines = doc.splitTextToSize(pdfText(text), W - 2 * M)
+    if (y + lines.length * 3.6 > H - 7) { doc.addPage(); y = M + 4 }
+    doc.text(lines, M, y)
+    y += lines.length * 3.6 + 2.4
   }
 }
 

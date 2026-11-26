@@ -15,6 +15,7 @@
 import { EXPERT_EVENT } from './expert-mode.js'
 import { T, num } from './i18n/lang.js'
 import { runBatch } from './simulation-stats.js'
+import { structureFingerprint } from './copilot-analysis.js'
 
 const TRACE_EVENT = 'tokenSimulation.simulator.trace'
 const TOGGLE_MODE_EVENT = 'tokenSimulation.toggleMode'
@@ -73,6 +74,7 @@ export function setupHeatmap(modeler) {
   let batch = null
   let frame = 0
   let lastResult = null
+  let counted = '' // empreinte de la structure au moment des comptes (src/copilot-analysis.js)
 
   function empty(source) {
     return { nodes: {}, flows: {}, runs: 0, truncated: 0, source }
@@ -150,9 +152,11 @@ export function setupHeatmap(modeler) {
     }
     render()
   })
-  // Un diagramme modifié ou remplacé rend les comptes caducs.
-  eventBus.on(['commandStack.changed', 'import.done'], () => {
+  // Un diagramme modifié ou remplacé rend les comptes caducs. Un déplacement, une couleur ou
+  // l'analyse du Co-pilote ne changent pas la structure : les comptes restent.
+  eventBus.on(['commandStack.changed', 'import.done'], ({ type }) => {
     if (simulating) return
+    if (type === 'commandStack.changed' && lastResult && counted === structureFingerprint(modeler.getDefinitions())) return
     live = empty('live')
     batch = null
     lastResult = null
@@ -178,7 +182,10 @@ export function setupHeatmap(modeler) {
     g.replaceChildren()
     overlays.remove({ type: 'heatmap' })
     const result = current()
-    if (hasData(result)) lastResult = structuredClone(result)
+    if (hasData(result)) {
+      lastResult = structuredClone(result)
+      counted = structureFingerprint(modeler.getDefinitions())
+    }
     const visible = simulating && shown && hasData(result)
     legend.hidden = !visible
     container.classList.toggle('heatmap-on', visible)
@@ -270,6 +277,7 @@ export function setupHeatmap(modeler) {
     getResult: () => (lastResult && lastResult.runs ? structuredClone(lastResult) : null),
     runBatch: (runs = BATCH_RUNS) => {
       lastResult = runBatch(modeler.getDefinitions(), runs)
+      counted = structureFingerprint(modeler.getDefinitions())
       return structuredClone(lastResult)
     },
   }

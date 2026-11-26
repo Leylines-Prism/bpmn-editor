@@ -80,6 +80,9 @@
       <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
       <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
       <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
+      <div class="menu-sep" role="separator"></div>
+      <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-probabilities" data-icon="assistant" title="Ask the AI co-pilot for realistic branch probabilities, to review before simulating" role="menuitem">Propose probabilities</button><span class="copilot-help" id="help-ai-probabilities" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
+      <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <div class="menu-sep expert-only" role="separator"></div>
       <button class="btn expert-only" id="btn-expert-off" data-icon="close" title="Hide the simulation, the heatmap and the branch probabilities" role="menuitem">Leave expert mode</button>
     </div>

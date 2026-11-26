@@ -9,7 +9,36 @@
       "name": "SimulationFlow",
       "extends": ["bpmn:SequenceFlow"],
       "properties": [
-        { "name": "probability", "isAttr": true, "type": "Real" }
+        { "name": "probability", "isAttr": true, "type": "Real" },
+        { "name": "probabilitySource", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "Analysis",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },
+      "properties": [
+        { "name": "author", "isAttr": true, "type": "String" },
+        { "name": "date", "isAttr": true, "type": "String" },
+        { "name": "fingerprint", "isAttr": true, "type": "String" },
+        { "name": "summary", "type": "AnalysisText" },
+        { "name": "points", "type": "AnalysisPoint", "isMany": true }
+      ]
+    },
+    {
+      "name": "AnalysisText",
+      "superClass": ["Element"],
+      "properties": [
+        { "name": "text", "isBody": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "AnalysisPoint",
+      "superClass": ["Element"],
+      "properties": [
+        { "name": "kind", "isAttr": true, "type": "String" },
+        { "name": "elements", "isAttr": true, "type": "String" },
+        { "name": "text", "isBody": true, "type": "String" }
       ]
     }
   ]

@@ -21,12 +21,14 @@ import { trackOnce } from './analytics.js'
 import { newAiRound, undoAiRound } from './ai-changes.js'
 import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
+import { setChatModel } from './copilot-analysis.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
   get_diagram_xml: T('reading the XML', 'lecture du XML'),
   get_diagram_image: T('looking at the diagram', 'coup d\'œil au diagramme'),
   get_process_report: T('process report', 'rapport de processus'),
+  set_report_commentary: T('analysis for the report', 'analyse pour le rapport'),
   set_diagram_xml: T('replacing the diagram', 'remplacement du diagramme'),
   export_diagram: 'export',
   add_shapes: T('adding shapes', 'ajout de formes'),
@@ -123,6 +125,9 @@ async function prepareImage(file) {
   // Une photo enregistrée en PNG peut rester trop lourde : on passe alors en JPEG.
   return blob && blob.size > MAX_IMAGE_BYTES && type === 'image/png' ? encode('image/jpeg', 0.85) : blob
 }
+
+// Événement window { detail: { text } } : une demande toute prête pour le Co-pilote.
+export const COPILOT_ASK_EVENT = 'bpmn-pilot-copilot-ask'
 
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const style = document.createElement('style')
@@ -276,6 +281,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
     toggle.classList.toggle('has-model', !!model)
+    // Entrées du menu Expert qui passent par le Co-pilote (.copilot-only) : grisées sans modèle.
+    document.documentElement.classList.toggle('copilot-ready', !!model)
+    // L'icône d'aide à côté de chacune dit pourquoi (index.html, .copilot-help).
+    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model
     // En-tête du panneau : « Co-pilote » et le modèle dessous, ou « Co-pilote IA » sans modèle.
     titleName.textContent = model ? T('Co-pilot', 'Co-pilote') : T('AI co-pilot', 'Co-pilote IA')
     titleModel.textContent = model ? model.label : ''
@@ -380,6 +389,18 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     fillModels()
   }
   showModelEarly()
+
+  // Demande toute prête venue d'ailleurs (menu Expert) : le panneau s'ouvre et elle part,
+  // sans critique préalable, puisque ce n'est pas une description de processus.
+  window.addEventListener(COPILOT_ASK_EVENT, ({ detail }) => {
+    if (!panel.classList.contains('open')) toggle.click()
+    if (controller) {
+      add('notice', T('The co-pilot is still answering: wait for the end of the reply, or stop it.', 'Le Co-pilote répond encore : attendez la fin de la réponse, ou arrêtez-la.'))
+      return
+    }
+    if (!currentModel()) return
+    send(String(detail?.text || ''), [], { critique: false })
+  })
 
   toggle.addEventListener('click', () => {
     const open = panel.classList.toggle('open')
@@ -672,7 +693,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   })
 
   // rewind : relance de la dernière demande, qui remplace son échange dans l'historique.
-  async function send(text, attachments = [], { rewind = false } = {}) {
+  async function send(text, attachments = [], { rewind = false, critique = true } = {}) {
     trackOnce('assistant-utilise')
     // Chaque réponse ne marque que ce qu'elle a changé.
     newAiRound()
@@ -693,7 +714,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     let failed = false
     let errorText = ''
     let report = null
-    const assist = settings.assist !== false ? { critique: true, autocorrect: true } : {}
+    const assist = settings.assist !== false ? { critique, autocorrect: true } : {}
     controller = new AbortController()
     setBusy(true)
 
@@ -710,6 +731,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const timer = setInterval(renderStatus, 1000)
 
     const model = currentModel()
+    setChatModel(model?.label)
     const handle = (event) => {
       if (event.type === 'text') statusText = T('writing', 'rédige')
       if (event.type === 'conversation') {
@@ -791,6 +813,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null
+      setChatModel('')
       setBusy(false)
       input.focus()
     }

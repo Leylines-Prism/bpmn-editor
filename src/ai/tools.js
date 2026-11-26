@@ -30,6 +30,12 @@ Use them sparingly and consistently, for example one color per actor or to highl
 To start from scratch or import a complete diagram, use set_diagram_xml.
 When the user asks for a file (BPMN, SVG, PNG or PDF), use export_diagram. To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.
 
+Process analysis: get_process_report gives the findings, and with simulate the token counts per element and per gateway branch.
+Gateway branch probabilities are set with update_elements (probability, in %); the branches of one gateway add up to 100.
+They are marked as proposed by the AI until the user reviews them.
+set_report_commentary stores your analysis of the process (summary, bottlenecks, rare paths, risks, improvements)
+in the diagram file: it appears in the process report, under your name. Base each point on the report's figures.
+
 Modeling rules (validate_diagram checks most of them):
 - Every process has a start event and at least one end event. Use a single blank start event per process.
 - Name every task, event, splitting gateway, pool and lane, in the user's business words, not technical terms.
@@ -291,6 +297,30 @@ export function buildTools(z) {
           .boolean()
           .optional()
           .describe('Compute 100 tokens first, following the gateway probabilities, to add instance counts, rework and the share of each end event'),
+      },
+    },
+    {
+      name: 'set_report_commentary',
+      title: 'Write the analysis of the process report',
+      description:
+        'Stores your analysis of the process in the diagram file, where the process report shows it in a section of its own, ' +
+        'marked as written by the AI co-pilot, with your name and the date. It replaces the previous analysis. ' +
+        'Read get_process_report (with simulate for token counts) first, and base each point on its findings and figures. ' +
+        'Each point has a kind: bottleneck (an activity or path most instances go through, or that repeats), rare_path ' +
+        '(a branch or end seldom or never reached), risk (a missing exception, a dead end, a gap in the model), or improvement ' +
+        '(a concrete change and its expected effect). Cite the elements concerned by id. ' +
+        'Write in the language of the user. An empty summary with no points removes the analysis. The user can undo it with Ctrl+Z.',
+      inputSchema: {
+        summary: z.string().max(2000).describe('Two to five sentences on how the process runs and what matters most'),
+        points: z
+          .array(
+            z.object({
+              kind: z.enum(['bottleneck', 'rare_path', 'risk', 'improvement']),
+              elements: z.array(elementId).max(10).optional().describe('Ids of the elements this point is about'),
+              text: z.string().min(1).max(600).describe('The point, with the figure it relies on when there is one'),
+            }),
+          )
+          .max(12),
       },
     },
   ]
