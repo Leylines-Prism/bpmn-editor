@@ -80,7 +80,7 @@ on the GitHub Container Registry, for amd64 and arm64:
 ### From the command line
 
 ```
-mkdir bpmn-pilot && cd bpmn-pilot && mkdir bpmn-data
+mkdir bpmn-pilot && cd bpmn-pilot
 curl -fsSLO https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml
 docker compose -f docker-compose.image.yml up -d
 ```
@@ -96,8 +96,10 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
 - **Showcase page**: the logo in the toolbar opens a showcase page with the author's logo and
   wallpapers. To turn it off, add `SHOWCASE=off` to the `.env` file (or the stack's environment
   variables), then run the `up -d` command again. The logo then opens the Feedback window.
-- **Update**: change the version number of both images in `docker-compose.image.yml` (see the
-  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)), then:
+- **Update**: download `docker-compose.image.yml` again with the same `curl` command, so that you
+  also get the new services and settings (your `.env` file and `bpmn-data` folder stay as they are).
+  To stay on a given version instead, change the version number of the three image lines (see the
+  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)). Then:
 
   ```
   docker compose -f docker-compose.image.yml pull
@@ -141,19 +143,49 @@ file explorer to get your files back:
 
 Where the folder is:
 
-- **Docker Desktop** (Windows, macOS): it is created at the first start, next to the compose file.
-- **Linux**: create it before the first start (`mkdir bpmn-data`). The server runs as user 1000,
-  without root, so that the files belong to you. If `id -u` and `id -g` give other numbers, add
-  `PUID=` and `PGID=` with these numbers to the `.env` file. If the server cannot write in the folder,
-  it says so in its log (`docker compose logs mcp`).
+- It is created at the first start, next to the compose file, on Docker Desktop (Windows, macOS)
+  and on Linux alike. A short `data-init` service prepares it before the server starts (creates
+  `diagrams/` and `exports/`, gives them to the server's user), then stops: its "Exited (0)" state is
+  expected.
+- **Linux**: the server runs as user 1000, without root, so that the files belong to you. If `id -u`
+  and `id -g` give other numbers, add `PUID=` and `PGID=` with these numbers to the `.env` file. If the
+  server still cannot write in the folder, it says so in its log at startup (`docker compose logs mcp`)
+  and in the error of the export, with the folder in question.
 - **Elsewhere**: set `BPMN_DATA_DIR` to the path of another folder. In a container manager, always
-  give an absolute path.
+  give an absolute path, and paste the latest `docker-compose.image.yml`: an older copy has no
+  `data-init` service.
+- **SELinux** (Fedora, RHEL…): if the server is refused access even with the right owner, add `:z`
+  after the mount (`${BPMN_DATA_DIR:-./bpmn-data}:/data:z`), only for a folder dedicated to BPMN Pilot.
 
 Security: the files are readable by their owner and group only (0640, folders 0750). The server runs
 on a read-only file system except for this folder, without any Linux capability and without privilege
 escalation. It only accepts the five export formats, checks that each file matches its format, takes
 20 MB at most per export, and cleans file names (no folder, no hidden file, no name reserved by
 Windows).
+
+## If something fails (Docker version)
+
+- **The server log** says what it cannot do at startup: `docker compose -f docker-compose.image.yml logs mcp`
+  (without `-f …` from the source code, or the container's log in your container manager).
+- **An export to the server, or a save in My diagrams, fails**: the server cannot write to its data
+  folder, and the error names it. The `data-init` service prepares the folder at each start; if the
+  error stays, the folder belongs to another user than `PUID`:`PGID` (1000:1000 by default).
+- **An agent gets a 401 error "MCP is closed"**: the editor is served under a name other than
+  localhost without `MCP_TOKEN`. Set the token (see [Reach it from other machines](#reach-it-from-other-machines)).
+- **What can my model do?** `docker compose -f docker-compose.image.yml exec mcp node mcp/check-providers.js`
+  tries each model set on the server with real calls: reply, tool call, image, PDF. It tells a setting
+  error (key, address, model name, rejected by the provider) from a limit of the model (no tool calls,
+  no vision, no PDF), for a few hundred tokens per model. It does not cover the providers typed in the
+  Options window, which stay in the browser.
+
+## AI providers: tests welcome
+
+Anthropic (Claude Opus, Sonnet and Haiku 5.5) is checked with real calls: reply, tool calls, images
+and PDFs. OpenAI, Mistral, xAI, Ollama and OpenAI-compatible servers follow their published APIs,
+but the maintainers have no key to check them. If you use one of them, a short report helps a lot:
+run the check command (see [If something fails](#if-something-fails-docker-version)), then open an
+issue with the [AI provider test report](https://github.com/Leylines-Prism/bpmn-pilot/issues/new?template=provider_test.yml)
+form. Never paste a key.
 
 ## Reach it from other machines
 
@@ -162,7 +194,9 @@ other devices, keep it on a private network: [Tailscale Serve](https://tailscale
 for example, gives it an HTTPS address that only the machines of your tailnet can reach. Then tell
 the editor its new name, in the `.env` file next to the Compose file, and add a token
 `MCP_TOKEN=...` (the "Connect an agent" window generates one; from the source code, it goes in
-`mcp/.env`):
+`mcp/.env`). The token is required here: as soon as `MCP_ALLOWED_HOSTS` holds a name other than
+localhost, `/mcp` answers 401 until `MCP_TOKEN` is set. `MCP_AUTH=off` opens it without a token, for
+a network you trust or a proxy that already authenticates `/mcp`:
 
 ```
 BPMN_EDITOR_ORIGINS=https://bpmn.example.com
@@ -201,7 +235,10 @@ Click the **MCP** badge in the toolbar. The "Connect an agent" window gives the 
 (`http://localhost:8080/mcp`, or `https://your-domain/mcp`), and the setting to paste for Claude
 Code, Claude Desktop, GitHub Copilot in VS Code, Cursor or another MCP client. The agent draws in the editor tab used last, so keep it open.
 
-An optional token protects this access: the same window generates one and tells you where to put it.
+A token protects this access: the same window generates one and tells you where to put it. It is
+optional on `localhost`, and required as soon as the editor is served under another name (see
+[Reach it from other machines](#reach-it-from-other-machines)). Without it, the window says that
+MCP is closed and the agent gets a 401 error that names `MCP_TOKEN`.
 
 ## Where your API keys are kept
 
@@ -233,11 +270,13 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 | Setting | What it does |
 |---|---|
 | `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | API keys for the AI assistant. See `mcp/.env.example`. |
-| `MCP_TOKEN` (`mcp/.env`) | Token that agents must send. The "Connect an agent" window generates one. |
+| `MCP_TOKEN` (`mcp/.env`) | Token that agents must send. The "Connect an agent" window generates one. Required when `MCP_ALLOWED_HOSTS` holds a name other than localhost. |
+| `MCP_AUTH` (`mcp/.env`) | `off` opens `/mcp` without a token under a name other than localhost. Only on a network you trust, or behind a proxy that authenticates `/mcp`. |
 | `BPMN_PORT` | Port of the site (8080 by default). |
 | `BPMN_EDITOR_ORIGINS`, `MCP_ALLOWED_HOSTS` | The address and name of the site when it is served under a domain name (see above). |
 | `BPMN_BIND` | Network interface the site listens on (`127.0.0.1` by default). `0.0.0.0` opens it to your network, without HTTPS. |
-| `BPMN_DATA_DIR` | Folder of the server files, My diagrams and exports (`./bpmn-data` by default). |
+| `BPMN_DATA_DIR` | Folder of the server files, My diagrams and exports (`./bpmn-data` by default). In a container manager, an absolute path. |
+| `PUID`, `PGID` | User and group the server runs as, and that own the data folder (1000 by default). |
 | `PUID`, `PGID` | User and group the server runs as, owners of its files (1000 by default). |
 | `SHOWCASE` | `off` turns off the showcase page (`about.html`) and its wallpapers. The logo in the toolbar then opens the Feedback window. `on` by default. |
 

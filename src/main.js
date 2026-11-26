@@ -45,6 +45,7 @@ import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
+import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
@@ -243,7 +244,7 @@ async function importFile(file) {
     return
   }
   const failure = await importAndReport(await file.text(), file.name)
-  if (failure) alert('Import impossible : ' + failure)
+  if (failure) alert(T('Import failed: ', 'Import impossible : ') + failure)
   else track('fichier-ouvert', { source: 'fichier' })
 }
 
@@ -390,11 +391,13 @@ async function exportForAi({ format, name }) {
   }
   const bytes = exportSize(file.content)
   let saved = null
+  let serverError = null
   if (sendToServer) {
     try {
       saved = await sendToServer(file.content, base, file.ext)
     } catch (err) {
-      throw new Error(`The file could not be saved on the server: ${err.message}`, { cause: err })
+      // Le fichier est produit : la bannière Télécharger reste proposée, et l'outil le dit.
+      serverError = err.message
     }
   }
   exportOffer.show({ content: file.content, filename: saved || `${base}.${file.ext}`, type: file.type, savedOnServer: !!saved })
@@ -402,10 +405,13 @@ async function exportForAi({ format, name }) {
     format,
     bytes,
     ...(saved ? { savedOnServer: `exports/${saved}` } : {}),
+    ...(serverError ? { serverSaveFailed: serverError } : {}),
     downloadOffered: true,
     note: saved
       ? 'Saved in the exports folder of the server. The editor also shows a Download button: the file is downloaded only if the user clicks it.'
-      : 'The editor shows a Download button: the file is downloaded only if the user clicks it.',
+      : serverError
+        ? `The file could not be saved on the server (${serverError}). Tell the user. The editor still shows a Download button: the file is downloaded only if the user clicks it.`
+        : 'The editor shows a Download button: the file is downloaded only if the user clicks it.',
   }
 }
 
@@ -467,6 +473,7 @@ setupPanelToggle({
 })
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
+setupSimulationSpeed(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))

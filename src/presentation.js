@@ -4,6 +4,9 @@
 // mais rien ne se modifie : clic, double-clic, clavier et coller sont neutralisés.
 // Échap, la croix ou la sortie du plein écran du navigateur ramènent à l'éditeur, avec
 // la vue d'avant. Les changements d'un agent MCP restent visibles en direct.
+// La simulation de jetons s'y lance aussi, depuis la barre : ses commandes (départ,
+// pause, choix aux passerelles, journal, vitesse) restent alors à l'écran. Elle ne
+// modifie pas le diagramme, et elle continue si l'on quitte la présentation.
 import { T } from './i18n/lang.js'
 
 const PRIORITY = 3000
@@ -21,10 +24,18 @@ export function setupPresentation({ button, modeler, onExit }) {
   bar.id = 'presentation-bar'
   bar.hidden = true
   bar.innerHTML = `
+    <button type="button" class="btn" data-act="sim" data-icon="play" title="${T('Run tokens through the process', 'Faire circuler des jetons dans le processus')}">Simulation</button>
     <button type="button" class="btn icon-only" data-act="out" title="${T('Zoom out (−)', 'Dézoomer (−)')}" aria-label="${T('Zoom out', 'Dézoomer')}">−</button>
     <button type="button" class="btn icon-only" data-act="in" title="${T('Zoom in (+)', 'Zoomer (+)')}" aria-label="${T('Zoom in', 'Zoomer')}">+</button>
     <button type="button" class="btn" data-act="fit" title="${T('Fit the diagram to the screen (0)', 'Ajuster le diagramme à l\'écran (0)')}">${T('Fit', 'Ajuster')}</button>
     <button type="button" class="btn icon-only pres-close" data-act="close" title="${T('Exit (Esc)', 'Quitter (Échap)')}" aria-label="${T('Exit presentation', 'Quitter la présentation')}">×</button>`
+  // Le bouton Simulation de la barre suit l'état réel de la simulation, quelle que
+  // soit la commande qui l'a lancée ou arrêtée.
+  const simButton = bar.querySelector('[data-act="sim"]')
+  eventBus.on('tokenSimulation.toggleMode', ({ active: simulating }) => {
+    simButton.textContent = simulating ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
+    simButton.classList.toggle('active', !!simulating)
+  })
   const hint = document.createElement('div')
   hint.id = 'presentation-hint'
   hint.hidden = true
@@ -128,6 +139,7 @@ export function setupPresentation({ button, modeler, onExit }) {
     else if (act === 'out') zoomBy(1 / 1.2)
     else if (act === 'fit') fit()
     else if (act === 'close') exit()
+    else if (act === 'sim') modeler.get('toggleMode').toggleMode()
   })
   button.addEventListener('click', enter)
   return { enter, exit }

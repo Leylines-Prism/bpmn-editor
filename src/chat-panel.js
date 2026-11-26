@@ -116,7 +116,10 @@ async function prepareImage(file) {
   canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height)
   bitmap.close?.()
   const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
-  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, 0.9))
+  const encode = (as, quality) => new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), as, quality))
+  const blob = await encode(type, 0.9)
+  // Une photo enregistrée en PNG peut rester trop lourde : on passe alors en JPEG.
+  return blob && blob.size > MAX_IMAGE_BYTES && type === 'image/png' ? encode('image/jpeg', 0.85) : blob
 }
 
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
@@ -285,9 +288,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         'notice',
         mode === 'online'
           ? T('To start, open Options and choose a provider: Anthropic, OpenAI, Mistral, xAI (Grok), Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et choisissez un fournisseur : Anthropic, OpenAI, Mistral, xAI (Grok), Ollama ou un serveur compatible OpenAI.')
-          : T('Chat is not set up: open Options to choose a provider, or add ANTHROPIC_API_KEY, OPENAI_MODELS or MISTRAL_API_KEY to mcp/.env and restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez ANTHROPIC_API_KEY, OPENAI_MODELS ou MISTRAL_API_KEY dans mcp/.env puis relancez le serveur."),
-      )
-    } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
+          : T('Chat is not set up: open Options to choose a provider, or add ANTHROPIC_API_KEY, OPENAI_MODELS or MISTRAL_API_KEY to the server variables (Docker stack or mcp/.env), then restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez ANTHROPIC_API_KEY, OPENAI_MODELS ou MISTRAL_API_KEY dans les variables du serveur (pile Docker ou mcp/.env), puis relancez le serveur."),
+      ).classList.add('setup-hint')
+      return
+    }
+    // Un fournisseur est maintenant réglé : la marche à suivre n'a plus lieu d'être.
+    for (const hint of log.querySelectorAll('.setup-hint')) hint.remove()
+    if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
       add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z.`)).classList.add('welcome')
     }
   }
@@ -613,7 +620,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
     const attachments = pending.slice()
     const model = currentModel()
-    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.provider }
+    const caps = model.source === 'user' ? { format: model.format, providerId: model.providerId } : { format: model.provider === 'anthropic' ? 'anthropic' : 'openai', providerId: model.providerId || model.provider }
     if (attachments.some((a) => !supports(caps, a.kind))) {
       add('error', T(`${model.providerLabel || model.label} cannot read PDF files. Use an Anthropic, OpenAI or Mistral model, or paste the text of the document.`,
         `${model.providerLabel || model.label} ne sait pas lire les PDF. Utilisez un modèle Anthropic, OpenAI ou Mistral, ou collez le texte du document.`))
@@ -649,13 +656,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     let gotText = false
     let toolSinceText = false
     let failed = false
+    let errorText = ''
     controller = new AbortController()
     setBusy(true)
 
     // Ligne d'état sous la réponse : ce que fait l'assistant et depuis combien de temps.
     const status = document.createElement('div')
     status.className = 'chat-status'
-    let statusText = 'envoi'
+    let statusText = T('sending', 'envoi')
     const started = Date.now()
     const renderStatus = () => {
       status.textContent = `⏳ ${statusText}… ${Math.round((Date.now() - started) / 1000)} s`
@@ -701,6 +709,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         renderStatus()
       } else if (event.type === 'error') {
         failed = true
+        errorText = event.message || ''
         add('error', event.message)
       }
       log.scrollTop = log.scrollHeight
@@ -716,6 +725,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       else await sendServer({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
     } catch (err) {
       failed = true
+      errorText = err?.message || ''
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
@@ -723,7 +733,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
-      if (failed && files.length && !controller.signal.aborted && kindOf(model).endsWith(':openai'))
+      // Conseil général, sauf chez Claude (lit images et PDF) et quand l'erreur dit déjà la cause.
+      const explained = /cannot read|ne sait pas lire|limits|limites|file format|format de fichier/i.test(errorText)
+      if (failed && files.length && !controller.signal.aborted && !kindOf(model).endsWith(':anthropic') && !explained)
         add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null

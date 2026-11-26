@@ -99,8 +99,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
           </li>
           <li class="new-token">
             <p class="hint">${T(
-              'Open the folder where the editor is installed, then its <strong>mcp</strong> subfolder, and open the <strong>.env</strong> file with a text editor (Notepad, for example). If there is no .env file, copy <strong>.env.example</strong> and rename the copy to .env. Add this line at the end, then save the file:',
-              'Ouvrez le dossier où l\'éditeur est installé, puis son sous-dossier <strong>mcp</strong>, et ouvrez le fichier <strong>.env</strong> avec un éditeur de texte (le Bloc-notes, par exemple). S\'il n\'y a pas de fichier .env, copiez <strong>.env.example</strong> et renommez la copie en .env. Ajoutez cette ligne à la fin, puis enregistrez le fichier :',
+              'Open the folder where the editor is installed, then its <strong>mcp</strong> subfolder, and open the <strong>.env</strong> file with a text editor (Notepad, for example). If there is no .env file, copy <strong>.env.example</strong> and rename the copy to .env. Add this line at the end, then save the file. With a Docker stack, add it to the variables of the stack instead:',
+              'Ouvrez le dossier où l\'éditeur est installé, puis son sous-dossier <strong>mcp</strong>, et ouvrez le fichier <strong>.env</strong> avec un éditeur de texte (le Bloc-notes, par exemple). S\'il n\'y a pas de fichier .env, copiez <strong>.env.example</strong> et renommez la copie en .env. Ajoutez cette ligne à la fin, puis enregistrez le fichier. Avec une pile Docker, ajoutez-la plutôt aux variables de la pile :',
             )}</p>
             ${code('mcp-env')}
           </li>
@@ -136,6 +136,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
 
   const tokenInput = $('#mcp-token')
   let serverAuth = false
+  // Serveur joint sous un nom public sans MCP_TOKEN : /mcp répond 401 tant qu'il n'est pas réglé.
+  let serverLocked = false
   // En docker, le serveur MCP est servi par le site lui-même ; en développement, à part.
   const docker = new URL(mcpUrl, location.href).origin === location.origin
 
@@ -188,8 +190,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     )
 
     $('#mcp-auth').textContent = serverAuth
-      ? T('This server already asks for a token. Paste it below: it is the MCP_TOKEN value in the mcp/.env file of the editor. The setting of your agent, above, then holds it.',
-          'Ce serveur demande déjà un jeton. Collez-le ci-dessous : c\'est la valeur MCP_TOKEN du fichier mcp/.env de l\'éditeur. Le réglage de votre agent, plus haut, le contient alors.')
+      ? T('This server already asks for a token. Paste it below: it is the MCP_TOKEN variable of the server (Docker stack or mcp/.env). The setting of your agent, above, then holds it.',
+          'Ce serveur demande déjà un jeton. Collez-le ci-dessous : c\'est la variable MCP_TOKEN du serveur (pile Docker ou mcp/.env). Le réglage de votre agent, plus haut, le contient alors.')
       : T('This server asks for no token for now. To set one:', 'Ce serveur ne demande pas de jeton pour l\'instant. Pour en mettre un :')
     $('#mcp-token-label').textContent = serverAuth
       ? T('The token of this server:', 'Le jeton de ce serveur :')
@@ -218,7 +220,10 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     const warn = $('#mcp-exposed')
     warn.hidden = !exposed
     if (exposed) {
-      warn.textContent = auth
+      warn.textContent = serverLocked
+        ? T(`MCP is closed: this installation is reached as ${host} and its server has no MCP_TOKEN, so agents get a 401 error. Generate a token below, add it to the server variables, then restart. (MCP_AUTH=off opens it without a token, only on a network you trust.)`,
+            `MCP est fermé : cette installation est jointe sous le nom ${host} et son serveur n'a pas de MCP_TOKEN, les agents reçoivent donc une erreur 401. Générez un jeton ci-dessous, ajoutez-le aux variables du serveur, puis relancez. (MCP_AUTH=off l'ouvre sans jeton, seulement sur un réseau de confiance.)`)
+        : auth
         ? T(`This installation is reached as ${host}. MCP clients need the token, but the editor pages and saved diagrams have no login: keep it on a trusted network or behind an authenticating proxy.`,
             `Cette installation est jointe sous le nom ${host}. Les clients MCP doivent fournir le jeton, mais les pages de l'éditeur et les diagrammes enregistrés n'ont pas de connexion : gardez-la sur un réseau de confiance ou derrière un proxy qui authentifie.`)
         : T(`This installation is reached as ${host}, and its MCP server has no authentication: anyone who reaches this address can drive the editor. Set MCP_TOKEN, and keep it on a trusted network or behind an authenticating proxy.`,
@@ -245,11 +250,15 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     $('#mcp-copy-status').textContent = ''
     try {
       const res = await fetch(infoUrl)
-      if (res.ok) serverAuth = !!(await res.json()).mcpAuth
+      if (res.ok) {
+        const info = await res.json()
+        serverAuth = !!info.mcpAuth
+        serverLocked = !!info.mcpLocked
+      }
     } catch {}
     fill()
     // Le jeton est ouvert d'office quand le serveur en demande un : sans lui, rien ne marche.
-    if (serverAuth) $('#mcp-token-details').open = true
+    if (serverAuth || serverLocked) $('#mcp-token-details').open = true
     dialog.showModal()
   }
 

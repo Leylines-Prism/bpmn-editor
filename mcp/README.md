@@ -155,7 +155,7 @@ npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Then open http://localhost:5173. The badge switches to "MCP: connected", then to the agent's name once it connects ("MCP: Claude Code"). The MCP protocol only sends the client's name and version, never the model.
+Then open http://localhost:5173. The badge switches to "MCP: ready" (the tab is linked to the server), then to the agent's name once it connects ("MCP: Claude Code"). The MCP protocol only sends the client's name and version, never the model.
 
 For Claude Code, the `.mcp.json` file at the root already declares the server
 (`http://127.0.0.1:3333/mcp`).
@@ -218,6 +218,10 @@ the content matches. A file is never replaced: the answer gives the name chosen,
 - The server only listens on `127.0.0.1`. In its docker container it listens on all of the
   container's interfaces, but the site is only published on `127.0.0.1` of the host machine.
 - With `MCP_TOKEN` set, `/mcp` answers 401 to any request without `Authorization: Bearer <token>`.
+- Without `MCP_TOKEN`, `/mcp` answers 401 to every request as soon as `MCP_HOST` is not local and
+  `MCP_ALLOWED_HOSTS` holds a name other than localhost ("MCP is closed"): such a server can be reached
+  from other machines. `MCP_AUTH=off` opens it anyway, for a trusted network or behind a proxy that
+  authenticates `/mcp`. The "Connect an agent" window says when MCP is closed.
   The editor tab (`/bridge`) and the chat do not use it: they are limited to the editor origins.
 - MCP requests whose `Host` header is not local are rejected (DNS rebinding protection, provided by
   the SDK). In docker, the accepted names are those in `MCP_ALLOWED_HOSTS`.
@@ -233,6 +237,14 @@ the content matches. A file is never replaced: the answer gives the name chosen,
 - The `/diagrams` routes have no authentication either: anyone who reaches an editor page served by
   the server can read and change the saved diagrams.
 
+## Checking the providers
+
+`npm run check-providers` (in `mcp/`), or `docker compose exec mcp node mcp/check-providers.js` in
+docker, calls each model set on the server for real: text reply, tool call, image, PDF. Tools answer
+with a sample diagram, so no editor tab is needed. A failure prints the provider's status and message,
+which tells a setting error (401, 404, unreachable address) from a limit of the model (no tool call,
+no vision, no PDF). A few hundred tokens per model.
+
 ## Environment variables
 
 They can also be placed in `mcp/.env`.
@@ -241,7 +253,8 @@ They can also be placed in `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | server port |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
-| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing, and the server warns at startup when `MCP_ALLOWED_HOSTS` holds a name other than localhost |
+| `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing on localhost, and is closed (401) when `MCP_ALLOWED_HOSTS` holds a name other than localhost |
+| `MCP_AUTH` | none | `off` opens `/mcp` without a token even under a name other than localhost (trusted network, or a proxy that authenticates `/mcp`). The server warns at startup |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | host names accepted when `MCP_HOST` is not local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origins allowed for the WebSocket and the chat |
 | `ANTHROPIC_API_KEY` | none | Anthropic API key. Without it, no Claude model in the menu |

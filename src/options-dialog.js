@@ -60,7 +60,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
       </select></label>
       <div class="providers">
         <div class="provider server-block" data-id="server" hidden>
-          <p class="hint">${T('Models set up on the server, in mcp/.env. The server holds their keys.', 'Modèles réglés sur le serveur, dans mcp/.env. Le serveur garde leurs clés.')}</p>
+          <p class="hint">${T('Models set up in the server variables (Docker stack or mcp/.env). The server holds their keys.', 'Modèles réglés dans les variables du serveur (pile Docker ou mcp/.env). Le serveur garde leurs clés.')}</p>
         </div>
         ${PROVIDERS.map(
           (p) => `
@@ -255,7 +255,8 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
         renderDefault()
       })
     }
-    el.querySelector('.p-test').addEventListener('click', () => runTest(id, { fill: false }))
+    // « Tester » remplit aussi la liste tant qu'elle est vide.
+    el.querySelector('.p-test').addEventListener('click', () => runTest(id, { fill: !draft.providers[id].models.length }))
     el.querySelector('.p-list').addEventListener('click', () => runTest(id, { fill: true }))
     const addInput = el.querySelector('.p-add')
     const add = () => {

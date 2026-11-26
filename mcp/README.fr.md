@@ -156,7 +156,7 @@ npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Puis ouvrir http://localhost:5173. Le badge passe à « MCP : connecté », puis au nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Le protocole MCP ne transmet que le nom et la version du client, jamais le modèle.
+Puis ouvrir http://localhost:5173. Le badge passe à « MCP : prêt » (l'onglet est relié au serveur), puis au nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Le protocole MCP ne transmet que le nom et la version du client, jamais le modèle.
 
 Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 (`http://127.0.0.1:3333/mcp`).
@@ -223,6 +223,10 @@ par exemple `{"file": "Mon processus (2).pdf"}`.
   interfaces du conteneur, mais le site n'est publié que sur `127.0.0.1` de la machine hôte.
 - Avec `MCP_TOKEN`, `/mcp` répond 401 à toute requête sans `Authorization: Bearer <jeton>`. L'onglet
   de l'éditeur (`/bridge`) et le chat ne l'utilisent pas : ils sont limités aux origines de l'éditeur.
+- Sans `MCP_TOKEN`, `/mcp` répond 401 à toute requête dès que `MCP_HOST` n'est pas local et que
+  `MCP_ALLOWED_HOSTS` contient un autre nom que localhost (« MCP is closed ») : un tel serveur est
+  joignable depuis d'autres machines. `MCP_AUTH=off` l'ouvre quand même, pour un réseau de confiance ou
+  derrière un proxy qui authentifie `/mcp`. La fenêtre « Connecter un agent » indique quand MCP est fermé.
 - Les requêtes MCP dont l'en-tête `Host` n'est pas local sont refusées (protection contre le DNS rebinding, fournie par le SDK).
   Dans docker, les noms acceptés sont ceux de `MCP_ALLOWED_HOSTS`.
 - Les clients MCP n'envoient pas d'en-tête `Origin`. Une requête vers `/mcp` qui en porte un vient
@@ -237,6 +241,15 @@ par exemple `{"file": "Mon processus (2).pdf"}`.
 - Les routes `/diagrams` n'ont pas non plus d'authentification : quiconque atteint une page de l'éditeur
   servie par le serveur peut lire et modifier les diagrammes enregistrés.
 
+## Vérifier les fournisseurs
+
+`npm run check-providers` (dans `mcp/`), ou `docker compose exec mcp node mcp/check-providers.js` dans
+docker, appelle pour de vrai chaque modèle réglé sur le serveur : réponse texte, appel d'outil, image,
+PDF. Les outils répondent avec un diagramme d'exemple : aucun onglet de l'éditeur n'est nécessaire. Un
+échec affiche le statut et le message du fournisseur, ce qui distingue une erreur de réglage (401, 404,
+adresse injoignable) d'une limite du modèle (pas d'appel d'outil, pas de vision, pas de PDF). Quelques
+centaines de jetons par modèle.
+
 ## Variables d'environnement
 
 Elles peuvent aussi être placées dans `mcp/.env`.
@@ -245,7 +258,8 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` dans l'image docker) | adresse d'écoute |
-| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien, et le serveur avertit au démarrage quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost |
+| `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien sur localhost, et il est fermé (401) quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost |
+| `MCP_AUTH` | aucune | `off` ouvre `/mcp` sans jeton même sous un autre nom que localhost (réseau de confiance, ou proxy qui authentifie `/mcp`). Le serveur avertit au démarrage |
 | `MCP_ALLOWED_HOSTS` | `localhost,127.0.0.1` | noms d'hôte acceptés quand `MCP_HOST` n'est pas local |
 | `BPMN_EDITOR_ORIGINS` | `http://localhost:5173,http://127.0.0.1:5173` | origines autorisées pour le WebSocket et le chat |
 | `ANTHROPIC_API_KEY` | aucune | clé API Anthropic. Sans elle, pas de modèle Claude dans le menu |
