@@ -84,6 +84,10 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
         ).join('')}
       </div>
       <label class="field default-model"><span>${T('Assistant model', 'Modèle de l\'assistant')}</span><select id="options-default"></select></label>
+      <div class="assist-row">
+        <label><input type="checkbox" id="options-assist" /> ${T('Review the request and correct automatically', 'Critique de la demande et autocorrection')}</label>
+        <p class="hint">${T('Before drawing a description, the model lists what is ambiguous or missing. After drawing, a failed check goes back to it, two rounds at most. Each costs extra calls and time. The check report, the details under each reply and the destination line stay in any case.', "Avant de dessiner une description, le modèle relève ce qui est ambigu ou manquant. Après le dessin, un contrôle échoué lui revient, deux tours au plus. Chacun coûte des appels en plus et du temps. Le rapport de contrôle, le détail sous chaque réponse et la ligne de destination restent dans tous les cas.")}</p>
+      </div>
       <div class="keys-row">
         <label><input type="checkbox" id="options-remember" /> ${T('Remember API keys on your device', 'Se souvenir des clés API sur votre appareil')}</label>
         <span class="grow"></span>
@@ -109,6 +113,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
   const serverOption = new Option(T('Server models', 'Modèles du serveur'), 'server')
   const defaultSelect = dialog.querySelector('#options-default')
   const remember = dialog.querySelector('#options-remember')
+  const assist = dialog.querySelector('#options-assist')
 
   const read = (id) => {
     const el = blocks.get(id)
@@ -292,6 +297,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
   dialog.querySelector('#options-save').addEventListener('click', () => {
     for (const id of blocks.keys()) read(id)
     draft.remember = remember.checked
+    draft.assist = assist.checked
     draft.defaultModel = defaultSelect.value || null
     saveSettings(draft)
     dialog.close()
@@ -311,6 +317,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
       for (const id of blocks.keys()) renderBlock(id)
       showActive()
       remember.checked = draft.remember
+      assist.checked = draft.assist !== false
       renderDefault()
       dialog.showModal()
     },
