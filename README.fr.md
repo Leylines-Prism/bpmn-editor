@@ -307,6 +307,10 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
+- **Carte de chaleur et rapport de processus** : pendant la simulation, colorer le diagramme selon
+  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
+  probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
+  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes

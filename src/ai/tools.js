@@ -193,7 +193,7 @@ export function buildTools(z) {
       name: 'update_elements',
       title: 'Update elements',
       description:
-        'Renames elements or changes their type (for example Task to UserTask). A type change can produce a new id, returned in the result.',
+        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, or sets the probability of a gateway branch. A type change can produce a new id, returned in the result.',
       inputSchema: {
         elements: z
           .array(
@@ -202,6 +202,14 @@ export function buildTools(z) {
               name: z.string().optional().describe('New label. Empty string to clear it'),
               type: bpmnType.optional(),
               eventDefinition: eventDefinition.optional(),
+              documentation: z.string().max(4000).optional().describe('Text of the Documentation field. Empty string to clear it'),
+              probability: z
+                .number()
+                .min(0)
+                .max(100)
+                .nullable()
+                .optional()
+                .describe('Sequence flows leaving an exclusive, inclusive, complex or event-based gateway only: probability of this branch in %, used by the heatmap simulation. null to clear it'),
             }),
           )
           .min(1),
@@ -267,6 +275,22 @@ export function buildTools(z) {
       description: 'Removes shapes or connections. Removing a shape also removes its connections.',
       inputSchema: {
         ids: z.array(elementId).min(1),
+      },
+    },
+    {
+      name: 'get_process_report',
+      title: 'Read the process report',
+      description:
+        'Returns the process report of the open diagram, in Markdown, as the editor\'s Export menu produces it: key figures, ' +
+        'modeling findings by level (error, warning, to complete) with their source (bpmnlint, model check, simulation), ' +
+        'improvement areas by priority with the expected effect, end events, activities by lane, and the element sequence ' +
+        '(type, lane, documentation, outgoing flows with their conditions). Use it to review a model, write a procedure, or ' +
+        'propose improvements; the improvement areas you add are your own analysis, to be validated by the process owner.',
+      inputSchema: {
+        simulate: z
+          .boolean()
+          .optional()
+          .describe('Compute 100 tokens first, following the gateway probabilities, to add instance counts, rework and the share of each end event'),
       },
     },
   ]

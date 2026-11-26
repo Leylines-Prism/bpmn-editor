@@ -46,6 +46,10 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
+import { setupHeatmap } from './heatmap.js'
+import { ProbabilityPanelModule } from './probability-panel.js'
+import bpmnPilotModdle from './bpmn-pilot-moddle.json'
+import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
@@ -135,6 +139,8 @@ const modeler = new BpmnModeler({
   propertiesPanel: { parent: '#properties-panel' },
   linting: { bpmnlint: lintConfig, active: true },
   colorPicker: { colors: COLORS },
+  // Probabilités des branches pour la carte de chaleur (attribut bpmnpilot:probability).
+  moddleExtensions: { bpmnpilot: bpmnPilotModdle },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -150,6 +156,7 @@ const modeler = new BpmnModeler({
     LintProcessBadgeModule,
     GridModule,
     CopyAsImageModule,
+    ProbabilityPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -374,6 +381,38 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
+// Rapport de processus (menu Exporter et outil get_process_report). Il reprend les comptes
+// de la dernière simulation, s'il y en a une.
+const reportName = () => `${baseName()} - ${T('process report', 'rapport de processus')}`
+
+async function processReport({ simulate = false } = {}) {
+  const simulation = simulate ? heatmap.runBatch() : heatmap.getResult()
+  return buildReport(modeler, { name: baseName(), simulation })
+}
+
+async function exportReport(format, button) {
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const report = await processReport()
+    if (format === 'md') await deliver(reportToMarkdown(report), reportName(), 'md', 'text/markdown')
+    else await deliver(await reportToPdf(modeler, report), reportName(), 'pdf', 'application/pdf')
+    track('export', { format: `report-${format}` })
+  } catch (err) {
+    console.error('Process report error:', err)
+    alert(T('Process report failed: ', 'Rapport de processus impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+}
+document.getElementById('btn-report-pdf').addEventListener('click', (e) => exportReport('pdf', e.currentTarget))
+document.getElementById('btn-report-md').addEventListener('click', (e) => exportReport('md', e.currentTarget))
+
+async function processReportForAi({ simulate } = {}) {
+  if (!hasShapes(modeler)) throw new Error('The diagram is empty: nothing to report.')
+  return reportToMarkdown(await processReport({ simulate }))
+}
+
 // Outil export_diagram (serveur MCP et chat intégré) : le fichier est produit ici,
 // déposé dans le dossier exports du serveur s'il y en a un, et proposé dans une
 // bannière du canevas. Il ne se télécharge que sur un clic de l'utilisateur.
@@ -474,6 +513,7 @@ setupPanelToggle({
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
+const heatmap = setupHeatmap(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
@@ -537,12 +577,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi }) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi })
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

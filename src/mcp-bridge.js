@@ -6,6 +6,7 @@
 // et s'annulent avec Ctrl+Z comme une retouche à la main.
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
+import { isBranchFlow } from './probability-panel.js'
 
 import { autoLayout } from './auto-layout.js'
 import { reloadWithCopy } from './history.js'
@@ -150,15 +151,17 @@ function setBadge(badge, state, client = null) {
 
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 // options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
-export function createTools(modeler, { exportDiagram } = {}) {
-  return trackAiChanges(modeler, buildTools(modeler, exportDiagram))
+// options.processReport({ simulate }) : le rapport de processus en Markdown, pour get_process_report.
+export function createTools(modeler, { exportDiagram, processReport } = {}) {
+  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport))
 }
 
-function buildTools(modeler, exportDiagram) {
+function buildTools(modeler, exportDiagram, processReport) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
   const modeling = modeler.get('modeling')
+  const bpmnFactory = modeler.get('bpmnFactory')
   const eventBus = modeler.get('eventBus')
   const commandStack = modeler.get('commandStack')
 
@@ -524,6 +527,18 @@ function buildTools(modeler, exportDiagram) {
             element = replaced
           }
           if (spec.name !== undefined) modeling.updateLabel(element, spec.name)
+          if (spec.documentation !== undefined) {
+            const bo = getBusinessObject(element)
+            const text = spec.documentation.trim()
+            modeling.updateModdleProperties(element, bo, {
+              documentation: text ? [bpmnFactory.create('bpmn:Documentation', { text })] : [],
+            })
+          }
+          if (spec.probability !== undefined) {
+            if (!isBranchFlow(element)) throw new Error(`probability applies only to a sequence flow leaving an exclusive, inclusive, complex or event-based gateway: ${spec.id}`)
+            const bo = getBusinessObject(element)
+            modeling.updateModdleProperties(element, bo, { 'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability })
+          }
           updated.push({ previousId: spec.id, ...describe(element) })
         }
         return { updated }
@@ -596,6 +611,11 @@ function buildTools(modeler, exportDiagram) {
           .map((c) => (c.ok ? { check: c.id, ok: true } : { check: c.id, ok: false, problems: c.problems, ...(c.more ? { more: c.more } : {}) })),
         issues,
       }
+    },
+
+    async get_process_report({ simulate } = {}) {
+      if (!processReport) throw new Error('The process report is not available in this editor.')
+      return processReport({ simulate: !!simulate })
     },
 
     remove_elements({ ids }) {
