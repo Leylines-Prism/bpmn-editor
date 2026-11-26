@@ -181,6 +181,22 @@ A call that fails halfway is undone entirely: the diagram is never left half cha
 
 What the tools add, change or remove is marked on the editor's canvas (`src/ai-changes.js`), for the built-in assistant and MCP agents alike.
 
+## Modeling rules and prompts
+
+The instructions the server sends on connection (`INSTRUCTIONS` in `src/ai/tools.js`) explain how to use
+the tools and give modeling rules: start and end events, verb + object for tasks, object + state for
+events, a question on each exclusive gateway, no implicit split or join, the happy path from left to right.
+Most of them match what `validate_diagram` checks. The built-in chat sends the same text.
+
+The server also offers four MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
+
+| Prompt | Arguments | Purpose |
+|---|---|---|
+| `model_process` | `description` | draws a process from a text description, then lays it out and validates it |
+| `model_collaboration` | `description`, `participants` (optional) | draws one pool per participant, linked by message flows |
+| `review_diagram` | none | reviews the open diagram against the rules and the validator, without changing anything |
+| `tidy_diagram` | none | renames elements to the conventions, fixes validation errors and lays the diagram out, keeping its meaning |
+
 ## Saved diagrams
 
 The "My diagrams" window of the editor can save diagrams on this server, besides the browser. The

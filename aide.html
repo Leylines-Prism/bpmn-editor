@@ -463,6 +463,13 @@
           <li>des exports déposés, au choix, sur le serveur,</li>
           <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
+        <p>Avec ses outils, le serveur MCP donne à l'agent des règles de modélisation (nommage, passerelles, chemin nominal) et quatre prompts tout prêts. Selon l'agent, ils apparaissent dans un menu de prompts (le bouton <span class="ui">+</span> de Claude Desktop) ou comme des commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) :</p>
+        <ul>
+          <li><code>model_process</code> : dessine un processus d'après votre description,</li>
+          <li><code>model_collaboration</code> : dessine un pool par organisation, avec les messages échangés,</li>
+          <li><code>review_diagram</code> : liste ce qu'il faut améliorer dans le diagramme ouvert, sans rien modifier,</li>
+          <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens.</li>
+        </ul>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer votre travail :</p>
         <ul>

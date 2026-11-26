@@ -28,7 +28,22 @@ Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates 
 Colors and text formatting: style_elements sets the fill, stroke, text color and font of shapes and connections.
 Use them sparingly and consistently, for example one color per actor or to highlight an exception path.
 To start from scratch or import a complete diagram, use set_diagram_xml.
-When the user asks for a file (BPMN, SVG, PNG or PDF), use export_diagram. To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.`
+When the user asks for a file (BPMN, SVG, PNG or PDF), use export_diagram. To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.
+
+Modeling rules (validate_diagram checks most of them):
+- Every process has a start event and at least one end event. Use a single blank start event per process.
+- Name every task, event, splitting gateway, pool and lane, in the user's business words, not technical terms.
+- Task: verb + object ("Check invoice"). Avoid vague verbs such as handle, process or manage.
+- Event: object + state reached ("Invoice received", "Order shipped"). End events name the result.
+- Exclusive gateway: a question ("Amount over 1000?"). Label each outgoing flow with an answer ("Yes", "No").
+- Never give a task two outgoing flows: split with a gateway. Never merge flows into a task: join them with a gateway.
+- A gateway either splits or joins, never both. Close a parallel split with a parallel join.
+- Do not name parallel gateways or joining gateways.
+- Put the happy path on a straight line from left to right, with exceptions below it.
+- Exceptions on a task: a boundary event (timer, error, message), not a gateway after the task.
+- Lanes only when the user names roles or departments. Separate organizations are separate pools linked by message flows.
+- No retry loops for technical failures. A loop back is for a business reason ("Correct the request").
+- Keep default sizes. Use color only to convey meaning, and say what it means.`
 
 // Polices proposées par l'éditeur (src/label-style.js, FONTS), recopiées ici : ce module n'importe rien.
 export const FONT_NAMES = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Palatino Linotype', 'Comic Sans MS']

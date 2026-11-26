@@ -463,6 +463,13 @@
           <li>exports dropped on the server, if you choose,</li>
           <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, color and format it, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
+        <p>The MCP server gives the agent modeling rules (naming, gateways, happy path) along with its tools, and four ready-made prompts. Depending on the agent, they appear in a prompt menu (the <span class="ui">+</span> button in Claude Desktop) or as commands (<code>/mcp__bpmn-pilot__review_diagram</code> in Claude Code):</p>
+        <ul>
+          <li><code>model_process</code>: draws a process from your description,</li>
+          <li><code>model_collaboration</code>: draws one pool per organization, with the messages between them,</li>
+          <li><code>review_diagram</code>: lists what to improve in the open diagram, without changing anything,</li>
+          <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning.</li>
+        </ul>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>
         <ul>

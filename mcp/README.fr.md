@@ -182,6 +182,23 @@ Un appel qui échoue en cours de route est annulé en entier : le diagramme ne r
 
 Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour l'assistant intégré comme pour les agents MCP.
 
+## Règles de modélisation et prompts
+
+Les instructions que le serveur envoie à la connexion (`INSTRUCTIONS` dans `src/ai/tools.js`) expliquent
+l'usage des outils et donnent des règles de modélisation : événements de début et de fin, verbe + objet
+pour les tâches, objet + état pour les événements, une question sur chaque passerelle exclusive, pas de
+séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
+que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
+
+Le serveur propose aussi quatre prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
+
+| Prompt | Arguments | Rôle |
+|---|---|---|
+| `model_process` | `description` | dessine un processus d'après une description, puis le range et le valide |
+| `model_collaboration` | `description`, `participants` (facultatif) | dessine un pool par participant, reliés par des flux de messages |
+| `review_diagram` | aucun | relit le diagramme ouvert d'après les règles et le validateur, sans rien modifier |
+| `tidy_diagram` | aucun | renomme selon les conventions, corrige les erreurs de validation et range, sans changer le sens |
+
 ## Diagrammes enregistrés
 
 La fenêtre « Mes diagrammes » de l'éditeur peut enregistrer les diagrammes sur ce serveur, en plus du
