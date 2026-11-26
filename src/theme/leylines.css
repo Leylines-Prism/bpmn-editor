@@ -1131,6 +1131,11 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #chat-panel header #chat-settings,
 #chat-panel header #chat-reset { color: var(--ink); }
 #chat-panel header { gap: var(--space-2); }
+#chat-panel header .chat-title-icon {
+  flex: none; width: 20px; height: 20px; background-color: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+          mask: var(--icon) center / contain no-repeat;
+}
 #chat-panel header .chat-title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
 #chat-panel header .chat-title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #chat-panel header .chat-title-model { font-size: 11px; font-weight: 500; color: var(--ink-muted); }

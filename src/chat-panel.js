@@ -132,7 +132,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span class="chat-title"><span class="chat-title-name">${T('AI co-pilot', 'Co-pilote IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title-icon" data-icon="assistant" aria-hidden="true"></span><span class="chat-title"><span class="chat-title-name">${T('AI co-pilot', 'Co-pilote IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <div id="chat-destination" hidden></div>
