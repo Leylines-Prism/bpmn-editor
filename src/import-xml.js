@@ -25,7 +25,9 @@ async function layoutWithoutDi(modeler, xml) {
     if (root.$instanceOf('bpmn:Process')) visit(root)
   }
   const { xml: completed } = await moddle.toXML(rootElement, { format: true })
-  return layoutProcess(completed)
+  // bpmn-auto-layout 1.3 renvoie { xml, warnings } (et non plus le XML seul)
+  const { xml: laidOut } = await layoutProcess(completed)
+  return laidOut
 }
 
 // Traduit les erreurs de bpmn-js en message lisible.
