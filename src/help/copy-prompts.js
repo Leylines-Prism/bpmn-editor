@@ -1,5 +1,5 @@
 // Pages d'aide : bouton « Copier » sur chaque exemple de prompt (.prompt-text).
-// Le texte copié est celui affiché, espaces regroupés, prêt à coller dans l'assistant.
+// Le texte copié est celui affiché, espaces regroupés, prêt à coller dans le co-pilote.
 const fr = document.documentElement.lang === 'fr'
 const LABEL = fr ? 'Copier' : 'Copy'
 const DONE = fr ? 'Copié' : 'Copied'

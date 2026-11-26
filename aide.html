@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aide · BPMN-Pilot · Leylines</title>
-  <meta name="description" content="Guide de l'éditeur BPMN de Leylines : dessiner un processus, l'enregistrer, l'exporter, et le faire dessiner par un assistant IA." />
+  <meta name="description" content="Guide de l'éditeur BPMN de Leylines : dessiner un processus, l'enregistrer, l'exporter, et le faire dessiner par un co-pilote IA." />
   <link rel="alternate" hreflang="en" href="help.html" />
   <link rel="icon" href="/src/brand/favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="/src/brand/favicon-white.svg" media="(prefers-color-scheme: light)" />
@@ -41,7 +41,7 @@
           <li><a href="#verifier">Vérifier et ranger</a></li>
           <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
           <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
-          <li><a href="#assistant">Assistant IA</a></li>
+          <li><a href="#assistant">Co-pilote IA</a></li>
           <li><a href="#exemples-prompts">Exemples de prompts</a></li>
           <li><a href="#cles">Vos clés API</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
@@ -62,10 +62,10 @@
       <div class="hero">
         <h1>Guide de l'éditeur BPMN</h1>
         <!-- online -->
-        <p class="lead">Un éditeur BPMN 2.0 gratuit, dans votre navigateur, sans compte ni installation. Décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et l'assistant IA le dessine en quelques secondes : vous relisez et ajustez le résultat, au lieu de passer des heures sur la structure BPMN. Vous pouvez aussi dessiner à la main. La même conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique, souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic.</p>
+        <p class="lead">Un éditeur BPMN 2.0 gratuit, dans votre navigateur, sans compte ni installation. Décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et le co-pilote IA le dessine en quelques secondes : vous relisez et ajustez le résultat, au lieu de passer des heures sur la structure BPMN. Vous pouvez aussi dessiner à la main. La même conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique, souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic. Le pilote, c'est vous, d'où le nom : le co-pilote IA prépare le travail, et vous gardez la main sur chaque diagramme.</p>
         <!-- /online -->
         <!-- docker -->
-        <p class="lead">Un éditeur BPMN 2.0 gratuit, sans compte, installé sur votre machine ou votre réseau. Relié à votre agent IA et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en graphe), il modélise les processus de ce contexte en quelques secondes, en quelques échanges : l'agent trouve les processus par MCP, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. L'assistant IA intégré et le dessin à la main restent disponibles. La même conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique, souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic.</p>
+        <p class="lead">Un éditeur BPMN 2.0 gratuit, sans compte, installé sur votre machine ou votre réseau. Relié à votre agent IA et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en graphe), il modélise les processus de ce contexte en quelques secondes, en quelques échanges : l'agent trouve les processus par MCP, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. Le co-pilote IA intégré et le dessin à la main restent disponibles. La même conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique, souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic. Le pilote, c'est vous, d'où le nom : le co-pilote IA prépare le travail, et vous gardez la main sur chaque diagramme.</p>
         <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Ouvrir l'éditeur</a>
@@ -77,7 +77,7 @@
       <section id="premiers-pas">
         <h2>Premiers pas</h2>
         <p>Un nouveau diagramme contient déjà un petit processus : un début, une tâche et une fin, à la première ouverture comme après un clic sur <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>Nouveau</span>. Partez de là, ou supprimez ces formes pour dessiner autre chose.</p>
-        <figure><img src="/src/help/img/fr-editeur.webp" width="1440" height="820" alt="L'éditeur avec un processus de note de frais : la palette à gauche, le canevas, et le panneau de l'assistant IA ouvert à droite." loading="lazy" /><figcaption>L'éditeur, avec le panneau de l'assistant IA ouvert à droite. Le panneau Processus est masqué ici.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-editeur.webp" width="1440" height="820" alt="L'éditeur avec un processus de note de frais : la palette à gauche, le canevas, et le panneau du co-pilote IA ouvert à droite." loading="lazy" /><figcaption>L'éditeur, avec le panneau du co-pilote IA ouvert à droite. Le panneau Processus est masqué ici.</figcaption></figure>
         <ol>
           <li>Choisissez une forme dans la palette, à gauche, puis cliquez sur le canevas pour la poser.</li>
           <li>Cliquez sur une forme : son menu contextuel apparaît à côté et permet d'ajouter l'élément suivant, déjà relié.</li>
@@ -87,10 +87,10 @@
         <p>Votre travail est gardé dans le navigateur à chaque modification, et vous le retrouvez tel quel en rouvrant la page. La mention « Sauvegarde auto », dans la barre d'outils, le rappelle.</p>
         <p>Le bouton <span class="uib">EN</span> ou <span class="uib">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
         <!-- online -->
-        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit. Ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
+        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Si vous utilisez le co-pilote, seul le fournisseur d'IA les reçoit. Ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
         <!-- /online -->
         <!-- docker -->
-        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur, ou sur votre serveur si vous les y enregistrez. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit, en passant par votre serveur. Cette version ne mesure pas sa fréquentation.</div>
+        <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur, ou sur votre serveur si vous les y enregistrez. Si vous utilisez le co-pilote, seul le fournisseur d'IA les reçoit, en passant par votre serveur. Cette version ne mesure pas sa fréquentation.</div>
         <!-- /docker -->
       </section>
 
@@ -115,8 +115,8 @@
         <p>La clé à molette ouvre la fenêtre <span class="uib">Changer l'élément</span>. Elle liste les types compatibles avec l'élément choisi : une tâche peut devenir tâche utilisateur, tâche de service, activité d'appel ou sous-processus, un événement de début peut devenir événement de début de message ou de minuteur, etc. Tapez quelques lettres dans le champ de recherche pour filtrer la liste, puis cliquez sur un type ou validez avec <kbd>Entrée</kbd>. La touche <kbd>R</kbd> ouvre la même fenêtre au clavier.</p>
         <p>Pour une tâche ou un sous-processus, les icônes en haut à droite de la fenêtre ajoutent un marqueur sans changer le type : multi-instance parallèle <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, multi-instance séquentielle <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> et boucle <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Un second clic retire le marqueur. Le nombre de boucles et la condition d'achèvement se règlent ensuite dans le <a href="#proprietes">panneau Processus</a>.</p>
         <h3><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler et rétablir</h3>
-        <p>Les boutons <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> et <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Rétablir</span>, en haut à gauche du canevas à côté de la simulation de jetons, reprennent vos gestes et ceux de l'assistant un par un, comme <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd>. Ils sont grisés quand il n'y a rien à annuler ou à rétablir.</p>
-        <p>Ranger, ainsi que la mise en page ou le remplacement du diagramme par l'assistant, rechargent tout le diagramme. Juste avant, l'éditeur en garde une copie : Annuler y revient d'un coup, mais les gestes plus anciens ne s'annulent plus un par un. Ouvrir un fichier ou créer un diagramme repart d'un historique vide.</p>
+        <p>Les boutons <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> et <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Rétablir</span>, en haut à gauche du canevas à côté de la simulation de jetons, reprennent vos gestes et ceux du co-pilote un par un, comme <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd>. Ils sont grisés quand il n'y a rien à annuler ou à rétablir.</p>
+        <p>Ranger, ainsi que la mise en page ou le remplacement du diagramme par le co-pilote, rechargent tout le diagramme. Juste avant, l'éditeur en garde une copie : Annuler y revient d'un coup, mais les gestes plus anciens ne s'annulent plus un par un. Ouvrir un fichier ou créer un diagramme repart d'un historique vide.</p>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -195,7 +195,7 @@
         <ul>
           <li><span class="ui">Forme</span> : deux lignes de couleurs toutes prêtes, des fonds pâles puis des fonds vifs qui mettent aussi le texte en blanc, puis un <span class="ui">Fond</span> et un <span class="ui">Contour</span> pour régler l'un sans l'autre (le carré ouvre le sélecteur de couleur du système). Le champ à droite du carré donne le code hexadécimal de la couleur, ou en gris celui de la couleur par défaut quand aucune n'est réglée : tapez-en un, par exemple <code>#1E88E5</code>, puis Entrée pour l'appliquer. Un flux n'a qu'un contour.</li>
           <li><span class="ui">Texte</span> : gras, italique, souligné, taille et police (sans réglage, chaque liste affiche la valeur appliquée, par exemple <span class="ui">12</span> et <span class="ui">Arial</span>, ou 11 pour les libellés placés sous la forme, comme ceux des événements), deux lignes de couleurs du texte en pastilles rondes (la première : le noir, un dégradé de gris et quatre teintes foncées pour les fonds clairs ; la seconde : le blanc et des teintes vives, dont trois claires pour les fonds foncés), une ligne <span class="ui">Autre</span> pour n'importe quelle couleur, avec son carré et son code hexadécimal comme pour le fond, puis <span class="ui">Auto</span> et <span class="ui">Texte par défaut</span>.</li>
-          <li><span class="ui">Déjà dans le diagramme</span>, dans le groupe <span class="ui">Style</span>, reprend sur une ligne, du plus récent au plus ancien, jusqu'à 8 styles faits à la main ailleurs (couleurs et mise en forme du texte ensemble), par vous ou par l'assistant. Un clic applique l'un d'eux à l'élément sélectionné.</li>
+          <li><span class="ui">Déjà dans le diagramme</span>, dans le groupe <span class="ui">Style</span>, reprend sur une ligne, du plus récent au plus ancien, jusqu'à 8 styles faits à la main ailleurs (couleurs et mise en forme du texte ensemble), par vous ou par le co-pilote. Un clic applique l'un d'eux à l'élément sélectionné.</li>
           <li><span class="uib">Copier le style</span>, dans le groupe <span class="ui">Style</span> placé avant les deux autres, retient le fond, le contour, la police et la couleur du texte de l'élément. Son bouton montre une pipette dans un carré aux couleurs de l'élément sélectionné : c'est ce qui sera copié. <span class="uib">Coller le style</span> applique le style copié à un autre élément. Son bouton en donne un aperçu : un rouleau dans un carré, le carré aux couleurs de la forme, le rouleau à la couleur du texte. Pour traiter plusieurs éléments d'un coup, sélectionnez-les et utilisez le rouleau <span class="uib">Coller le style</span> du menu contextuel. Le navigateur garde cette copie, même d'un schéma à l'autre.</li>
         </ul>
         <p>Chaque réglage s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
@@ -290,14 +290,14 @@
         </ul>
         <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture.</p>
         <h3 id="comparer"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer deux versions</h3>
-        <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span>, ou par le bouton <span class="uib">Avant / après</span> de la pilule de l'assistant.</p>
+        <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span>, ou par le bouton <span class="uib">Avant / après</span> de la pilule du co-pilote.</p>
         <ul>
           <li>En vert, ce qui a été ajouté (à droite). En rouge, ce qui a été supprimé (à gauche). En orange, ce qui a été modifié, des deux côtés.</li>
           <li>En bleu, sur demande, ce qui a seulement bougé ou changé de couleur. Cliquez sur une pastille du haut pour afficher ou masquer un type de différence.</li>
           <li>La liste de droite détaille chaque différence, par exemple « Nom : Valider la note → Vérifier les justificatifs ». Un clic centre les deux vues sur l'élément.</li>
           <li>Les deux vues défilent et zooment ensemble. <kbd>Échap</kbd> ferme la fenêtre.</li>
         </ul>
-        <figure><img src="/src/help/img/fr-avant-apres.webp" width="1440" height="720" alt="Fenêtre Avant / après : le diagramme d'avant l'assistant à gauche, le diagramme actuel à droite, avec un élément ajouté en vert, un supprimé en rouge, un modifié en orange, et la liste des différences." loading="lazy" /><figcaption>La fenêtre Avant / après, ouverte depuis la pilule de l'assistant.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-avant-apres.webp" width="1440" height="720" alt="Fenêtre Avant / après : le diagramme d'avant le co-pilote à gauche, le diagramme actuel à droite, avec un élément ajouté en vert, un supprimé en rouge, un modifié en orange, et la liste des différences." loading="lazy" /><figcaption>La fenêtre Avant / après, ouverte depuis la pilule du co-pilote.</figcaption></figure>
         <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</h3>
         <div class="table-wrap">
           <table>
@@ -323,7 +323,7 @@
         <!-- /docker -->
         <p>Le <a href="#rapport-processus">rapport de processus</a>, en PDF ou en Markdown, est décrit dans <a href="#experts-bpmn">Pour les experts BPMN</a>.</p>
         <h3>Exports demandés à l'IA</h3>
-        <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
+        <p>Vous pouvez demander un fichier au co-pilote IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
         <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
         <!-- docker -->
         <p>Le fichier est aussi déposé dans le dossier exports du serveur, quel que soit le choix Destination, sans jamais remplacer un fichier existant.</p>
@@ -333,15 +333,15 @@
       </section>
 
       <section id="assistant">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Assistant IA</h2>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste. Sur les écrans assez larges, le bouton affiche le modèle choisi dans <span class="uib">Options</span> et se raccourcit en <span class="ui">IA</span>.</p>
+        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Co-pilote IA</h2>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Co-pilote IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et le co-pilote le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste. Sur les écrans assez larges, le bouton affiche le modèle choisi dans <span class="uib">Options</span> et se raccourcit en <span class="ui">IA</span>.</p>
 
         <h3>1. Choisir un fournisseur</h3>
         <!-- online -->
-        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="uib">Options</span> dans le panneau de l'assistant :</p>
+        <p>Le co-pilote passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="uib">Options</span> dans le panneau du co-pilote :</p>
         <!-- /online -->
         <!-- docker -->
-        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix. Ouvrez <span class="uib">Options</span> dans le panneau de l'assistant. Si des clés sont réglées sur le serveur, le choix <span class="ui">Modèles du serveur</span> arrive en tête de la liste : il n'y a rien à saisir. Sinon, choisissez un fournisseur et collez votre clé API :</p>
+        <p>Le co-pilote passe par un modèle d'IA chez le fournisseur de votre choix. Ouvrez <span class="uib">Options</span> dans le panneau du co-pilote. Si des clés sont réglées sur le serveur, le choix <span class="ui">Modèles du serveur</span> arrive en tête de la liste : il n'y a rien à saisir. Sinon, choisissez un fournisseur et collez votre clé API :</p>
         <!-- /docker -->
         <div class="table-wrap">
           <table>
@@ -367,12 +367,12 @@
           </table>
         </div>
         <p>Sélectionnez le fournisseur en haut de la fenêtre, collez la clé, cliquez sur <span class="uib">Tester</span>, puis choisissez le modèle : la liste se remplit une fois la connexion testée. Un seul fournisseur sert à la fois, et en changer n'efface pas la clé des autres. Le panneau affiche le modèle utilisé.</p>
-        <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options de l'assistant, avec le fournisseur Mistral choisi : adresse, clé API vide, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options de l'assistant : Mistral choisi, en attente de la clé.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options du co-pilote, avec le fournisseur Mistral choisi : adresse, clé API vide, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options du co-pilote : Mistral choisi, en attente de la clé.</figcaption></figure>
 
         <h3>2. Décrire le processus</h3>
-        <p>Écrivez comme vous l'expliqueriez à un collègue : qui fait quoi, dans quel ordre, avec quelles décisions. L'assistant répond dans la langue de votre message. Par exemple :</p>
+        <p>Écrivez comme vous l'expliqueriez à un collègue : qui fait quoi, dans quel ordre, avec quelles décisions. Le co-pilote répond dans la langue de votre message. Par exemple :</p>
         <div class="note">« Dessine le traitement d'une note de frais. Le salarié la saisit, son manager la valide ou la refuse. Si elle dépasse 500 €, la comptabilité la valide aussi. Une fois validée, elle est remboursée sous 5 jours. Mets un couloir par acteur. »</div>
-        <p>Sous chaque réponse, de petites étiquettes montrent ce que l'assistant a fait sur le canevas : lecture, ajout de formes, connexions, mise en page… Vous pouvez ensuite lui demander des retouches (« ajoute un rappel si le manager ne répond pas sous 3 jours »), ou les faire vous-même.</p>
+        <p>Sous chaque réponse, de petites étiquettes montrent ce que le co-pilote a fait sur le canevas : lecture, ajout de formes, connexions, mise en page… Vous pouvez ensuite lui demander des retouches (« ajoute un rappel si le manager ne répond pas sous 3 jours »), ou les faire vous-même.</p>
         <ul>
           <li>La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pour coller un long texte ou ouvrir un fichier .txt ou .md. <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoie.</li>
           <li><span class="uib">Nouvelle discussion</span> repart de zéro. Le schéma, lui, ne change pas.</li>
@@ -380,17 +380,17 @@
         </ul>
 
         <h3>3. Partir d'un fichier</h3>
-        <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil, d'une procédure en PDF ou en Word, d'une liste d'étapes dans un tableur, ou d'un export d'un autre outil. Collez le fichier (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-le sur le panneau, ou choisissez-le avec le trombone, puis demandez-lui de le dessiner. Jusqu'à 5 fichiers par message.</p>
+        <p>Le co-pilote sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil, d'une procédure en PDF ou en Word, d'une liste d'étapes dans un tableur, ou d'un export d'un autre outil. Collez le fichier (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-le sur le panneau, ou choisissez-le avec le trombone, puis demandez-lui de le dessiner. Jusqu'à 5 fichiers par message.</p>
         <ul>
-          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, 3,75 Mo au plus, réduites à 1568 pixels de côté au besoin) et <strong>PDF</strong> (20 Mo au plus) partent tels quels chez le modèle. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral. Un serveur compatible OpenAI (Ollama, LiteLLM, vLLM…) reçoit les images, pas les PDF. Si le modèle choisi ne lit pas les images, l'assistant le dit au lieu d'une erreur technique. Un PDF de plus de 100 pages dépasse la limite de la plupart des fournisseurs : n'envoyez que les pages utiles. Les fichiers joints restent dans la discussion pour les questions suivantes, dans la limite d'environ 15 Mo : au-delà, les plus anciens sont retirés.</li>
+          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, 3,75 Mo au plus, réduites à 1568 pixels de côté au besoin) et <strong>PDF</strong> (20 Mo au plus) partent tels quels chez le modèle. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral. Un serveur compatible OpenAI (Ollama, LiteLLM, vLLM…) reçoit les images, pas les PDF. Si le modèle choisi ne lit pas les images, le co-pilote le dit au lieu d'une erreur technique. Un PDF de plus de 100 pages dépasse la limite de la plupart des fournisseurs : n'envoyez que les pages utiles. Les fichiers joints restent dans la discussion pour les questions suivantes, dans la limite d'environ 15 Mo : au-delà, les plus anciens sont retirés.</li>
           <li><strong>Documents bureautiques</strong> (Word, Excel, PowerPoint, et leurs équivalents OpenDocument : <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.odt</code>, <code>.ods</code>, <code>.odp</code>) et <strong>fichiers texte</strong> (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML, journaux, e-mails) sont lus dans votre navigateur, et seul leur texte part avec le message : les tableaux deviennent des lignes, chaque feuille et chaque diapositive garde son nom. Tous les fournisseurs les lisent. Seul le texte du corps est lu : les images, graphiques et SmartArt, les en-têtes et pieds de page, les commentaires et les notes de l'orateur sont laissés de côté. Si votre processus est dessiné dans un SmartArt ou un schéma, joignez-en plutôt une capture. Les dates d'un tableur arrivent en nombres, et un document protégé par mot de passe ne s'ouvre pas. Les e-mails (.eml) donnent leurs en-têtes (De, À, Date, Objet) et leur texte ; leurs pièces jointes sont seulement nommées.</li>
         </ul>
         <p>Un message compte au plus 100 000 caractères, texte des fichiers compris. Le bouton <em>Agrandir la zone de saisie</em>, en haut à droite du champ, ouvre un éditeur plus grand, où <em>Ouvrir un fichier…</em> insère le texte d'un de ces fichiers, pour l'élaguer avant l'envoi.</p>
 
         <h3>4. Mettre en couleur et en forme</h3>
-        <p>L'assistant habille aussi le schéma : fond, contour, couleur du texte, gras, italique, souligné, taille et police, sur les formes comme sur les flux. Il utilise les mêmes réglages que le <a href="#proprietes">panneau Processus</a>, et le résultat se retouche à la main de la même façon. Par exemple :</p>
+        <p>Le co-pilote habille aussi le schéma : fond, contour, couleur du texte, gras, italique, souligné, taille et police, sur les formes comme sur les flux. Il utilise les mêmes réglages que le <a href="#proprietes">panneau Processus</a>, et le résultat se retouche à la main de la même façon. Par exemple :</p>
         <div class="note">« Mets une couleur par acteur, en tons pâles. Le chemin de refus en rouge, et les tâches de la comptabilité en gras. »</div>
-        <figure><img src="/src/help/img/fr-ia-couleurs.webp" width="1003" height="873" alt="Processus de note de frais en trois couloirs colorés par l'assistant : bleu pâle pour le salarié, orangé pour le manager, vert pour la comptabilité. Le flux de refus et l'événement Note refusée sont en rouge, la tâche Rembourser en vert foncé avec un texte blanc en gras." loading="lazy" /><figcaption>Une note de frais mise en couleur par l'assistant : une teinte par acteur, le refus en rouge, et un texte blanc choisi automatiquement sur le vert foncé.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-ia-couleurs.webp" width="1003" height="873" alt="Processus de note de frais en trois couloirs colorés par le co-pilote : bleu pâle pour le salarié, orangé pour le manager, vert pour la comptabilité. Le flux de refus et l'événement Note refusée sont en rouge, la tâche Rembourser en vert foncé avec un texte blanc en gras." loading="lazy" /><figcaption>Une note de frais mise en couleur par le co-pilote : une teinte par acteur, le refus en rouge, et un texte blanc choisi automatiquement sur le vert foncé.</figcaption></figure>
         <ul>
           <li>Sur un fond foncé, il choisit un texte blanc ou noir, le plus lisible des deux.</li>
           <li>Les couleurs posées s'enregistrent dans le fichier .bpmn selon la norme, comme celles faites à la main. Elles rejoignent les styles <span class="ui">Déjà dans le diagramme</span> du groupe <span class="ui">Style</span>, prêtes à être réutilisées.</li>
@@ -398,18 +398,18 @@
           <li>Un agent MCP (Claude Code, Claude Desktop…) a le même pouvoir, avec l'outil <code>style_elements</code>.</li>
         </ul>
 
-        <h3>Voir ce que l'assistant a changé</h3>
-        <p>Après chaque réponse, les formes que l'assistant a ajoutées sont entourées d'un fin contour magenta avec un point, celles qu'il a modifiées d'un contour en pointillé. Une pilule en haut du canevas résume, par exemple « IA : 2 ajoutés, 1 modifié, 1 supprimé ». Survolez-la pour voir le nom des formes supprimées.</p>
+        <h3>Voir ce que le co-pilote a changé</h3>
+        <p>Après chaque réponse, les formes que le co-pilote a ajoutées sont entourées d'un fin contour magenta avec un point, celles qu'il a modifiées d'un contour en pointillé. Une pilule en haut du canevas résume, par exemple « IA : 2 ajoutés, 1 modifié, 1 supprimé ». Survolez-la pour voir le nom des formes supprimées.</p>
         <ul>
-          <li>Quand l'assistant change beaucoup d'un coup, par exemple un schéma dessiné de zéro, aucun contour n'est posé : la pilule seule résume. Un clic dessus affiche les contours, un second les masque.</li>
+          <li>Quand le co-pilote change beaucoup d'un coup, par exemple un schéma dessiné de zéro, aucun contour n'est posé : la pilule seule résume. Un clic dessus affiche les contours, un second les masque.</li>
           <li>Vos retouches à la main et la mise en page automatique ne sont jamais marquées. <kbd>Ctrl</kbd>+<kbd>Z</kbd> met le marquage à jour.</li>
           <li><span class="uib">Avant / après</span>, sur la pilule, compare le diagramme d'avant la réponse avec le diagramme actuel, côte à côte (voir <a href="#comparer">Comparer deux versions</a>).</li>
-          <li><span class="uib">Annuler</span>, sur la pilule, défait d'un coup tout ce que l'assistant a changé depuis votre message, mise en page comprise. Si vous avez retouché le diagramme entre-temps, l'éditeur demande confirmation, car vos retouches partent aussi. <kbd>Ctrl</kbd>+<kbd>Y</kbd> ramène les changements.</li>
+          <li><span class="uib">Annuler</span>, sur la pilule, défait d'un coup tout ce que le co-pilote a changé depuis votre message, mise en page comprise. Si vous avez retouché le diagramme entre-temps, l'éditeur demande confirmation, car vos retouches partent aussi. <kbd>Ctrl</kbd>+<kbd>Y</kbd> ramène les changements.</li>
           <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
         </ul>
 
         <h3>Critique et contrôles</h3>
-        <p>Autour de chaque réponse, l'assistant relève ce qui manque dans la demande, vérifie le diagramme produit, corrige seul ce qui échoue et indique d'où vient le résultat. Le détail est dans <a href="#controles-ia">Critique, contrôles et traçabilité</a>. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, coupe les requêtes en plus.</p>
+        <p>Autour de chaque réponse, le co-pilote relève ce qui manque dans la demande, vérifie le diagramme produit, corrige seul ce qui échoue et indique d'où vient le résultat. Le détail est dans <a href="#controles-ia">Critique, contrôles et traçabilité</a>. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, coupe les requêtes en plus.</p>
 
         <h3>Combien ça coûte</h3>
         <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur. La critique de la demande et l'autocorrection ajoutent des requêtes : elles se coupent dans <span class="uib">Options</span>.</p>
@@ -417,7 +417,7 @@
 
       <section id="exemples-prompts">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Exemples de prompts</h2>
-        <p>Des prompts prêts à l'emploi pour l'<a href="#assistant">assistant IA</a>, à adapter à votre contexte. Ils fonctionnent avec tous les fournisseurs, en ligne comme en version Docker. L'assistant répond, et nomme les éléments, dans la langue du prompt.</p>
+        <p>Des prompts prêts à l'emploi pour le <a href="#assistant">co-pilote IA</a>, à adapter à votre contexte. Ils fonctionnent avec tous les fournisseurs, en ligne comme en version Docker. Le co-pilote répond, et nomme les éléments, dans la langue du prompt.</p>
 
         <details class="faq prompts-list">
           <summary>15 prompts de démonstration, prêts à copier-coller</summary>
@@ -493,7 +493,7 @@
 
         </details>
 
-        <p>Chaque réponse s'annule en une seule opération (voir <a href="#assistant">Voir ce que l'assistant a changé</a>). En <a href="#docker">version Docker</a>, un agent MCP accepte les mêmes prompts et dispose de cinq prompts intégrés.</p>
+        <p>Chaque réponse s'annule en une seule opération (voir <a href="#assistant">Voir ce que le co-pilote a changé</a>). En <a href="#docker">version Docker</a>, un agent MCP accepte les mêmes prompts et dispose de cinq prompts intégrés.</p>
       </section>
 
       <section id="cles">
@@ -502,7 +502,7 @@
         <p>Votre clé ne passe jamais par ce site ni par son hébergeur (GitHub Pages). Elle reste dans votre navigateur et part directement chez le fournisseur choisi, à chaque message. Où elle est gardée dépend de la case <span class="ui">Se souvenir des clés API sur votre appareil</span>, dans Options :</p>
         <!-- /online -->
         <!-- docker -->
-        <p>Le plus sûr est de régler les clés sur le serveur (voir le <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">README du projet<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>) : elles n'arrivent jamais au navigateur, et l'assistant les propose sous <span class="ui">Modèles du serveur</span>. Une clé saisie dans Options part à chaque message vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Dans le navigateur, elle est gardée selon la case <span class="ui">Se souvenir des clés API sur votre appareil</span> :</p>
+        <p>Le plus sûr est de régler les clés sur le serveur (voir le <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">README du projet<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>) : elles n'arrivent jamais au navigateur, et le co-pilote les propose sous <span class="ui">Modèles du serveur</span>. Une clé saisie dans Options part à chaque message vers votre serveur, qui la transmet au fournisseur sans l'enregistrer. Dans le navigateur, elle est gardée selon la case <span class="ui">Se souvenir des clés API sur votre appareil</span> :</p>
         <!-- /docker -->
         <div class="table-wrap">
           <table>
@@ -531,16 +531,16 @@
         <ul>
           <!-- online -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
-          <li>Si vous utilisez l'assistant IA, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>Si vous utilisez le co-pilote IA, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Comme tout hébergeur web, GitHub Pages garde des journaux techniques, dont votre adresse IP.</li>
-          <li>Le site stable compte ses visites de façon anonyme, sans cookie (la version de développement ne mesure rien), conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement. L'adresse IP n'est pas enregistrée. Elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation de l'assistant, type de fournisseur connecté, temps d'utilisation par tranche, clic vers la page de soutien). Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
+          <li>Le site stable compte ses visites de façon anonyme, sans cookie (la version de développement ne mesure rien), conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement. L'adresse IP n'est pas enregistrée. Elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation du co-pilote, type de fournisseur connecté, temps d'utilisation par tranche, clic vers la page de soutien). Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
           <li>Le site ne charge aucun script tiers.</li>
         </ul>
         <p>Le lien <span class="uib">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
           <!-- /online -->
           <!-- docker -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur, ou sur votre serveur pour ce que vous y enregistrez. Rien n'est envoyé à l'auteur de l'éditeur.</li>
-          <li>Si vous utilisez l'assistant IA, vos messages, le diagramme et vos fichiers joints passent par votre serveur jusqu'au fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>Si vous utilisez le co-pilote IA, vos messages, le diagramme et vos fichiers joints passent par votre serveur jusqu'au fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
           <li>Un agent connecté par MCP lit et modifie le diagramme ouvert. Ce qu'il en fait dépend de l'agent et de son fournisseur.</li>
           <li>Cette version ne mesure pas sa fréquentation et ne charge aucun script tiers.</li>
           </ul>
@@ -560,7 +560,7 @@
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>un choix <span class="ui">Serveur</span> dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, pour retrouver vos enregistrements depuis plusieurs navigateurs,</li>
           <li>des exports déposés, au choix, sur le serveur,</li>
-          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux du co-pilote. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
         <p>Avec ses outils, le serveur MCP donne à l'agent des règles de modélisation (nommage, passerelles, chemin nominal) et cinq prompts tout prêts. Selon l'agent, ils apparaissent dans un menu de prompts (le bouton <span class="ui">+</span> de Claude Desktop) ou comme des commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) :</p>
         <ul>
@@ -594,7 +594,7 @@
           <li><strong>Passerelle inclusive :</strong> chaque flux est pris selon sa propre probabilité, et au moins un l'est toujours. La convergence attend autant de jetons que la divergence en a lancé.</li>
           <li><strong>Passerelle parallèle et flux non contrôlés :</strong> tous les flux sont pris, le champ n'apparaît pas.</li>
         </ul>
-        <p>La valeur est enregistrée dans le fichier .bpmn sous l'attribut <code>bpmnpilot:probability</code> (espace de noms <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), que les autres outils BPMN ignorent sans erreur. L'assistant et les agents MCP la règlent avec l'outil <code>update_elements</code>.</p>
+        <p>La valeur est enregistrée dans le fichier .bpmn sous l'attribut <code>bpmnpilot:probability</code> (espace de noms <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), que les autres outils BPMN ignorent sans erreur. Le co-pilote et les agents MCP la règlent avec l'outil <code>update_elements</code>.</p>
         <h3 id="carte-chaleur">Carte de chaleur</h3>
         <p>La carte de chaleur montre où passent les instances d'un processus. Elle colore chaque élément et chaque flux de séquence selon le nombre de jetons qui l'ont traversé, du bleu pâle au rouge. On voit ainsi, sans lire le modèle élément par élément, les chemins jamais empruntés, les activités par lesquelles passent presque toutes les instances, et les boucles de reprise qui font exécuter une même activité plusieurs fois. Elle sert à valider un modèle avant de le diffuser, et à repérer où un processus se répète ou se concentre avant d'en discuter la réorganisation.</p>
         <ol>
@@ -615,11 +615,11 @@
           <li>les événements de fin, les activités par couloir, et la séquence des éléments : type, couloir, documentation et flux sortants avec leurs conditions.</li>
         </ul>
         <p>Pour un rapport complet, nommez chaque passerelle par sa question et chaque flux sortant par sa réponse, répartissez les activités dans des couloirs, et remplissez le champ <span class="ui">Documentation</span> des activités. Rien de cela n'est obligatoire : le rapport signale ce qui manque. Après une simulation, il ajoute la <a href="#carte-chaleur">carte de chaleur</a> (en PDF), le nombre d'instances par élément, la part de chaque événement de fin et les reprises.</p>
-        <p>Le rapport s'en tient aux contrôles. Une analyse du processus lui-même se demande à l'assistant IA ou à un agent MCP, qui lisent le même rapport (voir <a href="#exemples-prompts">Exemples de prompts</a>).</p>
+        <p>Le rapport s'en tient aux contrôles. Une analyse du processus lui-même se demande au co-pilote IA ou à un agent MCP, qui lisent le même rapport (voir <a href="#exemples-prompts">Exemples de prompts</a>).</p>
         <figure><img src="/src/help/img/fr-rapport-processus.webp" width="1060" height="750" alt="Première page du rapport de processus : chiffres clés, diagramme aux éléments entourés de couleur, et tableau des constats en orange et jaune." loading="lazy" /><figcaption>Première page du rapport : chiffres clés, diagramme annoté et constats.</figcaption></figure>
         <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
-        <p>Autour de chaque réponse, l'assistant montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
-        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau de l'assistant après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <p>Autour de chaque réponse, le co-pilote montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
+        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau du co-pilote après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
         <ul>
           <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
           <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de message relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
@@ -656,7 +656,7 @@
         <p>L'éditeur est conçu pour un écran d'ordinateur, une souris et un clavier. Sur un téléphone, il sert surtout à regarder un diagramme.</p>
         <ul>
           <li><strong>Ce qui marche :</strong> ouvrir un fichier .bpmn ou un enregistrement de <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, se déplacer et zoomer avec les doigts, exporter.</li>
-          <li><strong>Ce qui est pénible :</strong> poser et relier des formes, écrire les libellés, utiliser le panneau Processus et l'assistant, faute de place.</li>
+          <li><strong>Ce qui est pénible :</strong> poser et relier des formes, écrire les libellés, utiliser le panneau Processus et le co-pilote, faute de place.</li>
         </ul>
         <p>Sous 900 pixels de large (ou 500 de haut), un bandeau le rappelle au-dessus du canevas. Fermez-le d'un clic sur la croix : il ne revient plus dans ce navigateur. Sur un petit écran, le panneau Processus commence aussi replié. Sur une tablette, le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> à droite de la barre l'ouvre. Sur un téléphone, la barre d'outils dépasse la largeur de l'écran et ses derniers boutons restent hors de portée.</p>
         <div class="note">Pour modéliser, prenez un écran d'au moins 1280 pixels de large, ou une tablette en paysage avec un clavier et une souris.</div>
@@ -667,10 +667,10 @@
         <details class="faq">
           <summary>Faut-il créer un compte ?</summary>
           <!-- online -->
-          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé API chez un fournisseur d'IA.</p>
+          <p>Non. L'éditeur marche sans compte. Seul le co-pilote IA demande une clé API chez un fournisseur d'IA.</p>
           <!-- /online -->
           <!-- docker -->
-          <p>Non. L'éditeur marche sans compte. Seul l'assistant IA demande une clé API, réglée sur le serveur ou saisie dans Options.</p>
+          <p>Non. L'éditeur marche sans compte. Seul le co-pilote IA demande une clé API, réglée sur le serveur ou saisie dans Options.</p>
           <!-- /docker -->
         </details>
         <details class="faq">
@@ -708,7 +708,7 @@
         </details>
         <!-- /docker -->
         <details class="faq">
-          <summary>L'assistant a dessiné quelque chose d'inattendu.</summary>
+          <summary>Le co-pilote a dessiné quelque chose d'inattendu.</summary>
           <p>Le bouton <span class="uib">Annuler</span> de la pilule défait toute la réponse d'un coup, <kbd>Ctrl</kbd>+<kbd>Z</kbd> un changement à la fois. Vous pouvez aussi lui demander la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
         </details>
         <details class="faq">

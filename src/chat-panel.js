@@ -132,7 +132,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title"><span class="chat-title-name">${T('AI co-pilot', 'Co-pilote IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <div id="chat-destination" hidden></div>
@@ -147,7 +147,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     </form>
     <dialog id="chat-editor">
       <form method="dialog">
-        <h2>${T('Message to the assistant', "Message à l'assistant")}</h2>
+        <h2>${T('Message to the co-pilot', "Message au co-pilote")}</h2>
         <textarea id="chat-editor-text" placeholder="${T('Paste or write a long message. Ctrl+Enter to send.', 'Collez ou écrivez un long message. Ctrl+Entrée pour envoyer.')}"></textarea>
         <div class="chat-editor-actions">
           <button class="btn" type="button" id="chat-editor-file" title="${T('Insert the text of a file, to trim it before sending', 'Insérer le texte d\'un fichier, pour l\'élaguer avant l\'envoi')}">${T('Open a file…', 'Ouvrir un fichier…')}</button>
@@ -159,23 +159,23 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       </form>
     </dialog>`
   document.getElementById('properties-panel').after(panel)
-  makeResizable(panel, { name: 'chat', label: T('AI assistant width', "Largeur de l'assistant IA"), min: 300, max: 900, fallback: 360 })
+  makeResizable(panel, { name: 'chat', label: T('AI co-pilot width', "Largeur du co-pilote IA"), min: 300, max: 900, fallback: 360 })
 
   const toggle = document.createElement('button')
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.title = T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
-  // « Assistant IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
+  toggle.title = T('Open or close the AI co-pilot', "Ouvrir ou fermer le co-pilote IA")
+  // « Co-pilote IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
   const toggleFull = document.createElement('span')
   toggleFull.className = 'chat-btn-full'
-  toggleFull.textContent = T('AI assistant', 'Assistant IA')
+  toggleFull.textContent = T('AI co-pilot', 'Co-pilote IA')
   const toggleShort = document.createElement('span')
   toggleShort.className = 'chat-btn-short'
   toggleShort.textContent = T('AI', 'IA')
   toggleShort.setAttribute('aria-hidden', 'true')
   toggle.append(toggleFull, toggleShort)
-  toggle.setAttribute('aria-label', T('AI assistant', 'Assistant IA'))
+  toggle.setAttribute('aria-label', T('AI co-pilot', 'Co-pilote IA'))
   // Le modèle choisi, en petit à côté du nom (masqué sur écran étroit).
   const toggleModel = document.createElement('span')
   toggleModel.className = 'chat-btn-model'
@@ -205,7 +205,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   let settings = loadSettings()
   let serverModels = [] // { id, label, provider, providerLabel }, envoyés par le serveur
   let models = [] // modèles du fournisseur actif : serverModels ou ceux de la fenêtre Options
-  let currentId = '' // modèle de l'assistant, choisi dans la fenêtre Options
+  let currentId = '' // modèle du co-pilote, choisi dans la fenêtre Options
   // Discussion en cours : sur le serveur ({ id }) ou dans la page ({ messages }).
   // kind « server:anthropic », « local:openai »… : l'historique ne passe pas d'un format à l'autre.
   let conversation = null
@@ -265,7 +265,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   // Modèles du fournisseur actif choisi dans Options : ceux du serveur, ou ceux du
-  // fournisseur testé. Sans choix, ceux du serveur s'il en a. Le modèle de l'assistant
+  // fournisseur testé. Sans choix, ceux du serveur s'il en a. Le modèle du co-pilote
   // se choisit dans Options ; le panneau l'affiche.
   function fillModels() {
     const useServer = settings.active === 'server' || (!settings.active && serverModels.length > 0)
@@ -276,12 +276,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
     toggle.classList.toggle('has-model', !!model)
-    // En-tête du panneau : « Assistant » et le modèle dessous, ou « Assistant IA » sans modèle.
-    titleName.textContent = model ? T('Assistant', 'Assistant') : T('AI assistant', 'Assistant IA')
+    // En-tête du panneau : « Co-pilote » et le modèle dessous, ou « Co-pilote IA » sans modèle.
+    titleName.textContent = model ? T('Co-pilot', 'Co-pilote') : T('AI co-pilot', 'Co-pilote IA')
     titleModel.textContent = model ? model.label : ''
     titleModel.hidden = !model
     titleModel.title = toggle.title
-    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
+    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : T('Open or close the AI co-pilot', "Ouvrir ou fermer le co-pilote IA")
     showDestination(model)
   }
 
@@ -697,7 +697,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     controller = new AbortController()
     setBusy(true)
 
-    // Ligne d'état sous la réponse : ce que fait l'assistant et depuis combien de temps.
+    // Ligne d'état sous la réponse : ce que fait le co-pilote et depuis combien de temps.
     const status = document.createElement('div')
     status.className = 'chat-status'
     let statusText = T('sending', 'envoi')

@@ -13,7 +13,7 @@ browser before each change. So:
 - If you see something clumsy, fragile or simply wrong, say so. A short explanation in an issue
   helps as much as a fix.
 - Experienced developers are especially welcome to review the code, the security of the MCP server,
-  or the way the AI assistant handles API keys.
+  or the way the AI co-pilot handles API keys.
 - AI-assisted contributions are fine too, as long as you have read and tested what you submit.
 
 There is no guaranteed response time, but every issue and pull request is read.
@@ -34,7 +34,7 @@ You need Node.js 22 or later.
 ```
 npm install
 npm run dev          # the editor, at http://localhost:5173
-cd mcp && npm install && npm start   # the MCP server and the built-in assistant
+cd mcp && npm install && npm start   # the MCP server and the built-in AI co-pilot
 ```
 
 `npm run lint` checks the code with ESLint, and `npm test` runs the automated tests (Node.js test

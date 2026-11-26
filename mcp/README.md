@@ -25,7 +25,7 @@ MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSoc
 
 ## Built-in chat
 
-The "AI assistant" button in the toolbar opens a chat panel to the right of the canvas. Describe a
+The "AI co-pilot" button in the toolbar opens a chat panel to the right of the canvas. Describe a
 process or a change, and the model draws it in **this tab** with the same tools as the MCP server.
 Under each answer, one chip per tool called (✓ succeeded, ✗ failed). The model is picked in
 the Options window, among those the server offers and those of the providers set up there; the panel
@@ -94,7 +94,7 @@ Mistral, xAI (Grok), Ollama and "OpenAI-compatible" (LiteLLM, LM Studio, vLLM…
 (prefilled for Anthropic, OpenAI, Mistral, xAI and Ollama), the API key, and the models to offer. "List models" asks the provider
 for them, "Test" checks the address and the key. Neither button uses any credit. A provider's
 models are only offered once "Test" or "List models" has succeeded, and again after its address or
-key changes. "Assistant model" picks the model used by the chat.
+key changes. "Co-pilot model" picks the model used by the chat.
 
 - Settings stay in the browser. API keys are forgotten when the tab is closed, unless "Remember API keys on
   your device" is checked. "Clear API keys" removes them.
@@ -166,7 +166,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 |---|---|
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
-| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with OpenAI-compatible providers, Mistral included, the built-in assistant cannot receive it) |
+| `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with OpenAI-compatible providers, Mistral included, the built-in AI co-pilot cannot receive it) |
 | `export_diagram` | exports the diagram as a file (`bpmn`, `svg`, `png` or `pdf`), like the Export menu. The file is saved in `EXPORTS_DIR`, never replacing another one, and the editor shows a Download button: nothing is downloaded unless the user clicks it. The file content is not returned to the client |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
@@ -180,7 +180,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
-What the tools add, change or remove is marked on the editor's canvas (`src/ai-changes.js`), for the built-in assistant and MCP agents alike.
+What the tools add, change or remove is marked on the editor's canvas (`src/ai-changes.js`), for the built-in AI co-pilot and MCP agents alike.
 
 ## Modeling rules and prompts
 

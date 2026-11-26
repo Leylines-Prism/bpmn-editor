@@ -1,4 +1,4 @@
-// Poignées pour régler la largeur des panneaux de droite (assistant IA, Processus).
+// Poignées pour régler la largeur des panneaux de droite (co-pilote IA, Processus).
 // La poignée est posée juste avant le panneau, dans l'espace qui le sépare de son
 // voisin : on la tire vers la gauche pour élargir, vers la droite pour rétrécir.
 // Au clavier : flèches gauche et droite. Double-clic : largeur par défaut.

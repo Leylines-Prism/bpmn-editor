@@ -12,7 +12,7 @@ Elle ne couvre pas la version Docker, qui a son propre serveur (voir le [README]
   fournisseur d'IA que vous choisissez.
 - Vos diagrammes restent dans votre navigateur. Vos clés API restent dans votre navigateur et ne sont
   envoyées qu'au fournisseur d'IA choisi, directement depuis votre navigateur.
-- Quand vous utilisez l'assistant IA, votre message, vos pièces jointes et le diagramme qu'il lit partent
+- Quand vous utilisez le co-pilote IA, votre message, vos pièces jointes et le diagramme qu'il lit partent
   directement chez ce fournisseur, selon ses propres conditions.
 - La seule autre requête est une mesure d'audience sans cookie, qui ne contient jamais de diagramme, de
   message ni de clé.
@@ -25,19 +25,19 @@ dépense (voir [Bonnes pratiques](#bonnes-pratiques)).
 
 | Donnée | Où elle est gardée | Où elle peut aller |
 |---|---|---|
-| Le diagramme ouvert | stockage du navigateur (`localStorage`), enregistré automatiquement | nulle part, sauf chez le fournisseur d'IA quand vous utilisez l'assistant |
+| Le diagramme ouvert | stockage du navigateur (`localStorage`), enregistré automatiquement | nulle part, sauf chez le fournisseur d'IA quand vous utilisez le co-pilote |
 | « Mes diagrammes » | base de données du navigateur (IndexedDB) | nulle part : l'enregistrement sur serveur est coupé dans la version en ligne |
 | Fichiers ouverts et exports (BPMN, SVG, PNG, PDF) | lus et produits dans la page, téléchargés sur votre ordinateur | nulle part |
 | Clés API | `sessionStorage` par défaut (effacées à la fermeture de l'onglet), `localStorage` si « Se souvenir des clés API sur votre appareil » est coché | seulement dans les en-têtes des requêtes envoyées au fournisseur choisi |
 | Adresses et modèles des fournisseurs | `localStorage` | nulle part |
-| Conversation avec l'assistant | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
+| Conversation avec le co-pilote | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
 | Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (documents et fichiers texte sont lus dans la page, seul leur texte est gardé) | chez le fournisseur, avec le message |
 
 ## Toutes les requêtes de la page
 
 1. **Les fichiers du site** (HTML, scripts, styles, images), depuis GitHub Pages. Comme pour tout site,
    l'hébergeur voit votre adresse IP et les fichiers demandés.
-2. **Le fournisseur d'IA choisi**, seulement quand vous utilisez l'assistant ou listez ses modèles :
+2. **Le fournisseur d'IA choisi**, seulement quand vous utilisez le co-pilote ou listez ses modèles :
    Anthropic, OpenAI, Mistral, xAI, Ollama sur votre propre machine, ou l'adresse « compatible OpenAI » que
    vous saisissez vous-même.
 3. **La mesure d'audience anonyme** (statistiques d'usage), sur la page stable seulement : l'adresse de la
@@ -54,11 +54,11 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
 - **Aucun script tiers.** La politique de sécurité du contenu n'autorise que les scripts du site
   (`script-src 'self'`, pas de script en ligne hormis un petit script autorisé par son empreinte). Ni CDN,
   ni script de suivi, ni police externe.
-- **Aucun HTML venu de l'extérieur.** Les réponses de l'assistant, les noms de diagrammes et de modèles
+- **Aucun HTML venu de l'extérieur.** Les réponses du co-pilote, les noms de diagrammes et de modèles
   s'affichent en texte simple, jamais interprétés comme du HTML. Le code n'utilise pas `eval`.
 - **Aucun réglage lu dans l'adresse.** La page ne lit rien dans les paramètres de l'URL : un lien piégé ne
   peut pas changer l'adresse d'un fournisseur pour détourner une clé.
-- **Aucune sortie par l'assistant.** Les outils de l'assistant ne font que lire et modifier le diagramme,
+- **Aucune sortie par le co-pilote.** Les outils du co-pilote ne font que lire et modifier le diagramme,
   ou proposer un téléchargement. Aucun n'envoie de données vers une adresse : des consignes cachées dans un
   diagramme ou un PDF ne peuvent pas faire envoyer votre clé ailleurs.
 - **Aucun affichage dans un autre site.** GitHub Pages ne peut pas envoyer l'en-tête qui l'interdit, la

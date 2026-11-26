@@ -22,7 +22,7 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 
 ## Chat intégré
 
-Le bouton « Assistant IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
+Le bouton « Co-pilote IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
 On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
 outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
 Le modèle se choisit dans la fenêtre Options, parmi ceux que le serveur propose et ceux des fournisseurs
@@ -94,7 +94,7 @@ Mistral, xAI (Grok), Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM
 (préremplie pour Anthropic, OpenAI, Mistral, xAI et Ollama), la clé API, et les modèles à proposer. « Lister les modèles » les demande au
 fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
 Les modèles d'un fournisseur ne sont proposés qu'après la réussite de « Tester » ou « Lister les
-modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle de l'assistant » choisit le
+modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle du co-pilote » choisit le
 modèle du chat.
 
 - Les réglages restent dans le navigateur. Les clés API sont oubliées à la fermeture de l'onglet, sauf si
@@ -167,7 +167,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 |---|---|
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
-| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, l'assistant intégré ne peut pas la recevoir) |
+| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, le co-pilote intégré ne peut pas la recevoir) |
 | `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Le contenu du fichier n'est pas renvoyé au client |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
@@ -181,7 +181,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
-Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour l'assistant intégré comme pour les agents MCP.
+Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour le co-pilote intégré comme pour les agents MCP.
 
 ## Règles de modélisation et prompts
 

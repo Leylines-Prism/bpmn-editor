@@ -63,7 +63,7 @@ const MAX_JSON_RETRIES = 2
 
 export const CHAT_SYSTEM = `${INSTRUCTIONS}
 
-You are the assistant built into this BPMN editor. The user sees the canvas next to the chat:
+You are the AI co-pilot built into this BPMN editor. The user sees the canvas next to the chat:
 each tool you call changes their diagram before their eyes.
 - Reply briefly, in the language of the user's message. Do not copy the XML or the list of shapes into your reply.
 - Name new elements in the language of the user's message.

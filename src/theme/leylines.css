@@ -118,7 +118,7 @@ a.btn { text-decoration: none; }
           mask: var(--icon) center / contain no-repeat;
 }
 
-/* Bouton Assistant IA : il ressort par un fin trait leyline (ciel, magenta,
+/* Bouton Co-pilote IA : il ressort par un fin trait leyline (ciel, magenta,
    orange) autour du bouton, sans halo : le seul nœud lumineux reste le badge MCP. */
 #toolbar #btn-chat {
   border: 1.5px solid transparent;
@@ -128,7 +128,7 @@ a.btn { text-decoration: none; }
 #toolbar #btn-chat:hover { background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat.active { background: linear-gradient(var(--accent-soft), var(--accent-soft)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat::before { width: 18px; height: 18px; }
-/* Modèle choisi, en petit après « Assistant IA » */
+/* Modèle choisi, en petit après « Co-pilote IA » */
 #toolbar #btn-chat .chat-btn-model {
   max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   padding-left: var(--space-2); margin-left: 2px; border-left: 1px solid var(--line-strong);
@@ -439,9 +439,9 @@ body.properties-instant #properties-panel { transition: none; }
 }
 .bio-properties-panel-popup textarea.bio-properties-panel-input::selection { background: var(--accent-soft); color: var(--ink); }
 
-/* ── Assistant IA (panneau créé par src/chat-panel.js) ───────────────── */
+/* ── Co-pilote IA (panneau créé par src/chat-panel.js) ───────────────── */
 
-/* Même fin trait leyline (ciel, magenta, orange) que le bouton Assistant IA qui l'ouvre. */
+/* Même fin trait leyline (ciel, magenta, orange) que le bouton Co-pilote IA qui l'ouvre. */
 body #chat-panel {
   width: var(--chat-width, 360px);
   border: 1.5px solid transparent; border-radius: var(--radius-md);
@@ -525,7 +525,7 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #toolbar .menu .btn { justify-content: flex-start; }
 #toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
 /* Destination des exports (version docker) : un choix à faire avant de cliquer, souligné
-   par le même trait leyline que le bouton Assistant. */
+   par le même trait leyline que le bouton Co-pilote. */
 #toolbar .export-destination { margin: 0; padding: var(--space-1) var(--space-2) var(--space-2); border: 0; min-width: 0; }
 #toolbar .export-destination legend { padding: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
 .export-destination-choices {
@@ -569,7 +569,7 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #xml-export-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
 #xml-export-dialog .status:empty { display: none; }
 
-/* ── Fenêtre « Options de l'assistant » (src/options-dialog.js) ───────── */
+/* ── Fenêtre « Options du co-pilote » (src/options-dialog.js) ───────── */
 
 #options-dialog {
   margin: auto; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
@@ -1112,7 +1112,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   .panel-resizer::before { transition: none; }
 }
 
-/* Boutons de la barre d'outils et de l'en-tête de l'assistant : un contour fin
+/* Boutons de la barre d'outils et de l'en-tête du co-pilote : un contour fin
    et un fond légèrement relevé montrent qu'ils se cliquent, sans alourdir la barre. */
 #toolbar > .btn:not(#btn-chat),
 #chat-panel header .btn {
