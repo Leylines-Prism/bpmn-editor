@@ -67,7 +67,14 @@ report on it, without cluttering the editor for everyone else (see the
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
   reimport, bpmnlint), with automatic correction.
 
+**Presentation** (toolbar button): the diagram alone, full screen and read-only, to walk a meeting
+through a process. In Expert mode, the token simulation runs there too.
+
 <details><summary><b>See the expert tools in action</b> (an internal purchase process with four lanes)</summary>
+
+**Presentation mode**: the diagram alone, full screen, then a token simulation at 2×:
+
+![The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×](docs/presentation.gif)
 
 **Token simulation**, slowed down then sped up with the speed slider:
 

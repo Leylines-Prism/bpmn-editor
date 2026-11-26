@@ -69,7 +69,14 @@ Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
 
+**Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
+un processus en réunion. En mode Expert, la simulation de jetons s'y lance aussi.
+
 <details><summary><b>Voir les outils experts en action</b> (un processus d'achat interne à quatre couloirs)</summary>
+
+**Mode Présentation** : le schéma seul en plein écran, puis une simulation à 2× :
+
+![Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton à 2×](docs/presentation.fr.gif)
 
 **Simulation de jetons**, ralentie puis accélérée avec la glissière de vitesse :
 
