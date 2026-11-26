@@ -807,9 +807,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     if (!issues.length) {
       const line = document.createElement('div')
       line.className = 'chat-critique none'
-      line.textContent = unreadable
-        ? T('Review of the request unavailable: the model gave no readable list.', "Critique de la demande indisponible : le modèle n'a pas rendu de liste lisible.")
-        : T('Request reviewed: nothing to clarify.', 'Demande relue : rien à clarifier.')
+      line.textContent =
+        unreadable === 'error'
+          ? T('Review of the request unavailable: the call to the model failed.', "Critique de la demande indisponible : l'appel au modèle a échoué.")
+          : unreadable
+            ? T('Review of the request unavailable: the model gave no readable list.', "Critique de la demande indisponible : le modèle n'a pas rendu de liste lisible.")
+            : T('Request reviewed: nothing to clarify.', 'Demande relue : rien à clarifier.')
       return line
     }
     const box = document.createElement('details')
@@ -875,6 +878,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         `${corrections.asked} correction${corrections.asked > 1 ? 's' : ''} requested, ${corrections.kept} kept`,
         `${corrections.asked} correction${corrections.asked > 1 ? 's' : ''} demandée${corrections.asked > 1 ? 's' : ''}, ${corrections.kept} retenue${corrections.kept > 1 ? 's' : ''}`,
       ))
+      // Une correction non retenue a été défaite : le texte de la réponse peut encore en parler.
+      if (corrections.kept < corrections.asked) parts.push(T('the last one did not reduce the problems and was undone', "la dernière ne réduisait pas les problèmes et a été annulée"))
     }
     summary.textContent = `${passed === checks.length ? '✓' : '✗'} ${parts.join(' · ')}`
     box.append(summary)

@@ -2,7 +2,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import * as z from 'zod'
-import { createToolSet, rewindTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
+import { createToolSet, rewindTurn, runAnthropicTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
 import { CRITIQUE_SYSTEM, parseCritique, wantsCritique } from '../src/ai/assist.js'
 
 const toolSet = createToolSet(z)
@@ -136,4 +136,127 @@ test('rewindTurn brings the history back to before the last message', async () =
   assert.equal(rewindTurn(conv), true)
   assert.deepEqual(conv.messages, afterFirst)
   assert.equal(rewindTurn(conv), false)
+})
+
+// ── Format Anthropic ────────────────────────────────────────────────────────
+
+
+// Client factice du SDK : create() pour la critique, stream() pour la boucle.
+function fakeAnthropic(steps, critique = '{"issues":[]}') {
+  const requests = []
+  const creates = []
+  return {
+    requests,
+    creates,
+    beta: {
+      messages: {
+        async create(body) {
+          creates.push(structuredClone(body))
+          return { content: [{ type: 'text', text: critique }] }
+        },
+        stream(body) {
+          requests.push(structuredClone(body))
+          const step = steps.shift()
+          return {
+            on() {},
+            async finalMessage() {
+              if (!step) throw new Error('no more steps')
+              if (step.tool) return { stop_reason: 'tool_use', content: [{ type: 'tool_use', id: `t${requests.length}`, name: step.tool, input: step.input || {} }] }
+              return { stop_reason: 'end_turn', content: [{ type: 'text', text: step.text }] }
+            },
+          }
+        },
+      },
+    },
+  }
+}
+const aDraw = { tool: 'add_shapes', input: { shapes: [{ type: 'Task', name: 'Ship' }] } }
+
+test('Anthropic: critique by create() without tools, then the drawing with the points', async () => {
+  const events = []
+  const client = fakeAnthropic([{ text: 'Done.' }], '{"issues":[{"severity":"blocking","quote":"","question":"Who pays?"}]}')
+  await runAnthropicTurn({ client, model: 'claude-sonnet-5-5', conv: { messages: [] }, text: LONG, toolSet, executeTool: async () => ({}), emit: (e) => events.push(e), log: () => {}, assist: { critique: true } })
+  assert.equal(client.creates.length, 1)
+  assert.equal(client.creates[0].tools, undefined)
+  assert.equal(client.creates[0].system, CRITIQUE_SYSTEM)
+  assert.match(JSON.stringify(client.requests[0].messages.at(-1).content), /Who pays\?/)
+  assert.equal(events.find((e) => e.type === 'critique').issues.length, 1)
+})
+
+test('Anthropic: an unreadable critique does not stop the drawing', async () => {
+  const events = []
+  const client = fakeAnthropic([{ text: 'Done.' }], 'Sorry, I cannot.')
+  await runAnthropicTurn({ client, model: 'claude-haiku-5-5', conv: { messages: [] }, text: LONG, toolSet, executeTool: async () => ({}), emit: (e) => events.push(e), log: () => {}, assist: { critique: true } })
+  const critique = events.find((e) => e.type === 'critique')
+  assert.equal(critique.failed, 'unreadable')
+  assert.equal(client.requests.length, 1)
+  assert.doesNotMatch(JSON.stringify(client.requests[0].messages), /open points/)
+})
+
+test('Anthropic: correction round is a user message after the final answer, and is kept', async () => {
+  const events = []
+  const client = fakeAnthropic([aDraw, { text: 'Done.' }, aDraw, { text: 'Fixed.' }])
+  const editor = fakeEditor([fail(1), fail(0)])
+  const conv = { messages: [] }
+  await runAnthropicTurn({ client, model: 'claude-sonnet-5-5', conv, text: 'draw', toolSet, executeTool: editor.executeTool, emit: (e) => events.push(e), log: () => {}, assist: { autocorrect: true } })
+  const roles = client.requests[2].messages.map((m) => m.role)
+  // utilisateur, assistant (outil), utilisateur (résultat), assistant (fin), utilisateur (correction)
+  assert.deepEqual(roles, ['user', 'assistant', 'user', 'assistant', 'user'])
+  assert.deepEqual(events.find((e) => e.type === 'report').corrections, { asked: 1, kept: 1 })
+  // L'historique reste valide pour le message suivant : il finit par une réponse de l'assistant.
+  assert.equal(conv.messages.at(-1).role, 'assistant')
+})
+
+test('Anthropic: a failing tool does not trigger the check', async () => {
+  const events = []
+  const client = fakeAnthropic([aDraw, { text: 'Could not.' }])
+  await runAnthropicTurn({
+    client, model: 'claude-sonnet-5-5', conv: { messages: [] }, text: 'draw', toolSet,
+    executeTool: async () => { throw new Error('boom') },
+    emit: (e) => events.push(e), log: () => {}, assist: { autocorrect: true },
+  })
+  assert.equal(events.some((e) => e.type === 'report'), false)
+})
+
+test('a check that cannot run ends the turn quietly', async () => {
+  const events = []
+  const client = fakeClient([draw, { content: 'Done.' }])
+  await runOpenAITurn({
+    client, model: 'm', conv: { messages: [] }, text: 'draw', toolSet,
+    executeTool: async (name) => { if (name === 'validate_diagram') throw new Error('no linting'); return {} },
+    emit: (e) => events.push(e), log: () => {}, assist: { autocorrect: true },
+  })
+  assert.equal(events.some((e) => e.type === 'report'), false)
+  assert.equal(client.requests.length, 2)
+})
+
+test('an abort during the critique stops the turn and leaves the history unchanged', async () => {
+  const controller = new AbortController()
+  const conv = { messages: [{ role: 'user', content: 'old' }, { role: 'assistant', content: 'ok' }] }
+  const before = structuredClone(conv.messages)
+  const client = {
+    async stream(body, { signal }) {
+      controller.abort()
+      const err = new Error('aborted')
+      if (signal?.aborted) throw err
+      return { content: '', toolCalls: [] }
+    },
+  }
+  await assert.rejects(runOpenAITurn({ client, model: 'm', conv, text: LONG, toolSet, executeTool: async () => ({}), emit: () => {}, log: () => {}, signal: controller.signal, assist: { critique: true } }))
+  assert.deepEqual(conv.messages, before)
+})
+
+test('a failed critique call is reported as such, and the drawing still runs', async () => {
+  const events = []
+  let calls = 0
+  const client = {
+    async stream(body) {
+      calls++
+      if (!body.tools) throw new Error('Connection error.')
+      return { content: 'Drawn.', toolCalls: [], finishReason: 'stop' }
+    },
+  }
+  await runOpenAITurn({ client, model: 'm', conv: { messages: [] }, text: LONG, toolSet, executeTool: async () => ({}), emit: (e) => events.push(e), log: () => {}, assist: { critique: true } })
+  assert.equal(events.find((e) => e.type === 'critique').failed, 'error')
+  assert.equal(calls, 2)
 })

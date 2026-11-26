@@ -158,13 +158,16 @@ export async function runCritique({ assist = {}, text, attachments = [], call, e
   if (!assist.critique || !wantsCritique(text, attachments)) return text
   emit({ type: 'status', phase: 'critique' })
   let issues
+  let failed = null // 'error' : l'appel a échoué ; 'unreadable' : réponse sans liste lisible
   try {
     issues = parseCritique(await call(CRITIQUE_SYSTEM))
+    if (!issues) failed = 'unreadable'
   } catch (err) {
     if (signal?.aborted) throw err
     log(`[chat] critique impossible : ${err.message}`)
     issues = null
+    failed = 'error'
   }
-  emit({ type: 'critique', issues: issues || [], ...(issues ? {} : { failed: true }) })
+  emit({ type: 'critique', issues: issues || [], ...(failed ? { failed } : {}) })
   return issues?.length ? `${text}\n\n${critiqueNote(issues)}` : text
 }
