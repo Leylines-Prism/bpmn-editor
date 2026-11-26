@@ -207,6 +207,8 @@ details.faq summary + * { margin-top: var(--space-3); }
   border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
   background: var(--surface-sunken); font-size: 15px; line-height: 24px;
 }
+/* Prompt structuré : les retours à la ligne du texte source s'affichent et se copient. */
+.prompt-text.structured { white-space: pre-line; }
 .prompt-tip { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
 .copy-prompt {
   display: inline-flex; align-items: center; gap: 6px;
