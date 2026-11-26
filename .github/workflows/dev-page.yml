@@ -1,0 +1,40 @@
+# Après chaque fusion dans main, demande au dépôt de la page de développement de la reconstruire
+# (événement repository_dispatch). Les déclenchements planifiés de GitHub sont au mieux-disant et
+# peuvent sauter des heures entières : ce signal les rend inutiles en temps normal.
+#
+# Prérequis, dans Settings > Secrets and variables > Actions :
+# - variable DEV_PAGE_REPO : le dépôt cible, sous la forme owner/name ;
+# - secret DEV_PAGE_DISPATCH_TOKEN : jeton fine-grained limité à ce seul dépôt cible, avec la
+#   permission Contents en lecture et écriture (exigée par l'API repository_dispatch).
+# Sans l'un des deux, le job s'arrête proprement sans erreur.
+#
+# Ne tourne que sur push vers main, jamais sur une PR : le secret n'est pas exposé aux forks.
+
+name: Dev page trigger
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: dev-page-trigger
+  cancel-in-progress: true
+
+jobs:
+  dispatch:
+    if: github.repository == 'Leylines-Prism/bpmn-pilot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask the development page to rebuild
+        env:
+          GH_TOKEN: ${{ secrets.DEV_PAGE_DISPATCH_TOKEN }}
+          TARGET_REPO: ${{ vars.DEV_PAGE_REPO }}
+        run: |
+          if [ -z "$GH_TOKEN" ] || [ -z "$TARGET_REPO" ]; then
+            echo "::notice::DEV_PAGE_REPO or DEV_PAGE_DISPATCH_TOKEN is not set, nothing to do."
+            exit 0
+          fi
+          gh api --method POST "repos/$TARGET_REPO/dispatches" -f event_type=main-updated
+          echo "Rebuild requested."
