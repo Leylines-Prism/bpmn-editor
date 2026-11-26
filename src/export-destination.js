@@ -3,6 +3,8 @@
 // du serveur (route /exports), sous le nom du diagramme. Le choix est retenu par le navigateur.
 // « Code XML à copier » et « Imprimer » ne sont pas des fichiers : le choix ne les concerne pas.
 // Sans serveur (version en ligne), rien n'est ajouté et les exports se téléchargent.
+// Renvoie { deliver, sendToServer } : sendToServer(content, name, ext) dépose un fichier
+// et renvoie le nom retenu, ou vaut null sans serveur.
 
 import { T } from './i18n/lang.js'
 
@@ -21,7 +23,7 @@ function readMode() {
 // download(content, filename, type) : le téléchargement par le navigateur.
 // setStatus(message) : la zone d'état de la barre d'outils.
 export function setupExportDestination({ menu, exportsUrl, download, setStatus }) {
-  if (!exportsUrl) return { deliver: (content, name, ext, type) => download(content, `${name}.${ext}`, type) }
+  if (!exportsUrl) return { deliver: (content, name, ext, type) => download(content, `${name}.${ext}`, type), sendToServer: null }
 
   let mode = readMode()
   const field = document.createElement('fieldset')
@@ -73,5 +75,6 @@ export function setupExportDestination({ menu, exportsUrl, download, setStatus }
     }
   }
 
-  return { deliver }
+  // sendToServer sert aussi à l'outil export_diagram, quel que soit le choix du menu.
+  return { deliver, sendToServer }
 }

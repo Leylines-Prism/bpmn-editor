@@ -28,6 +28,7 @@ Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates 
 Colors and text formatting: style_elements sets the fill, stroke, text color and font of shapes and connections.
 Use them sparingly and consistently, for example one color per actor or to highlight an exception path.
 To start from scratch or import a complete diagram, use set_diagram_xml.
+When the user asks for a file (BPMN, SVG, PNG or PDF), use export_diagram. To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.
 
 Modeling rules (validate_diagram checks most of them):
 - Every process has a start event and at least one end event. Use a single blank start event per process.
@@ -94,6 +95,23 @@ export function buildTools(z) {
       description:
         'Returns a PNG image of the open diagram, as drawn on the canvas. Use it to check the layout visually (overlaps, crossing flows, readability), or to show the diagram to the user.',
       inputSchema: {},
+    },
+    {
+      name: 'export_diagram',
+      title: 'Export the diagram',
+      description:
+        'Exports the open diagram as a file, exactly like the editor\'s Export menu: bpmn (BPMN 2.0 XML), svg, png (2x, white background) or pdf (vector). ' +
+        'When the editor runs with its server, the file is saved in the exports folder of the server; an existing file is never replaced ' +
+        '("Name (2).pdf" is added next to it). The editor also shows the user a Download button: nothing is downloaded unless they click it. ' +
+        'The file content is not returned. Use it only when the user asks for a file.',
+      inputSchema: {
+        format: z.enum(['bpmn', 'svg', 'png', 'pdf']).describe('File format'),
+        name: z
+          .string()
+          .max(120)
+          .optional()
+          .describe('File name without extension. Default: the name of the diagram in the editor'),
+      },
     },
     {
       name: 'set_diagram_xml',

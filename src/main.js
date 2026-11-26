@@ -20,7 +20,8 @@ import { setupPanelPopup } from './panel-popup.js'
 import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
-import { exportPdf } from './export-pdf.js'
+import { EXPORT_FORMATS, exportSize, hasShapes, renderExport } from './export-files.js'
+import { createExportOffer } from './export-offer.js'
 import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
 import { setupHistory } from './history.js'
@@ -304,18 +305,21 @@ const library = setupDiagramLibrary({
 })
 
 // Version docker : le menu Exporter peut aussi déposer les fichiers dans le dossier du serveur.
-const { deliver } = setupExportDestination({
+const { deliver, sendToServer } = setupExportDestination({
   menu: document.getElementById('export-menu'),
   exportsUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/exports') : null,
   download,
   setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
 })
 
-document.getElementById('btn-save').addEventListener('click', async () => {
-  const { xml } = await modeler.saveXML({ format: true })
-  deliver(xml, baseName(), 'bpmn', 'application/xml')
-  track('export', { format: 'bpmn' })
-})
+// Entrées du menu Exporter qui produisent un fichier : même rendu que l'outil export_diagram.
+async function exportFile(format) {
+  const { content, ext, type } = await renderExport(modeler, format)
+  await deliver(content, baseName(), ext, type)
+  track('export', { format })
+}
+
+document.getElementById('btn-save').addEventListener('click', () => exportFile('bpmn'))
 
 // Menus Ouvrir et Exporter : ouverts sous leur bouton, refermés dès qu'une entrée est choisie.
 for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
@@ -331,11 +335,7 @@ for (const menu of document.querySelectorAll('#toolbar .menu[popover]')) {
   })
 }
 
-document.getElementById('btn-save-xml').addEventListener('click', async () => {
-  const { xml } = await modeler.saveXML({ format: true })
-  deliver(xml, baseName(), 'xml', 'application/xml')
-  track('export', { format: 'xml' })
-})
+document.getElementById('btn-save-xml').addEventListener('click', () => exportFile('xml'))
 
 setupXmlExport({
   openButton: document.getElementById('btn-xml'),
@@ -346,46 +346,22 @@ setupXmlExport({
   },
 })
 
-document.getElementById('btn-svg').addEventListener('click', async () => {
-  const { svg } = await modeler.saveSVG()
-  deliver(svg, baseName(), 'svg', 'image/svg+xml')
-  track('export', { format: 'svg' })
-})
+document.getElementById('btn-svg').addEventListener('click', () => exportFile('svg'))
 
 document.getElementById('btn-png').addEventListener('click', async () => {
-  const { svg } = await modeler.saveSVG()
-  const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const img = new Image()
-  img.onload = () => {
-    const canvas = document.createElement('canvas')
-    const scale = 2
-    canvas.width = (img.naturalWidth || 800) * scale
-    canvas.height = (img.naturalHeight || 600) * scale
-    const ctx = canvas.getContext('2d')
-    ctx.scale(scale, scale)
-    ctx.fillStyle = '#ffffff'
-    ctx.fillRect(0, 0, canvas.width / scale, canvas.height / scale)
-    ctx.drawImage(img, 0, 0)
-    URL.revokeObjectURL(url)
-    canvas.toBlob((b) => {
-      deliver(b, baseName(), 'png', 'image/png')
-      track('export', { format: 'png' })
-    }, 'image/png')
-  }
-  img.onerror = () => {
-    URL.revokeObjectURL(url)
+  try {
+    await exportFile('png')
+  } catch {
     alert(T('PNG export unavailable, use the SVG export.', 'Export PNG indisponible, utilise Export SVG.'))
   }
-  img.src = url
 })
 
 document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   const button = e.currentTarget
   button.disabled = true
   try {
-    await deliver(await exportPdf(modeler), baseName(), 'pdf', 'application/pdf')
-    track('export', { format: 'pdf' })
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    await exportFile('pdf')
   } catch (err) {
     console.error('PDF export error:', err)
     alert(T('PDF export failed: ', 'Export PDF impossible : ') + err.message)
@@ -393,6 +369,42 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
     button.disabled = false
   }
 })
+
+// Outil export_diagram (serveur MCP et chat intégré) : le fichier est produit ici,
+// déposé dans le dossier exports du serveur s'il y en a un, et proposé dans une
+// bannière du canevas. Il ne se télécharge que sur un clic de l'utilisateur.
+const exportOffer = createExportOffer({ container: document.getElementById('canvas'), download })
+
+async function exportForAi({ format, name }) {
+  if (!EXPORT_FORMATS.includes(format)) throw new Error(`Unknown format: ${format}. Use one of: ${EXPORT_FORMATS.join(', ')}.`)
+  if (format !== 'bpmn' && !hasShapes(modeler)) throw new Error('The diagram is empty: nothing to export.')
+  const base = (name !== undefined ? cleanName(name) : '') || baseName()
+  let file
+  try {
+    file = await renderExport(modeler, format)
+  } catch (err) {
+    throw new Error(err.message === 'png-unavailable' ? 'The browser could not draw the diagram as a PNG image.' : `Export failed: ${err.message}`, { cause: err })
+  }
+  const bytes = exportSize(file.content)
+  let saved = null
+  if (sendToServer) {
+    try {
+      saved = await sendToServer(file.content, base, file.ext)
+    } catch (err) {
+      throw new Error(`The file could not be saved on the server: ${err.message}`, { cause: err })
+    }
+  }
+  exportOffer.show({ content: file.content, filename: saved || `${base}.${file.ext}`, type: file.type, savedOnServer: !!saved })
+  return {
+    format,
+    bytes,
+    ...(saved ? { savedOnServer: `exports/${saved}` } : {}),
+    downloadOffered: true,
+    note: saved
+      ? 'Saved in the exports folder of the server. The editor also shows a Download button: the file is downloaded only if the user clicks it.'
+      : 'The editor shows a Download button: the file is downloaded only if the user clicks it.',
+  }
+}
 
 document.getElementById('btn-print').addEventListener('click', async () => {
   try {
@@ -514,12 +526,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl)
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

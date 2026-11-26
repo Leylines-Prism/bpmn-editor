@@ -26,7 +26,8 @@ avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses pr
 
 - il charge un diagramme en XML BPMN, ou le dessine ;
 - il le vérifie selon les règles BPMN ;
-- il le récupère en XML BPMN ou en image PNG, pour l'étape suivante : un document, un ticket, un dépôt.
+- il le récupère en XML BPMN ou en image PNG, ou l'exporte en fichier BPMN, SVG, PNG ou PDF dans le dossier
+  exports du serveur, pour l'étape suivante : un document, un ticket, un dépôt.
 
 Par exemple, un agent relié à votre messagerie et à vos archives peut tirer une carte des processus de
 plusieurs années d'échanges. Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester

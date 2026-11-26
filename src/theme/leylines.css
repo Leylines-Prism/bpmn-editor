@@ -1291,3 +1291,29 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 @container canvas (max-width: 560px) {
   #canvas .ai-changes-pill { top: 112px; max-width: calc(100% - 32px); }
 }
+
+/* Bannière d'export de l'IA (src/export-offer.js) : en bas du canevas, même allure que la
+   pilule des changements de l'IA. Le bouton Télécharger est le seul moyen d'obtenir le fichier. */
+#canvas .export-offer {
+  position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%); z-index: 500;
+  display: inline-flex; align-items: center; max-width: calc(100% - 32px);
+  background: var(--white); border: 1px solid var(--mist); border-radius: var(--radius-pill);
+  box-shadow: var(--elevation-1);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px; color: var(--night-800);
+}
+#canvas .export-offer[hidden] { display: none; }
+#canvas .export-offer-label { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 14px; min-width: 0; }
+#canvas .export-offer-label span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#canvas .export-offer-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--leyline-magenta); }
+#canvas .export-offer button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+#canvas .export-offer-download {
+  padding: 6px 12px; font-weight: 600 !important; white-space: nowrap; color: var(--leyline-sky-deep) !important;
+  border-left: 1px solid var(--mist) !important;
+}
+#canvas .export-offer-download:hover { color: var(--leyline-magenta) !important; }
+#canvas .export-offer-close { padding: 4px 12px 4px 8px; font-size: 18px !important; opacity: 0.6; }
+#canvas .export-offer-close:hover { opacity: 1; color: var(--leyline-magenta); }
+#canvas .export-offer button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
+@container canvas (max-width: 560px) {
+  #canvas .export-offer { bottom: 260px; }
+}

@@ -25,7 +25,8 @@ everything it is connected to, and uses BPMN diagrams in its own workflows:
 
 - it loads a diagram from BPMN XML, or draws one;
 - it checks it against the BPMN rules;
-- it gets it back as BPMN XML or a PNG image, for the next step: a document, a ticket, a repository.
+- it gets it back as BPMN XML or a PNG image, or exports it as a BPMN, SVG, PNG or PDF file into the server's
+  exports folder, for the next step: a document, a ticket, a repository.
 
 For example, an agent connected to your mailbox and document archive can turn years of past exchanges
 into a process map. The tools run in an editor tab, which only needs to stay open.

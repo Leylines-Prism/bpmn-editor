@@ -48,3 +48,14 @@ test('style_elements accepts hexadecimal colors and refuses color names', async 
   assert.equal((await run({ elements: [{ id: 'Task_1', font: 'Wingdings' }] })).isError, true)
   assert.equal(ran, 2)
 })
+
+test('export_diagram accepts the four formats and refuses any other', async () => {
+  for (const format of ['bpmn', 'svg', 'png', 'pdf']) {
+    const result = await runTool({ toolSet, name: 'export_diagram', input: { format }, executeTool: async () => ({ format }), ...quiet })
+    assert.equal(result.isError, false, format)
+  }
+  let ran = false
+  const result = await runTool({ toolSet, name: 'export_diagram', input: { format: 'exe' }, executeTool: () => (ran = true), ...quiet })
+  assert.equal(result.isError, true)
+  assert.equal(ran, false)
+})

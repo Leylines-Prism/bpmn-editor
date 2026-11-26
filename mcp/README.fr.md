@@ -168,6 +168,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
 | `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, l'assistant intégré ne peut pas la recevoir) |
+| `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Le contenu du fichier n'est pas renvoyé au client |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
@@ -212,7 +213,7 @@ fichier. Taille et date viennent du fichier.
 
 `POST /exports?format=pdf&name=Mon%20processus` enregistre un export (corps `application/octet-stream`,
 20 Mo au plus) dans `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` en docker), pour les
-destinations « Serveur » et « Les deux » du menu Exporter. Formats : `bpmn`, `xml`, `svg`, `png`,
+destinations « Serveur » et « Les deux » du menu Exporter, et pour l'outil `export_diagram`. Formats : `bpmn`, `xml`, `svg`, `png`,
 `pdf`, avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
 par exemple `{"file": "Mon processus (2).pdf"}`.
 
