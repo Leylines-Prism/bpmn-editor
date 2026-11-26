@@ -32,6 +32,17 @@ The same conversation also styles the diagram (colors, fonts, names and types, o
 once as you like) and each answer undoes in one click. You are the pilot, hence the name: the AI
 co-pilot and your agents prepare the work, and you keep the final say on every diagram.
 
+**For BPMN experts**, further tools test a model and report on it, described in a
+[dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts):
+
+- **Token simulation with a heatmap**: run 100 tokens at once following branch probabilities, and see
+  which paths are taken, never reached, or looped through.
+- **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
+  activities by lane.
+- **Checks on every co-pilot answer**: a review of the request before drawing (ambiguities, missing
+  points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
+  reimport, bpmnlint), with automatic correction.
+
 BPMN 2.0 is the international standard [ISO/IEC 19510](https://www.iso.org/standard/62652.html),
 published by the OMG. A diagram made here reads the same in any compliant editor or engine, and the
 .bpmn file opens there.

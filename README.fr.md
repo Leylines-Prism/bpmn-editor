@@ -34,6 +34,17 @@ d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. 
 d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
 diagramme.
 
+**Pour les experts BPMN**, d'autres outils éprouvent un modèle et en rendent compte, décrits dans une
+[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn) :
+
+- **Simulation de jetons avec carte de chaleur** : 100 jetons d'un coup selon les probabilités des
+  branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
+  d'amélioration, événements de fin, activités par couloir.
+- **Contrôles à chaque réponse du co-pilote** : critique de la demande avant le dessin (ambiguïtés,
+  manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
+  bpmnlint), avec autocorrection.
+
 BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
 publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
 et le fichier .bpmn s'y ouvre.
