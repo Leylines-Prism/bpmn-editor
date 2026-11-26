@@ -23,6 +23,15 @@ const ICONS = {
   server: svg('<rect x="3" y="4" width="18" height="7" rx="1.5"/><rect x="3" y="13" width="18" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01"/>'),
 }
 
+// Installation de la version Docker, dans le README du dépôt (section « Run it with Docker »)
+// Logo GitHub (Simple Icons), comme dans les pages d'aide
+const GITHUB_ICON = '<svg class="pv-gh" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>'
+
+const DOCKER_URL = {
+  en: 'https://github.com/Leylines-Prism/bpmn-pilot#run-it-with-docker',
+  fr: 'https://github.com/Leylines-Prism/bpmn-pilot/blob/main/README.fr.md#le-lancer-avec-docker',
+}
+
 function section(icon, title, body) {
   return `<section class="pv-section">
         <span class="pv-icon">${ICONS[icon]}</span>
@@ -39,6 +48,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
   const button = document.createElement('button')
   button.type = 'button'
   button.id = 'privacy-button'
+  button.title = T('What happens to your data on this site', 'Ce que deviennent vos données sur ce site')
   button.innerHTML = `${ICONS.shield}<span>${T('Privacy', 'Confidentialité')}</span>`
   container.append(button)
 
@@ -89,7 +99,10 @@ export function setupPrivacy({ container, env = import.meta.env }) {
             : ''}</p>
           <p>${analyticsHost
             ? T('The page loads no third-party scripts.', 'La page ne charge aucun script tiers.')
-            : T('The page sets no cookies, measures no audience and loads no third-party scripts.', "La page ne dépose aucun cookie, ne mesure pas l'audience et ne charge aucun script tiers.")}</p>`)
+            : T('The page sets no cookies, measures no audience and loads no third-party scripts.', "La page ne dépose aucun cookie, ne mesure pas l'audience et ne charge aucun script tiers.")}</p>
+          <p class="pv-docker">${T(
+            `For data sovereignty, deploy the <a href="${DOCKER_URL.en}" target="_blank" rel="noopener">Docker version, available on GitHub${GITHUB_ICON}</a>: the editor runs on your machine or network, API keys stay server-side, and no third-party host logs your requests. It also includes the MCP server, which connects the editor to your AI agent and its full context: that is where it shows its full potential.`,
+            `Pour la souveraineté de vos données, déployez la <a href="${DOCKER_URL.fr}" target="_blank" rel="noopener">version Docker, disponible sur GitHub${GITHUB_ICON}</a> : l'éditeur s'exécute sur votre machine ou votre réseau, les clés API restent côté serveur, et aucun hébergeur tiers ne journalise vos accès. Elle intègre aussi le serveur MCP, qui relie l'éditeur à votre agent IA et à tout son contexte : c'est là que l'usage prend toute son ampleur.`)}</p>`)
 
   const dialog = document.createElement('dialog')
   dialog.id = 'privacy-dialog'
@@ -99,6 +112,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
       <header class="pv-head" tabindex="-1" autofocus>
         <span class="pv-badge">${ICONS.shield}</span>
         <h2 id="privacy-title">${T('Privacy', 'Confidentialité')}</h2>
+        <button type="submit" class="btn icon-only pv-close" value="close" aria-label="${T('Close', 'Fermer')}" title="${T('Close (Esc)', 'Fermer (Échap)')}">×</button>
       </header>
       <div class="pv-pair">
       ${yours}

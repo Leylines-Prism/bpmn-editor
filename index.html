@@ -49,32 +49,33 @@
         aria-label="File name" placeholder="File name" />
       <span class="file-name-ext" aria-hidden="true">.bpmn</span>
     </label>
-    <button class="btn" id="btn-new" data-icon="new">New</button>
-    <button class="btn" id="btn-open-menu" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
+    <button class="btn" id="btn-new" title="Start an empty diagram (replaces the autosave)" data-icon="new">New</button>
+    <button class="btn" id="btn-open-menu" title="Open a file, paste XML or compare with a file" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
     <div id="open-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-open" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
-      <button class="btn" id="btn-import-xml" data-icon="code" role="menuitem">Paste XML…</button>
+      <button class="btn" id="btn-open" title="Open a BPMN 2.0 diagram from your computer" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
+      <button class="btn" id="btn-import-xml" title="Paste BPMN XML; a process without layout is laid out automatically" data-icon="code" role="menuitem">Paste XML…</button>
       <div class="menu-sep" role="separator"></div>
-      <button class="btn" id="btn-compare-file" data-icon="compare" role="menuitem">Compare with a file…</button>
+      <button class="btn" id="btn-compare-file" title="Compare the open diagram with a .bpmn file, side by side" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
+    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-save" data-icon="save" role="menuitem">.bpmn file</button>
-      <button class="btn" id="btn-save-xml" data-icon="save" role="menuitem">.xml file</button>
+      <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
+      <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
       <div class="menu-sep" role="separator"></div>
-      <button class="btn" id="btn-svg" data-icon="image" role="menuitem">SVG image</button>
-      <button class="btn" id="btn-png" data-icon="image" role="menuitem">PNG image</button>
-      <button class="btn" id="btn-pdf" data-icon="pdf" role="menuitem">PDF document</button>
+      <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
+      <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
+      <button class="btn" id="btn-pdf" title="Vector PDF document" data-icon="pdf" role="menuitem">PDF document</button>
       <div class="menu-sep" role="separator"></div>
-      <button class="btn" id="btn-xml" data-icon="code" role="menuitem">XML code to copy…</button>
-      <button class="btn" id="btn-print" data-icon="print" role="menuitem">Print…</button>
+      <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
+      <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>
     </div>
     <button class="btn" id="btn-library" data-icon="library" title="Save, reopen, rename or delete diagrams (Ctrl+S saves)">My diagrams</button>
     <div class="sep"></div>
     <button class="btn" id="btn-layout" data-icon="layout" title="Tidy up the layout">Tidy up</button>
     <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process">Simulation</button>
+    <button class="btn icon-only" id="btn-present" data-icon="present" title="Presentation: the diagram alone, full screen" aria-label="Presentation"></button>
     <span id="autosave-status">Autosave: —</span>
     <a class="btn icon-only" id="btn-help" data-icon="help" href="help.html" target="_blank" rel="noopener" title="Help: how to use the editor" aria-label="Help"></a>
     <button class="btn" id="btn-lang" title="Langue : français" aria-label="Switch to French">FR</button>

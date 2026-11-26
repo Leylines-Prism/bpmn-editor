@@ -7,6 +7,7 @@
 // en développement le serveur du dossier mcp/ (http://127.0.0.1:3333/mcp).
 
 import { T } from './i18n/lang.js'
+import { addDialogClose } from './dialog-close.js'
 
 const LOCAL = ['localhost', '127.0.0.1', '[::1]', '::1']
 
@@ -17,7 +18,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
   document.body.appendChild(dialog)
 
   const code = (id) =>
-    `<div class="snippet"><pre id="${id}"><code></code></pre><button type="button" class="btn" data-copy="${id}">${T('Copy', 'Copier')}</button></div>`
+    `<div class="snippet"><pre id="${id}"><code></code></pre><button type="button" class="btn" data-copy="${id}" title="${T('Copy to the clipboard', 'Copier dans le presse-papiers')}">${T('Copy', 'Copier')}</button></div>`
 
   const AGENTS = [
     { id: 'code', label: 'Claude Code' },
@@ -93,7 +94,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
             <p class="hint" id="mcp-token-label"></p>
             <div class="token-row">
               <input type="text" id="mcp-token" spellcheck="false" autocomplete="off" placeholder="${T('Paste the token, or generate one', 'Collez le jeton, ou générez-en un')}" aria-label="${T('MCP token', 'Jeton MCP')}" />
-              <button type="button" class="btn" id="mcp-token-generate">${T('Generate a token', 'Générer un jeton')}</button>
+              <button type="button" class="btn" id="mcp-token-generate" title="${T('Create a random token, to paste into the server settings', 'Créer un jeton aléatoire, à coller dans le réglage du serveur')}">${T('Generate a token', 'Générer un jeton')}</button>
             </div>
           </li>
           <li class="new-token">
@@ -123,6 +124,7 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
 
   const $ = (sel) => dialog.querySelector(sel)
   const set = (id, text) => { $(`#${id} code`).textContent = text }

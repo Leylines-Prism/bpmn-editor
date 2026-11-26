@@ -19,6 +19,7 @@ import { fileToText, textFileKind, TEXT_FILE_ACCEPT, withTextFiles } from './ai/
 import { makeResizable } from './panel-resize.js'
 import { trackOnce } from './analytics.js'
 import { newAiRound } from './ai-changes.js'
+import { addDialogClose } from './dialog-close.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -126,7 +127,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <form id="chat-form">
@@ -136,18 +137,18 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         <button type="button" id="chat-attach" title="${T('Attach a file: image, PDF, Word, Excel, PowerPoint, text, CSV, JSON… (you can also paste or drop it)', 'Joindre un fichier : image, PDF, Word, Excel, PowerPoint, texte, CSV, JSON… (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach a file', 'Joindre un fichier')}">${ATTACH_ICON}</button>
         <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,${TEXT_FILE_ACCEPT}" multiple hidden>
       </div>
-      <button class="btn primary" type="submit" id="chat-send">${T('Send', 'Envoyer')}</button>
+      <button class="btn primary" type="submit" id="chat-send" title="${T('Send (Enter; Shift+Enter for a new line)', 'Envoyer (Entrée ; Maj+Entrée pour aller à la ligne)')}">${T('Send', 'Envoyer')}</button>
     </form>
     <dialog id="chat-editor">
       <form method="dialog">
         <h2>${T('Message to the assistant', "Message à l'assistant")}</h2>
         <textarea id="chat-editor-text" placeholder="${T('Paste or write a long message. Ctrl+Enter to send.', 'Collez ou écrivez un long message. Ctrl+Entrée pour envoyer.')}"></textarea>
         <div class="chat-editor-actions">
-          <button class="btn" type="button" id="chat-editor-file">${T('Open a file…', 'Ouvrir un fichier…')}</button>
+          <button class="btn" type="button" id="chat-editor-file" title="${T('Insert the text of a file, to trim it before sending', 'Insérer le texte d\'un fichier, pour l\'élaguer avant l\'envoi')}">${T('Open a file…', 'Ouvrir un fichier…')}</button>
           <input type="file" id="chat-editor-input" accept="${TEXT_FILE_ACCEPT}" hidden>
           <span class="chat-editor-count" aria-live="polite"></span>
           <button class="btn" type="submit" value="close">${T('Close', 'Fermer')}</button>
-          <button class="btn primary" type="submit" value="send" id="chat-editor-send">${T('Send', 'Envoyer')}</button>
+          <button class="btn primary" type="submit" value="send" id="chat-editor-send" title="${T('Send (Ctrl+Enter)', 'Envoyer (Ctrl+Entrée)')}">${T('Send', 'Envoyer')}</button>
         </div>
       </form>
     </dialog>`
@@ -158,6 +159,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
+  toggle.title = T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
   // « Assistant IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
   const toggleFull = document.createElement('span')
   toggleFull.className = 'chat-btn-full'
@@ -272,7 +274,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     titleModel.textContent = model ? model.label : ''
     titleModel.hidden = !model
     titleModel.title = toggle.title
-    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : ''
+    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
   }
   let serverDefault = null
 
@@ -372,6 +374,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
 
   // Grand éditeur, pour coller ou écrire un long message, ou l'ouvrir depuis un fichier.
   const editor = panel.querySelector('#chat-editor')
+  addDialogClose(editor)
   const editorText = panel.querySelector('#chat-editor-text')
   const editorFile = panel.querySelector('#chat-editor-input')
   const editorCount = panel.querySelector('.chat-editor-count')

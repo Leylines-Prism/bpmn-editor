@@ -14,6 +14,7 @@
 
 import { T } from './i18n/lang.js'
 import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from './support.js'
+import { addDialogClose } from './dialog-close.js'
 
 const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-pilot/issues'
 /* global __FEEDBACK_EMAIL__, __CONTACT_LINK__ */
@@ -157,6 +158,7 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
   const button = document.createElement('button')
   button.type = 'button'
   button.id = 'feedback-button'
+  button.title = T('Report a bug, suggest an idea or ask a question', 'Signaler un bug, proposer une idée ou poser une question')
   button.innerHTML = `${BUBBLE}<span>${T('Feedback', 'Votre avis')}</span>`
   container.append(button)
 
@@ -184,6 +186,7 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
   document.body.append(dialog)
   // Dernier choix : soutenir le projet sur Ko-fi (clic compté, voir src/support.js).
   trackSupportClicks(dialog)
