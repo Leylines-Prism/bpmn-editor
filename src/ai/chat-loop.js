@@ -11,6 +11,7 @@
 import { INSTRUCTIONS, buildTools } from './tools.js'
 import { imageCaption, isImageResult } from './image-result.js'
 import { anthropicUserContent, openaiUserContent } from './attachments.js'
+import { createAssist, runCritique } from './assist.js'
 
 // Après un tour, l'historique est allégé. Les images renvoyées par les outils en sortent : le
 // modèle peut en redemander une à jour. Les pièces jointes de l'utilisateur restent, pour les
@@ -141,17 +142,34 @@ export async function runTool({ toolSet, name, input, executeTool, emit, log = c
 
 // Un tour avec l'API Claude. client : instance du SDK Anthropic ;
 // APIError : sa classe d'erreur (Anthropic.APIError), pour reconnaître les erreurs de l'API.
-export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+// assist : { critique, autocorrect }, réglés dans Options (voir assist.js).
+export async function runAnthropicTurn({ client, APIError, model, effort = 'medium', conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en', assist = {} }) {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
-  // On travaille sur une copie, et on n'enregistre que des étapes complètes :
-  // une interruption ne laisse jamais un appel d'outil sans résultat.
-  const before = conv.messages
-  const messages = [...before, { role: 'user', content: anthropicUserContent(text, attachments) }]
-  conv.messages = messages.slice()
-
   // Si le modèle décline une demande, l'API la rejoue sur un modèle de repli.
   // Haiku n'a pas de repli côté serveur : le paramètre est omis.
   const fallback = model.startsWith('claude-haiku') ? {} : { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' }
+
+  // On travaille sur une copie, et on n'enregistre que des étapes complètes :
+  // une interruption ne laisse jamais un appel d'outil sans résultat.
+  const before = startTurn(conv)
+  const helper = createAssist({ assist, executeTool, emit, log })
+  const drawText = await runCritique({
+    assist,
+    text,
+    attachments,
+    emit,
+    signal,
+    log,
+    call: async (system) => {
+      const reply = await client.beta.messages.create(
+        { model, max_tokens: 4000, output_config: { effort: 'low' }, ...fallback, system, messages: [{ role: 'user', content: anthropicUserContent(text, attachments) }] },
+        { signal },
+      )
+      return reply.content.filter((b) => b.type === 'text').map((b) => b.text).join('')
+    },
+  })
+  const messages = [...before, { role: 'user', content: anthropicUserContent(withNote(conv, drawText), attachments) }]
+  conv.messages = messages.slice()
   let jsonRetries = 0
   try {
     for (let step = 0; step < MAX_STEPS; step++) {
@@ -220,13 +238,19 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
         messages.push({ role: 'assistant', content: message.content })
         conv.messages = messages.slice()
         if (message.stop_reason === 'max_tokens') throw new Error(T('Reply cut off: maximum length reached.', 'Réponse interrompue : longueur maximale atteinte.'))
-        return
+        // Contrôle du diagramme, et tour de correction si besoin.
+        const correction = await helper.afterAnswer(conv)
+        if (!correction) return
+        messages.push({ role: 'user', content: correction })
+        conv.messages = messages.slice()
+        continue
       }
 
       const results = []
       for (const use of toolUses) {
         emit({ type: 'status', phase: 'running', tool: use.name })
         const { content, isError } = await runTool({ toolSet, name: use.name, input: use.input, executeTool, emit, log, images: true, lang })
+        helper.toolDone(use.name, isError)
         results.push({ type: 'tool_result', tool_use_id: use.id, content, ...(isError ? { is_error: true } : {}) })
       }
       messages.push({ role: 'assistant', content: message.content }, { role: 'user', content: results })
@@ -240,10 +264,30 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
 
 // Même boucle pour une API compatible OpenAI (/chat/completions avec outils).
 // client : OpenAICompatClient. providerId choisit le format des PDF joints.
-export async function runOpenAITurn({ client, model, providerId = null, reasoningEffort = null, conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en' }) {
+export async function runOpenAITurn({ client, model, providerId = null, reasoningEffort = null, conv, text, attachments = [], toolSet, executeTool, emit, signal, log = console.error, lang = 'en', assist = {} }) {
   const T = (en, fr) => (lang === 'fr' ? fr : en)
-  const before = conv.messages
-  const messages = [...before, { role: 'user', content: openaiUserContent(text, attachments, providerId) }]
+  const before = startTurn(conv)
+  const helper = createAssist({ assist, executeTool, emit, log })
+  const drawText = await runCritique({
+    assist,
+    text,
+    attachments,
+    emit,
+    signal,
+    log,
+    call: async (system) => {
+      const reply = await client.stream(
+        {
+          model,
+          messages: [{ role: 'system', content: system }, { role: 'user', content: openaiUserContent(text, attachments, providerId) }],
+          ...(reasoningEffort ? { reasoning_effort: reasoningEffort } : {}),
+        },
+        { signal },
+      )
+      return reply.content || ''
+    },
+  })
+  const messages = [...before, { role: 'user', content: openaiUserContent(withNote(conv, drawText), attachments, providerId) }]
   conv.messages = messages.slice()
   let imageAt = -1 // index du message qui porte l'image d'un outil, envoyé à l'étape suivante
   const toolImageAt = new Set()
@@ -305,7 +349,11 @@ export async function runOpenAITurn({ client, model, providerId = null, reasonin
         messages.push({ role: 'assistant', content: result.content })
         conv.messages = messages.slice()
         if (result.finishReason === 'length') throw new Error(T('Reply cut off: maximum length reached.', 'Réponse interrompue : longueur maximale atteinte.'))
-        return
+        const correction = await helper.afterAnswer(conv)
+        if (!correction) return
+        messages.push({ role: 'user', content: correction })
+        conv.messages = messages.slice()
+        continue
       }
 
       const assistant = {
@@ -323,10 +371,11 @@ export async function runOpenAITurn({ client, model, providerId = null, reasonin
         } catch {
           input = undefined
         }
-        const { content } =
+        const { content, isError } =
           input === undefined
             ? toolError(call.name, T('Unreadable arguments: invalid JSON. Send a complete JSON object.', 'Arguments illisibles : JSON invalide. Renvoie un objet JSON complet.'), emit, log)
             : await runTool({ toolSet, name: call.name, input, executeTool, emit, log, images: !conv.noToolImages, lang })
+        helper.toolDone(call.name, isError)
         // Un résultat d'outil ne porte que du texte dans ce format : l'image part dans un
         // message utilisateur juste après les résultats.
         if (Array.isArray(content)) {
@@ -348,6 +397,29 @@ export async function runOpenAITurn({ client, model, providerId = null, reasonin
   } finally {
     conv.messages = lightenHistory(conv.messages, toolImageAt)
   }
+}
+
+// Début d'un tour : l'historique d'avant est gardé, pour « Relancer depuis la même source ».
+function startTurn(conv) {
+  conv.previous = conv.messages
+  return conv.messages
+}
+
+// Note laissée par l'éditeur au tour précédent (correction annulée) : elle part avec ce message.
+function withNote(conv, text) {
+  if (!conv.pendingNote) return text
+  const note = conv.pendingNote
+  delete conv.pendingNote
+  return `${note}\n\n${text}`
+}
+
+// Retire le dernier échange, avant de relancer la même demande.
+export function rewindTurn(conv) {
+  if (!conv?.previous) return false
+  conv.messages = conv.previous
+  delete conv.previous
+  delete conv.pendingNote
+  return true
 }
 
 const NO_IMAGE_NOTE = 'This model cannot receive images, so the image of the diagram was removed: read the diagram with get_shapes instead.'
