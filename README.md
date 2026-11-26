@@ -1,4 +1,4 @@
-![BPMN-Pilot: draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent](public/social-preview.png)
+![BPMN-Pilot: draw BPMN 2.0 processes in the browser, by hand, with an AI co-pilot, or from any MCP agent](public/social-preview.png)
 
 # BPMN-Pilot
 
@@ -11,7 +11,7 @@
 
 **English** | [Français](README.fr.md)
 
-![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
+![The AI co-pilot draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
 **Model every process of your context in seconds, from a few exchanges with your AI agent.**
 Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
@@ -19,17 +19,23 @@ Connected to an agent and everything it knows (mail, wiki, document base, RAG, k
 out the BPMN structure and drawing it by hand: the agent finds the processes, the editor draws and
 checks them, and you review and adjust the result. A human review is still needed, but the work goes
 much faster. This is the Docker version, where any MCP agent drives the editor. The online version
-follows the same idea with its built-in assistant: describe a process or attach your documents (Word,
+follows the same idea with its built-in AI co-pilot: describe a process or attach your documents (Word,
 Excel, PDF, emails…), and it draws it. The same conversation also styles the diagram: fill, outline
 and text colors, bold, italic, underline, size and font, as well as element names and types, on as many
 elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in
-one click.
+one click. You are the pilot, hence the name: the AI co-pilot and your agents prepare the work, and you
+keep the final say on every diagram.
 
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
 with nothing but a browser, or run it on your own machine with Docker.
 
+BPMN 2.0 is an international standard: published by the Object Management Group (OMG) and adopted
+by ISO as [ISO/IEC 19510:2013](https://www.iso.org/standard/62652.html), identical to BPMN 2.0.1 and
+confirmed in 2022. Its notation and execution semantics are defined once for every tool and every team,
+so a diagram made here reads the same in any compliant editor or engine, and the .bpmn file opens there.
+
 - **Draw by hand**, with the bpmn-js modeler and its extensions.
-- **Ask the AI assistant**: it draws the processes you describe, in the open tab.
+- **Ask the AI co-pilot**: it draws the processes you describe, in the open tab.
 - **Connect an agent through MCP** (Docker version), such as Claude Code.
 
 > [!TIP]
@@ -41,7 +47,7 @@ with nothing but a browser, or run it on your own machine with Docker.
 >   you open or download never leave your computer.
 > - **Your API keys stay in your browser too.** They are sent only to the AI provider you chose,
 >   straight from your browser, never to a server of this project.
-> - **When you use the assistant**, your message and the diagram go straight to that provider, under
+> - **When you use the co-pilot**, your message and the diagram go straight to that provider, under
 >   its own terms. Nothing goes through a middleman.
 > - **The only other request** is anonymous usage statistics without cookies, which never contain a
 >   diagram, a message or a key.
@@ -75,7 +81,7 @@ You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose. Two 
 on the GitHub Container Registry, for amd64 and arm64:
 
 - `ghcr.io/leylines-prism/bpmn-pilot`: the editor.
-- `ghcr.io/leylines-prism/bpmn-pilot-mcp`: its server (AI assistant, MCP for agents, "My diagrams").
+- `ghcr.io/leylines-prism/bpmn-pilot-mcp`: its server (AI co-pilot, MCP for agents, "My diagrams").
 
 ### From the command line
 
@@ -87,10 +93,10 @@ docker compose -f docker-compose.image.yml up -d
 
 Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` does the same.
 
-- **AI assistant**: create a `.env` file in the same folder with your API key (Anthropic, OpenAI,
+- **AI co-pilot**: create a `.env` file in the same folder with your API key (Anthropic, OpenAI,
   Mistral, or a local Ollama), for example `ANTHROPIC_API_KEY=sk-ant-...`, then run the `up -d` command
   again. All the variables are listed in [mcp/.env.example](mcp/.env.example). You can also enter a
-  key in the assistant's Options window. Without a key, the editor works; only the assistant is off.
+  key in the co-pilot's Options window. Without a key, the editor works; only the co-pilot is off.
 - **Your files** (My diagrams on the server, exports) are in the `bpmn-data` folder, next to
   `docker-compose.image.yml`: see [Your files](#your-files-docker-version).
 - **Showcase page**: the logo in the toolbar opens a showcase page with the author's logo and
@@ -244,7 +250,7 @@ MCP is closed and the agent gets a 401 error that names `MCP_TOKEN`.
 
 **In the Docker version**, the safest place is the server: the `.env` file next to
 `docker-compose.image.yml` (or `mcp/.env` from the source code). The key stays on the server and never
-reaches the browser. A key typed in the assistant's Options window is kept in the browser as below,
+reaches the browser. A key typed in the co-pilot's Options window is kept in the browser as below,
 then sent with each message to your server, which passes it on to the provider without storing it.
 
 **In the browser** (the online version, or keys typed in Options):
@@ -269,7 +275,7 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 | Setting | What it does |
 |---|---|
-| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | API keys for the AI assistant. See `mcp/.env.example`. |
+| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | API keys for the AI co-pilot. See `mcp/.env.example`. |
 | `MCP_TOKEN` (`mcp/.env`) | Token that agents must send. The "Connect an agent" window generates one. Required when `MCP_ALLOWED_HOSTS` holds a name other than localhost. |
 | `MCP_AUTH` (`mcp/.env`) | `off` opens `/mcp` without a token under a name other than localhost. Only on a network you trust, or behind a proxy that authenticates `/mcp`. |
 | `BPMN_PORT` | Port of the site (8080 by default). |
@@ -289,13 +295,16 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, token
   simulation, BPMN rule checking, grid, minimap, and the Process panel for the properties of each
   element.
+- **Heatmap and process report**: during the simulation, color the diagram by the number of tokens
+  through each element, played by hand or computed from branch probabilities. Export a process report
+  (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
   picker, and text formatting (bold, italic, underline, size, font, "Auto" for readable text on dark
   fills). The Process panel copies a style onto other elements and reuses those already in the
   diagram in one click.
-- **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
+- **AI co-pilot**: describe a process and it draws it, in your language. You can paste or drop
   images, PDF files, office documents (Word, Excel, PowerPoint, OpenDocument) and text files (CSV,
   JSON, XML, Markdown…), whose text is read in the browser. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, a pill sums up the changes, and one click shows the before and after or undoes the whole
@@ -314,16 +323,16 @@ has no real-time collaboration, share link or templates, though.
 
 The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no account, nothing to
 install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
-save, export and use the AI assistant. The Help (?) button in the toolbar opens it too.
+save, export and use the AI co-pilot. The Help (?) button in the toolbar opens it too.
 
 It follows the released versions (the latest `vX.Y.Z` tag) and shows its version in the bottom left corner of the canvas and of the user guide.
 
-For the AI assistant, each visitor enters their own API key, which stays in their browser.
+For the AI co-pilot, each visitor enters their own API key, which stays in their browser.
 Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
 some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
-The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (assistant opened or used, provider connected, diagram
+The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (co-pilot opened or used, provider connected, diagram
 created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
@@ -334,7 +343,7 @@ CNIL (the French data protection authority) for audience measurement exempt from
 ## Development
 
 `npm install`, then `npm run dev` for the editor, and `npm start` in `mcp/` for the server.
-Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/README.md).
+Details on the server, the co-pilot and the MCP tools: [mcp/README.md](mcp/README.md).
 `npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (address of the measurement service)
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
 The site is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
@@ -348,7 +357,7 @@ In full transparency: its author is not a professional developer. The editor is 
 assistance, using Claude Code and other AI models, and each change is tried in the browser before
 it is published. Reviews from experienced developers are especially appreciated.
 
-**Testers wanted for AI providers.** The assistant is tried day to day with Anthropic models only.
+**Testers wanted for AI providers.** The co-pilot is tried day to day with Anthropic models only.
 OpenAI, Mistral, xAI (Grok), Ollama and OpenAI-compatible servers are supported from their documentation, but
 rarely tried for real. If you use one of them, any report helps, whether it works or not: open an
 [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues) or a

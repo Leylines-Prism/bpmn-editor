@@ -1,4 +1,4 @@
-// Fichiers lus comme du texte pour l'assistant : formats texte (JSON, CSV, XML, BPMN,
+// Fichiers lus comme du texte pour le co-pilote : formats texte (JSON, CSV, XML, BPMN,
 // Markdown…) et documents bureautiques (Word, Writer, PowerPoint, Excel, Calc), dont on
 // extrait le texte dans la page. Le texte part avec le message : tous les fournisseurs
 // le lisent, et rien ne quitte le navigateur à part ce message.

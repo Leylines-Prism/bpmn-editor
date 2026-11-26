@@ -118,7 +118,7 @@ a.btn { text-decoration: none; }
           mask: var(--icon) center / contain no-repeat;
 }
 
-/* Bouton Assistant IA : il ressort par un fin trait leyline (ciel, magenta,
+/* Bouton Co-pilote IA : il ressort par un fin trait leyline (ciel, magenta,
    orange) autour du bouton, sans halo : le seul nœud lumineux reste le badge MCP. */
 #toolbar #btn-chat {
   border: 1.5px solid transparent;
@@ -128,7 +128,7 @@ a.btn { text-decoration: none; }
 #toolbar #btn-chat:hover { background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat.active { background: linear-gradient(var(--accent-soft), var(--accent-soft)) padding-box, var(--leyline) border-box; }
 #toolbar #btn-chat::before { width: 18px; height: 18px; }
-/* Modèle choisi, en petit après « Assistant IA » */
+/* Modèle choisi, en petit après « Co-pilote IA » */
 #toolbar #btn-chat .chat-btn-model {
   max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   padding-left: var(--space-2); margin-left: 2px; border-left: 1px solid var(--line-strong);
@@ -439,9 +439,9 @@ body.properties-instant #properties-panel { transition: none; }
 }
 .bio-properties-panel-popup textarea.bio-properties-panel-input::selection { background: var(--accent-soft); color: var(--ink); }
 
-/* ── Assistant IA (panneau créé par src/chat-panel.js) ───────────────── */
+/* ── Co-pilote IA (panneau créé par src/chat-panel.js) ───────────────── */
 
-/* Même fin trait leyline (ciel, magenta, orange) que le bouton Assistant IA qui l'ouvre. */
+/* Même fin trait leyline (ciel, magenta, orange) que le bouton Co-pilote IA qui l'ouvre. */
 body #chat-panel {
   width: var(--chat-width, 360px);
   border: 1.5px solid transparent; border-radius: var(--radius-md);
@@ -465,6 +465,37 @@ body #chat-log { padding: var(--space-4); gap: var(--space-3); font-size: 14px; 
 #chat-panel .chat-tools span.failed { color: var(--magenta); border-color: var(--magenta); }
 #chat-panel .chat-status { color: var(--ink-muted); font-size: 12px; line-height: 16px; }
 body #chat-form { gap: var(--space-2); padding: var(--space-3); border-top: 1px solid var(--line); align-items: flex-end; }
+/* Critique de la demande, rapport de contrôle, traçabilité et relance, sous chaque réponse. */
+#chat-panel .chat-critique, #chat-panel .chat-report {
+  margin: 0 0 var(--space-2); padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised);
+  font-size: 12px; line-height: 16px; white-space: normal;
+}
+#chat-panel .chat-report { margin: var(--space-2) 0 0; }
+#chat-panel .chat-critique summary, #chat-panel .chat-report summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+#chat-panel .chat-critique.none { color: var(--ink-muted); font-weight: 500; }
+#chat-panel .chat-critique ul, #chat-panel .chat-report ul { margin: var(--space-2) 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+#chat-panel .chat-critique q { display: block; margin: 2px 0; color: var(--ink-muted); font-style: italic; }
+#chat-panel .chat-critique-hint { margin: var(--space-2) 0 0; color: var(--ink-muted); }
+#chat-panel .chat-sev { display: inline-block; margin-right: 6px; padding: 0 6px; border-radius: var(--radius-pill); border: 1px solid currentColor; font-size: 11px; font-weight: 600; }
+#chat-panel .chat-sev.blocking { color: var(--magenta); }
+#chat-panel .chat-sev.major { color: var(--warm); }
+#chat-panel .chat-sev.minor { color: var(--ink-muted); }
+#chat-panel .chat-report summary { color: var(--accent); }
+#chat-panel .chat-report.fail summary { color: var(--magenta); }
+#chat-panel .chat-report-counts { margin: var(--space-2) 0 0; color: var(--ink-muted); }
+#chat-panel .chat-report li.ok { color: var(--ink); }
+#chat-panel .chat-report li.fail { color: var(--magenta); }
+#chat-panel .chat-report li ul { margin: 2px 0 0 var(--space-4); gap: 2px; color: var(--ink-muted); overflow-wrap: anywhere; }
+#chat-panel .chat-trace { margin-top: var(--space-2); color: var(--ink-muted); font-size: 11px; line-height: 15px; white-space: normal; }
+#chat-panel .chat-retry { margin-top: var(--space-2); height: 26px; padding: 0 var(--space-2); font-size: 12px; }
+#chat-panel #chat-destination {
+  padding: 6px var(--space-3) 0; color: var(--ink-muted); font-size: 11px; line-height: 15px;
+  border-top: 1px solid var(--line);
+}
+#chat-panel #chat-destination::before { content: '→ '; color: var(--accent); }
+#chat-panel #chat-destination.local::before { content: '⌂ '; }
+#chat-panel #chat-destination:not([hidden]) + #chat-form { border-top: 0; }
 body #chat-input {
   height: 72px; padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm); border: 1px solid var(--line-strong);
@@ -494,7 +525,7 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #toolbar .menu .btn { justify-content: flex-start; }
 #toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
 /* Destination des exports (version docker) : un choix à faire avant de cliquer, souligné
-   par le même trait leyline que le bouton Assistant. */
+   par le même trait leyline que le bouton Co-pilote. */
 #toolbar .export-destination { margin: 0; padding: var(--space-1) var(--space-2) var(--space-2); border: 0; min-width: 0; }
 #toolbar .export-destination legend { padding: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
 .export-destination-choices {
@@ -538,7 +569,7 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #xml-export-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
 #xml-export-dialog .status:empty { display: none; }
 
-/* ── Fenêtre « Options de l'assistant » (src/options-dialog.js) ───────── */
+/* ── Fenêtre « Options du co-pilote » (src/options-dialog.js) ───────── */
 
 #options-dialog {
   margin: auto; width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px);
@@ -580,6 +611,9 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #options-dialog .p-result.ok { color: var(--accent); }
 #options-dialog .p-result.failed { color: var(--magenta); }
 #options-dialog .keys-row, #options-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#options-dialog .assist-row { padding: var(--space-2) 0; border-top: 1px solid var(--line); }
+#options-dialog .assist-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; font-weight: 600; cursor: pointer; }
+#options-dialog .assist-row .hint { margin: var(--space-1) 0 0; }
 #options-dialog .keys-row label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: 13px; cursor: pointer; }
 #options-dialog .grow { flex: 1; }
 #chat-panel #chat-settings { font-size: 12px; height: 28px; padding: 0 var(--space-2); color: var(--ink-muted); }
@@ -1078,7 +1112,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   .panel-resizer::before { transition: none; }
 }
 
-/* Boutons de la barre d'outils et de l'en-tête de l'assistant : un contour fin
+/* Boutons de la barre d'outils et de l'en-tête du co-pilote : un contour fin
    et un fond légèrement relevé montrent qu'ils se cliquent, sans alourdir la barre. */
 #toolbar > .btn:not(#btn-chat),
 #chat-panel header .btn {
@@ -1097,6 +1131,11 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #chat-panel header #chat-settings,
 #chat-panel header #chat-reset { color: var(--ink); }
 #chat-panel header { gap: var(--space-2); }
+#chat-panel header .chat-title-icon {
+  flex: none; width: 20px; height: 20px; background-color: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+          mask: var(--icon) center / contain no-repeat;
+}
 #chat-panel header .chat-title { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
 #chat-panel header .chat-title > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #chat-panel header .chat-title-model { font-size: 11px; font-weight: 500; color: var(--ink-muted); }
@@ -1356,8 +1395,8 @@ body.presenting #canvas .layer-djs-grid { display: none !important; }
 /* Simulation en présentation : seules ses commandes restent (départ et passerelles sur
    le schéma, pause, journal, vitesse). Sa bascule intégrée laisse la place au bouton
    de la barre, et les autres pastilles du schéma restent masquées. */
-body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed),
-body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]) { display: none !important; }
+body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed):not(.heatmap-legend),
+body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]):not(.djs-overlay-heatmap) { display: none !important; }
 body.presenting #canvas .djs-container { cursor: grab; }
 #presentation-bar {
   position: fixed; top: var(--space-4); right: var(--space-4); z-index: 20;
@@ -1387,3 +1426,40 @@ body.presenting #canvas .djs-container { cursor: grab; }
 #canvas .bts-set-animation-speed .sim-speed { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; cursor: pointer; }
 #canvas .bts-set-animation-speed .sim-speed input { width: 140px; margin: 0; accent-color: var(--token-simulation-primary, var(--accent)); cursor: pointer; }
 #canvas .bts-set-animation-speed .sim-speed output { min-width: 3.2em; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+
+/* Carte de chaleur de la simulation (src/heatmap.js). Les boutons s'ajoutent au cadre de la
+   vitesse ; la couche de couleurs passe au-dessus des formes sans capter les clics. */
+#canvas .bts-set-animation-speed { display: flex; align-items: center; }
+#canvas .bts-set-animation-speed.hidden { display: none; }
+#canvas .heatmap-bar { display: flex; gap: 4px; padding: 4px 6px 4px 10px; border-left: 1px solid var(--line); }
+#canvas .heatmap-bar button {
+  font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line-strong); background: transparent; color: inherit; white-space: nowrap;
+}
+#canvas .heatmap-bar button:hover { border-color: var(--accent); }
+#canvas .heatmap-bar .heatmap-toggle.active { background: linear-gradient(90deg, #BFDBFE, #FDE047, #F97316, #DC2626); color: #1F2937; border-color: transparent; font-weight: 600; }
+#canvas .layer-bpmn-pilot-heatmap { pointer-events: none; }
+/* L'extension masque les autres pastilles pendant la simulation : celles de la carte restent. */
+#canvas .bjs-container.simulation .djs-overlay.djs-overlay-heatmap { display: block !important; }
+#canvas .heat-shape { fill-opacity: 0.5; stroke-width: 3px; stroke-opacity: 0.9; }
+#canvas .heat-shape.cold { fill: #9CA3AF; fill-opacity: 0.12; stroke: #9CA3AF; stroke-width: 1.5px; stroke-dasharray: 5 4; }
+#canvas .heat-flow { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.85; }
+#canvas .heat-flow.cold { stroke: #9CA3AF; stroke-width: 1.5px; stroke-dasharray: 5 5; }
+#canvas .heatmap-badge {
+  background: #1F2937; color: #FFFFFF; font-size: 11px; font-weight: 600; line-height: 1;
+  padding: 3px 6px; border-radius: 9px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+#canvas .heatmap-legend {
+  position: absolute; left: 16px; bottom: 44px; z-index: 5; display: flex; flex-direction: column; gap: 4px;
+  max-width: 300px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-raised, #FFFFFF); color: var(--ink, inherit); font-size: 12px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+}
+#canvas .heatmap-legend[hidden] { display: none; }
+#canvas .heatmap-legend .heatmap-scale { height: 10px; border-radius: 5px; }
+#canvas .heatmap-legend .heatmap-ticks { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.75; }
+#canvas .heatmap-legend .heatmap-source, #canvas .heatmap-legend .heatmap-note { font-size: 11px; opacity: 0.8; }
+#canvas .heatmap-legend .heatmap-note.warn { color: #C2410C; opacity: 1; }
+@media (max-width: 560px) {
+  #canvas .heatmap-bar { border-left: 0; padding-left: 4px; }
+  #canvas .heatmap-legend { left: 8px; right: 8px; bottom: 72px; max-width: none; }
+}

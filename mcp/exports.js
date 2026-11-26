@@ -1,5 +1,6 @@
 // Exports enregistrés sur le serveur (version docker) : le menu Exporter de l'éditeur peut
-// déposer ses fichiers (.bpmn, .xml, SVG, PNG, PDF) dans ce dossier, sous le nom du diagramme.
+// déposer ses fichiers (.bpmn, .xml, SVG, PNG, PDF, rapport de processus en Markdown) dans ce dossier,
+// sous le nom du diagramme.
 // Un fichier existant n'est jamais remplacé : « Mon processus (2).pdf » s'ajoute à côté.
 // Le dossier est monté par docker-compose, ou mcp/data/exports en développement.
 
@@ -30,6 +31,14 @@ export const FORMATS = {
   svg: (buf) => /<svg[\s>]/.test(xmlText(buf) ?? ''),
   png: (buf) => buf.length > PNG.length && buf.subarray(0, PNG.length).equals(PNG),
   pdf: (buf) => buf.subarray(0, 5).toString('latin1') === '%PDF-',
+  // Rapport de processus : texte UTF-8 valide, sans caractère nul.
+  md: (buf) => {
+    try {
+      return !utf8.decode(buf).includes('\0')
+    } catch {
+      return false
+    }
+  },
 }
 
 export function exportsDir() {

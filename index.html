@@ -8,13 +8,13 @@
   <link rel="icon" type="image/svg+xml" href="/src/brand/favicon-white.svg" media="(prefers-color-scheme: light)" />
   <link rel="icon" type="image/svg+xml" href="/src/brand/favicon-black.svg" media="(prefers-color-scheme: dark)" />
   <link rel="apple-touch-icon" href="/src/brand/favicon-black-180.png" />
-  <meta name="description" content="A BPMN 2.0 editor in the browser. Draw processes by hand, with an AI assistant, or from any MCP agent. Open source, in English and French." />
+  <meta name="description" content="A BPMN 2.0 editor in the browser. Draw processes by hand, with an AI co-pilot, or from any MCP agent. Open source, in English and French." />
   <!-- Aperçu des liens partagés (LinkedIn, Mastodon, messageries…). L'adresse de l'image et la
        balise og:url deviennent absolues au build si SITE_URL est défini (voir vite.config.js). -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="BPMN-Pilot" />
   <meta property="og:title" content="BPMN-Pilot" />
-  <meta property="og:description" content="Draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent. Open source, in English and French." />
+  <meta property="og:description" content="Draw BPMN 2.0 processes in the browser, by hand, with an AI co-pilot, or from any MCP agent. Open source, in English and French." />
   <meta property="og:image" content="social-preview.png" />
   <meta property="og:image:type" content="image/png" />
   <meta property="og:image:width" content="1280" />
@@ -24,7 +24,7 @@
   <meta property="og:locale:alternate" content="fr_FR" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="BPMN-Pilot" />
-  <meta name="twitter:description" content="Draw BPMN 2.0 processes in the browser, by hand, with an AI assistant, or from any MCP agent." />
+  <meta name="twitter:description" content="Draw BPMN 2.0 processes in the browser, by hand, with an AI co-pilot, or from any MCP agent." />
   <meta name="twitter:image" content="social-preview.png" />
   <meta name="twitter:image:alt" content="BPMN-Pilot: a small process with a start event, three tasks and two parallel gateways, drawn as lines of light" />
   <script>
@@ -59,7 +59,7 @@
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
+    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, a process report, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
@@ -67,6 +67,9 @@
       <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
       <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
       <button class="btn" id="btn-pdf" title="Vector PDF document" data-icon="pdf" role="menuitem">PDF document</button>
+      <div class="menu-sep" role="separator"></div>
+      <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
+      <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>

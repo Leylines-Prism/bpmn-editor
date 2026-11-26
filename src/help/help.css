@@ -261,3 +261,39 @@ figcaption { margin-top: var(--space-2); font-size: 14px; line-height: 20px; col
   font-size: 11px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums;
 }
 @media (max-width: 960px) { #app-version { display: none; } }
+
+/* Sections repliables (src/help/sections.js) : le titre est un bouton, avec « Afficher » ou
+   « Masquer » et le chevron des autres sections dépliables, à droite. */
+.sec { margin-top: var(--space-6); }
+.sec-toggle {
+  display: flex; align-items: center; gap: 0; width: 100%;
+  padding: 0; border: 0; background: none; color: inherit; cursor: pointer;
+  font: inherit; letter-spacing: inherit; text-align: left;
+}
+.sec-toggle::before {
+  content: 'Show'; order: 2; margin-left: auto; padding-left: var(--space-3); flex-shrink: 0;
+  font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; color: var(--accent);
+}
+.sec-toggle[aria-expanded="true"]::before { content: 'Hide'; }
+:lang(fr) .sec-toggle::before { content: 'Afficher'; }
+:lang(fr) .sec-toggle[aria-expanded="true"]::before { content: 'Masquer'; }
+.sec-toggle::after {
+  content: ''; order: 3; flex-shrink: 0; width: 10px; height: 10px; margin: 0 6px 6px var(--space-3);
+  border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+  transform: rotate(45deg); transition: transform 150ms ease;
+}
+.sec-toggle[aria-expanded="true"]::after { transform: rotate(-135deg); margin: 6px 6px 0 var(--space-3); }
+.sec-toggle:hover { color: var(--accent); }
+.sec-toggle:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 4px; border-radius: var(--radius-sm); }
+.sec:not(.is-open) > h2 { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) { .sec-toggle::after { transition: none; } }
+
+.toc-all {
+  margin: 0 0 var(--space-2); padding: 0; border: 0; background: none; cursor: pointer;
+  font: 500 13px/18px var(--font-sans); color: var(--accent);
+}
+.toc-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+.toc-all:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+
+.checks-table td:first-child { white-space: nowrap; font-weight: 500; }
+@media (max-width: 560px) { .checks-table td:first-child { white-space: normal; } }

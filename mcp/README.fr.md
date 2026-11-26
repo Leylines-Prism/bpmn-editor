@@ -22,7 +22,7 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 
 ## Chat intégré
 
-Le bouton « Assistant IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
+Le bouton « Co-pilote IA » de la barre d'outils ouvre un panneau de discussion à droite du canevas.
 On y décrit un processus ou une modification, et le modèle la dessine dans **cet onglet** avec les mêmes
 outils que le serveur MCP. Sous chaque réponse, une pastille par outil appelé (✓ réussi, ✗ échoué).
 Le modèle se choisit dans la fenêtre Options, parmi ceux que le serveur propose et ceux des fournisseurs
@@ -94,7 +94,7 @@ Mistral, xAI (Grok), Ollama et « Compatible OpenAI » (LiteLLM, LM Studio, vLLM
 (préremplie pour Anthropic, OpenAI, Mistral, xAI et Ollama), la clé API, et les modèles à proposer. « Lister les modèles » les demande au
 fournisseur, « Tester » vérifie l'adresse et la clé. Ces deux boutons ne consomment aucun crédit.
 Les modèles d'un fournisseur ne sont proposés qu'après la réussite de « Tester » ou « Lister les
-modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle de l'assistant » choisit le
+modèles », et de nouveau après un changement d'adresse ou de clé. « Modèle du co-pilote » choisit le
 modèle du chat.
 
 - Les réglages restent dans le navigateur. Les clés API sont oubliées à la fermeture de l'onglet, sauf si
@@ -167,20 +167,21 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 |---|---|
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
-| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, l'assistant intégré ne peut pas la recevoir) |
+| `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, le co-pilote intégré ne peut pas la recevoir) |
 | `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Le contenu du fichier n'est pas renvoyé au client |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
-| `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…) |
+| `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…), remplit leur champ Documentation, ou règle la probabilité d'une branche de passerelle |
 | `style_elements` | règle le fond, le contour, la couleur du texte et la police (gras, italique, souligné, taille, famille) d'éléments |
 | `remove_elements` | supprime des formes ou des connexions |
 | `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
-| `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |
+| `validate_diagram` | renvoie un rapport de contrôle : compteurs d'éléments et six contrôles (XML bien formé, métamodèle BPMN 2.0, références et portées, DI complet, réimport bpmn-js, bpmnlint), avec erreurs et avertissements élément par élément |
+| `get_process_report` | renvoie le rapport de processus en Markdown, comme le menu Exporter : constats par niveau, axes d'amélioration, événements de fin, activités par couloir, séquence des éléments. Avec `simulate`, calcule d'abord 100 jetons selon les probabilités des branches |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
-Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour l'assistant intégré comme pour les agents MCP.
+Ce que les outils ajoutent, modifient ou suppriment est marqué sur le canevas de l'éditeur (`src/ai-changes.js`), pour le co-pilote intégré comme pour les agents MCP.
 
 ## Règles de modélisation et prompts
 
@@ -190,7 +191,7 @@ pour les tâches, objet + état pour les événements, une question sur chaque p
 séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
 que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
 
-Le serveur propose aussi quatre prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
+Le serveur propose aussi cinq prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
 
 | Prompt | Arguments | Rôle |
 |---|---|---|
@@ -198,6 +199,7 @@ Le serveur propose aussi quatre prompts MCP (`src/ai/prompts.js`), que l'utilisa
 | `model_collaboration` | `description`, `participants` (facultatif) | dessine un pool par participant, reliés par des flux de messages |
 | `review_diagram` | aucun | relit le diagramme ouvert d'après les règles et le validateur, sans rien modifier |
 | `tidy_diagram` | aucun | renomme selon les conventions, corrige les erreurs de validation et range, sans changer le sens |
+| `critique_description` | `description` | relève ce qui est ambigu ou manquant dans une description (gravité, passage cité, question) avant de dessiner |
 
 ## Diagrammes enregistrés
 
@@ -214,7 +216,7 @@ fichier. Taille et date viennent du fichier.
 `POST /exports?format=pdf&name=Mon%20processus` enregistre un export (corps `application/octet-stream`,
 20 Mo au plus) dans `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` en docker), pour les
 destinations « Serveur » et « Les deux » du menu Exporter, et pour l'outil `export_diagram`. Formats : `bpmn`, `xml`, `svg`, `png`,
-`pdf`, avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
+`pdf` et `md` (rapport de processus), avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
 par exemple `{"file": "Mon processus (2).pdf"}`.
 
 ## Sécurité

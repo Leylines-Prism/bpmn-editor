@@ -6,10 +6,12 @@
 // et s'annulent avec Ctrl+Z comme une retouche à la main.
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
+import { isBranchFlow } from './probability-panel.js'
 
 import { autoLayout } from './auto-layout.js'
 import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
+import { checkDiagram } from './diagram-checks.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -149,15 +151,17 @@ function setBadge(badge, state, client = null) {
 
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 // options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
-export function createTools(modeler, { exportDiagram } = {}) {
-  return trackAiChanges(modeler, buildTools(modeler, exportDiagram))
+// options.processReport({ simulate }) : le rapport de processus en Markdown, pour get_process_report.
+export function createTools(modeler, { exportDiagram, processReport } = {}) {
+  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport))
 }
 
-function buildTools(modeler, exportDiagram) {
+function buildTools(modeler, exportDiagram, processReport) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
   const modeling = modeler.get('modeling')
+  const bpmnFactory = modeler.get('bpmnFactory')
   const eventBus = modeler.get('eventBus')
   const commandStack = modeler.get('commandStack')
 
@@ -523,6 +527,18 @@ function buildTools(modeler, exportDiagram) {
             element = replaced
           }
           if (spec.name !== undefined) modeling.updateLabel(element, spec.name)
+          if (spec.documentation !== undefined) {
+            const bo = getBusinessObject(element)
+            const text = spec.documentation.trim()
+            modeling.updateModdleProperties(element, bo, {
+              documentation: text ? [bpmnFactory.create('bpmn:Documentation', { text })] : [],
+            })
+          }
+          if (spec.probability !== undefined) {
+            if (!isBranchFlow(element)) throw new Error(`probability applies only to a sequence flow leaving an exclusive, inclusive, complex or event-based gateway: ${spec.id}`)
+            const bo = getBusinessObject(element)
+            modeling.updateModdleProperties(element, bo, { 'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability })
+          }
           updated.push({ previousId: spec.id, ...describe(element) })
         }
         return { updated }
@@ -575,26 +591,31 @@ function buildTools(modeler, exportDiagram) {
       }
     },
 
+    // Rapport complet (src/diagram-checks.js) : compteurs, six contrôles, et le détail de bpmnlint.
     async validate_diagram() {
-      const linting = modeler.get('linting', false)
-      if (!linting) throw new Error('Validation (bpmnlint) is not loaded in this editor.')
-      const results = await linting.lint()
-      const issues = []
-      for (const [rule, reports] of Object.entries(results)) {
-        for (const report of reports) {
-          const element = elementRegistry.get(report.id)
-          const name = element ? getBusinessObject(element).name : undefined
-          issues.push({
-            id: report.id,
-            ...(name ? { name } : {}),
-            category: report.category,
-            rule,
-            message: report.message,
-          })
-        }
+      const report = await checkDiagram(modeler)
+      const issues = (report.lint?.issues || []).map((issue) => {
+        const element = elementRegistry.get(issue.id)
+        const name = element ? getBusinessObject(element).name : undefined
+        return { id: issue.id, ...(name ? { name } : {}), category: issue.category, rule: issue.rule, message: issue.message }
+      })
+      // Erreurs : celles de bpmnlint, plus chaque problème des autres contrôles.
+      const structural = report.checks.filter((c) => c.id !== 'lint' && !c.ok).reduce((n, c) => n + c.problems.length + (c.more || 0), 0)
+      return {
+        errors: (report.lint?.errors || 0) + structural,
+        warnings: report.lint?.warnings || 0,
+        infos: report.lint?.infos || 0,
+        counts: report.counts,
+        checks: report.checks
+          .filter((c) => !c.skipped)
+          .map((c) => (c.ok ? { check: c.id, ok: true } : { check: c.id, ok: false, problems: c.problems, ...(c.more ? { more: c.more } : {}) })),
+        issues,
       }
-      const count = (category) => issues.filter((i) => i.category === category).length
-      return { errors: count('error') + count('rule-error'), warnings: count('warn'), infos: count('info'), issues }
+    },
+
+    async get_process_report({ simulate } = {}) {
+      if (!processReport) throw new Error('The process report is not available in this editor.')
+      return processReport({ simulate: !!simulate })
     },
 
     remove_elements({ ids }) {

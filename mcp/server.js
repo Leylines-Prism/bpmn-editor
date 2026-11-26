@@ -280,6 +280,8 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
       emit,
       signal: abort.signal,
       lang: langOf(req),
+      assist: req.body.assist && typeof req.body.assist === 'object' ? req.body.assist : {},
+      rewind: req.body.rewind === true,
     })
     emit({ type: 'done' })
   } catch (err) {

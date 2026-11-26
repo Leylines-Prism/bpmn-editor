@@ -5,6 +5,20 @@
 // Ce module n'importe rien : buildPrompts(z) décrit les arguments avec le zod fourni.
 // Chaque prompt renvoie le texte d'un message utilisateur.
 
+// Critique d'une description avant de la dessiner : commune au prompt MCP critique_description
+// et à l'étape de critique du chat intégré (src/ai/chat-loop.js).
+export const CRITIQUE_POINTS = `- who does what: the organizations or actors (pools) and the roles inside them (lanes);
+- what starts the process and which results end it;
+- each decision: the question asked and the condition of each answer;
+- exceptions, cancellations, deadlines and waiting times;
+- loops and repetitions, and when they stop;
+- documents, data and messages exchanged;
+- vague or contradictory wording.`
+
+export const CRITIQUE_SEVERITIES = `- blocking: without the answer, the model would probably be wrong;
+- major: an assumption is needed, and it changes the model;
+- minor: a detail, such as a name.`
+
 export function buildPrompts(z) {
   return [
     {
@@ -77,6 +91,28 @@ Reply in the language of the diagram's names.`,
 - Fix the validation errors. Do not add or remove steps of the process: if a fix would change what the process does, list it and ask me instead.
 - Then call auto_layout and validate_diagram again.
 - Finally, list what you changed. I can undo everything with Ctrl+Z.`,
+    },
+    {
+      name: 'critique_description',
+      title: 'Review a description before modeling it',
+      description:
+        'Lists what is ambiguous or missing in a process description before drawing it, with a severity, the passage concerned and a question.',
+      argsSchema: {
+        description: z.string().min(1).describe('The process description to review, in plain words'),
+      },
+      text: ({ description }) =>
+        `Review this process description before modeling it in BPMN. Do not draw anything yet.
+
+${description}
+
+Look for what is ambiguous or missing for a correct BPMN model:
+${CRITIQUE_POINTS}
+
+List at most 8 points, most severe first, in a table with three columns: severity, the exact passage concerned (or "missing" when nothing in the text covers it), and the question to ask me. Severities:
+${CRITIQUE_SEVERITIES}
+
+Then give the assumption you would make for each point, and ask me whether to draw now with these assumptions or to wait for my answers.
+Reply in the language of the description.`,
     },
   ]
 }

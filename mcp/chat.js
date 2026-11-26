@@ -12,8 +12,9 @@ import Anthropic from '@anthropic-ai/sdk'
 import { randomUUID } from 'node:crypto'
 import * as z from 'zod/v4'
 
-import { createToolSet, runAnthropicTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
+import { createToolSet, rewindTurn, runAnthropicTurn, runOpenAITurn } from '../src/ai/chat-loop.js'
 import { OpenAICompatClient } from '../src/ai/openai-compat.js'
+import { isLocalAddress } from '../src/ai/local-address.js'
 import { relayFetch } from './relay-guard.js'
 import { buildCatalog } from './models.js'
 
@@ -86,8 +87,15 @@ export class ChatService {
       enabled: this.enabled,
       relay: true, // accepte aussi les fournisseurs réglés dans la fenêtre Options
       model: this.defaultKey,
-      models: this.models.map(({ key, label, provider, providerLabel }) => ({ id: key, label, provider, providerLabel, providerId: this.providerId(provider) })),
+      // local : le fournisseur tourne sur le réseau du serveur (Ollama…), pour le bandeau du chat.
+      models: this.models.map(({ key, label, provider, providerLabel }) => ({ id: key, label, provider, providerLabel, providerId: this.providerId(provider), ...(this.isLocal(provider) ? { local: true } : {}) })),
     }
+  }
+
+  isLocal(provider) {
+    if (provider === 'openai') return isLocalAddress(process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1')
+    if (provider === 'mistral') return isLocalAddress(process.env.MISTRAL_BASE_URL || 'https://api.mistral.ai/v1')
+    return false
   }
 
   // Fournisseur au sens des pièces jointes (voir supports() dans src/ai/attachments.js).
@@ -124,7 +132,10 @@ export class ChatService {
   //
   // custom : fournisseur réglé dans la fenêtre Options de l'éditeur,
   // { format, baseUrl, apiKey, model }. La clé sert à cet appel puis est oubliée.
-  async send({ conversationId, tabId, model: modelKey, custom, text, attachments = [], emit, signal, lang = 'en' }) {
+  //
+  // assist : { critique, autocorrect }, réglés dans Options. rewind : la demande remplace
+  // le dernier échange (bouton « Relancer depuis la même source »).
+  async send({ conversationId, tabId, model: modelKey, custom, text, attachments = [], emit, signal, lang = 'en', assist = {}, rewind = false }) {
     const T = (en, fr) => (lang === 'fr' ? fr : en)
     let target
     if (custom) {
@@ -145,6 +156,7 @@ export class ChatService {
     const { id, conv } = this.#conversation(conversationId, target.provider || target.format)
     if (conv.busy) throw new Error(T('A reply is already in progress in this conversation.', 'Une réponse est déjà en cours dans cette conversation.'))
     conv.busy = true
+    if (rewind) rewindTurn(conv)
     emit({ type: 'conversation', id })
     const common = {
       model: target.id,
@@ -157,6 +169,7 @@ export class ChatService {
       signal,
       log: this.log,
       lang,
+      assist: { critique: !!assist?.critique, autocorrect: !!assist?.autocorrect },
     }
     try {
       if (target.format === 'openai') {

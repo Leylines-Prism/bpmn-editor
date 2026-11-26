@@ -8,7 +8,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
 # « /bridge » (docker-compose) relie l'éditeur au serveur MCP relayé par nginx.
-# Vide : l'éditeur seul, sans assistant côté serveur ni badge MCP.
+# Vide : l'éditeur seul, sans co-pilote côté serveur ni badge MCP.
 ARG VITE_MCP_BRIDGE_URL=""
 ENV VITE_MCP_BRIDGE_URL=$VITE_MCP_BRIDGE_URL
 # Version affichée dans Options et l'aide (le tag, donné par le workflow Docker). Vide : le

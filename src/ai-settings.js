@@ -34,6 +34,8 @@ const isProviderChoice = (id) => id === 'server' || PROVIDERS.some((p) => p.id =
 export function defaultSettings() {
   return {
     remember: false,
+    // Critique de la demande et autocorrection : des appels en plus au modèle, coupables dans Options.
+    assist: true,
     active: null,
     defaultModel: null,
     providers: Object.fromEntries(
@@ -50,6 +52,7 @@ export function loadSettings() {
   const saved = read(localStorage, SETTINGS_KEY)
   if (saved && typeof saved === 'object') {
     settings.remember = !!saved.remember
+    settings.assist = saved.assist !== false
     settings.defaultModel = typeof saved.defaultModel === 'string' ? saved.defaultModel : null
     for (const p of PROVIDERS) {
       const s = saved.providers?.[p.id]
@@ -91,7 +94,7 @@ export function saveSettings(settings) {
     providers[p.id] = rest
     if (apiKey) keys[p.id] = apiKey
   }
-  write(localStorage, SETTINGS_KEY, { remember: settings.remember, active: settings.active, defaultModel: settings.defaultModel, providers })
+  write(localStorage, SETTINGS_KEY, { remember: settings.remember, assist: settings.assist !== false, active: settings.active, defaultModel: settings.defaultModel, providers })
   // Les clés ne sont écrites qu'à un seul endroit : on efface l'autre.
   const hasKeys = Object.keys(keys).length > 0
   write(settings.remember ? localStorage : sessionStorage, KEYS_KEY, hasKeys ? keys : null)

@@ -31,8 +31,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     <form method="dialog">
       <h2>${T('Connect an agent', 'Connecter un agent')}</h2>
       <p class="hint">${T(
-        'An AI agent installed on a computer (Claude Code, Claude Desktop, GitHub Copilot in VS Code, Cursor…) can read and draw in the diagram open in this tab, with the same tools as the built-in assistant. Pick your agent: the setting to copy shows below.',
-        'Un agent IA installé sur un ordinateur (Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor…) peut lire et dessiner dans le diagramme ouvert dans cet onglet, avec les mêmes outils que l\'assistant intégré. Choisissez votre agent : le réglage à copier s\'affiche en dessous.',
+        'An AI agent installed on a computer (Claude Code, Claude Desktop, GitHub Copilot in VS Code, Cursor…) can read and draw in the diagram open in this tab, with the same tools as the built-in AI co-pilot. Pick your agent: the setting to copy shows below.',
+        'Un agent IA installé sur un ordinateur (Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor…) peut lire et dessiner dans le diagramme ouvert dans cet onglet, avec les mêmes outils que le co-pilote IA intégré. Choisissez votre agent : le réglage à copier s\'affiche en dessous.',
       )}</p>
       <p class="warn" id="mcp-exposed" hidden></p>
 
