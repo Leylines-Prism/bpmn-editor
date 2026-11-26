@@ -3,7 +3,7 @@
 // est actif à la fois : les adresses et les clés des autres restent gardées.
 // Même fenêtre en ligne et en version docker ; seul le texte sur la vie privée change.
 
-import { PROVIDERS } from './ai/providers.js'
+import { PROVIDERS, providerBaseUrl } from './ai/providers.js'
 import { forgetKeys, providerLabel, saveSettings, userModels } from './ai-settings.js'
 import { T } from './i18n/lang.js'
 import { trackOnce } from './analytics.js'
@@ -111,7 +111,10 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
   const read = (id) => {
     const el = blocks.get(id)
     const s = draft.providers[id]
-    s.baseUrl = el.querySelector('.p-url').value.trim()
+    const url = el.querySelector('.p-url')
+    // Adresse d'Ollama sans /v1 : complétée, et montrée telle qu'elle sera appelée.
+    s.baseUrl = url.value.trim() ? providerBaseUrl(id, url.value) : ''
+    if (s.baseUrl !== url.value.trim()) url.value = s.baseUrl
     s.apiKey = el.querySelector('.p-key').value.trim()
     const label = el.querySelector('.p-label')
     if (label) s.label = label.value.trim()

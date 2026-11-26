@@ -6,7 +6,7 @@
 // Rien de tout cela ne part ailleurs que chez le fournisseur choisi
 // (ou, en version docker, vers le serveur qui relaie l'appel).
 
-import { PROVIDERS } from './ai/providers.js'
+import { PROVIDERS, providerBaseUrl } from './ai/providers.js'
 import { T } from './i18n/lang.js'
 
 const SETTINGS_KEY = 'bpmn-editor-ai-settings'
@@ -148,7 +148,7 @@ export function connectionFor(model, settings) {
     provider: model.providerId,
     label: providerLabel(model.providerId, settings),
     format: model.format,
-    baseUrl: s.baseUrl.trim(),
+    baseUrl: providerBaseUrl(model.providerId, s.baseUrl),
     apiKey: s.apiKey.trim() || null,
     model: model.modelId,
   }

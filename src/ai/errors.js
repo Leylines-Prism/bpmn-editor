@@ -53,6 +53,10 @@ export function describeProviderError(err, { label, providerId, browser = false,
       return T(`${label} denies access: invalid API key, or no access to this model. Check it in Options.`,
         `${label} refuse l'accès : clé API invalide, ou sans accès à ce modèle. Vérifiez-la dans Options.`)
     case 404:
+      if (providerId === 'ollama') {
+        return T(`Model or address not found at Ollama. The address ends with /v1, for example http://localhost:11434/v1, and the model must be pulled (ollama pull)${detail}.`,
+          `Modèle ou adresse introuvable chez Ollama. L'adresse se termine par /v1, par exemple http://localhost:11434/v1, et le modèle doit être téléchargé (ollama pull)${detail}.`)
+      }
       return T(`Model or address not found at ${label}. Check the address and the models in Options${detail}.`,
         `Modèle ou adresse introuvable chez ${label}. Vérifiez l'adresse et les modèles dans Options${detail}.`)
     case 429:
