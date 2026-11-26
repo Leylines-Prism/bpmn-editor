@@ -34,6 +34,29 @@ d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. 
 d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
 diagramme.
 
+Deux façons de l'utiliser, au choix :
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**En ligne : [bpmn.leylines.fr](https://bpmn.leylines.fr)**
+
+Rien à installer, aucun compte : ouvrez le lien et dessinez. Le co-pilote IA marche avec votre propre
+clé API, et vos diagrammes restent dans votre navigateur. [En savoir plus](#lutiliser-en-ligne)
+
+</td>
+<td width="50%" valign="top">
+
+**En Docker : `ghcr.io/leylines-prism/bpmn-pilot`**
+
+Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos agents
+(Claude Code, Claude Desktop, GitHub Copilot) à l'éditeur. [Le lancer](#le-lancer-avec-docker)
+
+</td>
+</tr>
+</table>
+
 **Pour les experts BPMN**, un mode **Expert**, activé depuis la barre d'outils, ajoute des outils qui
 éprouvent un modèle et en rendent compte, sans encombrer l'éditeur des autres (voir la
 [section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
@@ -88,8 +111,8 @@ Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente se
 </details>
 
 > [!TIP]
-> **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
-> n'est que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
+> **La version en ligne, [bpmn.leylines.fr](https://bpmn.leylines.fr), s'utilise telle quelle, sans risque.**
+> Ce ne sont que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
 > aucune base de données derrière.
 >
 > - **Vos diagrammes restent dans votre navigateur.** Ils sont enregistrés dans le stockage du
@@ -123,6 +146,31 @@ Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester 
 > être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
 > diagrammes ») peuvent être lus ou supprimés. Par défaut, elle ne répond que sur cette machine
 > (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos propres risques.
+
+## L'utiliser en ligne
+
+L'éditeur est ouvert à tous sur https://bpmn.leylines.fr (GitHub Pages) : sans compte, sans
+installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
+explique comment dessiner, enregistrer, exporter et se servir du co-pilote IA. Le bouton Aide (?) de
+la barre d'outils l'ouvre aussi.
+
+Il suit les versions publiées (le dernier tag `vX.Y.Z`) et affiche sa version en bas à gauche
+du canevas et du guide d'utilisation.
+
+Pour le co-pilote IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
+rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
+certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
+dit ce qui sort du navigateur, et
+[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
+
+La page stable mesure son audience de façon anonyme, sans cookie :
+visites, provenance et quelques actions (co-pilote ouvert ou utilisé, fournisseur connecté, diagramme
+créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
+elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
+indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
+Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
+CNIL pour les mesures d'audience exemptées de consentement.
 
 ## Le lancer avec Docker
 
@@ -386,31 +434,6 @@ sur la base de [bpmn-js](https://github.com/bpmn-io/bpmn-js) : un diagramme y es
 BPMN, le fichier .bpmn s'ouvre donc dans d'autres outils BPMN, se vérifie et se simule, et ce que
 dessine l'IA est aussi du BPMN valide. En revanche, pas de collaboration en temps réel, de lien de
 partage ni de modèles.
-
-## L'utiliser en ligne
-
-L'éditeur est ouvert à tous sur https://bpmn.leylines.fr (GitHub Pages) : sans compte, sans
-installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
-explique comment dessiner, enregistrer, exporter et se servir du co-pilote IA. Le bouton Aide (?) de
-la barre d'outils l'ouvre aussi.
-
-Il suit les versions publiées (le dernier tag `vX.Y.Z`) et affiche sa version en bas à gauche
-du canevas et du guide d'utilisation.
-
-Pour le co-pilote IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
-rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
-certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
-dit ce qui sort du navigateur, et
-[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
-
-La page stable mesure son audience de façon anonyme, sans cookie :
-visites, provenance et quelques actions (co-pilote ouvert ou utilisé, fournisseur connecté, diagramme
-créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
-elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
-indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
-Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
-CNIL pour les mesures d'audience exemptées de consentement.
 
 ## Développement
 

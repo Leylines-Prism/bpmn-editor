@@ -32,6 +32,29 @@ The same conversation also styles the diagram (colors, fonts, names and types, o
 once as you like) and each answer undoes in one click. You are the pilot, hence the name: the AI
 co-pilot and your agents prepare the work, and you keep the final say on every diagram.
 
+Two ways to use it, your choice:
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Online: [bpmn.leylines.fr](https://bpmn.leylines.fr)**
+
+Nothing to install, no account: open the link and draw. The AI co-pilot works with your own API key,
+and your diagrams stay in your browser. [Learn more](#use-it-online)
+
+</td>
+<td width="50%" valign="top">
+
+**With Docker: `ghcr.io/leylines-prism/bpmn-pilot`**
+
+At home, on your machine or your server, with the MCP server that connects your agents
+(Claude Code, Claude Desktop, GitHub Copilot) to the editor. [Run it](#run-it-with-docker)
+
+</td>
+</tr>
+</table>
+
 **For BPMN experts**, an **Expert** mode, turned on from the toolbar, adds tools that test a model and
 report on it, without cluttering the editor for everyone else (see the
 [dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts)):
@@ -83,7 +106,7 @@ author meant, and every team invents its own conventions. BPMN gives each symbol
 </details>
 
 > [!TIP]
-> **The online version is safe to use as is.** The public link (https://bpmn.leylines.fr) is only
+> **The online version, [bpmn.leylines.fr](https://bpmn.leylines.fr), is safe to use as is.** It is only
 > static files served by GitHub Pages: there is no application server, no account and no database
 > behind it.
 >
@@ -118,6 +141,27 @@ The tools run in an editor tab, which only needs to stay open.
 > diagrams stored in the container (the BPMN files of "My diagrams") can be read or deleted. By
 > default it only answers on this machine (`127.0.0.1`). If you put it on the internet anyway, you
 > do so at your own risk.
+
+## Use it online
+
+The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no account, nothing to
+install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
+save, export and use the AI co-pilot. The Help (?) button in the toolbar opens it too.
+
+It follows the released versions (the latest `vX.Y.Z` tag) and shows its version in the bottom left corner of the canvas and of the user guide.
+
+For the AI co-pilot, each visitor enters their own API key, which stays in their browser.
+Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
+some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
+[Your data and API keys in the online version](docs/online-privacy.md) gives the details.
+
+The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (co-pilot opened or used, provider connected, diagram
+created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
+these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
+messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
+flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the
+Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
+CNIL (the French data protection authority) for audience measurement exempt from consent.
 
 ## Run it with Docker
 
@@ -363,27 +407,6 @@ They are great for drawing almost anything, as a team. This editor only does BPM
 [bpmn-js](https://github.com/bpmn-io/bpmn-js): a diagram is a real BPMN model, so the .bpmn file
 opens in other BPMN tools, can be checked and simulated, and what the AI draws is valid BPMN too. It
 has no real-time collaboration, share link or templates, though.
-
-## Use it online
-
-The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no account, nothing to
-install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
-save, export and use the AI co-pilot. The Help (?) button in the toolbar opens it too.
-
-It follows the released versions (the latest `vX.Y.Z` tag) and shows its version in the bottom left corner of the canvas and of the user guide.
-
-For the AI co-pilot, each visitor enters their own API key, which stays in their browser.
-Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
-some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
-[Your data and API keys in the online version](docs/online-privacy.md) gives the details.
-
-The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (co-pilot opened or used, provider connected, diagram
-created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
-these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
-messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
-flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the
-Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
-CNIL (the French data protection authority) for audience measurement exempt from consent.
 
 ## Development
 
