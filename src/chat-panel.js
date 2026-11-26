@@ -116,7 +116,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-attachments" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
-        <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change…', 'Décrivez le processus à dessiner, ou ce qu\'il faut changer…')}"></textarea>
+        <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change… You can attach images and PDFs.', 'Décrivez le processus à dessiner, ou ce qu\'il faut changer… Images et PDF acceptés.')}"></textarea>
         <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
         <button type="button" id="chat-attach" title="${T('Attach an image or a PDF (you can also paste or drop it)', 'Joindre une image ou un PDF (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach an image or a PDF', 'Joindre une image ou un PDF')}">${ATTACH_ICON}</button>
         <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" multiple hidden>
