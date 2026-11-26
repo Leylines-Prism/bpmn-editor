@@ -13,15 +13,24 @@
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
-BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), avec un assistant IA qui dessine les processus que
-vous décrivez. Son serveur MCP va plus loin que le dessin à l'écran. Un agent comme Claude Code apporte sa propre
-mémoire et son contexte, avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres
-workflows. Par exemple, un agent relié à votre messagerie et à vos archives peut tirer une carte des processus de
-plusieurs années d'échanges. Il charge un diagramme en XML BPMN ou le dessine, le vérifie selon les règles BPMN et
-le récupère en XML BPMN ou en image PNG pour l'étape suivante, par exemple un document, un ticket ou un dépôt. Les
-outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester ouvert. Utilisez-le
-[en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre machine
-avec Docker.
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
+[en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
+machine avec Docker.
+
+- **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
+- **Demandez à l'assistant IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
+- **Connectez un agent par MCP** (version Docker), comme Claude Code.
+
+La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa propre mémoire et son contexte,
+avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
+
+- il charge un diagramme en XML BPMN, ou le dessine ;
+- il le vérifie selon les règles BPMN ;
+- il le récupère en XML BPMN ou en image PNG, pour l'étape suivante : un document, un ticket, un dépôt.
+
+Par exemple, un agent relié à votre messagerie et à vos archives peut tirer une carte des processus de
+plusieurs années d'échanges. Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester
+ouvert.
 
 > [!WARNING]
 > **Pas fait pour être exposé sur internet, par conception.** La version Docker est prévue pour

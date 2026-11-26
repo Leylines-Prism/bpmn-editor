@@ -13,14 +13,22 @@
 
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
-BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), with an AI assistant that draws the processes you
-describe. Its MCP server goes further than drawing on screen. An agent such as Claude Code brings its own
-memory and context, with everything it is connected to, and uses BPMN diagrams as part of its own workflows.
-For example, an agent connected to your mailbox and document archive can turn years of past exchanges into a
-process map. It loads a diagram from BPMN XML or draws one, checks it against the BPMN rules, and gets it back
-as BPMN XML or a PNG image for the next step, such as a document, a ticket or a repository. The tools run in an
-editor tab, which only needs to stay open. Use it [online](https://bpmn.leylines.fr), with nothing but a
-browser, or run it on your own machine with Docker.
+BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
+with nothing but a browser, or run it on your own machine with Docker.
+
+- **Draw by hand**, with the bpmn-js modeler and its extensions.
+- **Ask the AI assistant**: it draws the processes you describe, in the open tab.
+- **Connect an agent through MCP** (Docker version), such as Claude Code.
+
+The MCP connection goes further than drawing on screen. An agent brings its own memory and context, with
+everything it is connected to, and uses BPMN diagrams in its own workflows:
+
+- it loads a diagram from BPMN XML, or draws one;
+- it checks it against the BPMN rules;
+- it gets it back as BPMN XML or a PNG image, for the next step: a document, a ticket, a repository.
+
+For example, an agent connected to your mailbox and document archive can turn years of past exchanges
+into a process map. The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
 > **Not made to be exposed on the internet, by design.** The Docker version is meant for your own
