@@ -38,7 +38,7 @@
           <li><a href="#drawing">Drawing</a></li>
           <li><a href="#properties">Process panel</a></li>
           <li><a href="#colors-text">Colors and text</a></li>
-          <li><a href="#checking">Check, tidy up, simulate</a></li>
+          <li><a href="#checking">Check and tidy up</a></li>
           <li><a href="#saving">Saving and My diagrams</a></li>
           <li><a href="#open-export">Open, import, export</a></li>
           <li><a href="#assistant">AI assistant</a></li>
@@ -46,6 +46,7 @@
           <li><a href="#keys">Your API keys</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#docker">Docker version and MCP agents</a></li>
+          <li><a href="#bpmn-experts">For BPMN experts</a></li>
           <li><a href="#small-screens">On a phone or tablet</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#feedback">Send feedback</a></li>
@@ -203,7 +204,7 @@
       </section>
 
       <section id="checking">
-        <h2>Check, tidy up, simulate</h2>
+        <h2>Check and tidy up</h2>
         <h3>BPMN correctness checks</h3>
         <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice and never block saving.</p>
         <ul>
@@ -259,19 +260,7 @@
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
-        <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
-        <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
-        <h3 id="heatmap">Heatmap</h3>
-        <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
-        <ol>
-          <li>Start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
-          <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
-          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation and click <span class="uib">Run 100 tokens</span>: the result is immediate, with no animation.</li>
-          <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
-        </ol>
-        <p>The heatmap counts passes: it measures neither durations nor costs. The 100-token run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
-        <figure><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
+        <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
       </section>
 
       <section id="saving">
@@ -332,18 +321,7 @@
         <!-- docker -->
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
-        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
-        <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
-        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
-        <ul>
-          <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
-          <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
-          <li>improvement areas, by priority, with the expected effect;</li>
-          <li>end events, activities by lane, and the element sequence: type, lane, documentation and outgoing flows with their conditions.</li>
-        </ul>
-        <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the <a href="#heatmap">heatmap</a> (in PDF), the number of instances per element, the share of each end event and rework.</p>
-        <p>The report sticks to checks. For an analysis of the process itself, ask the AI assistant or an MCP agent, which read the same report (see <a href="#prompt-examples">Prompt examples</a>).</p>
-        <figure><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
+        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, is described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
         <h3>Exports asked of the AI</h3>
         <p>You can ask the AI assistant or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
@@ -430,17 +408,8 @@
           <li>The marking is cleared by the pill's cross, by your next message, or when another diagram is opened. It never appears in the file or in exports.</li>
         </ul>
 
-        <h3 id="ai-checks">Review, checks and traceability</h3>
-        <p>Around each answer, the assistant shows what it understood, what the editor checked and where the result comes from.</p>
-        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="Assistant panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
-        <ul>
-          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
-          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
-          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
-          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
-          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
-        </ul>
-        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
+        <h3>Review and checks</h3>
+        <p>Around each answer, the assistant points out what the request leaves open, checks the diagram it produced, fixes on its own what fails, and shows where the result comes from. The details are in <a href="#ai-checks">Review, checks and traceability</a>. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns off the extra requests.</p>
 
         <h3>What it costs</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
@@ -601,7 +570,7 @@
           <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning,</li>
           <li><code>critique_description</code>: lists what is ambiguous or missing in a description, with severity, quoted passage and question, before drawing.</li>
         </ul>
-        <p>The <code>validate_diagram</code> tool returns the same check report as the assistant: counts and six checks.</p>
+        <p>The check and report tools are described in <a href="#experts-mcp">With an MCP agent</a>.</p>
         <p>The <a href="#prompt-examples">Prompt examples</a> also work with an MCP agent.</p>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>
@@ -610,6 +579,76 @@
           <li><code>exports</code>: the exports made with the <span class="ui">Server</span> or <span class="ui">Both</span> destination. An export never replaces a file: a second <code>Order process.pdf</code> becomes <code>Order process (2).pdf</code>.</li>
         </ul>
         <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README on GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+      </section>
+
+      <section id="bpmn-experts">
+        <h2>For BPMN experts</h2>
+        <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
+        <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
+        <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
+        <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        <h3 id="probabilities">Branch probabilities</h3>
+        <p>The <span class="ui">Probability (%)</span> field, in the <span class="ui">Simulation</span> group of the <a href="#properties">Process panel</a>, appears for a sequence flow leaving an exclusive, inclusive, complex or event-based gateway. It takes a value from 0 to 100 and can be undone like any change.</p>
+        <ul>
+          <li><strong>Exclusive, complex or event-based gateway:</strong> a single flow is taken. Flows without a value share equally what remains up to 100%, then the whole set is scaled to a total of 100%.</li>
+          <li><strong>Inclusive gateway:</strong> each flow is taken according to its own probability, and at least one always is. The join waits for as many tokens as the split sent.</li>
+          <li><strong>Parallel gateway and uncontrolled flows:</strong> every flow is taken, and the field does not appear.</li>
+        </ul>
+        <p>The value is saved in the .bpmn file as the <code>bpmnpilot:probability</code> attribute (namespace <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), which other BPMN tools ignore without error. The assistant and MCP agents set it with the <code>update_elements</code> tool.</p>
+        <h3 id="heatmap">Heatmap</h3>
+        <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
+        <ol>
+          <li>Start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
+          <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
+          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation and click <span class="uib">Run 100 tokens</span>: the result is immediate, with no animation.</li>
+          <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
+        </ol>
+        <p>The heatmap counts passes: it measures neither durations nor costs. The 100-token run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
+        <figure><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
+        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
+        <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
+        <ul>
+          <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
+          <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
+          <li>improvement areas, by priority, with the expected effect;</li>
+          <li>end events, activities by lane, and the element sequence: type, lane, documentation and outgoing flows with their conditions.</li>
+        </ul>
+        <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the <a href="#heatmap">heatmap</a> (in PDF), the number of instances per element, the share of each end event and rework.</p>
+        <p>The report sticks to checks. For an analysis of the process itself, ask the AI assistant or an MCP agent, which read the same report (see <a href="#prompt-examples">Prompt examples</a>).</p>
+        <figure><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
+        <h3 id="ai-checks">Review, checks and traceability</h3>
+        <p>Around each answer, the assistant shows what it understood, what the editor checked and where the result comes from.</p>
+        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="Assistant panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <ul>
+          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
+          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
+          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
+          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
+          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
+        </ul>
+        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
+        <p>What each of the six checks detects:</p>
+        <div class="table-wrap"><table class="checks-table">
+          <thead><tr><th>Check</th><th>Reports for example</th></tr></thead>
+          <tbody>
+            <tr><td>Well-formed XML</td><td>unclosed tag, forbidden character, empty document</td></tr>
+            <tr><td>BPMN 2.0 metamodel</td><td>unknown element or attribute in the BPMN namespace, unreadable value (extensions from other tools are accepted)</td></tr>
+            <tr><td>References and scopes</td><td>duplicate or missing id, sequence flow leaving its process or subprocess, message flow inside a single pool, boundary event attached outside its container, default flow that does not start from its gateway, lane listing an element of another process</td></tr>
+            <tr><td>Diagram (DI)</td><td>model element never drawn, shape without bounds, flow with fewer than two points, element drawn twice, drawing pointing to a missing element</td></tr>
+            <tr><td>bpmn-js reimport</td><td>bpmn-js warning when reading the document again, beyond those already raised by the metamodel</td></tr>
+            <tr><td>bpmnlint</td><td>error from the recommended rules: isolated element, missing start or end, element without a name, superfluous gateway… (warnings are counted without failing the check)</td></tr>
+          </tbody>
+        </table></div>
+        <h3 id="experts-mcp">With an MCP agent</h3>
+        <p>In the <a href="#docker">Docker version</a>, an MCP agent gets the same checks and the same report:</p>
+        <ul>
+          <li><code>validate_diagram</code> returns the check report: element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues with element, rule and message;</li>
+          <li><code>get_process_report</code> returns the <a href="#process-report">process report</a> in Markdown. With <code>simulate</code>, it first computes 100 tokens following the branch probabilities;</li>
+          <li><code>update_elements</code> also sets the <span class="ui">Documentation</span> field and the probability of a branch;</li>
+          <li>the <code>critique_description</code> prompt lists what is ambiguous or missing in a description, before drawing.</li>
+        </ul>
+        <p>The agent has no automatic correction loop: calling <code>validate_diagram</code> and fixing the problems is up to it. The modeling rules the server gives it ask for this at the end of each drawing.</p>
       </section>
 
       <section id="small-screens">
@@ -694,6 +733,7 @@
       </footer>
     </main>
   </div>
+  <script type="module" src="/src/help/sections.js"></script>
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
   <script type="module" src="/src/help/channel-link.js"></script>

@@ -38,7 +38,7 @@
           <li><a href="#dessiner">Dessiner</a></li>
           <li><a href="#proprietes">Panneau Processus</a></li>
           <li><a href="#couleurs-texte">Couleurs et texte</a></li>
-          <li><a href="#verifier">Vérifier, ranger, simuler</a></li>
+          <li><a href="#verifier">Vérifier et ranger</a></li>
           <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
           <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
           <li><a href="#assistant">Assistant IA</a></li>
@@ -46,6 +46,7 @@
           <li><a href="#cles">Vos clés API</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
           <li><a href="#docker">Version Docker et agents MCP</a></li>
+          <li><a href="#experts-bpmn">Pour les experts BPMN</a></li>
           <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
           <li><a href="#faq">Questions fréquentes</a></li>
           <li><a href="#feedback">Donner votre avis</a></li>
@@ -203,7 +204,7 @@
       </section>
 
       <section id="verifier">
-        <h2>Vérifier, ranger, simuler</h2>
+        <h2>Vérifier et ranger</h2>
         <h3>Vérification de conformité BPMN</h3>
         <p>L'éditeur intègre un vérificateur de conformité BPMN, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. Il contrôle votre travail pendant que vous dessinez, avec ses 27 règles recommandées : élément isolé, processus sans début ni fin, passerelle mal reliée, élément sans libellé… Ce sont des conseils, qui n'empêchent pas d'enregistrer.</p>
         <ul>
@@ -259,19 +260,7 @@
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</h3>
         <p>Le bouton <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</span> (après <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>) recalcule la disposition de tout le schéma, de gauche à droite. Utile après un import ou un dessin de l'IA.</p>
         <div class="note warn">Ranger déplace toutes les formes. L'éditeur vous demande de confirmer, et <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> ramène la disposition d'avant.</div>
-        <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> (à côté de Ranger) lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Une glissière, en bas du canevas, règle la vitesse des jetons de 0,25× à 4×. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="uib">Arrêter la simulation</span> pour revenir à l'édition.</p>
-        <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
-        <h3 id="carte-chaleur">Carte de chaleur</h3>
-        <p>La carte de chaleur montre où passent les instances d'un processus. Elle colore chaque élément et chaque flux de séquence selon le nombre de jetons qui l'ont traversé, du bleu pâle au rouge. On voit ainsi, sans lire le modèle élément par élément, les chemins jamais empruntés, les activités par lesquelles passent presque toutes les instances, et les boucles de reprise qui font exécuter une même activité plusieurs fois. Elle sert à valider un modèle avant de le diffuser, et à repérer où un processus se répète ou se concentre avant d'en discuter la réorganisation.</p>
-        <ol>
-          <li>Lancez la <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. Le cadre de la vitesse, en bas du canevas, porte deux boutons : <span class="uib">Carte de chaleur</span> et <span class="uib">Lancer 100 jetons</span>.</li>
-          <li><strong>Vérifier la couverture.</strong> Activez <span class="uib">Carte de chaleur</span>, puis faites partir quelques jetons en choisissant à chaque passerelle un chemin différent. La carte suit chaque pas. Ce qui reste en gris pointillé n'a jamais été atteint : une branche oubliée, un événement de fin inaccessible.</li>
-          <li><strong>Mesurer la répartition.</strong> Hors simulation, sélectionnez chaque flux qui sort d'une passerelle exclusive, inclusive ou basée sur les événements, et renseignez le champ <span class="ui">Probabilité (%)</span> du groupe <span class="ui">Simulation</span>, dans le panneau Processus. Les flux sans valeur se partagent le reste à parts égales. Lancez ensuite la simulation et cliquez sur <span class="uib">Lancer 100 jetons</span> : le calcul est immédiat, sans animation.</li>
-          <li>Lisez la carte. Une pastille donne le nombre de passages sur chaque activité et chaque événement, avec la part des instances (« 31 · 31 % »). Au-delà d'un passage par instance, elle donne le nombre moyen d'exécutions (« 131 · 1,3× ») : c'est une boucle de reprise. L'épaisseur des flux suit le même compte.</li>
-        </ol>
-        <p>La carte compte des passages : elle ne mesure ni durées ni coûts. Le calcul des 100 jetons suit les passerelles selon leurs probabilités, et ne déclenche pas les événements en bordure. La carte disparaît à l'arrêt de la simulation, mais ses comptes restent disponibles tant que le diagramme ne change pas : le <a href="#rapport-processus">rapport de processus</a> en PDF la reprend sur une page à part. Les probabilités sont enregistrées dans le fichier .bpmn, sous un attribut propre à BPMN Pilot que les autres outils ignorent.</p>
-        <figure><img src="/src/help/img/fr-carte-chaleur.webp" width="1060" height="440" alt="Carte de chaleur après 100 jetons : la vérification des pièces en rouge, passée plus d'une fois par instance, les branches moins empruntées en jaune, avec la pastille de chaque activité et la légende." loading="lazy" /><figcaption>La carte après 100 jetons : la vérification des pièces, en rouge, est l'activité la plus sollicitée.</figcaption></figure>
+        <p>La <a href="#simulation">simulation de jetons</a>, la carte de chaleur et les probabilités des branches sont décrites dans <a href="#experts-bpmn">Pour les experts BPMN</a>.</p>
       </section>
 
       <section id="enregistrer">
@@ -332,18 +321,7 @@
         <!-- docker -->
         <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /docker -->
-        <h3 id="rapport-processus"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus</h3>
-        <p>Le rapport de processus transforme le diagramme en document lisible sans outil BPMN : une fiche à remettre à une équipe, à joindre à une procédure qualité ou à présenter au responsable du processus. Il sert aussi de revue de modélisation : il liste les erreurs, les avertissements et les informations manquantes, et en déduit des axes d'amélioration par priorité.</p>
-        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>. Le rapport se construit à partir du diagramme, sans autre saisie :</p>
-        <ul>
-          <li>les chiffres clés et le diagramme, où chaque élément concerné par un constat est entouré de la couleur de son niveau ;</li>
-          <li>les constats de modélisation, en trois niveaux : <strong>Erreur</strong> en rouge (règle bpmnlint enfreinte, élément inaccessible, instance qui ne peut pas se terminer), <strong>Avertissement</strong> en orange (écart aux bonnes pratiques, reprise fréquente), <strong>À compléter</strong> en jaune (documentation absente, conditions sans libellé, couloir à activité unique). Leur source est indiquée : bpmnlint, contrôle du modèle ou simulation ;</li>
-          <li>les axes d'amélioration, par priorité, avec l'effet attendu ;</li>
-          <li>les événements de fin, les activités par couloir, et la séquence des éléments : type, couloir, documentation et flux sortants avec leurs conditions.</li>
-        </ul>
-        <p>Pour un rapport complet, nommez chaque passerelle par sa question et chaque flux sortant par sa réponse, répartissez les activités dans des couloirs, et remplissez le champ <span class="ui">Documentation</span> des activités. Rien de cela n'est obligatoire : le rapport signale ce qui manque. Après une simulation, il ajoute la <a href="#carte-chaleur">carte de chaleur</a> (en PDF), le nombre d'instances par élément, la part de chaque événement de fin et les reprises.</p>
-        <p>Le rapport s'en tient aux contrôles. Une analyse du processus lui-même se demande à l'assistant IA ou à un agent MCP, qui lisent le même rapport (voir <a href="#exemples-prompts">Exemples de prompts</a>).</p>
-        <figure><img src="/src/help/img/fr-rapport-processus.webp" width="1060" height="750" alt="Première page du rapport de processus : chiffres clés, diagramme aux éléments entourés de couleur, et tableau des constats en orange et jaune." loading="lazy" /><figcaption>Première page du rapport : chiffres clés, diagramme annoté et constats.</figcaption></figure>
+        <p>Le <a href="#rapport-processus">rapport de processus</a>, en PDF ou en Markdown, est décrit dans <a href="#experts-bpmn">Pour les experts BPMN</a>.</p>
         <h3>Exports demandés à l'IA</h3>
         <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
         <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
@@ -430,17 +408,8 @@
           <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
         </ul>
 
-        <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
-        <p>Autour de chaque réponse, l'assistant montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
-        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau de l'assistant après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
-        <ul>
-          <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
-          <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de message relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
-          <li><strong>Autocorrection.</strong> Si un contrôle échoue, les problèmes repartent au modèle, qui corrige seul, deux tours au plus. Une correction qui ne réduit pas le nombre de problèmes est annulée. Le rapport en rend compte, par exemple « 1 correction demandée, 1 retenue ».</li>
-          <li><strong>Traçabilité.</strong> Sous chaque réponse : fournisseur, modèle, durée, date et heure, et la source (taille du message, noms des fichiers joints). <span class="uib">Relancer depuis la même source</span>, sur la dernière réponse, remet le diagramme dans l'état d'avant cette réponse et renvoie la même demande au modèle choisi à ce moment, par exemple pour comparer deux modèles.</li>
-          <li><strong>Destination.</strong> Une ligne au-dessus du champ dit où part le message, vers quel fournisseur et quel modèle : depuis votre navigateur dans la version en ligne, par votre serveur dans la version Docker. Un fournisseur sur votre réseau, comme Ollama, est signalé comme tel. Le message, les fichiers joints et le diagramme en cours partent à chaque envoi.</li>
-        </ul>
-        <p>La critique et l'autocorrection envoient des requêtes en plus au modèle : elles prennent du temps et se paient comme les autres. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, les coupe toutes les deux. Le rapport, la traçabilité et la ligne de destination restent.</p>
+        <h3>Critique et contrôles</h3>
+        <p>Autour de chaque réponse, l'assistant relève ce qui manque dans la demande, vérifie le diagramme produit, corrige seul ce qui échoue et indique d'où vient le résultat. Le détail est dans <a href="#controles-ia">Critique, contrôles et traçabilité</a>. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, coupe les requêtes en plus.</p>
 
         <h3>Combien ça coûte</h3>
         <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur. La critique de la demande et l'autocorrection ajoutent des requêtes : elles se coupent dans <span class="uib">Options</span>.</p>
@@ -601,7 +570,7 @@
           <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens,</li>
           <li><code>critique_description</code> : relève ce qui est ambigu ou manquant dans une description, avec gravité, passage cité et question, avant de dessiner.</li>
         </ul>
-        <p>L'outil <code>validate_diagram</code> rend le même rapport de contrôle que l'assistant : compteurs et six contrôles.</p>
+        <p>Les outils de contrôle et de rapport sont détaillés dans <a href="#experts-mcp">Avec un agent MCP</a>.</p>
         <p>Les <a href="#exemples-prompts">Exemples de prompts</a> fonctionnent aussi avec un agent MCP.</p>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer votre travail :</p>
@@ -610,6 +579,76 @@
           <li><code>exports</code> : les exports faits avec la destination <span class="ui">Serveur</span> ou <span class="ui">Les deux</span>. Un export ne remplace jamais un fichier : un deuxième <code>Mon processus.pdf</code> devient <code>Mon processus (2).pdf</code>.</li>
         </ul>
         <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">README du projet sur GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+      </section>
+
+      <section id="experts-bpmn">
+        <h2>Pour les experts BPMN</h2>
+        <p>Ces fonctions servent à éprouver un modèle et à en rendre compte : rejouer le processus, mesurer la répartition des instances, en tirer un rapport, et contrôler en détail ce que produit l'IA. Aucune n'est nécessaire pour dessiner un diagramme.</p>
+        <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> (à côté de Ranger) lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Une glissière, en bas du canevas, règle la vitesse des jetons de 0,25× à 4×. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="uib">Arrêter la simulation</span> pour revenir à l'édition.</p>
+        <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
+        <h3 id="probabilites">Probabilités des branches</h3>
+        <p>Le champ <span class="ui">Probabilité (%)</span>, dans le groupe <span class="ui">Simulation</span> du <a href="#proprietes">panneau Processus</a>, apparaît pour un flux de séquence qui sort d'une passerelle exclusive, inclusive, complexe ou basée sur les événements. Il accepte une valeur de 0 à 100 et s'annule comme toute modification.</p>
+        <ul>
+          <li><strong>Passerelle exclusive, complexe ou basée sur les événements :</strong> un seul flux est pris. Les flux sans valeur se partagent à parts égales ce qui reste jusqu'à 100 %, puis l'ensemble est ramené à un total de 100 %.</li>
+          <li><strong>Passerelle inclusive :</strong> chaque flux est pris selon sa propre probabilité, et au moins un l'est toujours. La convergence attend autant de jetons que la divergence en a lancé.</li>
+          <li><strong>Passerelle parallèle et flux non contrôlés :</strong> tous les flux sont pris, le champ n'apparaît pas.</li>
+        </ul>
+        <p>La valeur est enregistrée dans le fichier .bpmn sous l'attribut <code>bpmnpilot:probability</code> (espace de noms <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), que les autres outils BPMN ignorent sans erreur. L'assistant et les agents MCP la règlent avec l'outil <code>update_elements</code>.</p>
+        <h3 id="carte-chaleur">Carte de chaleur</h3>
+        <p>La carte de chaleur montre où passent les instances d'un processus. Elle colore chaque élément et chaque flux de séquence selon le nombre de jetons qui l'ont traversé, du bleu pâle au rouge. On voit ainsi, sans lire le modèle élément par élément, les chemins jamais empruntés, les activités par lesquelles passent presque toutes les instances, et les boucles de reprise qui font exécuter une même activité plusieurs fois. Elle sert à valider un modèle avant de le diffuser, et à repérer où un processus se répète ou se concentre avant d'en discuter la réorganisation.</p>
+        <ol>
+          <li>Lancez la <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. Le cadre de la vitesse, en bas du canevas, porte deux boutons : <span class="uib">Carte de chaleur</span> et <span class="uib">Lancer 100 jetons</span>.</li>
+          <li><strong>Vérifier la couverture.</strong> Activez <span class="uib">Carte de chaleur</span>, puis faites partir quelques jetons en choisissant à chaque passerelle un chemin différent. La carte suit chaque pas. Ce qui reste en gris pointillé n'a jamais été atteint : une branche oubliée, un événement de fin inaccessible.</li>
+          <li><strong>Mesurer la répartition.</strong> Hors simulation, sélectionnez chaque flux qui sort d'une passerelle exclusive, inclusive ou basée sur les événements, et renseignez le champ <span class="ui">Probabilité (%)</span> du groupe <span class="ui">Simulation</span>, dans le panneau Processus. Les flux sans valeur se partagent le reste à parts égales. Lancez ensuite la simulation et cliquez sur <span class="uib">Lancer 100 jetons</span> : le calcul est immédiat, sans animation.</li>
+          <li>Lisez la carte. Une pastille donne le nombre de passages sur chaque activité et chaque événement, avec la part des instances (« 31 · 31 % »). Au-delà d'un passage par instance, elle donne le nombre moyen d'exécutions (« 131 · 1,3× ») : c'est une boucle de reprise. L'épaisseur des flux suit le même compte.</li>
+        </ol>
+        <p>La carte compte des passages : elle ne mesure ni durées ni coûts. Le calcul des 100 jetons suit les passerelles selon leurs probabilités, et ne déclenche pas les événements en bordure. La carte disparaît à l'arrêt de la simulation, mais ses comptes restent disponibles tant que le diagramme ne change pas : le <a href="#rapport-processus">rapport de processus</a> en PDF la reprend sur une page à part. Les probabilités sont enregistrées dans le fichier .bpmn, sous un attribut propre à BPMN Pilot que les autres outils ignorent.</p>
+        <figure><img src="/src/help/img/fr-carte-chaleur.webp" width="1060" height="440" alt="Carte de chaleur après 100 jetons : la vérification des pièces en rouge, passée plus d'une fois par instance, les branches moins empruntées en jaune, avec la pastille de chaque activité et la légende." loading="lazy" /><figcaption>La carte après 100 jetons : la vérification des pièces, en rouge, est l'activité la plus sollicitée.</figcaption></figure>
+        <h3 id="rapport-processus"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus</h3>
+        <p>Le rapport de processus transforme le diagramme en document lisible sans outil BPMN : une fiche à remettre à une équipe, à joindre à une procédure qualité ou à présenter au responsable du processus. Il sert aussi de revue de modélisation : il liste les erreurs, les avertissements et les informations manquantes, et en déduit des axes d'amélioration par priorité.</p>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>. Le rapport se construit à partir du diagramme, sans autre saisie :</p>
+        <ul>
+          <li>les chiffres clés et le diagramme, où chaque élément concerné par un constat est entouré de la couleur de son niveau ;</li>
+          <li>les constats de modélisation, en trois niveaux : <strong>Erreur</strong> en rouge (règle bpmnlint enfreinte, élément inaccessible, instance qui ne peut pas se terminer), <strong>Avertissement</strong> en orange (écart aux bonnes pratiques, reprise fréquente), <strong>À compléter</strong> en jaune (documentation absente, conditions sans libellé, couloir à activité unique). Leur source est indiquée : bpmnlint, contrôle du modèle ou simulation ;</li>
+          <li>les axes d'amélioration, par priorité, avec l'effet attendu ;</li>
+          <li>les événements de fin, les activités par couloir, et la séquence des éléments : type, couloir, documentation et flux sortants avec leurs conditions.</li>
+        </ul>
+        <p>Pour un rapport complet, nommez chaque passerelle par sa question et chaque flux sortant par sa réponse, répartissez les activités dans des couloirs, et remplissez le champ <span class="ui">Documentation</span> des activités. Rien de cela n'est obligatoire : le rapport signale ce qui manque. Après une simulation, il ajoute la <a href="#carte-chaleur">carte de chaleur</a> (en PDF), le nombre d'instances par élément, la part de chaque événement de fin et les reprises.</p>
+        <p>Le rapport s'en tient aux contrôles. Une analyse du processus lui-même se demande à l'assistant IA ou à un agent MCP, qui lisent le même rapport (voir <a href="#exemples-prompts">Exemples de prompts</a>).</p>
+        <figure><img src="/src/help/img/fr-rapport-processus.webp" width="1060" height="750" alt="Première page du rapport de processus : chiffres clés, diagramme aux éléments entourés de couleur, et tableau des constats en orange et jaune." loading="lazy" /><figcaption>Première page du rapport : chiffres clés, diagramme annoté et constats.</figcaption></figure>
+        <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
+        <p>Autour de chaque réponse, l'assistant montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
+        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau de l'assistant après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <ul>
+          <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
+          <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de message relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
+          <li><strong>Autocorrection.</strong> Si un contrôle échoue, les problèmes repartent au modèle, qui corrige seul, deux tours au plus. Une correction qui ne réduit pas le nombre de problèmes est annulée. Le rapport en rend compte, par exemple « 1 correction demandée, 1 retenue ».</li>
+          <li><strong>Traçabilité.</strong> Sous chaque réponse : fournisseur, modèle, durée, date et heure, et la source (taille du message, noms des fichiers joints). <span class="uib">Relancer depuis la même source</span>, sur la dernière réponse, remet le diagramme dans l'état d'avant cette réponse et renvoie la même demande au modèle choisi à ce moment, par exemple pour comparer deux modèles.</li>
+          <li><strong>Destination.</strong> Une ligne au-dessus du champ dit où part le message, vers quel fournisseur et quel modèle : depuis votre navigateur dans la version en ligne, par votre serveur dans la version Docker. Un fournisseur sur votre réseau, comme Ollama, est signalé comme tel. Le message, les fichiers joints et le diagramme en cours partent à chaque envoi.</li>
+        </ul>
+        <p>La critique et l'autocorrection envoient des requêtes en plus au modèle : elles prennent du temps et se paient comme les autres. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, les coupe toutes les deux. Le rapport, la traçabilité et la ligne de destination restent.</p>
+        <p>Ce que détecte chacun des six contrôles :</p>
+        <div class="table-wrap"><table class="checks-table">
+          <thead><tr><th>Contrôle</th><th>Signale par exemple</th></tr></thead>
+          <tbody>
+            <tr><td>XML bien formé</td><td>balise non fermée, caractère interdit, document vide</td></tr>
+            <tr><td>Métamodèle BPMN 2.0</td><td>élément ou attribut inconnu dans l'espace de noms BPMN, valeur illisible (les extensions d'autres outils sont acceptées)</td></tr>
+            <tr><td>Références et portées</td><td>identifiant en double ou introuvable, flux de séquence qui sort de son processus ou de son sous-processus, flux de message à l'intérieur d'un même pool, événement en bordure accroché hors de son conteneur, flux par défaut qui ne part pas de sa passerelle, couloir qui cite un élément d'un autre processus</td></tr>
+            <tr><td>Diagramme (DI)</td><td>élément du modèle jamais dessiné, forme sans dimensions, flux avec moins de deux points, élément dessiné deux fois, dessin qui renvoie à un élément absent</td></tr>
+            <tr><td>Réimport bpmn-js</td><td>avertissement de bpmn-js en relisant le document, en plus de ceux déjà relevés par le métamodèle</td></tr>
+            <tr><td>bpmnlint</td><td>erreur des règles recommandées : élément isolé, début ou fin manquant, élément sans nom, passerelle superflue… (les avertissements sont comptés sans faire échouer le contrôle)</td></tr>
+          </tbody>
+        </table></div>
+        <h3 id="experts-mcp">Avec un agent MCP</h3>
+        <p>En <a href="#docker">version Docker</a>, un agent MCP a accès aux mêmes contrôles et au même rapport :</p>
+        <ul>
+          <li><code>validate_diagram</code> rend le rapport de contrôle : compteurs d'éléments, chaque contrôle avec ses problèmes, nombre d'erreurs et d'avertissements, et les constats bpmnlint avec l'élément, la règle et le message ;</li>
+          <li><code>get_process_report</code> rend le <a href="#rapport-processus">rapport de processus</a> en Markdown. Avec <code>simulate</code>, il calcule d'abord 100 jetons selon les probabilités des branches ;</li>
+          <li><code>update_elements</code> règle aussi le champ <span class="ui">Documentation</span> et la probabilité d'une branche ;</li>
+          <li>le prompt <code>critique_description</code> relève ce qui est ambigu ou manquant dans une description, avant de dessiner.</li>
+        </ul>
+        <p>L'agent n'a pas de boucle d'autocorrection : c'est à lui d'appeler <code>validate_diagram</code> et de corriger. Les règles de modélisation que lui donne le serveur le lui demandent en fin de dessin.</p>
       </section>
 
       <section id="petits-ecrans">
@@ -694,6 +733,7 @@
       </footer>
     </main>
   </div>
+  <script type="module" src="/src/help/sections.js"></script>
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
   <script type="module" src="/src/help/channel-link.js"></script>
