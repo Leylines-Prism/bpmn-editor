@@ -16,6 +16,8 @@ import { useEffect, useRef, useState } from '@bpmn-io/properties-panel/preact/ho
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
+import { getFillColor, getStrokeColor } from 'bpmn-js/lib/draw/BpmnRenderUtil'
+import { isLabelExternal } from 'bpmn-js/lib/util/LabelUtil'
 import { T } from './i18n/lang.js'
 import { COLORS } from './color-palette.js'
 import {
@@ -45,6 +47,48 @@ function fillOf(element) {
 function strokeOf(element) {
   const di = targetOf(element).di
   return upper(di?.get('color:border-color') || di?.get('bioc:stroke'))
+}
+
+// ── Valeurs par défaut ──────────────────────────────────────────────────────
+// Ce que bpmn-js dessine quand rien n'est réglé, lu dans son rendu et sa
+// configuration plutôt qu'écrit en dur : les listes et les champs de couleur
+// montrent ainsi la valeur réellement appliquée.
+
+// Couleur CSS (nom, hsl…) en code hexadécimal, par le navigateur.
+let colorContext
+function toHex(color) {
+  if (/^#[0-9a-f]{6}$/i.test(color)) return color.toUpperCase()
+  colorContext ||= document.createElement('canvas').getContext('2d')
+  colorContext.fillStyle = '#000000'
+  colorContext.fillStyle = color
+  const value = String(colorContext.fillStyle)
+  return /^#[0-9a-f]{6}$/i.test(value) ? value.toUpperCase() : ''
+}
+
+// Fond, contour et couleur du texte que l'élément prend sans réglage propre :
+// la configuration du rendu (bpmnRenderer), sinon les valeurs de bpmn-js. Le
+// texte suit le contour de l'élément, réglé ou non.
+function defaultColors(element, config = {}) {
+  const target = targetOf(element)
+  const bare = { di: { get: () => undefined }, businessObject: target.businessObject }
+  return {
+    fill: toHex(getFillColor(bare, config.defaultFillColor)),
+    stroke: toHex(getStrokeColor(bare, config.defaultStrokeColor)),
+    text: toHex(config.defaultLabelColor || getStrokeColor(target, config.defaultStrokeColor)),
+  }
+}
+
+// Police du rendu pour ce libellé : les libellés placés hors de la forme
+// (événements, passerelles, flux, données) sont écrits un point plus petit.
+function defaultFont(element, textRenderer) {
+  const style = isLabelExternal(getBusinessObject(targetOf(element)))
+    ? textRenderer.getExternalStyle() : textRenderer.getDefaultStyle()
+  const family = String(style.fontFamily || '')
+  return {
+    size: parseInt(style.fontSize, 10) || null,
+    name: family.split(',')[0].trim().replace(/^["']|["']$/g, ''),
+    family,
+  }
 }
 
 // Éléments qui ont une apparence réglable : formes et flux dessinés, hors racine.
@@ -139,7 +183,7 @@ function parseHex(text) {
   return '#' + hex.toUpperCase()
 }
 
-function HexInput({ id, value, label, onPick }) {
+function HexInput({ id, value, label, placeholder, onPick }) {
   const [text, setText] = useState(value || '')
   useEffect(() => setText(value || ''), [value])
   const commit = () => {
@@ -149,8 +193,9 @@ function HexInput({ id, value, label, onPick }) {
     else setText(value || '')
   }
   return html`<input type="text" id=${id} class="appearance-color-code" value=${text} maxlength="7" spellcheck="false"
-    autocomplete="off" placeholder=${T('Default', 'Par défaut')} aria-label=${label + ' (' + T('hexadecimal code', 'code hexadécimal') + ')'}
-    title=${T('Hexadecimal code, for example #1E88E5', 'Code hexadécimal, par exemple #1E88E5')}
+    autocomplete="off" placeholder=${placeholder || T('Default', 'Par défaut')} aria-label=${label + ' (' + T('hexadecimal code', 'code hexadécimal') + ')'}
+    title=${value || !placeholder ? T('Hexadecimal code, for example #1E88E5', 'Code hexadécimal, par exemple #1E88E5')
+      : T(`Default: ${placeholder}. Type a code to change it`, `Par défaut : ${placeholder}. Tapez un code pour la changer`)}
     onInput=${(e) => setText(e.target.value)} onBlur=${commit}
     onKeyDown=${(e) => { if (e.key === 'Enter') { e.preventDefault(); commit() } else if (e.key === 'Escape') setText(value || '') }} />`
 }
@@ -161,7 +206,7 @@ function ColorField({ id, label, value, fallback, onChange }) {
   return html`<div class="appearance-color-field">
     <label for=${id}>${label}</label>
     <${ColorInput} id=${id} value=${value || fallback} onPick=${onChange} />
-    <${HexInput} id=${id + '-hex'} label=${label} value=${value} onPick=${onChange} />
+    <${HexInput} id=${id + '-hex'} label=${label} value=${value} placeholder=${fallback} onPick=${onChange} />
   </div>`
 }
 
@@ -394,8 +439,10 @@ const ROLLER_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="
 function ShapeColorEntry({ element, id }) {
   const modeling = useService('modeling')
   const commandStack = useService('commandStack')
+  const config = useService('config')
   const target = targetOf(element)
   const edge = isConnection(target)
+  const defaults = defaultColors(target, config?.bpmnRenderer)
   const fill = fillOf(target)
   const stroke = strokeOf(target)
   const set = (colors) => modeling.setColor([target], colors)
@@ -417,8 +464,8 @@ function ShapeColorEntry({ element, id }) {
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
     <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
-    ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback="#FFFFFF" onChange=${(v) => set({ fill: v })} />`}
-    <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback="#22242A" onChange=${(v) => set({ stroke: v })} />
+    ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback=${defaults.fill} onChange=${(v) => set({ fill: v })} />`}
+    <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback=${defaults.stroke} onChange=${(v) => set({ stroke: v })} />
   </div>`
 }
 
@@ -426,7 +473,11 @@ function ShapeColorEntry({ element, id }) {
 
 function TextStyleEntry({ element, id }) {
   const commandStack = useService('commandStack')
+  const config = useService('config')
+  const textRenderer = useService('textRenderer')
   const target = targetOf(element)
+  const base = defaultFont(target, textRenderer)
+  const baseColor = defaultColors(target, config?.bpmnRenderer).text
   const elements = [target]
   const font = fontOf(target) || {}
   const color = upper(textColorOf(target))
@@ -434,10 +485,12 @@ function TextStyleEntry({ element, id }) {
     class=${'appearance-toggle ' + cls + (font[key] ? ' is-active' : '')}
     title=${title} aria-label=${title} aria-pressed=${font[key] ? 'true' : 'false'}
     onClick=${() => applyFont(commandStack, elements, { [key]: !font[key] })}>${letter}</button>`
-  const select = (sid, label, value, options, onChange) => html`<div class="appearance-select">
+  // Premier choix : la valeur que le rendu applique sans réglage, par exemple
+  // « 12 » ou « Arial », plutôt qu'un simple « Par défaut ».
+  const select = (sid, label, value, base, options, onChange) => html`<div class="appearance-select">
     <label for=${sid}>${label}</label>
     <select id=${sid} class="bio-properties-panel-input" value=${value} onChange=${(e) => onChange(e.target.value)}>
-      <option value="">${T('Default', 'Par défaut')}</option>
+      <option value="" style=${base.family ? { fontFamily: base.family } : null}>${base.label || T('Default', 'Par défaut')}</option>
       ${options.map((o) => html`<option value=${o.value} style=${o.family ? { fontFamily: o.family } : null}>${o.label}</option>`)}
     </select>
   </div>`
@@ -449,10 +502,10 @@ function TextStyleEntry({ element, id }) {
       ${toggle('isUnderline', T('U', 'S'), T('Underline', 'Souligné'), 'is-underline')}
     </div>
     <div class="appearance-selects">
-      ${select(id + '-size', T('Size', 'Taille'), font.size ? String(font.size) : '',
+      ${select(id + '-size', T('Size', 'Taille'), font.size ? String(font.size) : '', { label: base.size },
         SIZES.map((s) => ({ value: String(s.size), label: `${s.label} (${s.size})` })),
         (v) => applyFont(commandStack, elements, { size: v ? Number(v) : undefined }))}
-      ${select(id + '-font', T('Font', 'Police'), font.name || '',
+      ${select(id + '-font', T('Font', 'Police'), font.name || '', { label: base.name, family: base.family },
         FONTS.map((f) => ({ value: f.name, label: f.name, family: f.family })),
         (v) => applyFont(commandStack, elements, { name: v || undefined }))}
     </div>
@@ -465,7 +518,7 @@ function TextStyleEntry({ element, id }) {
       ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
     </div>
-    <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback="#22242A"
+    <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback=${baseColor}
       onChange=${(v) => applyTextColor(commandStack, elements, v)} />
     <div class="appearance-row">
       <button type="button" class="appearance-button" title=${T('Black or white, whichever reads best on the fill', 'Noir ou blanc, le plus lisible sur le fond')}
