@@ -218,7 +218,11 @@ a.btn { text-decoration: none; }
   background: var(--white); box-shadow: var(--elevation-1);
 }
 
-/* Bascule de simulation de jetons */
+/* Bascule de simulation de jetons de l'extension : masquée, la simulation se lance par le
+   bouton Simulation de la barre d'outils, en mode expert. */
+#canvas .bts-toggle-mode { display: none !important; }
+/* Pastilles des instances en cours : à droite d'Annuler et Rétablir. */
+#canvas .bts-scopes { left: 112px; top: 26px; }
 #canvas .bts-toggle-mode {
   font-family: var(--font-sans); font-size: 14px; font-weight: 500;
   border-radius: var(--radius-sm); border: 1px solid var(--mist);
@@ -1328,10 +1332,9 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .ai-changes-action[hidden] { display: none; }
 #canvas .ai-changes-action:hover { color: var(--leyline-magenta); }
 
-/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, à droite de la
-   bascule de simulation. Leur position horizontale suit la largeur de la bascule (--history-left). */
+/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, au-dessus de la palette. */
 #history-buttons {
-  position: absolute; top: 20px; left: var(--history-left, 210px); z-index: 100;
+  position: absolute; top: 20px; left: 20px; z-index: 100;
   display: inline-flex; overflow: hidden;
   border: 1px solid var(--mist); border-radius: var(--radius-sm);
   background: var(--white); box-shadow: var(--elevation-1);

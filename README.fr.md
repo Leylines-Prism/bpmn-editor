@@ -342,9 +342,10 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
-  simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
+  vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
-- **Carte de chaleur et rapport de processus** : pendant la simulation, colorer le diagramme selon
+- **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
+  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
   le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
   probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
   niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.

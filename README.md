@@ -320,10 +320,11 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   as an image, print the diagram alone fitted to one page. The current diagram is restored when you
   come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
-- **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, token
-  simulation, BPMN rule checking, grid, minimap, and the Process panel for the properties of each
+- **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
+  checking, grid, minimap, and the Process panel for the properties of each
   element.
-- **Heatmap and process report**: during the simulation, color the diagram by the number of tokens
+- **Expert mode: token simulation, heatmap and process report**: run tokens through the
+  process, with a speed slider. During the simulation, color the diagram by the number of tokens
   through each element, played by hand or computed from branch probabilities. Export a process report
   (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
