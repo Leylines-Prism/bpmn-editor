@@ -59,7 +59,9 @@ function clean(text) {
   return text
     .replace(/^\uFEFF/, '')
     .replace(/\r\n?/g, '\n')
-    .replace(/[ \t]+$/gm, '')
+    .split('\n')
+    .map((l) => l.trimEnd())
+    .join('\n')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
 }
@@ -137,7 +139,13 @@ const TOKEN = /<!\[CDATA\[([\s\S]*?)\]\]>|<!--[\s\S]*?-->|<[?!][^>]*>|<(\/?)([A-
 //  skip : balises dont on ignore le contenu ; open(name, attrs) : texte à l'ouverture.
 function xmlText(xml, rules) {
   const has = (set, name) => set?.includes(name)
-  let out = ''
+  // Le texte est gardé ligne par ligne : les retouches de fin de ligne restent courtes.
+  const lines = []
+  let line = ''
+  const newline = () => {
+    lines.push(line)
+    line = ''
+  }
   let inText = 0
   let skip = 0
   let cells = 0
@@ -145,7 +153,7 @@ function xmlText(xml, rules) {
   for (let m; (m = TOKEN.exec(xml));) {
     const [, cdata, closing, name, attrs, selfClosing, chars] = m
     if (cdata !== undefined || chars !== undefined) {
-      if (inText && !skip) out += cdata ?? decodeXml(chars)
+      if (inText && !skip) line += cdata ?? decodeXml(chars)
       continue
     }
     if (!name) continue
@@ -155,24 +163,38 @@ function xmlText(xml, rules) {
     }
     if (skip) continue
     if (!closing) {
-      if (rules.open) out += rules.open(name, attrs) || ''
-      if (has(rules.tab, name)) out += '\t'
-      else if (has(rules.br, name)) out += '\n'
-      else if (has(rules.space, name)) out += ' '.repeat(Math.min(Number(attr(attrs, 'text:c')) || 1, 100))
+      if (rules.open) line += rules.open(name, attrs) || ''
+      if (has(rules.tab, name)) line += '\t'
+      else if (has(rules.br, name)) line += '\n'
+      else if (has(rules.space, name)) line += ' '.repeat(Math.min(Number(attr(attrs, 'text:c')) || 1, 100))
       if (has(rules.cell, name) && !selfClosing) cells++
       if (has(rules.text, name) && !selfClosing) inText++
-      if (selfClosing && has(rules.cell, name)) out += ' | '.repeat(Math.min(Number(attr(attrs, 'table:number-columns-repeated')) || 1, MAX_COLUMNS))
+      if (selfClosing && has(rules.cell, name)) line += ' | '.repeat(Math.min(Number(attr(attrs, 'table:number-columns-repeated')) || 1, MAX_COLUMNS))
       continue
     }
     if (has(rules.text, name)) inText = Math.max(0, inText - 1)
-    if (has(rules.para, name)) out += cells ? ' ' : '\n'
+    if (has(rules.para, name)) {
+      if (cells) line += ' '
+      else newline()
+    }
     if (has(rules.cell, name)) {
       cells = Math.max(0, cells - 1)
-      out = out.replace(/\s+$/, '') + ' | '
+      line = line.trimEnd() + ' | '
     }
-    if (has(rules.row, name)) out = out.replace(/(\s*\|\s*)+$/, '') + '\n'
+    if (has(rules.row, name)) {
+      line = trimCells(line)
+      newline()
+    }
   }
-  return out
+  lines.push(line)
+  return lines.join('\n')
+}
+
+// Retire les séparateurs de cellules vides en fin de ligne.
+function trimCells(line) {
+  let t = line.trimEnd()
+  while (t.endsWith('|')) t = t.slice(0, -1).trimEnd()
+  return t
 }
 
 // ── Formats ─────────────────────────────────────────────────────────────────
