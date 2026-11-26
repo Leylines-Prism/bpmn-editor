@@ -513,7 +513,8 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
 
 // ── Markdown ────────────────────────────────────────────────────────────────
 
-const mdCell = (s) => clean(s).replace(/\|/g, '\\|')
+// Cellule de tableau : barres verticales et barres obliques inverses échappées.
+const mdCell = (s) => clean(s).replace(/[\\|]/g, '\\$&')
 
 export function reportToMarkdown(r) {
   const c = r.counts
