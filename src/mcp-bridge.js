@@ -22,12 +22,20 @@ const RETRY_MAX_MS = 15000
 // cet onglet, null tant que le pont n'est pas relié.
 // options.exportDiagram : voir createTools.
 export function connectMcpBridge(modeler, url, options = {}) {
+  // Version docker : le pont est servi par le même site que la page.
+  try {
+    servedByDocker = new URL(url, location.href).host === location.host
+  } catch {}
   const tools = createTools(modeler, options)
   const badge = createBadge()
   const state = { tabId: null, badge }
   let retryDelay = RETRY_MIN_MS
   let ws = null
   let mcpClient = null
+  // Le nom d'un agent ne reste sur le badge que tant qu'il est actif : on le revoit chaque minute.
+  setInterval(() => {
+    if (badge.dataset.state === 'connected' && mcpClient) setBadge(badge, 'connected', mcpClient)
+  }, 60_000)
 
   function connect() {
     setBadge(badge, 'connecting')
@@ -51,7 +59,7 @@ export function connectMcpBridge(modeler, url, options = {}) {
         return
       }
       if (msg.type === 'mcp-client') {
-        mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), lastCall: Number(msg.lastCall) || null }
+        mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), seenAt: Number(msg.seenAt) || null, lastCall: Number(msg.lastCall) || null }
         if (badge.dataset.state === 'connected') setBadge(badge, 'connected', mcpClient)
         return
       }
@@ -121,6 +129,9 @@ const CLIENT_NAMES = {
 }
 export const clientLabel = (name) => CLIENT_NAMES[name] || (name.length > 24 ? name.slice(0, 23) + '…' : name)
 
+const ACTIVE_MS = 15 * 60_000
+let servedByDocker = false
+
 function setBadge(badge, state, client = null) {
   const states = {
     connecting: [T('MCP: connecting…', 'MCP : connexion…'), '#888'],
@@ -129,11 +140,18 @@ function setBadge(badge, state, client = null) {
   }
   const [text, color] = states[state]
   const known = state === 'connected' && client?.name
-  badge.textContent = known ? T('MCP: ', 'MCP : ') + clientLabel(client.name) : text
+  // Un agent qui n'a rien fait depuis ACTIVE_MS n'est plus affiché : le badge revient à « prêt »,
+  // et son nom reste dans l'infobulle.
+  const activeAt = Math.max(client?.seenAt || 0, client?.lastCall || 0)
+  const active = known && Date.now() - activeAt < ACTIVE_MS
+  badge.textContent = active ? T('MCP: ', 'MCP : ') + clientLabel(client.name) : text
   badge.dataset.state = state
   badge.style.color = color
   if (state !== 'connected') {
-    badge.title = T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
+    badge.title = servedByDocker
+      ? T('MCP server unreachable. Check that the mcp container is running (docker compose ps) and read its log (docker compose logs mcp).',
+          'Serveur MCP non joignable. Vérifiez que le conteneur mcp tourne (docker compose ps) et lisez son journal (docker compose logs mcp).')
+      : T('MCP server unreachable. Start it with: cd mcp && npm start', 'Serveur MCP non joignable. Lancez-le avec : cd mcp && npm start')
     return
   }
   const lines = [T('An AI can read and edit this diagram through the MCP server. Click to connect an agent.', 'Une IA peut lire et modifier ce diagramme par le serveur MCP. Cliquez pour connecter un agent.')]

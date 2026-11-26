@@ -101,14 +101,14 @@ export class EditorBridge {
     const clean = (value) => (typeof value === 'string' ? value.replace(/[^\w .@()+/-]/g, '').trim().slice(0, 60) : '')
     const name = clean(info?.name)
     if (!name) return
-    this.mcpClient = { name, version: clean(info?.version), lastCall: this.mcpClient?.name === name ? this.mcpClient.lastCall : null }
+    this.mcpClient = { name, version: clean(info?.version), seenAt: Date.now(), lastCall: this.mcpClient?.name === name ? this.mcpClient.lastCall : null }
     this.log(`[mcp] client connecté : ${name} ${this.mcpClient.version}`)
     this.#broadcastMcpClient()
   }
 
   // Un outil vient d'être appelé par un client MCP (pas par le chat intégré).
   noteMcpCall() {
-    if (!this.mcpClient) this.mcpClient = { name: '', version: '', lastCall: null }
+    if (!this.mcpClient) this.mcpClient = { name: '', version: '', seenAt: null, lastCall: null }
     this.mcpClient.lastCall = Date.now()
     this.#broadcastMcpClient()
   }
