@@ -31,6 +31,12 @@ BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
 [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
 machine avec Docker.
 
+BPMN 2.0 est une norme internationale : publiée par l'Object Management Group (OMG) et reprise par
+l'ISO sous la référence [ISO/IEC 19510:2013](https://www.iso.org/fr/standard/62652.html), identique à
+BPMN 2.0.1 et confirmée en 2022. Sa notation et sa sémantique d'exécution sont définies une fois pour
+tous les outils et toutes les équipes : un diagramme fait ici se lit de la même façon dans tout éditeur
+ou moteur conforme, et le fichier .bpmn s'y ouvre.
+
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
 - **Demandez au co-pilote IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
 - **Connectez un agent par MCP** (version Docker), comme Claude Code.
