@@ -38,7 +38,10 @@ cd mcp && npm install && npm start   # the MCP server and the built-in assistant
 ```
 
 `npm run lint` checks the code with ESLint, and `npm test` runs the automated tests (Node.js test
-runner, files in `test/`). Both run in CI on every pull request.
+runner, files in `test/`). Both run in CI on every pull request. `test/properties.test.mjs` uses
+[fast-check](https://fast-check.dev/) to throw thousands of random inputs at the MCP server's
+guards (file names, diagram ids, relay addresses). When it fails, it prints the smallest input
+that breaks the rule and a seed to replay it.
 
 `npm run dev:online` runs the editor as the online version (no server, API keys in the browser). The
 [README](README.md) and [mcp/README.md](mcp/README.md) explain the rest.
