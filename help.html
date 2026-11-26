@@ -65,7 +65,7 @@
         <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Describe a process or attach your documents (Word, Excel, PDF, emails…), and the AI co-pilot draws it in seconds: you review and adjust the result instead of spending hours on the BPMN structure. You can also draw by hand. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click. You are the pilot, hence the name: the AI co-pilot prepares the work, and you keep the final say on every diagram.</p>
         <!-- /online -->
         <!-- docker -->
-        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Connected to your AI agent and everything it knows (mail, wiki, document base, RAG, knowledge graph), it models the processes of that context in seconds, from a few exchanges: the agent finds the processes through MCP, the editor draws and checks them, and you review and adjust the result. The built-in AI co-pilot and drawing by hand work too. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click. You are the pilot, hence the name: the AI co-pilot prepares the work, and you keep the final say on every diagram.</p>
+        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Connected to your AI agent and everything it knows (mail, wiki, document base, RAG, knowledge graph), it models the processes of that context in seconds, through plain conversation: the agent finds them through MCP, the editor draws and checks them, and you review and adjust the result. The built-in AI co-pilot and drawing by hand work too. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click. You are the pilot, hence the name: the AI co-pilot prepares the work, and you keep the final say on every diagram.</p>
         <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Open the editor</a>
@@ -93,8 +93,8 @@
           <ul>
             <li><strong>Who does what</strong>: pools for organisations, lanes for roles, message flows for what they exchange.</li>
             <li><strong>What triggers and what waits</strong>: start, timer, message and error events, and events attached to a task for deadlines and exceptions.</li>
-            <li><strong>How paths split and join</strong>: exclusive (one path), parallel (all paths) and inclusive (some paths) gateways, each with its own rule.</li>
-            <li><strong>A file that tools understand</strong>: the .bpmn file describes the process, not a picture of it. It can be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow engine. A flowchart image allows none of this.</li>
+            <li><strong>How paths split and join</strong>: exclusive (a single branch), parallel (all of them) and inclusive (some of them) gateways, each with its own rule.</li>
+            <li><strong>A file that tools understand</strong>: the .bpmn file describes the process itself, not its picture. It can be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow engine. A drawn flowchart allows none of this.</li>
             <li><strong>No lock-in</strong>: the same file opens in any compliant editor, today and in ten years.</li>
           </ul>
         </details>
@@ -151,7 +151,7 @@
           </table>
         </div>
         <h3>The minimap</h3>
-        <p>The minimap shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="uib">Open minimap</span> to expand it, then <span class="uib">Close minimap</span> to collapse it.</p>
+        <p>It shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="uib">Open minimap</span> to expand it, then <span class="uib">Close minimap</span> to collapse it.</p>
         <ul>
           <li>The orange frame is the part visible on screen. Drag it to move around.</li>
           <li>Click anywhere else in the minimap to center the view on that point.</li>
@@ -160,6 +160,7 @@
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
         <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>, and <kbd>0</kbd> fits the diagram to the screen. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
       </section>
 
       <section id="properties">
@@ -320,7 +321,6 @@
               <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
-              <tr><td>Process report (PDF or Markdown)</td><td>Hand the process to a team or an auditor, with the findings and improvement areas (see below)</td></tr>
               <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
@@ -333,7 +333,7 @@
         <!-- docker -->
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
-        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, is described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
+        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, comes from the Expert menu: see <a href="#bpmn-experts">For BPMN experts</a>.</p>
         <h3>Exports asked of the AI</h3>
         <p>You can ask the AI co-pilot or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
@@ -347,6 +347,7 @@
       <section id="assistant">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</h2>
         <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
+        <figure class="fig-anim"><p class="fig-title">The co-pilot draws a process</p><img src="/docs/demo.gif" width="1200" height="675" alt="The AI co-pilot draws an online order process with two pools and four lanes" loading="lazy" /><figcaption>A request in plain language, and the diagram builds up in the editor.</figcaption></figure>
 
         <h3>1. Choose a provider</h3>
         <!-- online -->
@@ -500,7 +501,7 @@
         <div class="prompt">
           <p class="prompt-title">Branch probabilities</p>
           <p class="prompt-text">Set a probability on each flow leaving an exclusive gateway, based on the labels and the context. List your assumptions.</p>
-          <p class="prompt-tip">They feed the <span class="uib">Run 100 tokens</span> button of the heatmap.</p>
+          <p class="prompt-tip">They feed the <span class="uib">Run</span> button of the heatmap.</p>
         </div>
 
         </details>
@@ -534,7 +535,7 @@
         <div class="note warn">On a shared computer, leave the box unchecked and close the tab when you leave.</div>
         <div class="note responsible" role="note" aria-labelledby="responsible-use">
           <p class="note-title" id="responsible-use">Responsible use</p>
-          <p>Preferably, use an API key created for this editor alone, with a limited validity period. Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
+          <p>Use an API key reserved for this editor, with a short validity period, and add a spending cap if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
         </div>
       </section>
 
@@ -545,7 +546,7 @@
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
           <li>If you use the AI co-pilot, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
           <li>Like any web host, GitHub Pages keeps technical logs, including your IP address.</li>
-          <li>The stable site counts its visits anonymously, without cookies (the development version measures nothing), according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the co-pilot, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
+          <li>The stable site counts its visits anonymously, without cookies (nothing is counted on the development version), according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the co-pilot, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
           <li>The site loads no third-party script.</li>
         </ul>
         <p>The <span class="uib">Privacy</span> link at the bottom of the canvas repeats these points in the editor.</p>
@@ -596,11 +597,15 @@
       <section id="bpmn-experts">
         <h2>For BPMN experts</h2>
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
-        <p>Token simulation, the heatmap, branch probabilities and the process report only show in expert mode, so that they stay out of the way: click <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, in the toolbar, to show or hide them. The browser remembers this choice. The co-pilot checks and the MCP tools are available in both modes.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> and <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
+        <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="230" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown, Leave expert mode." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
         <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button, next to Tidy up in expert mode, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
-        <p>The small checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
-        <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers <span class="uib">Stop simulation</span> to go back to editing, and an orange dot on the button shows that a simulation is running.</p>
+        <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Slowed down, then sped up</p><img src="/docs/token-simulation.gif" width="1280" height="720" alt="A token runs through the purchase process, at 0.5× then 3×" loading="lazy" /><figcaption>A token slowed down, then sped up with the speed slider.</figcaption></figure>
+          <figure><p class="fig-title">A token on its way</p><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        </div>
         <h3 id="probabilities">Branch probabilities</h3>
         <p>The <span class="ui">Probability (%)</span> field, in the <span class="ui">Simulation</span> group of the <a href="#properties">Process panel</a>, appears in expert mode for a sequence flow leaving an exclusive, inclusive, complex or event-based gateway. It takes a value from 0 to 100 and can be undone like any change.</p>
         <ul>
@@ -612,16 +617,19 @@
         <h3 id="heatmap">Heatmap</h3>
         <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
         <ol>
-          <li>In expert mode, start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
+          <li>Start the simulation (<span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>). The speed box, at the bottom of the canvas, holds two controls: <span class="uib">Heatmap</span>, and <span class="uib">Run</span> followed by a field that sets the number of tokens, from 1 to 10,000 (100 by default).</li>
           <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
-          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation and click <span class="uib">Run 100 tokens</span>: the result is immediate, with no animation.</li>
+          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation, enter the number of tokens and click <span class="uib">Run</span> (or press <kbd>Enter</kbd> in the field): the result is immediate, with no animation.</li>
           <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
         </ol>
-        <p>The heatmap counts passes: it measures neither durations nor costs. The 100-token run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
-        <figure><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
+        <p>The heatmap counts passes: it measures neither durations nor costs. This run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Computing the map</p><img src="/docs/heatmap.gif" width="1280" height="720" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" loading="lazy" /><figcaption>A probability set on a branch, then 200 tokens computed at once.</figcaption></figure>
+          <figure><p class="fig-title">Reading the map</p><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
+        </div>
         <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
         <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
-        <p>In expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
+        <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
         <ul>
           <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
           <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
@@ -630,7 +638,10 @@
         </ul>
         <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the <a href="#heatmap">heatmap</a> (in PDF), the number of instances per element, the share of each end event and rework.</p>
         <p>The report sticks to checks. For an analysis of the process itself, ask the AI co-pilot or an MCP agent, which read the same report (see <a href="#prompt-examples">Prompt examples</a>).</p>
-        <figure><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Exporting the report</p><img src="/docs/process-report.gif" width="1280" height="720" alt="The process report in PDF from the Expert menu, then its four pages" loading="lazy" /><figcaption>From the Expert menu, then the four pages of the PDF.</figcaption></figure>
+          <figure><p class="fig-title">First page</p><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
+        </div>
         <h3 id="ai-checks">Review, checks and traceability</h3>
         <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
         <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
@@ -738,7 +749,9 @@
       <section id="feedback">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
         <p>A bug, an idea, a question? The <span class="uib">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
-        <p>Is the editor useful to you? You can <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help">support the project with a coffee on Ko-fi<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg></a>.</p>
+        <h3 id="support">Support development</h3>
+        <p>BPMN-Pilot is free, with no subscription. My buddy Claude runs on caffeine. If the editor is useful to you, a coffee on Ko-fi keeps the project going.</p>
+        <p><a class="kofi-btn" href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help"><svg class="kofi-cup" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg>Support on Ko-fi</a></p>
       </section>
 
       <footer>

@@ -1,8 +1,9 @@
-// Mode expert : un bouton de la barre d'outils affiche les fonctions avancées, masquées
-// par défaut pour ne pas encombrer l'éditeur :
-//   - carte de chaleur et « Lancer 100 jetons » pendant la simulation (src/heatmap.js) ;
-//   - champ Probabilité (%) du panneau Processus (src/probability-panel.js) ;
-//   - rapport de processus dans le menu Exporter.
+// Mode expert : les fonctions avancées, masquées par défaut pour ne pas encombrer l'éditeur.
+// Le bouton Expert de la barre, toujours visible, ouvre un menu : Simulation, Rapport de
+// processus (PDF ou Markdown) et Quitter le mode Expert. Choisir une entrée active le mode,
+// et le bouton reste plein tant qu'il est actif. Le mode montre :
+//   - la simulation de jetons, la carte de chaleur et « Lancer N jetons » (src/heatmap.js) ;
+//   - le champ Probabilité (%) du panneau Processus (src/probability-panel.js).
 // Tout élément marqué .expert-only, ou ciblé dans leylines.css, disparaît hors du mode.
 // Le choix est retenu dans ce navigateur. Les outils MCP et le co-pilote ne changent pas.
 
@@ -16,26 +17,31 @@ function read() {
 }
 
 let on = read()
+let button = null
 document.documentElement.classList.toggle('expert', on)
 
 export const isExpert = () => on
 
-function apply(button) {
+function apply() {
   document.documentElement.classList.toggle('expert', on)
   if (!button) return
-  button.setAttribute('aria-pressed', String(on))
   button.classList.toggle('active', on)
   button.title = on
-    ? T('Expert mode on: heatmap, branch probabilities and process report (click to hide them)', 'Mode expert activé : carte de chaleur, probabilités des branches et rapport de processus (cliquer pour les masquer)')
-    : T('Expert mode: show the heatmap, branch probabilities and process report', 'Mode expert : afficher la carte de chaleur, les probabilités des branches et le rapport de processus')
+    ? T('Expert mode on: token simulation and process report', 'Mode Expert activé : simulation de jetons et rapport de processus')
+    : T('Expert mode: token simulation and process report', 'Mode Expert : simulation de jetons et rapport de processus')
 }
 
-export function setupExpertMode(button) {
-  apply(button)
-  button?.addEventListener('click', () => {
-    on = !on
-    try { localStorage.setItem(KEY, on ? 'on' : 'off') } catch { /* stockage indisponible : le choix vaut pour cette page */ }
-    apply(button)
-    window.dispatchEvent(new CustomEvent(EXPERT_EVENT, { detail: { on } }))
-  })
+// Active ou quitte le mode. Sans effet si l'état ne change pas.
+export function setExpert(value) {
+  if (on === !!value) return
+  on = !!value
+  try { localStorage.setItem(KEY, on ? 'on' : 'off') } catch { /* stockage indisponible : le choix vaut pour cette page */ }
+  apply()
+  window.dispatchEvent(new CustomEvent(EXPERT_EVENT, { detail: { on } }))
+}
+
+export function setupExpertMode({ button: expertButton, offButton }) {
+  button = expertButton
+  apply()
+  offButton?.addEventListener('click', () => setExpert(false))
 }

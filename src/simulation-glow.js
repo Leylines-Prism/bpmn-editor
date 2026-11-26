@@ -50,7 +50,7 @@ export function setupSimulationGlow(modeler) {
   const timers = new Map()
   let on = readStored()
 
-  // Petite case discrète, marquée d'un sapin, au bout du cadre de la vitesse.
+  // Case, marquée d'un sapin, au bout du cadre de la vitesse.
   const box = document.createElement('label')
   box.className = 'sim-glow-toggle'
   box.title = T('Christmas tree: light up each step a token goes through', 'Sapin de Noël : allumer chaque étape que traverse un jeton')

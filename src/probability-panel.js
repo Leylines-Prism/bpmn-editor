@@ -1,6 +1,6 @@
 // Groupe « Simulation » du panneau de propriétés : probabilité (en %) d'un flux qui sort
 // d'une passerelle exclusive, inclusive, complexe ou basée sur les événements. Elle sert
-// à « Lancer 100 jetons » de la carte de chaleur.
+// à « Lancer N jetons » de la carte de chaleur.
 //
 // La valeur est enregistrée dans le .bpmn sous l'attribut bpmnpilot:probability
 // (src/bpmn-pilot-moddle.json), que les autres outils BPMN ignorent. Chaque saisie

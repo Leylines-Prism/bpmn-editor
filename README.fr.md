@@ -8,13 +8,14 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-pilot/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-pilot)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-soutenir-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
 [English](README.md) | **Français**
 
 ![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
 
-**Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
-agent IA.**
+**Modélisez en quelques secondes tous les processus de votre contexte, simplement en échangeant avec
+votre agent IA.**
 
 Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
 graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
@@ -57,12 +58,13 @@ Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos
 </tr>
 </table>
 
-**Pour les experts BPMN**, un mode **Expert**, activé depuis la barre d'outils, ajoute des outils qui
-éprouvent un modèle et en rendent compte, sans encombrer l'éditeur des autres (voir la
+**Pour les experts BPMN**, le bouton **Expert** de la barre ouvre de quoi éprouver un modèle et en
+rendre compte : la simulation de jetons et le rapport de processus. Il passe en bleu tant que le mode
+est actif, et l'éditeur garde une barre sobre pour les autres (voir la
 [section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
 
-- **Simulation de jetons avec carte de chaleur** : 100 jetons d'un coup selon les probabilités des
-  branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
+  coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
 - **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
   d'amélioration, événements de fin, activités par couloir.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
@@ -72,25 +74,26 @@ Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos
 **Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
 un processus en réunion. En mode Expert, la simulation de jetons s'y lance aussi.
 
-<details><summary><b>Voir les outils experts en action</b> (un processus d'achat interne à quatre couloirs)</summary>
+Les outils experts sur un processus d'achat interne à quatre couloirs :
 
-**Mode Présentation** : le schéma seul en plein écran, puis une simulation à 2× :
-
-![Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton à 2×](docs/presentation.fr.gif)
-
-**Simulation de jetons**, ralentie puis accélérée avec la glissière de vitesse :
-
-![Un jeton parcourt le processus d'achat, à 0,5× puis à 3×](docs/token-simulation.fr.gif)
-
-**Carte de chaleur** : la probabilité saisie sur une branche, puis 100 jetons calculés d'un coup :
-
-![La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 100 jetons](docs/heatmap.fr.gif)
-
-**Rapport de processus** en PDF, avec la page carte de chaleur après une simulation :
-
-![Export du rapport de processus en PDF, puis ses quatre pages](docs/process-report.fr.gif)
-
-</details>
+<table>
+<tr>
+<th width="50%">Mode Présentation</th>
+<th width="50%">Simulation de jetons</th>
+</tr>
+<tr>
+<td><img src="docs/presentation.fr.gif" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton à 2×" width="100%"></td>
+<td><img src="docs/token-simulation.fr.gif" alt="Un jeton parcourt le processus d'achat, à 0,5× puis à 3×" width="100%"></td>
+</tr>
+<tr>
+<th width="50%">Carte de chaleur</th>
+<th width="50%">Rapport de processus</th>
+</tr>
+<tr>
+<td><img src="docs/heatmap.fr.gif" alt="La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 200 jetons" width="100%"></td>
+<td><img src="docs/process-report.fr.gif" alt="Le rapport de processus en PDF depuis le menu Expert, puis ses quatre pages" width="100%"></td>
+</tr>
+</table>
 
 BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
 publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
@@ -107,10 +110,10 @@ Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente se
   pour ce qu'ils échangent.
 - **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
   événements accrochés à une tâche pour les délais et les exceptions.
-- **Comment les chemins se séparent et se rejoignent** : passerelles exclusive (un chemin), parallèle
-  (tous les chemins) et inclusive (certains chemins), chacune avec sa règle.
-- **Un fichier que les outils comprennent** : le fichier .bpmn décrit le processus, pas une image du
-  processus. Il se vérifie, se simule, devient un rapport, se lit et s'écrit par un agent IA, et
+- **Comment les chemins se séparent et se rejoignent** : passerelles exclusive (une seule branche),
+  parallèle (toutes) et inclusive (certaines), chacune avec sa règle.
+- **Un fichier que les outils comprennent** : le .bpmn décrit le processus lui-même, pas son
+  image. Il se vérifie, se simule, devient un rapport, se lit et s'écrit par un agent IA, et
   s'exécute dans un moteur de workflow. Une image de logigramme ne permet rien de tout cela.
 - **Pas d'enfermement** : le même fichier s'ouvre dans tout éditeur conforme, aujourd'hui comme dans dix
   ans.
@@ -131,12 +134,12 @@ Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente se
 > - **La seule autre requête** est une mesure d'audience sans cookie, qui ne contient jamais de
 >   diagramme, de message ni de clé.
 >
-> Utilisez tout de même toujours une clé API créée pour cet éditeur seul, avec une durée de validité
-> limitée et une limite de dépense. Détails, limites et moyen de le vérifier vous-même :
+> Prenez tout de même une clé API réservée à cet éditeur, qui expire d'elle-même et dont la dépense est
+> plafonnée. Ce qui est protégé, ce qui ne l'est pas et comment le vérifier vous-même :
 > [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md).
 
-La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa propre mémoire et son contexte,
-avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
+La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa mémoire, son contexte et tout
+ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
 
 - il charge un diagramme en XML BPMN, ou le dessine ;
 - il le vérifie selon les règles BPMN ;
@@ -147,12 +150,12 @@ Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester 
 
 > [!WARNING]
 > **Version Docker seulement : pas faite pour être exposée sur internet, par conception.** Cela
-> concerne votre propre copie, pas la version en ligne ci-dessus. La version Docker est prévue pour
-> votre propre machine ou un réseau privé, elle n'a donc pas de connexion. Le risque reste limité,
+> concerne la copie que vous faites tourner, pas la version en ligne ci-dessus. Prévue pour votre
+> machine ou un réseau privé, la version Docker n'a pas d'identification. Le risque reste limité,
 > mais la publier revient à ouvrir à tous un service sans authentification : vos clés API peuvent
 > être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
 > diagrammes ») peuvent être lus ou supprimés. Par défaut, elle ne répond que sur cette machine
-> (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos propres risques.
+> (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos risques.
 
 ## L'utiliser en ligne
 
@@ -170,14 +173,14 @@ certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien 
 dit ce qui sort du navigateur, et
 [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
 
-La page stable mesure son audience de façon anonyme, sans cookie :
+La page stable compte son audience de façon anonyme, sans cookie :
 visites, provenance et quelques actions (co-pilote ouvert ou utilisé, fournisseur connecté, diagramme
 créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
-elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
-indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
-Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
-CNIL pour les mesures d'audience exemptées de consentement.
+elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent ce comptage, et un
+indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image Docker ni `npm run dev`
+n'envoient quoi que ce soit. Le réglage suit les recommandations de la CNIL pour les mesures d'audience
+exemptées de consentement.
 
 ## Le lancer avec Docker
 
@@ -402,7 +405,6 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
 | `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). Dans un outil de gestion de conteneurs, un chemin absolu. |
 | `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires du dossier de données (1000 par défaut). |
-| `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires de ses fichiers (1000 par défaut). |
 | `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
 
 ## Ce que fait l'éditeur
@@ -475,8 +477,11 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 
-Si l'éditeur vous rend service, vous pouvez soutenir le projet en offrant un café sur
-[Ko-fi](https://ko-fi.com/leylines_prism).
+## Soutenir le développement
+
+BPMN-Pilot est gratuit, sans abonnement. Mon copain Claude carbure à la caféine. S'il vous fait gagner du temps, un café sur Ko-fi fait vivre le projet :
+
+[![Soutenir sur Ko-fi](https://img.shields.io/badge/Ko--fi-Soutenir%20le%20projet-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/leylines_prism)
 
 ## Licence
 

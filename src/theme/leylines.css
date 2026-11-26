@@ -875,10 +875,10 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 #library-dialog [hidden] { display: none !important; }
 
-/* Écran étroit : Ranger, Simulation et Présentation passent en icône seule (infobulle au survol),
+/* Écran étroit : Ranger et Présentation passent en icône seule (infobulle au survol),
    pour laisser la place au nom du fichier et aux boutons de droite. */
 @media (max-width: 1440px) {
-  #btn-layout, #btn-simulation, #btn-present { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+  #btn-layout, #btn-present { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
   #toolbar #btn-chat .chat-btn-model { display: none; }
   #toolbar #btn-chat.has-model .chat-btn-full { display: inline; }
   #toolbar #btn-chat.has-model .chat-btn-short { display: none; }
@@ -968,7 +968,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #privacy-dialog .pv-close { margin-left: auto; font-size: 20px; flex: none; }
 #privacy-dialog .pv-badge {
   flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
-  background: var(--warm); color: var(--on-accent);
+  background: var(--accent); color: var(--on-accent);
 }
 #privacy-dialog .pv-badge svg { width: 24px; height: 24px; }
 #privacy-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
@@ -1454,6 +1454,17 @@ body.presenting #canvas .djs-container { cursor: grab; }
   border: 1px solid var(--line-strong); background: transparent; color: inherit; white-space: nowrap;
 }
 #canvas .heatmap-bar button:hover { border-color: var(--accent); }
+#canvas .heatmap-bar .heatmap-run-group {
+  display: inline-flex; align-items: center; gap: 4px; padding: 0 8px 0 0; font-size: 13px; white-space: nowrap;
+  border: 1px solid var(--line-strong); border-radius: 6px;
+}
+#canvas .heatmap-bar .heatmap-run-group:focus-within { border-color: var(--accent); }
+#canvas .heatmap-bar .heatmap-run-group .heatmap-run { border: 0; border-right: 1px solid var(--line-strong); border-radius: 5px 0 0 5px; }
+#canvas .heatmap-bar .heatmap-runs {
+  width: 4.6em; font: inherit; font-size: 13px; padding: 2px 4px; text-align: right; font-variant-numeric: tabular-nums;
+  border: 1px solid transparent; border-radius: 4px; background: transparent; color: inherit;
+}
+#canvas .heatmap-bar .heatmap-runs:hover, #canvas .heatmap-bar .heatmap-runs:focus { border-color: var(--line-strong); outline: none; }
 #canvas .heatmap-bar .heatmap-toggle.active { background: linear-gradient(90deg, #BFDBFE, #FDE047, #F97316, #DC2626); color: #1F2937; border-color: transparent; font-weight: 600; }
 #canvas .layer-bpmn-pilot-heatmap { pointer-events: none; }
 /* L'extension masque les autres pastilles pendant la simulation : celles de la carte restent. */
@@ -1510,9 +1521,9 @@ dialog .dlg-close:focus-visible,
 
 /* Mode Sapin de Noël de la simulation (simulation-glow.js) : sur chaque étape où entre un
    jeton, contour au dégradé Leylines qui tourne, lueur douce et trait de lumière qui en fait le tour. */
-#canvas .sim-glow-toggle { display: flex; align-items: center; gap: 2px; padding: 0 6px 0 2px; font-size: 11px; line-height: 1; cursor: pointer; opacity: 0.55; transition: opacity 0.2s; }
+#canvas .sim-glow-toggle { display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; font-size: 18px; line-height: 1; cursor: pointer; opacity: 0.75; transition: opacity 0.2s; }
 #canvas .sim-glow-toggle:hover, #canvas .sim-glow-toggle:has(input:checked), #canvas .sim-glow-toggle:focus-within { opacity: 1; }
-#canvas .sim-glow-toggle input { width: 11px; height: 11px; margin: 0; accent-color: var(--leyline-magenta); cursor: pointer; }
+#canvas .sim-glow-toggle input { width: 14px; height: 14px; margin: 0; accent-color: var(--leyline-magenta); cursor: pointer; }
 .djs-visual > .sim-glow { pointer-events: none; animation: sim-glow 2.8s ease-in-out forwards; }
 .djs-visual > .sim-glow > * { fill: none !important; stroke: url(#sim-glow-gradient) !important; }
 .djs-visual > .sim-glow > .sim-glow-line { stroke-width: 2px !important; opacity: 0.85; }
@@ -1521,3 +1532,15 @@ dialog .dlg-close:focus-visible,
 @media (prefers-reduced-motion: reduce) { .djs-visual > .sim-glow > .sim-glow-comet { display: none; } }
 .djs-visual > .sim-glow > .sim-glow-blur { stroke-width: 6px !important; filter: url(#sim-glow-blur); opacity: 0.8; }
 @keyframes sim-glow { 0% { opacity: 0; } 20%, 50% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ── Bouton Expert (src/expert-mode.js), « .btn » pour passer devant « #toolbar > .btn.active:not(#btn-chat) » : plein en orange quand le mode est actif, avec un
+   point lumineux tant qu'une simulation tourne. ── */
+#toolbar > #btn-expert { position: relative; }
+#toolbar > #btn-expert.btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+#toolbar > #btn-expert.btn.active:hover { filter: brightness(1.08); }
+#toolbar > #btn-expert.running::after {
+  content: ""; position: absolute; top: -3px; right: -3px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--warm); box-shadow: 0 0 0 2px var(--surface-raised); animation: expert-pulse 1.6s ease-in-out infinite;
+}
+@keyframes expert-pulse { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { #toolbar > #btn-expert.running::after { animation: none; } }
