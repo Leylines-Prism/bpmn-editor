@@ -1507,3 +1507,17 @@ dialog .dlg-close:focus-visible,
 .cmp-close:focus-visible,
 .pv-close:focus-visible,
 .pres-close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+
+/* Mode Sapin de Noël de la simulation (simulation-glow.js) : sur chaque étape où entre un
+   jeton, contour au dégradé Leylines qui tourne, lueur douce et trait de lumière qui en fait le tour. */
+#canvas .sim-glow-toggle { display: flex; align-items: center; gap: 2px; padding: 0 6px 0 2px; font-size: 11px; line-height: 1; cursor: pointer; opacity: 0.55; transition: opacity 0.2s; }
+#canvas .sim-glow-toggle:hover, #canvas .sim-glow-toggle:has(input:checked), #canvas .sim-glow-toggle:focus-within { opacity: 1; }
+#canvas .sim-glow-toggle input { width: 11px; height: 11px; margin: 0; accent-color: var(--leyline-magenta); cursor: pointer; }
+.djs-visual > .sim-glow { pointer-events: none; animation: sim-glow 2.8s ease-in-out forwards; }
+.djs-visual > .sim-glow > * { fill: none !important; stroke: url(#sim-glow-gradient) !important; }
+.djs-visual > .sim-glow > .sim-glow-line { stroke-width: 2px !important; opacity: 0.85; }
+.djs-visual > .sim-glow > .sim-glow-comet { stroke-width: 3.5px !important; stroke-linecap: round; stroke-dasharray: 0.22 0.78; animation: sim-glow-comet 2.4s linear forwards; }
+@keyframes sim-glow-comet { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1; } }
+@media (prefers-reduced-motion: reduce) { .djs-visual > .sim-glow > .sim-glow-comet { display: none; } }
+.djs-visual > .sim-glow > .sim-glow-blur { stroke-width: 6px !important; filter: url(#sim-glow-blur); opacity: 0.8; }
+@keyframes sim-glow { 0% { opacity: 0; } 20%, 50% { opacity: 1; } 100% { opacity: 0; } }

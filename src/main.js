@@ -48,6 +48,7 @@ import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
@@ -524,6 +525,7 @@ setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modele
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 const heatmap = setupHeatmap(modeler)
+setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
