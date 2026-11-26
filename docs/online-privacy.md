@@ -31,7 +31,7 @@ created for this editor alone, with a limited validity period and a spending lim
 | API keys | `sessionStorage` by default (gone when the tab closes), `localStorage` if "Remember API keys on your device" is checked | only in the request headers sent to the provider you chose |
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the assistant | page memory only, lost on reload | to the provider, with each message |
-| Chat attachments (images, PDF, text) | page memory | to the provider, with the message |
+| Chat attachments (images, PDF, office documents, text files) | page memory (office documents and text files are read in the page, only their text is kept) | to the provider, with the message |
 
 ## Every request the page makes
 

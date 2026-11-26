@@ -31,7 +31,7 @@ dépense (voir [Bonnes pratiques](#bonnes-pratiques)).
 | Clés API | `sessionStorage` par défaut (effacées à la fermeture de l'onglet), `localStorage` si « Se souvenir des clés API sur votre appareil » est coché | seulement dans les en-têtes des requêtes envoyées au fournisseur choisi |
 | Adresses et modèles des fournisseurs | `localStorage` | nulle part |
 | Conversation avec l'assistant | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
-| Pièces jointes du chat (images, PDF, texte) | mémoire de la page | chez le fournisseur, avec le message |
+| Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (documents et fichiers texte sont lus dans la page, seul leur texte est gardé) | chez le fournisseur, avec le message |
 
 ## Toutes les requêtes de la page
 

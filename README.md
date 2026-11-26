@@ -246,7 +246,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   fills). The Process panel copies a style onto other elements and reuses those already in the
   diagram in one click.
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
-  images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
+  images, PDF files, office documents (Word, Excel, PowerPoint, OpenDocument) and text files (CSV,
+  JSON, XML, Markdown…), whose text is read in the browser. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, a pill sums up the changes, and one click shows the before and after or undoes the whole
   answer.
 - **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer

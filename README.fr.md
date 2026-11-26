@@ -260,7 +260,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
   Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
-  déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
+  déposer des images, des PDF, des documents bureautiques (Word, Excel, PowerPoint, OpenDocument) et
+  des fichiers texte (CSV, JSON, XML, Markdown…), dont le texte est lu dans le navigateur. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, une pilule résume les changements, et un clic montre l'avant et l'après ou
   annule toute la réponse.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.

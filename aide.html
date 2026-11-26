@@ -375,8 +375,13 @@
           <li><span class="ui">Arrêter</span> interrompt une réponse en cours.</li>
         </ul>
 
-        <h3>3. Partir d'une image ou d'un PDF</h3>
-        <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil ou d'une procédure en PDF. Collez l'image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-la sur le panneau, ou choisissez-la avec le trombone, puis demandez-lui de la dessiner. Jusqu'à 5 fichiers par message : images de 5 Mo au plus, PDF de 20 Mo au plus. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral.</p>
+        <h3>3. Partir d'un fichier</h3>
+        <p>L'assistant sait aussi partir d'une photo de tableau blanc, d'une capture d'un ancien outil, d'une procédure en PDF ou en Word, d'une liste d'étapes dans un tableur, ou d'un export d'un autre outil. Collez le fichier (<kbd>Ctrl</kbd>+<kbd>V</kbd>), glissez-le sur le panneau, ou choisissez-le avec le trombone, puis demandez-lui de le dessiner. Jusqu'à 5 fichiers par message.</p>
+        <ul>
+          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, 5 Mo au plus) et <strong>PDF</strong> (20 Mo au plus) partent tels quels chez le modèle. Les modèles Claude lisent les deux. Avec les autres fournisseurs, les images dépendent du modèle, et les PDF passent chez OpenAI et Mistral.</li>
+          <li><strong>Documents bureautiques</strong> (Word, Excel, PowerPoint, et leurs équivalents OpenDocument : <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.odt</code>, <code>.ods</code>, <code>.odp</code>) et <strong>fichiers texte</strong> (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML, journaux, e-mails) sont lus dans votre navigateur, et seul leur texte part avec le message : les tableaux deviennent des lignes, chaque feuille et chaque diapositive garde son nom. Tous les fournisseurs les lisent. Les images contenues dans un document sont laissées de côté.</li>
+        </ul>
+        <p>Un message compte au plus 100 000 caractères, texte des fichiers compris. Le bouton <em>Agrandir la zone de saisie</em>, en haut à droite du champ, ouvre un éditeur plus grand, où <em>Ouvrir un fichier…</em> insère le texte d'un de ces fichiers, pour l'élaguer avant l'envoi.</p>
 
         <h3>4. Mettre en couleur et en forme</h3>
         <p>L'assistant habille aussi le schéma : fond, contour, couleur du texte, gras, italique, souligné, taille et police, sur les formes comme sur les flux. Il utilise les mêmes réglages que le <a href="#proprietes">panneau Processus</a>, et le résultat se retouche à la main de la même façon. Par exemple :</p>

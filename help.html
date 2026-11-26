@@ -375,8 +375,13 @@
           <li><span class="ui">Stop</span> interrupts an answer in progress.</li>
         </ul>
 
-        <h3>3. Start from an image or a PDF</h3>
-        <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool or a procedure in a PDF. Paste the image (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message: images up to 5 MB, PDFs up to 20 MB. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral.</p>
+        <h3>3. Start from a file</h3>
+        <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool, a procedure in a PDF or a Word document, a list of steps in a spreadsheet, or an export from another tool. Paste the file (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message.</p>
+        <ul>
+          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, up to 5 MB) and <strong>PDF</strong> (up to 20 MB) go to the model as they are. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral.</li>
+          <li><strong>Office documents</strong> (Word, Excel, PowerPoint, and their OpenDocument equivalents: <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.odt</code>, <code>.ods</code>, <code>.odp</code>) and <strong>text files</strong> (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML, logs, emails) are read in your browser, and only their text goes with the message: tables become rows, each sheet and each slide keeps its name. Every provider reads them. Images inside a document are left out.</li>
+        </ul>
+        <p>A message holds up to 100,000 characters, attached text included. The <em>Expand the input</em> button, at the top right of the field, opens a larger editor, where <em>Open a file…</em> inserts the text of one of these files so you can trim it before sending.</p>
 
         <h3>4. Color and format</h3>
         <p>The assistant can also dress up the diagram: fill, stroke, text color, bold, italic, underline, size and font, on shapes and flows alike. It uses the same settings as the <a href="#properties">Process panel</a>, and you touch up the result by hand the same way. For example:</p>
