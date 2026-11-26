@@ -20,7 +20,10 @@ out the BPMN structure and drawing it by hand: the agent finds the processes, th
 checks them, and you review and adjust the result. A human review is still needed, but the work goes
 much faster. This is the Docker version, where any MCP agent drives the editor. The online version
 follows the same idea with its built-in assistant: describe a process or attach your documents (Word,
-Excel, PDF, emails…), and it draws it.
+Excel, PDF, emails…), and it draws it. The same conversation also styles the diagram: fill, outline
+and text colors, bold, italic, underline, size and font, as well as element names and types, on as many
+elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in
+one click.
 
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
 with nothing but a browser, or run it on your own machine with Docker.
