@@ -69,22 +69,51 @@ function bodyBinary(body, encoding = '') {
   return body
 }
 
+// Texte d'un corps HTML, pour le modèle (jamais affiché comme du HTML). Lecture caractère par
+// caractère plutôt que par remplacements successifs : une balise découpée ou imbriquée
+// (« <scr<script>ipt> ») ne peut pas survivre, et le contenu de script, style et head est sauté.
+const BREAK_TAGS = new Set(['br', 'p', 'div', 'tr', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'table', 'blockquote'])
+const SKIP_TAGS = new Set(['script', 'style', 'head'])
+const ENTITIES = { nbsp: ' ', lt: '<', gt: '>', quot: '"', apos: "'", amp: '&' }
+
+function decodeEntities(text) {
+  return text.replace(/&(#\d{1,7}|[a-z]+);/gi, (all, code) => {
+    if (code[0] === '#') {
+      const n = Number(code.slice(1))
+      return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ''
+    }
+    return ENTITIES[code.toLowerCase()] ?? all
+  })
+}
+
 function htmlToText(html) {
-  return html
-    .replace(/<(script|style|head)[\s\S]*?<\/\1>/gi, '')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/(p|div|tr|li|h[1-6]|table|blockquote)>/gi, '\n')
-    .replace(/<li[^>]*>/gi, '- ')
-    .replace(/<\/t[dh]>/gi, '\t')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/gi, ' ')
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;|&apos;/gi, "'")
-    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n)))
-    .replace(/&amp;/gi, '&')
-    .replace(/[ \t]+\n/g, '\n')
+  let out = ''
+  let skip = null // balise dont on saute le contenu
+  let i = 0
+  while (i < html.length) {
+    const open = html.indexOf('<', i)
+    const text = open < 0 ? html.slice(i) : html.slice(i, open)
+    if (!skip) out += decodeEntities(text)
+    if (open < 0) break
+    const close = html.indexOf('>', open + 1)
+    if (close < 0) break // balise jamais refermée : la suite est ignorée
+    const tag = html.slice(open + 1, close).trim()
+    const closing = tag.startsWith('/')
+    const name = (closing ? tag.slice(1) : tag).split(/[\s/]/)[0].toLowerCase()
+    if (skip) {
+      if (closing && name === skip) skip = null
+    } else if (!closing && SKIP_TAGS.has(name)) {
+      skip = name
+    } else if (name === 'li' && !closing) {
+      out += '- '
+    } else if (name === 'td' || name === 'th') {
+      if (closing) out += '\t'
+    } else if (BREAK_TAGS.has(name) && (closing || name === 'br')) {
+      out += '\n'
+    }
+    i = close + 1
+  }
+  return out.replace(/[ \t]+\n/g, '\n')
 }
 
 // Parcourt une partie MIME. Renvoie { plain: [], html: [], files: [] }.
