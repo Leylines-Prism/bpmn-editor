@@ -6,9 +6,16 @@ export const APP_VERSION = typeof __APP_VERSION__ === 'string' ? __APP_VERSION__
 export const SITE_CHANNEL = typeof __SITE_CHANNEL__ === 'string' ? __SITE_CHANNEL__ : ''
 export const IS_DEV_SITE = SITE_CHANNEL === 'dev'
 
-// La page stable en ligne propose la page de développement, et inversement. La page dev vit
-// dans le dossier dev/ de la page stable. Rien dans l'image Docker ni en développement local.
-const BASE = new URL(import.meta.env.BASE_URL, location.origin)
-export const OTHER_SITE = IS_DEV_SITE
-  ? new URL('../', BASE).href
-  : import.meta.env.MODE === 'online' ? new URL('dev/', BASE).href : ''
+// La page stable en ligne propose la page de développement, et inversement. Chacune vit sur sa
+// propre origine (la page dev ne doit pas pouvoir lire le stockage de la page stable) :
+// VITE_OTHER_SITE_URL donne l'adresse complète de l'autre page. Sans elle, pas de lien.
+// Rien dans l'image Docker ni en développement local.
+function otherSite() {
+  if (import.meta.env.MODE !== 'online') return ''
+  try {
+    const url = new URL((import.meta.env.VITE_OTHER_SITE_URL || '').trim())
+    if (url.protocol === 'https:') return url.href.endsWith('/') ? url.href : url.href + '/'
+  } catch {}
+  return ''
+}
+export const OTHER_SITE = otherSite()

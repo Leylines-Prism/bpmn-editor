@@ -13,6 +13,15 @@
 
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
+**Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
+agent IA.** Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG,
+mémoire en graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes
+BPMN. Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main : l'agent trouve
+les processus, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. Une
+relecture humaine reste nécessaire, mais le travail va beaucoup plus vite. C'est la version Docker, où
+tout agent MCP pilote l'éditeur. La version en ligne suit la même idée avec son assistant intégré :
+décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine.
+
 BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
 [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
 machine avec Docker.
@@ -20,6 +29,24 @@ machine avec Docker.
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
 - **Demandez à l'assistant IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
 - **Connectez un agent par MCP** (version Docker), comme Claude Code.
+
+> [!TIP]
+> **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
+> n'est que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
+> aucune base de données derrière.
+>
+> - **Vos diagrammes restent dans votre navigateur.** Ils sont enregistrés dans le stockage du
+>   navigateur, et les fichiers que vous ouvrez ou téléchargez ne quittent jamais votre ordinateur.
+> - **Vos clés API aussi.** Elles ne sont envoyées qu'au fournisseur d'IA que vous avez choisi,
+>   directement depuis votre navigateur, jamais à un serveur de ce projet.
+> - **Quand vous utilisez l'assistant**, votre message et le diagramme partent directement chez ce
+>   fournisseur, selon ses propres conditions. Aucun intermédiaire.
+> - **La seule autre requête** est une mesure d'audience sans cookie, qui ne contient jamais de
+>   diagramme, de message ni de clé.
+>
+> Utilisez tout de même toujours une clé API créée pour cet éditeur seul, avec une durée de validité
+> limitée et une limite de dépense. Détails, limites et moyen de le vérifier vous-même :
+> [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md).
 
 La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa propre mémoire et son contexte,
 avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
@@ -29,12 +56,11 @@ avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses pr
 - il le récupère en XML BPMN ou en image PNG, ou l'exporte en fichier BPMN, SVG, PNG ou PDF dans le dossier
   exports du serveur, pour l'étape suivante : un document, un ticket, un dépôt.
 
-Par exemple, un agent relié à votre messagerie et à vos archives peut tirer une carte des processus de
-plusieurs années d'échanges. Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester
-ouvert.
+Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester ouvert.
 
 > [!WARNING]
-> **Pas fait pour être exposé sur internet, par conception.** La version Docker est prévue pour
+> **Version Docker seulement : pas faite pour être exposée sur internet, par conception.** Cela
+> concerne votre propre copie, pas la version en ligne ci-dessus. La version Docker est prévue pour
 > votre propre machine ou un réseau privé, elle n'a donc pas de connexion. Le risque reste limité,
 > mais la publier revient à ouvrir à tous un service sans authentification : vos clés API peuvent
 > être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
@@ -241,7 +267,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
   Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
 - **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
-  déposer des images et des PDF. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
+  déposer des images, des PDF, des documents bureautiques (Word, Excel, PowerPoint, OpenDocument) et
+  des fichiers texte (CSV, JSON, XML, Markdown…), dont le texte est lu dans le navigateur. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, une pilule résume les changements, et un clic montre l'avant et l'après ou
   annule toute la réponse.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
@@ -262,23 +289,21 @@ installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylin
 explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de
 la barre d'outils l'ouvre aussi.
 
-Le site existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
-https://bpmn.leylines.fr/dev/ suit la branche main, avec les dernières modifications avant leur
-publication. La page de développement garde ses propres diagrammes et réglages dans le navigateur :
-l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas à gauche
+Il suit les versions publiées (le dernier tag `vX.Y.Z`) et affiche sa version en bas à gauche
 du canevas et du guide d'utilisation.
 
 Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
 rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
 certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
-dit ce qui sort du navigateur.
+dit ce qui sort du navigateur, et
+[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
 
-La page stable mesure son audience sans cookie, avec [Umami](https://umami.is) :
+La page stable mesure son audience de façon anonyme, sans cookie :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
 créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
-`localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
+indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
 Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
 CNIL pour les mesures d'audience exemptées de consentement.
 
@@ -288,7 +313,7 @@ CNIL pour les mesures d'audience exemptées de consentement.
 Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
 `npm run build:online` construit la version en ligne en site statique dans `dist-online/` (`BASE_PATH` règle son
 chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
-d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
+du service de mesure) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
 
 ## À propos du projet

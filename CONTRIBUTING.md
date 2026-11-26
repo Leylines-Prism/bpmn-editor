@@ -69,7 +69,8 @@ never personal.
 
 A version is a `vX.Y.Z` tag, published from the Releases page. The tag builds the Docker images.
 The online site has a stable page at its root, built from the latest tag, and a development page
-in `dev/`, built from main.
+built from main on its own address, published from another repository so that it cannot read
+what the stable page keeps in the browser.
 
 GitHub Pages keeps the deployment it already has when the same commit comes back. A tag placed on
 a commit that main has already published therefore leaves the stable page on the previous version.

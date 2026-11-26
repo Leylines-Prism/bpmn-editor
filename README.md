@@ -13,12 +13,39 @@
 
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
+**Model every process of your context in seconds, from a few exchanges with your AI agent.**
+Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
+"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams. No more hours spent working
+out the BPMN structure and drawing it by hand: the agent finds the processes, the editor draws and
+checks them, and you review and adjust the result. A human review is still needed, but the work goes
+much faster. This is the Docker version, where any MCP agent drives the editor. The online version
+follows the same idea with its built-in assistant: describe a process or attach your documents (Word,
+Excel, PDF, emails…), and it draws it.
+
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
 with nothing but a browser, or run it on your own machine with Docker.
 
 - **Draw by hand**, with the bpmn-js modeler and its extensions.
 - **Ask the AI assistant**: it draws the processes you describe, in the open tab.
 - **Connect an agent through MCP** (Docker version), such as Claude Code.
+
+> [!TIP]
+> **The online version is safe to use as is.** The public link (https://bpmn.leylines.fr) is only
+> static files served by GitHub Pages: there is no application server, no account and no database
+> behind it.
+>
+> - **Your diagrams stay in your browser.** They are saved in the browser's own storage, and the files
+>   you open or download never leave your computer.
+> - **Your API keys stay in your browser too.** They are sent only to the AI provider you chose,
+>   straight from your browser, never to a server of this project.
+> - **When you use the assistant**, your message and the diagram go straight to that provider, under
+>   its own terms. Nothing goes through a middleman.
+> - **The only other request** is anonymous usage statistics without cookies, which never contain a
+>   diagram, a message or a key.
+>
+> Still, always use an API key created for this editor alone, with a limited validity period and a
+> spending limit. Details, limits and how to check it yourself:
+> [Your data and API keys in the online version](docs/online-privacy.md).
 
 The MCP connection goes further than drawing on screen. An agent brings its own memory and context, with
 everything it is connected to, and uses BPMN diagrams in its own workflows:
@@ -28,12 +55,12 @@ everything it is connected to, and uses BPMN diagrams in its own workflows:
 - it gets it back as BPMN XML or a PNG image, or exports it as a BPMN, SVG, PNG or PDF file into the server's
   exports folder, for the next step: a document, a ticket, a repository.
 
-For example, an agent connected to your mailbox and document archive can turn years of past exchanges
-into a process map. The tools run in an editor tab, which only needs to stay open.
+The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
-> **Not made to be exposed on the internet, by design.** The Docker version is meant for your own
-> machine or a private network, so it has no login. The risk stays limited, but publishing it means
+> **Docker version only: not made to be exposed on the internet, by design.** This concerns running
+> your own copy, not the online version above. The Docker version is meant for your own machine or a
+> private network, so it has no login. The risk stays limited, but publishing it means
 > a service open to anyone without authentication: your API keys can be used or stolen, and the
 > diagrams stored in the container (the BPMN files of "My diagrams") can be read or deleted. By
 > default it only answers on this machine (`127.0.0.1`). If you put it on the internet anyway, you
@@ -227,7 +254,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   fills). The Process panel copies a style onto other elements and reuses those already in the
   diagram in one click.
 - **AI assistant**: describe a process and it draws it, in your language. You can paste or drop
-  images and PDF files. The model is chosen in Options. What it adds or changes is outlined on the
+  images, PDF files, office documents (Word, Excel, PowerPoint, OpenDocument) and text files (CSV,
+  JSON, XML, Markdown…), whose text is read in the browser. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, a pill sums up the changes, and one click shows the before and after or undoes the whole
   answer.
 - **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer
@@ -246,20 +274,18 @@ The editor is open to everyone at https://bpmn.leylines.fr (GitHub Pages): no ac
 install, just a browser. Its [user guide](https://bpmn.leylines.fr/help.html) explains how to draw,
 save, export and use the AI assistant. The Help (?) button in the toolbar opens it too.
 
-It comes in two pages. The root follows the released versions (the latest `vX.Y.Z` tag), and
-https://bpmn.leylines.fr/dev/ follows the main branch, with the latest changes before they are released.
-The development page keeps its own diagrams and settings in the browser, so trying it does not touch
-those of the stable page. Both show their version in the bottom left corner of the canvas and of the user guide.
+It follows the released versions (the latest `vX.Y.Z` tag) and shows its version in the bottom left corner of the canvas and of the user guide.
 
 For the AI assistant, each visitor enters their own API key, which stays in their browser.
 Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
-some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser.
+some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
+[Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
-The stable page measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
+The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
-messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
-`localStorage.setItem('umami.disabled', '1')` in the console excludes your own visits. Neither the
+messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
+flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
 CNIL (the French data protection authority) for audience measurement exempt from consent.
 
@@ -267,7 +293,7 @@ CNIL (the French data protection authority) for audience measurement exempt from
 
 `npm install`, then `npm run dev` for the editor, and `npm start` in `mcp/` for the server.
 Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/README.md).
-`npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (Umami address)
+`npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (address of the measurement service)
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
 The site is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
 

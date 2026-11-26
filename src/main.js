@@ -1,3 +1,5 @@
+// En premier : refuse de démarrer dans le cadre d'un autre site (voir frame-guard.js).
+import './frame-guard.js'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel'
 import minimapModule from 'diagram-js-minimap'
@@ -501,9 +503,9 @@ if (import.meta.env.MODE !== 'online' && !import.meta.env.DEV && feedback) {
 }
 // Page de développement en ligne : une pastille à côté du titre le dit, et mène à la page stable.
 if (IS_DEV_SITE) {
-  const badge = document.createElement('a')
+  const badge = document.createElement(OTHER_SITE ? 'a' : 'span')
   badge.className = 'channel-badge'
-  badge.href = OTHER_SITE
+  if (OTHER_SITE) badge.href = OTHER_SITE
   badge.textContent = 'Dev'
   badge.title = T(
     `Development version ${APP_VERSION}: it follows the latest changes and keeps its own diagrams and settings. Click to open the stable version.`,

@@ -1,22 +1,21 @@
-# Publie la version en ligne sur GitHub Pages, en deux pages :
-#   /      la page stable, construite depuis le dernier tag de version (vX.Y.Z, sans préversion)
-#   /dev/  la page de développement, construite depuis main
-# Pages ne sert qu'un site par dépôt : chaque lancement reconstruit les deux et les publie ensemble.
-# Il part à chaque fusion sur main (la page dev change) et à chaque tag de version (la page stable
-# change). Sans aucun tag, la page stable est construite depuis main.
+# Publie la version en ligne sur GitHub Pages : la page stable, construite depuis le dernier tag
+# de version (vX.Y.Z, sans préversion). Sans aucun tag, elle est construite depuis main.
+# Il part à chaque fusion sur main et à chaque tag de version.
 # Limite : Pages repère un déploiement par son commit et garde celui déjà en ligne quand le même
 # commit revient. Un tag posé sur le commit que main vient de publier ne change donc rien : la page
 # stable resterait sur l'ancienne version. D'où l'ordre décrit dans CONTRIBUTING.md (section Releases) : release sur
 # la branche de la PR de montée de version, puis fusion.
 #
-# La page dev garde ses diagrammes et réglages à part (SITE_CHANNEL=dev, voir vite.config.js),
-# n'est pas indexée et ne mesure pas l'audience.
+# La page de développement, qui suit main, n'est pas publiée ici : elle vit sur sa propre origine,
+# publiée par un autre dépôt, pour que son code ne puisse pas lire les diagrammes et les clés gardés
+# par la page stable. La variable DEV_SITE_URL (facultative) donne son adresse : la page stable y
+# renvoie alors depuis son aide et sa pastille de version.
 #
 # Site statique : pas de serveur MCP, pas d'enregistrement serveur. Chaque visiteur garde ses
 # diagrammes dans son navigateur et utilise sa propre clé d'API.
 #
 # Réglages facultatifs, dans Settings > Secrets and variables > Actions (jamais dans le dépôt) :
-#   variables : SITE_URL (origine publique, par défaut celle de Pages), VITE_SITE_HOST, VITE_HOST_LEGAL (mentions légales : nom, adresse et
+#   variables : DEV_SITE_URL (adresse de la page dev sur sa propre origine), SITE_URL (origine publique, par défaut celle de Pages), VITE_SITE_HOST, VITE_HOST_LEGAL (mentions légales : nom, adresse et
 #               téléphone de l'hébergeur), VITE_FEEDBACK_URL, VITE_CONTACT_URL (passée au build sous le nom CONTACT_URL), BASE_PATH,
 #               VITE_UMAMI_URL et VITE_UMAMI_WEBSITE_ID (mesure d'audience, voir src/analytics.js)
 #   secret    : FEEDBACK_EMAIL
@@ -58,13 +57,12 @@ jobs:
           cache: npm
       - id: pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
-      # Deux copies de travail : le dernier tag de version (page stable) et main (page dev).
+      # Copie de travail du dernier tag de version (page stable).
       - id: refs
         run: |
           stable=$(git tag --list 'v*.*.*' --sort=-v:refname | grep -v -- '-' | head -n 1 || true)
           echo "stable=${stable:-origin/main}" >> "$GITHUB_OUTPUT"
-          git worktree add --detach build-stable "${stable:-origin/main}"
-          git worktree add --detach build-dev origin/main
+          git worktree add --detach build-stable "${stable:-origin/main}
       # npm ci : exactement les versions du package-lock.json.
       - name: Build the stable page (${{ steps.refs.outputs.stable }})
         working-directory: build-stable
@@ -82,24 +80,8 @@ jobs:
           CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
           VITE_UMAMI_URL: ${{ vars.VITE_UMAMI_URL }}
           VITE_UMAMI_WEBSITE_ID: ${{ vars.VITE_UMAMI_WEBSITE_ID }}
+          VITE_OTHER_SITE_URL: ${{ vars.DEV_SITE_URL }}
           FEEDBACK_EMAIL: ${{ secrets.FEEDBACK_EMAIL }}
-      # Mêmes réglages, dans le sous-dossier dev/ et sans mesure d'audience.
-      - name: Build the development page (main)
-        working-directory: build-dev
-        run: npm ci && npm run build:online
-        env:
-          SITE_CHANNEL: dev
-          BASE_PATH: ${{ vars.BASE_PATH || '/' }}dev/
-          SITE_URL: ${{ vars.SITE_URL || steps.pages.outputs.origin }}
-          VITE_SITE_HOST: ${{ vars.VITE_SITE_HOST || 'GitHub Pages' }}
-          VITE_HOST_LEGAL: ${{ vars.VITE_HOST_LEGAL }}
-          VITE_FEEDBACK_URL: ${{ vars.VITE_FEEDBACK_URL }}
-          CONTACT_URL: ${{ vars.VITE_CONTACT_URL }}
-          FEEDBACK_EMAIL: ${{ secrets.FEEDBACK_EMAIL }}
-      - name: Put the development page in dev/
-        run: |
-          rm -rf build-stable/dist-online/dev
-          cp -R build-dev/dist-online build-stable/dist-online/dev
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: build-stable/dist-online

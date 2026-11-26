@@ -15,6 +15,7 @@ import { connectionFor, loadSettings, userModels } from './ai-settings.js'
 import { createOptionsDialog } from './options-dialog.js'
 import { lang, num, T } from './i18n/lang.js'
 import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
+import { fileToText, textFileKind, TEXT_FILE_ACCEPT, withTextFiles } from './ai/text-files.js'
 import { makeResizable } from './panel-resize.js'
 import { trackOnce } from './analytics.js'
 import { newAiRound } from './ai-changes.js'
@@ -67,6 +68,20 @@ const ATTACH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="
 const PDF_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 16.5v-4h1.2a1.2 1.2 0 0 1 0 2.4H8.5M13 12.5v4h.8a2 2 0 0 0 0-4zM17.5 12.5h-1.6v4M15.9 14.5h1.3"/></svg>`
 const MAX_IMAGE_SIDE = 1568 // au-delà, l'image est réduite : le modèle n'en voit pas plus
 
+const DOC_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 12.5h7M8.5 15.5h7M8.5 18.5h4"/></svg>`
+// Erreurs de lecture d'un fichier (src/ai/text-files.js), en français.
+const READ_ERRORS_FR = {
+  'unsupported file type': 'type de fichier non pris en charge',
+  'file too large': 'fichier trop volumineux',
+  'document too large once unpacked': 'document trop volumineux une fois décompressé',
+  'not a valid document (zip)': 'document illisible ou abîmé',
+  'unsupported compression': 'compression non prise en charge',
+  'not a Word document': "ce n'est pas un document Word",
+  'not a PowerPoint presentation': "ce n'est pas une présentation PowerPoint",
+  'not an Excel workbook': "ce n'est pas un classeur Excel",
+  'not an OpenDocument file': "ce n'est pas un fichier OpenDocument",
+}
+const readError = (err) => READ_ERRORS_FR[err.message] || err.message
 const sizeText = (bytes) =>
   bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} ${T('MB', 'Mo')}` : `${Math.max(1, Math.round(bytes / 1024))} ${T('KB', 'Ko')}`
 
@@ -116,10 +131,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-attachments" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
-        <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change…', 'Décrivez le processus à dessiner, ou ce qu\'il faut changer…')}"></textarea>
+        <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change… Documents, images and PDFs accepted.', 'Décrivez le processus à dessiner ou à modifier… Documents, images et PDF acceptés.')}"></textarea>
         <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
-        <button type="button" id="chat-attach" title="${T('Attach an image or a PDF (you can also paste or drop it)', 'Joindre une image ou un PDF (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach an image or a PDF', 'Joindre une image ou un PDF')}">${ATTACH_ICON}</button>
-        <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf" multiple hidden>
+        <button type="button" id="chat-attach" title="${T('Attach a file: image, PDF, Word, Excel, PowerPoint, text, CSV, JSON… (you can also paste or drop it)', 'Joindre un fichier : image, PDF, Word, Excel, PowerPoint, texte, CSV, JSON… (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach a file', 'Joindre un fichier')}">${ATTACH_ICON}</button>
+        <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,${TEXT_FILE_ACCEPT}" multiple hidden>
       </div>
       <button class="btn primary" type="submit" id="chat-send">${T('Send', 'Envoyer')}</button>
     </form>
@@ -128,8 +143,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         <h2>${T('Message to the assistant', "Message à l'assistant")}</h2>
         <textarea id="chat-editor-text" placeholder="${T('Paste or write a long message. Ctrl+Enter to send.', 'Collez ou écrivez un long message. Ctrl+Entrée pour envoyer.')}"></textarea>
         <div class="chat-editor-actions">
-          <button class="btn" type="button" id="chat-editor-file">${T('Open a text file…', 'Ouvrir un fichier texte…')}</button>
-          <input type="file" id="chat-editor-input" accept=".txt,.md,.markdown,text/plain,text/markdown" hidden>
+          <button class="btn" type="button" id="chat-editor-file">${T('Open a file…', 'Ouvrir un fichier…')}</button>
+          <input type="file" id="chat-editor-input" accept="${TEXT_FILE_ACCEPT}" hidden>
           <span class="chat-editor-count" aria-live="polite"></span>
           <button class="btn" type="submit" value="close">${T('Close', 'Fermer')}</button>
           <button class="btn primary" type="submit" value="send" id="chat-editor-send">${T('Send', 'Envoyer')}</button>
@@ -387,11 +402,21 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const file = editorFile.files[0]
     editorFile.value = ''
     if (!file) return
-    if (file.size > MAX_MESSAGE * 4) {
+    if (!textFileKind(file)) {
+      editorCount.textContent = T('Unsupported file type.', 'Type de fichier non pris en charge.')
+      return
+    }
+    if (textFileKind(file) === 'text' && file.size > MAX_MESSAGE * 4) {
       editorCount.textContent = T('File too large.', 'Fichier trop volumineux.')
       return
     }
-    const text = await file.text()
+    let text
+    try {
+      text = await fileToText(file)
+    } catch (err) {
+      editorCount.textContent = T(`${file.name}: ${err.message}`, `${file.name} : ${readError(err)}`)
+      return
+    }
     const { selectionStart: a, selectionEnd: b, value } = editorText
     editorText.value = value.slice(0, a) + text + value.slice(b)
     countChars()
@@ -404,8 +429,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     else input.focus()
   })
 
-  // ── Pièces jointes : images et PDF, joints, collés ou glissés ─────────────
-  let pending = [] // { kind, mediaType, name, data, size, url }
+  // ── Pièces jointes : images, PDF et fichiers lus comme du texte ───────────
+  // { kind: 'image' | 'pdf', mediaType, name, data, size, url } ou { kind: 'text', name, text, size }
+  let pending = []
   const attachBox = panel.querySelector('#chat-attachments')
   const attachInput = panel.querySelector('#chat-attach-input')
 
@@ -421,7 +447,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     } else {
       const icon = document.createElement('span')
       icon.className = 'chat-file-pdf'
-      icon.innerHTML = PDF_ICON
+      icon.innerHTML = a.kind === 'text' ? DOC_ICON : PDF_ICON
       chip.append(icon)
     }
     const label = document.createElement('span')
@@ -454,18 +480,43 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     attachBox.hidden = !pending.length
   }
 
+  const textLength = () => withTextFiles('', pending.filter((a) => a.kind === 'text')).length
+
   async function addFiles(files) {
     for (const file of files) {
       const isPdf = file.type === PDF_TYPE || /\.pdf$/i.test(file.name)
       const isImage = file.type.startsWith('image/')
-      const name = file.name || (isPdf ? 'document.pdf' : T('pasted image', 'image collée'))
-      if (!isPdf && !isImage) {
-        add('error', T(`${name}: only images (PNG, JPEG, GIF, WebP) and PDF files can be attached.`, `${name} : seules les images (PNG, JPEG, GIF, WebP) et les PDF peuvent être joints.`))
+      const textKind = !isPdf && !isImage ? textFileKind(file) : null
+      const name = file.name || (isPdf ? 'document.pdf' : isImage ? T('pasted image', 'image collée') : 'file')
+      if (!isPdf && !isImage && !textKind) {
+        add('error', T(`${name}: this type of file cannot be attached. Accepted: images, PDF, Word, Excel, PowerPoint, OpenDocument, and text files (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML…).`,
+          `${name} : ce type de fichier ne peut pas être joint. Acceptés : images, PDF, Word, Excel, PowerPoint, OpenDocument, et fichiers texte (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML…).`))
         continue
       }
       if (pending.length >= MAX_ATTACHMENTS) {
         add('error', T(`${MAX_ATTACHMENTS} files at most per message.`, `${MAX_ATTACHMENTS} fichiers au plus par message.`))
         break
+      }
+      if (textKind) {
+        if (textKind === 'text' && file.size > MAX_MESSAGE * 4) {
+          add('error', T(`${name} is too large: ${num(MAX_MESSAGE)} characters at most per message.`, `${name} est trop volumineux : ${num(MAX_MESSAGE)} caractères au plus par message.`))
+          continue
+        }
+        try {
+          const text = await fileToText(file)
+          if (!text) {
+            add('error', T(`${name}: no text found in this file.`, `${name} : aucun texte trouvé dans ce fichier.`))
+            continue
+          }
+          if (text.length + textLength() > MAX_MESSAGE) {
+            add('error', T(`${name} is too long: ${num(MAX_MESSAGE)} characters at most per message, files included.`, `${name} est trop long : ${num(MAX_MESSAGE)} caractères au plus par message, fichiers compris.`))
+            continue
+          }
+          pending.push({ kind: 'text', name, text, size: file.size })
+        } catch (err) {
+          add('error', T(`${name}: ${err.message}`, `${name} : ${readError(err)}`))
+        }
+        continue
       }
       try {
         const blob = isPdf ? file : await prepareImage(file)
@@ -474,7 +525,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
           add('error', T(`${name} is too large: ${sizeText(max)} at most.`, `${name} est trop volumineux : ${sizeText(max)} au plus.`))
           continue
         }
-        const total = pending.reduce((n, a) => n + a.size, 0) + blob.size
+        const total = pending.reduce((n, a) => n + (a.kind === 'text' ? 0 : a.size), 0) + blob.size
         if (total > MAX_TOTAL_BYTES) {
           add('error', T(`Attached files: ${sizeText(MAX_TOTAL_BYTES)} at most per message.`, `Fichiers joints : ${sizeText(MAX_TOTAL_BYTES)} au plus par message.`))
           continue
@@ -545,8 +596,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     let text = input.value.trim()
     if (!text && !pending.length) return
     if (!text) text = T('Draw the process shown in the attached file.', 'Dessine le processus du fichier joint.')
-    if (text.length > MAX_MESSAGE) {
-      add('error', T(`Message too long: ${num(MAX_MESSAGE)} characters at most.`, `Message trop long : ${num(MAX_MESSAGE)} caractères au plus.`))
+    if (text.length + textLength() > MAX_MESSAGE) {
+      add('error', T(`Message too long: ${num(MAX_MESSAGE)} characters at most, attached text files included.`, `Message trop long : ${num(MAX_MESSAGE)} caractères au plus, fichiers texte joints compris.`))
       return
     }
     if (!currentModel()) {
@@ -653,10 +704,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
 
     const conn = model.source === 'user' ? connectionFor(model, settings) : null
+    const files = attachments.filter((a) => a.kind !== 'text')
     try {
-      const payload = attachments.map(({ kind, mediaType, name, data }) => ({ kind, mediaType, name, data }))
-      if (mode === 'online') await sendLocal({ conn, model, text, attachments: payload, handle, signal: controller.signal })
-      else await sendServer({ conn, model, text, attachments: payload, handle, signal: controller.signal })
+      // Les fichiers lus comme du texte partent dans le message, les autres en pièces jointes.
+      const fullText = withTextFiles(text, attachments.filter((a) => a.kind === 'text'))
+      const payload = files.map(({ kind, mediaType, name, data }) => ({ kind, mediaType, name, data }))
+      if (mode === 'online') await sendLocal({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
+      else await sendServer({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
     } catch (err) {
       failed = true
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
@@ -666,7 +720,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
-      if (failed && attachments.length && !controller.signal.aborted && kindOf(model).endsWith(':openai'))
+      if (failed && files.length && !controller.signal.aborted && kindOf(model).endsWith(':openai'))
         add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null
