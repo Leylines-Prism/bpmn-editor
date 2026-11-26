@@ -229,7 +229,7 @@ app.post('/chat/models', chatCors, async (req, res) => {
     const models = await listModels({ ...custom, signal: AbortSignal.timeout(15000), fetch: relayFetch })
     res.json({ models })
   } catch (err) {
-    res.json({ error: describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) })
+    res.json({ error: describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, baseUrl: custom.baseUrl, lang: langOf(req) }) })
   }
 })
 
@@ -275,7 +275,7 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
   } catch (err) {
     if (!abort.signal.aborted) {
       log('[chat] erreur :', err.message)
-      emit({ type: 'error', message: custom ? describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
+      emit({ type: 'error', message: custom ? describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, baseUrl: custom.baseUrl, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
     }
   }
   res.end()

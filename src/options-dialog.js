@@ -255,7 +255,8 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
         renderDefault()
       })
     }
-    el.querySelector('.p-test').addEventListener('click', () => runTest(id, { fill: false }))
+    // « Tester » remplit aussi la liste tant qu'elle est vide.
+    el.querySelector('.p-test').addEventListener('click', () => runTest(id, { fill: !draft.providers[id].models.length }))
     el.querySelector('.p-list').addEventListener('click', () => runTest(id, { fill: true }))
     const addInput = el.querySelector('.p-add')
     const add = () => {

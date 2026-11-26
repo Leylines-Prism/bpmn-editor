@@ -65,11 +65,13 @@ function toolError(name, content, emit, log) {
 
 // Valide les arguments puis exécute l'outil. Renvoie { content, isError }.
 // images : le format sait-il recevoir une image en résultat d'outil (API Claude) ?
-export async function runTool({ toolSet, name, input, executeTool, emit, log = console.error, images = false }) {
+// lang : langue de l'interface, pour les messages d'erreur montrés dans le panneau.
+export async function runTool({ toolSet, name, input, executeTool, emit, log = console.error, images = false, lang = 'en' }) {
+  const T = (en, fr) => (lang === 'fr' ? fr : en)
   const validator = toolSet.validators[name]
-  if (!validator) return toolError(name, `Outil inconnu : ${name}`, emit, log)
+  if (!validator) return toolError(name, T(`Unknown tool: ${name}`, `Outil inconnu : ${name}`), emit, log)
   const parsed = validator.safeParse(input)
-  if (!parsed.success) return toolError(name, `Arguments invalides : ${toolSet.z.prettifyError(parsed.error)}`, emit, log)
+  if (!parsed.success) return toolError(name, T(`Invalid arguments: ${toolSet.z.prettifyError(parsed.error)}`, `Arguments invalides : ${toolSet.z.prettifyError(parsed.error)}`), emit, log)
   try {
     const data = await executeTool(name, parsed.data)
     if (isImageResult(data)) {
@@ -178,7 +180,7 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
     const results = []
     for (const use of toolUses) {
       emit({ type: 'status', phase: 'running', tool: use.name })
-      const { content, isError } = await runTool({ toolSet, name: use.name, input: use.input, executeTool, emit, log, images: true })
+      const { content, isError } = await runTool({ toolSet, name: use.name, input: use.input, executeTool, emit, log, images: true, lang })
       results.push({ type: 'tool_result', tool_use_id: use.id, content, ...(isError ? { is_error: true } : {}) })
     }
     messages.push({ role: 'assistant', content: message.content }, { role: 'user', content: results })
@@ -254,8 +256,8 @@ export async function runOpenAITurn({ client, model, providerId = null, reasonin
       }
       const { content } =
         input === undefined
-          ? toolError(call.name, 'Arguments illisibles : JSON invalide. Renvoie un objet JSON complet.', emit, log)
-          : await runTool({ toolSet, name: call.name, input, executeTool, emit, log })
+          ? toolError(call.name, T('Unreadable arguments: invalid JSON. Send a complete JSON object.', 'Arguments illisibles : JSON invalide. Renvoie un objet JSON complet.'), emit, log)
+          : await runTool({ toolSet, name: call.name, input, executeTool, emit, log, lang })
       results.push({ role: 'tool', tool_call_id: call.id, content })
     }
     messages.push(assistant, ...results)

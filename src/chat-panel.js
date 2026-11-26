@@ -286,8 +286,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         mode === 'online'
           ? T('To start, open Options and choose a provider: Anthropic, OpenAI, Mistral, xAI (Grok), Ollama or an OpenAI-compatible server.', 'Pour commencer, ouvrez Options et choisissez un fournisseur : Anthropic, OpenAI, Mistral, xAI (Grok), Ollama ou un serveur compatible OpenAI.')
           : T('Chat is not set up: open Options to choose a provider, or add ANTHROPIC_API_KEY, OPENAI_MODELS or MISTRAL_API_KEY to the server variables (Docker stack or mcp/.env), then restart the server.', "Le chat n'est pas configuré : ouvrez Options pour choisir un fournisseur, ou ajoutez ANTHROPIC_API_KEY, OPENAI_MODELS ou MISTRAL_API_KEY dans les variables du serveur (pile Docker ou mcp/.env), puis relancez le serveur."),
-      )
-    } else if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
+      ).classList.add('setup-hint')
+      return
+    }
+    // Un fournisseur est maintenant réglé : la marche à suivre n'a plus lieu d'être.
+    for (const hint of log.querySelectorAll('.setup-hint')) hint.remove()
+    if (!log.querySelector('.chat-msg:not(.notice)') && !log.querySelector('.welcome')) {
       add('notice', T('Describe a process and I will draw it on the canvas. Changes can be undone with Ctrl+Z.', `Décrivez un processus et je le dessine sur le canevas. Les modifications s'annulent avec Ctrl+Z.`)).classList.add('welcome')
     }
   }
@@ -655,7 +659,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     // Ligne d'état sous la réponse : ce que fait l'assistant et depuis combien de temps.
     const status = document.createElement('div')
     status.className = 'chat-status'
-    let statusText = 'envoi'
+    let statusText = T('sending', 'envoi')
     const started = Date.now()
     const renderStatus = () => {
       status.textContent = `⏳ ${statusText}… ${Math.round((Date.now() - started) / 1000)} s`

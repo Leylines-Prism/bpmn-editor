@@ -2,17 +2,26 @@
 // dans la fenêtre Options. Les erreurs du SDK Anthropic, d'OpenAICompatClient et
 // de listModels portent toutes un champ status : on s'y fie plutôt qu'à leur classe.
 //
-// ctx : { label, providerId, browser (appel direct depuis la page), origin, lang ('en' ou 'fr') }
+// ctx : { label, providerId, baseUrl, browser (appel direct depuis la page), origin, lang ('en' ou 'fr') }
 
 const isConnectionError = (err) => err?.status === null || /ConnectionError|ConnectionTimeoutError/.test(err?.name || '')
 
-export function describeProviderError(err, { label, providerId, browser = false, origin = '', lang = 'en' } = {}) {
+// Adresse en localhost : vue depuis un conteneur, elle désigne le conteneur lui-même.
+const isLocalhost = (url) => {
+  try {
+    return ['localhost', '127.0.0.1', '[::1]'].includes(new URL(url).hostname)
+  } catch {
+    return false
+  }
+}
+
+export function describeProviderError(err, { label, providerId, baseUrl = '', browser = false, origin = '', lang = 'en' } = {}) {
   const fr = lang === 'fr'
   const T = (en, frText) => (fr ? frText : en)
   const detail = err?.message ? ` (${err.message})` : ''
   if (isConnectionError(err)) {
     if (!browser) {
-      const docker = providerId === 'ollama'
+      const docker = providerId === 'ollama' && isLocalhost(baseUrl)
         ? T(' If the server runs in docker, "localhost" means the container: try http://host.docker.internal:11434/v1.',
           ' Si le serveur tourne dans docker, « localhost » désigne le conteneur : essayez http://host.docker.internal:11434/v1.')
         : ''
