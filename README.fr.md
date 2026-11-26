@@ -179,7 +179,7 @@ créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien
 elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
 messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent ce comptage, et un
 indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image Docker ni `npm run dev`
-n'envoient quoi que ce soit. Le réglage suit les recommandations de la CNIL pour les mesures d'audience
+n'envoient quoi que ce soit. Le réglage suit les [recommandations de la CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) pour les mesures d'audience
 exemptées de consentement.
 
 ## Le lancer avec Docker
