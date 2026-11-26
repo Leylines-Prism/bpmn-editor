@@ -326,7 +326,7 @@ a.btn { text-decoration: none; }
 /* « Confidentialité » reste plus discret (bordure et texte atténués, bouclier en couleur), posé
    au-dessus de « Votre avis » s'il existe. */
 #privacy-button { border-color: var(--line); color: var(--ink-muted); }
-#privacy-button svg { color: var(--accent); }
+#privacy-button svg { color: var(--warm); }
 #feedback-button ~ #privacy-button { bottom: 94px; }
 /* « Votre avis » porte le fin trait leyline (ciel, magenta, orange) du bouton Co-pilote IA. */
 #feedback-button {
@@ -964,7 +964,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #privacy-dialog .pv-close { margin-left: auto; font-size: 20px; flex: none; }
 #privacy-dialog .pv-badge {
   flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
-  background: var(--accent); color: var(--on-accent);
+  background: var(--warm); color: var(--on-accent);
 }
 #privacy-dialog .pv-badge svg { width: 24px; height: 24px; }
 #privacy-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
