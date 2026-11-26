@@ -124,7 +124,7 @@ export const clientLabel = (name) => CLIENT_NAMES[name] || (name.length > 24 ? n
 function setBadge(badge, state, client = null) {
   const states = {
     connecting: [T('MCP: connecting…', 'MCP : connexion…'), '#888'],
-    connected: [T('MCP: connected', 'MCP : connecté'), '#4ade80'],
+    connected: [T('MCP: ready', 'MCP : prêt'), '#4ade80'],
     disconnected: [T('MCP: offline', 'MCP : hors ligne'), '#888'],
   }
   const [text, color] = states[state]

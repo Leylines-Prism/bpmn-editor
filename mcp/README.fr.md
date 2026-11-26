@@ -156,7 +156,7 @@ npm install && npm run dev
 cd mcp && npm install && npm start
 ```
 
-Puis ouvrir http://localhost:5173. Le badge passe à « MCP : connecté », puis au nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Le protocole MCP ne transmet que le nom et la version du client, jamais le modèle.
+Puis ouvrir http://localhost:5173. Le badge passe à « MCP : prêt » (l'onglet est relié au serveur), puis au nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Le protocole MCP ne transmet que le nom et la version du client, jamais le modèle.
 
 Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 (`http://127.0.0.1:3333/mcp`).
