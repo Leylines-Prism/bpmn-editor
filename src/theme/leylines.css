@@ -1483,3 +1483,24 @@ html:not(.expert) .expert-only,
 html:not(.expert) #canvas .heatmap-bar,
 html:not(.expert) #canvas .heatmap-legend,
 html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none !important; }
+
+/* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
+   présentation : dans un petit carré au trait orange de la charte. */
+dialog .dlg-close,
+.cmp-close,
+.pv-close,
+.pres-close {
+  width: 28px !important; height: 28px !important; min-width: 0; padding: 0 !important;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--warm) !important; border-radius: var(--radius-sm) !important;
+  background: transparent !important; color: var(--warm) !important;
+  font-size: 22px !important; line-height: 1 !important; font-weight: 500;
+}
+dialog .dlg-close:hover,
+.cmp-close:hover,
+.pv-close:hover,
+.pres-close:hover { background: color-mix(in srgb, var(--warm) 14%, transparent) !important; }
+dialog .dlg-close:focus-visible,
+.cmp-close:focus-visible,
+.pv-close:focus-visible,
+.pres-close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
