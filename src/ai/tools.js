@@ -253,8 +253,11 @@ export function buildTools(z) {
       name: 'validate_diagram',
       title: 'Validate the diagram',
       description:
-        'Checks the diagram with the recommended bpmnlint rules (isolated element, missing start or end event, ' +
-        'element without a label, superfluous gateway…). Returns the number of errors and warnings and the list of problems ' +
+        'Checks the diagram and returns a report. Six checks: the XML is well formed; every element and attribute exists in the BPMN 2.0 metamodel; ' +
+        'references resolve, ids are unique and each flow stays in its scope (sequence flows inside their process, message flows between two pools); ' +
+        'every element is drawn (diagram interchange complete); bpmn-js reimports the document without warnings; ' +
+        'the recommended bpmnlint rules raise no error (isolated element, missing start or end event, element without a label, superfluous gateway…). ' +
+        'Returns the element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues ' +
         'with the id of the element concerned, the rule and the message.',
       inputSchema: {},
     },

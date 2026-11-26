@@ -10,6 +10,7 @@ import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { autoLayout } from './auto-layout.js'
 import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
+import { checkDiagram } from './diagram-checks.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -575,26 +576,26 @@ function buildTools(modeler, exportDiagram) {
       }
     },
 
+    // Rapport complet (src/diagram-checks.js) : compteurs, six contrôles, et le détail de bpmnlint.
     async validate_diagram() {
-      const linting = modeler.get('linting', false)
-      if (!linting) throw new Error('Validation (bpmnlint) is not loaded in this editor.')
-      const results = await linting.lint()
-      const issues = []
-      for (const [rule, reports] of Object.entries(results)) {
-        for (const report of reports) {
-          const element = elementRegistry.get(report.id)
-          const name = element ? getBusinessObject(element).name : undefined
-          issues.push({
-            id: report.id,
-            ...(name ? { name } : {}),
-            category: report.category,
-            rule,
-            message: report.message,
-          })
-        }
+      const report = await checkDiagram(modeler)
+      const issues = (report.lint?.issues || []).map((issue) => {
+        const element = elementRegistry.get(issue.id)
+        const name = element ? getBusinessObject(element).name : undefined
+        return { id: issue.id, ...(name ? { name } : {}), category: issue.category, rule: issue.rule, message: issue.message }
+      })
+      // Erreurs : celles de bpmnlint, plus chaque problème des autres contrôles.
+      const structural = report.checks.filter((c) => c.id !== 'lint' && !c.ok).reduce((n, c) => n + c.problems.length + (c.more || 0), 0)
+      return {
+        errors: (report.lint?.errors || 0) + structural,
+        warnings: report.lint?.warnings || 0,
+        infos: report.lint?.infos || 0,
+        counts: report.counts,
+        checks: report.checks
+          .filter((c) => !c.skipped)
+          .map((c) => (c.ok ? { check: c.id, ok: true } : { check: c.id, ok: false, problems: c.problems, ...(c.more ? { more: c.more } : {}) })),
+        issues,
       }
-      const count = (category) => issues.filter((i) => i.category === category).length
-      return { errors: count('error') + count('rule-error'), warnings: count('warn'), infos: count('info'), issues }
     },
 
     remove_elements({ ids }) {
