@@ -13,6 +13,15 @@
 
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
+**Model every process of your context in seconds, from a few exchanges with your AI agent.**
+Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
+"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams. No more hours spent working
+out the BPMN structure and drawing it by hand: the agent finds the processes, the editor draws and
+checks them, and you review and adjust the result. A human review is still needed, but the work goes
+much faster. This is the Docker version, where any MCP agent drives the editor. The online version
+follows the same idea with its built-in assistant: describe a process or attach your documents (Word,
+Excel, PDF, emails…), and it draws it.
+
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
 with nothing but a browser, or run it on your own machine with Docker.
 
@@ -46,8 +55,7 @@ everything it is connected to, and uses BPMN diagrams in its own workflows:
 - it gets it back as BPMN XML or a PNG image, or exports it as a BPMN, SVG, PNG or PDF file into the server's
   exports folder, for the next step: a document, a ticket, a repository.
 
-For example, an agent connected to your mailbox and document archive can turn years of past exchanges
-into a process map in mere seconds, with the help of a few prompts. The tools run in an editor tab, which only needs to stay open.
+The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
 > **Docker version only: not made to be exposed on the internet, by design.** This concerns running
