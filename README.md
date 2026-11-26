@@ -170,8 +170,8 @@ created, opened or exported, active time by range, support link clicked). No thi
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
 flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the
-Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
-CNIL (the French data protection authority) for audience measurement exempt from consent.
+Docker image nor `npm run dev` measure anything. The measurement is configured according to the
+[recommendations of the CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) (the French data protection authority, page in French) for audience measurement exempt from consent.
 
 ## Run it with Docker
 
