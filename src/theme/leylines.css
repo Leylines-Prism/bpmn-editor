@@ -1351,8 +1351,13 @@ body.presenting #main { padding: 0; gap: 0; }
 body.presenting #main > :not(#canvas) { display: none !important; }
 body.presenting #canvas { border: 0; border-radius: 0; box-shadow: none; }
 body.presenting #canvas > :not(.bjs-container),
-body.presenting #canvas .djs-container > :not(svg),
+body.presenting #canvas .bjs-container:not(.simulation) .djs-container > :not(svg),
 body.presenting #canvas .layer-djs-grid { display: none !important; }
+/* Simulation en présentation : seules ses commandes restent (départ et passerelles sur
+   le schéma, pause, journal, vitesse). Sa bascule intégrée laisse la place au bouton
+   de la barre, et les autres pastilles du schéma restent masquées. */
+body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed),
+body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]) { display: none !important; }
 body.presenting #canvas .djs-container { cursor: grab; }
 #presentation-bar {
   position: fixed; top: var(--space-4); right: var(--space-4); z-index: 20;
