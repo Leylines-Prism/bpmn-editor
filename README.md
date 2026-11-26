@@ -20,6 +20,24 @@ with nothing but a browser, or run it on your own machine with Docker.
 - **Ask the AI assistant**: it draws the processes you describe, in the open tab.
 - **Connect an agent through MCP** (Docker version), such as Claude Code.
 
+> [!TIP]
+> **The online version is safe to use as is.** The public link (https://bpmn.leylines.fr) is only
+> static files served by GitHub Pages: there is no application server, no account and no database
+> behind it.
+>
+> - **Your diagrams stay in your browser.** They are saved in the browser's own storage, and the files
+>   you open or download never leave your computer.
+> - **Your API keys stay in your browser too.** They are sent only to the AI provider you chose,
+>   straight from your browser, never to a server of this project.
+> - **When you use the assistant**, your message and the diagram go straight to that provider, under
+>   its own terms. Nothing goes through a middleman.
+> - **The only other request** is an audience count without cookies, which never contains a diagram, a
+>   message or a key.
+>
+> Still, always use an API key created for this editor alone, with a limited validity period and a
+> spending limit. Details, limits and how to check it yourself:
+> [Your data and API keys in the online version](docs/online-privacy.md).
+
 The MCP connection goes further than drawing on screen. An agent brings its own memory and context, with
 everything it is connected to, and uses BPMN diagrams in its own workflows:
 
@@ -32,8 +50,9 @@ For example, an agent connected to your mailbox and document archive can turn ye
 into a process map. The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
-> **Not made to be exposed on the internet, by design.** The Docker version is meant for your own
-> machine or a private network, so it has no login. The risk stays limited, but publishing it means
+> **Docker version only: not made to be exposed on the internet, by design.** This concerns running
+> your own copy, not the online version above. The Docker version is meant for your own machine or a
+> private network, so it has no login. The risk stays limited, but publishing it means
 > a service open to anyone without authentication: your API keys can be used or stolen, and the
 > diagrams stored in the container (the BPMN files of "My diagrams") can be read or deleted. By
 > default it only answers on this machine (`127.0.0.1`). If you put it on the internet anyway, you
@@ -253,7 +272,8 @@ those of the stable page. Both show their version in the bottom left corner of t
 
 For the AI assistant, each visitor enters their own API key, which stays in their browser.
 Compared with the Docker version, there is no agent connection (MCP) and no saving on a server, and
-some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser.
+some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
+[Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
 The stable page measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends

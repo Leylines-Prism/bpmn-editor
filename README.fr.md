@@ -21,6 +21,24 @@ machine avec Docker.
 - **Demandez à l'assistant IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
 - **Connectez un agent par MCP** (version Docker), comme Claude Code.
 
+> [!TIP]
+> **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
+> n'est que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
+> aucune base de données derrière.
+>
+> - **Vos diagrammes restent dans votre navigateur.** Ils sont enregistrés dans le stockage du
+>   navigateur, et les fichiers que vous ouvrez ou téléchargez ne quittent jamais votre ordinateur.
+> - **Vos clés API aussi.** Elles ne sont envoyées qu'au fournisseur d'IA que vous avez choisi,
+>   directement depuis votre navigateur, jamais à un serveur de ce projet.
+> - **Quand vous utilisez l'assistant**, votre message et le diagramme partent directement chez ce
+>   fournisseur, selon ses propres conditions. Aucun intermédiaire.
+> - **La seule autre requête** est une mesure d'audience sans cookie, qui ne contient jamais de
+>   diagramme, de message ni de clé.
+>
+> Utilisez tout de même toujours une clé API créée pour cet éditeur seul, avec une durée de validité
+> limitée et une limite de dépense. Détails, limites et moyen de le vérifier vous-même :
+> [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md).
+
 La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa propre mémoire et son contexte,
 avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
 
@@ -34,7 +52,8 @@ plusieurs années d'échanges. Les outils s'exécutent dans un onglet de l'édit
 ouvert.
 
 > [!WARNING]
-> **Pas fait pour être exposé sur internet, par conception.** La version Docker est prévue pour
+> **Version Docker seulement : pas faite pour être exposée sur internet, par conception.** Cela
+> concerne votre propre copie, pas la version en ligne ci-dessus. La version Docker est prévue pour
 > votre propre machine ou un réseau privé, elle n'a donc pas de connexion. Le risque reste limité,
 > mais la publier revient à ouvrir à tous un service sans authentification : vos clés API peuvent
 > être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
@@ -271,7 +290,8 @@ du canevas et du guide d'utilisation.
 Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
 rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
 certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
-dit ce qui sort du navigateur.
+dit ce qui sort du navigateur, et
+[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
 
 La page stable mesure son audience sans cookie, avec [Umami](https://umami.is) :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
