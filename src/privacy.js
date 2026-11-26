@@ -66,7 +66,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
       </section>`
 
   const audience = analyticsHost ? section('chart', T('Audience measurement', "Mesure d'audience"), `
-          <p>${T('The site measures its audience with Umami.', 'Le site mesure sa fréquentation avec Umami.')}</p>
+          <p>${T('The site measures its audience anonymously.', 'Le site mesure sa fréquentation de façon anonyme.')}</p>
           <ul class="pv-facts">
             <li class="pv-key">${T('The content of your diagrams, messages and API keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés API n\'est jamais collecté.')}</li>
             <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement :")}</li>

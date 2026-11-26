@@ -275,11 +275,11 @@ Compared with the Docker version, there is no agent connection (MCP) and no savi
 some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
-The stable page measures its audience without cookies, with [Umami](https://umami.is): visits, referrers and a few actions (assistant opened or used, provider connected, diagram
+The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (assistant opened or used, provider connected, diagram
 created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
-messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and
-`localStorage.setItem('umami.disabled', '1')` in the console excludes your own visits. Neither the
+messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
+flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the recommendations of the
 CNIL (the French data protection authority) for audience measurement exempt from consent.
 
@@ -287,7 +287,7 @@ CNIL (the French data protection authority) for audience measurement exempt from
 
 `npm install`, then `npm run dev` for the editor, and `npm start` in `mcp/` for the server.
 Details on the server, the assistant and the MCP tools: [mcp/README.md](mcp/README.md).
-`npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (Umami address)
+`npm run build:online` builds the online version as a static site in `dist-online/` (`BASE_PATH` sets its path). Audience measurement is turned on by the GitHub variables `VITE_UMAMI_URL` (address of the measurement service)
 and `VITE_UMAMI_WEBSITE_ID` (site ID): without them, nothing is sent.
 The site is published by [.github/workflows/pages.yml](.github/workflows/pages.yml) on each change to `main`.
 

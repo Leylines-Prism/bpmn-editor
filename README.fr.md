@@ -293,12 +293,12 @@ certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien 
 dit ce qui sort du navigateur, et
 [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
 
-La page stable mesure son audience sans cookie, avec [Umami](https://umami.is) :
+La page stable mesure son audience de façon anonyme, sans cookie :
 visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
 créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
 elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et
-`localStorage.setItem('umami.disabled', '1')` dans la console exclut vos propres visites. Ni l'image
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
+indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
 Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
 CNIL pour les mesures d'audience exemptées de consentement.
 
@@ -308,7 +308,7 @@ CNIL pour les mesures d'audience exemptées de consentement.
 Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
 `npm run build:online` construit la version en ligne en site statique dans `dist-online/` (`BASE_PATH` règle son
 chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
-d'Umami) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
+du service de mesure) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
 changement sur `main`.
 
 ## À propos du projet
