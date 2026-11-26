@@ -828,10 +828,10 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 #library-dialog [hidden] { display: none !important; }
 
-/* Écran étroit : Ranger et Simulation passent en icône seule (infobulle au survol),
+/* Écran étroit : Ranger, Simulation et Présentation passent en icône seule (infobulle au survol),
    pour laisser la place au nom du fichier et aux boutons de droite. */
 @media (max-width: 1440px) {
-  #btn-layout, #btn-simulation { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+  #btn-layout, #btn-simulation, #btn-present { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
   #toolbar #btn-chat .chat-btn-model { display: none; }
   #toolbar #btn-chat.has-model .chat-btn-full { display: inline; }
   #toolbar #btn-chat.has-model .chat-btn-short { display: none; }
