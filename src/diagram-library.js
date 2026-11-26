@@ -6,6 +6,7 @@
 // (ou Ctrl+S) met alors ce dernier à jour. Le lien est retenu par le navigateur.
 
 import { lang, T } from './i18n/lang.js'
+import { addDialogClose } from './dialog-close.js'
 
 const LINK_KEY = 'bpmn-editor-library-link'
 const PLACES = {
@@ -146,8 +147,8 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
       </div>
       <p class="library-link" id="library-link"></p>
       <div class="actions">
-        <button type="button" class="btn primary" data-icon="save" id="library-save">${T('Save', 'Enregistrer')}</button>
-        <button type="button" class="btn" id="library-save-new">${T('Save as new', 'Enregistrer comme nouveau')}</button>
+        <button type="button" class="btn primary" data-icon="save" id="library-save" title="${T('Update the open entry, or create it (Ctrl+S)', 'Mettre à jour l\'enregistrement ouvert, ou le créer (Ctrl+S)')}">${T('Save', 'Enregistrer')}</button>
+        <button type="button" class="btn" id="library-save-new" title="${T('Save a separate copy under the name above', 'Enregistrer une copie distincte sous le nom ci-dessus')}">${T('Save as new', 'Enregistrer comme nouveau')}</button>
       </div>
       <p class="status" id="library-status" role="status"></p>
       <div class="library-list" id="library-list"></div>
@@ -156,6 +157,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
         <button type="submit" class="btn" value="close">${T('Close', 'Fermer')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
   document.body.appendChild(dialog)
 
   const $ = (sel) => dialog.querySelector(sel)

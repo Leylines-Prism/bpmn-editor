@@ -121,6 +121,19 @@ kbd { border-bottom-width: 2px; }
 }
 svg.ico { overflow: visible; }
 .ico + .ui, .ico + strong { margin-left: 4px; }
+/* Nom d'un bouton de l'interface : un mini-bouton dans le texte, icône comprise, au style
+   des vrais boutons de l'éditeur. Les autres noms (champs, groupes, choix) restent en gras (.ui). */
+.uib {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 24px; padding: 0 7px; vertical-align: -1px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink);
+  font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap;
+}
+.uib .ico, .uib .ico[data-icon] { width: 15px; height: 15px; margin: 0; vertical-align: 0; }
+.uib .ico[class*="bpmn-icon-"] { font-size: 15px; line-height: 15px; }
+.uib svg.ico { width: 15px; height: 15px; }
+td .uib { white-space: normal; height: auto; }
 /* Devant un titre de section qui correspond à un bouton : un peu plus grand, et décollé du texte. */
 h2 > .ico, h3 > .ico { margin: 0 10px 0 0; }
 h2 > .ico, h2 > .ico[data-icon] { width: 26px; height: 26px; vertical-align: -4px; }
@@ -177,6 +190,33 @@ details.faq[open] summary::after { transform: rotate(-135deg); margin: 4px 4px 0
   details.faq summary, details.faq summary::after { transition: none; }
 }
 details.faq summary + * { margin-top: var(--space-3); }
+
+/* Exemples de prompts : une carte par phrase, titre et bouton « Copier » (src/help/copy-prompts.js)
+   sur la première ligne, la phrase dans un cadre en retrait, puis un conseil éventuel. */
+.prompt {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3);
+  margin-top: var(--space-3); padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised);
+}
+.prompt > :not(.prompt-title):not(.copy-prompt) { grid-column: 1 / -1; }
+.prompt-title { font-weight: 600; }
+.prompt-text {
+  margin-top: var(--space-2); padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
+  background: var(--surface-sunken); font-size: 15px; line-height: 24px;
+}
+.prompt-tip { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.copy-prompt {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 var(--space-3);
+  border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  background: var(--surface-raised); color: var(--ink);
+  font: 500 13px/18px var(--font-sans); cursor: pointer; white-space: nowrap;
+}
+.copy-prompt:hover { border-color: var(--accent); background: var(--accent-soft); }
+.copy-prompt:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.copy-prompt.done { border-color: var(--accent); color: var(--accent); }
+.prompt + p { margin-top: var(--space-4); }
 
 /* Petite icône dans le texte (tasse du lien de soutien) */
 .icon-inline { width: 1.1em; height: 1.1em; vertical-align: -0.2em; margin-left: 0.3em; }

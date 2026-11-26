@@ -4,6 +4,7 @@
 import { layoutProcess } from 'bpmn-auto-layout'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
+import { addDialogClose } from './dialog-close.js'
 
 // bpmn-auto-layout suit les listes incoming/outgoing des éléments, que beaucoup
 // d'outils n'écrivent pas. On les reconstruit à partir des flux de séquence.
@@ -88,12 +89,13 @@ export function setupXmlDialog({ openButton, fileInput, onImport }) {
       <textarea id="xml-text" spellcheck="false" placeholder="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#10;&lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; …&gt;"></textarea>
       <p class="error" id="xml-error" role="alert"></p>
       <div class="actions">
-        <button type="button" class="btn" data-icon="open" id="xml-file">${T('Choose a file…', 'Choisir un fichier…')}</button>
+        <button type="button" class="btn" data-icon="open" id="xml-file" title="${T('Load a .bpmn or .xml file into the field', 'Charger un fichier .bpmn ou .xml dans le champ')}">${T('Choose a file…', 'Choisir un fichier…')}</button>
         <span class="grow"></span>
         <button type="button" class="btn" id="xml-cancel">${T('Cancel', 'Annuler')}</button>
         <button type="button" class="btn primary" id="xml-import">${T('Import', 'Importer')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
   document.body.appendChild(dialog)
 
   const text = dialog.querySelector('#xml-text')
@@ -140,9 +142,10 @@ export function setupXmlExport({ openButton, getXml, download }) {
         <button type="button" class="btn" data-icon="save" id="xml-export-download">${T('Download .xml', 'Télécharger .xml')}</button>
         <span class="grow"></span>
         <button type="button" class="btn" id="xml-export-close">${T('Close', 'Fermer')}</button>
-        <button type="button" class="btn primary" id="xml-export-copy">${T('Copy', 'Copier')}</button>
+        <button type="button" class="btn primary" id="xml-export-copy" title="${T('Copy the XML to the clipboard', 'Copier le XML dans le presse-papiers')}">${T('Copy', 'Copier')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
   document.body.appendChild(dialog)
 
   const text = dialog.querySelector('#xml-export-text')

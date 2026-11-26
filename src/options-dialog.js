@@ -7,6 +7,7 @@ import { PROVIDERS, providerBaseUrl } from './ai/providers.js'
 import { forgetKeys, providerLabel, saveSettings, userModels } from './ai-settings.js'
 import { T } from './i18n/lang.js'
 import { trackOnce } from './analytics.js'
+import { addDialogClose } from './dialog-close.js'
 
 const HINTS = {
   online: {
@@ -70,11 +71,11 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
             <label class="field"><span>${T('API key', 'Clé API')}${p.needsKey ? '' : T(' (optional)', ' (facultative)')}</span><input type="password" class="p-key" spellcheck="false" autocomplete="off" placeholder="${esc(p.keyHint || '')}" /></label>
             <div class="field"><span>${T('Models', 'Modèles')}</span>
               <div class="p-models"></div>
-              <div class="p-add-row"><input type="text" class="p-add" spellcheck="false" placeholder="${T('Add a model by its id', 'Ajouter un modèle par son identifiant')}" aria-label="${T('Id of the model to add', 'Identifiant du modèle à ajouter')}" /><button type="button" class="btn p-add-btn">${T('Add', 'Ajouter')}</button></div>
+              <div class="p-add-row"><input type="text" class="p-add" spellcheck="false" placeholder="${T('Add a model by its id', 'Ajouter un modèle par son identifiant')}" aria-label="${T('Id of the model to add', 'Identifiant du modèle à ajouter')}" /><button type="button" class="btn p-add-btn" title="${T('Add a model missing from the list, by its id', 'Ajouter un modèle absent de la liste, par son identifiant')}">${T('Add', 'Ajouter')}</button></div>
             </div>
             <div class="p-actions">
-              <button type="button" class="btn p-test">${T('Test', 'Tester')}</button>
-              <button type="button" class="btn p-list">${T('List models', 'Lister les modèles')}</button>
+              <button type="button" class="btn p-test" title="${T('Check the address and the key, then load the models', 'Vérifier l\'adresse et la clé, puis charger les modèles')}">${T('Test', 'Tester')}</button>
+              <button type="button" class="btn p-list" title="${T('Show every model the provider offers', 'Afficher tous les modèles proposés par le fournisseur')}">${T('List models', 'Lister les modèles')}</button>
               <span class="p-result" role="status"></span>
             </div>
             <p class="hint p-hint">${esc(HINTS[mode][p.id]).replaceAll('{origin}', esc(origin))}</p>
@@ -86,7 +87,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
       <div class="keys-row">
         <label><input type="checkbox" id="options-remember" /> ${T('Remember API keys on your device', 'Se souvenir des clés API sur votre appareil')}</label>
         <span class="grow"></span>
-        <button type="button" class="btn" id="options-forget">${T('Clear API keys', 'Effacer les clés API')}</button>
+        <button type="button" class="btn" id="options-forget" title="${T('Remove every API key stored in this browser', 'Supprimer toutes les clés API gardées dans ce navigateur')}">${T('Clear API keys', 'Effacer les clés API')}</button>
       </div>
       <p class="hint privacy">${esc(PRIVACY[mode])} ${T('Without the box above, keys are forgotten when the tab is closed.', "Sans la case ci-dessus, les clés sont oubliées à la fermeture de l'onglet.")}</p>
       <div class="actions">
@@ -95,6 +96,7 @@ export function createOptionsDialog({ mode, test, onSave, onForget }) {
         <button type="button" class="btn primary" id="options-save">${T('Save', 'Enregistrer')}</button>
       </div>
     </form>`
+  addDialogClose(dialog)
   document.body.append(dialog)
 
   let draft = null

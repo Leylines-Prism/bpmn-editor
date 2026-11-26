@@ -42,6 +42,7 @@
           <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
           <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
           <li><a href="#assistant">Assistant IA</a></li>
+          <li><a href="#exemples-prompts">Exemples de prompts</a></li>
           <li><a href="#cles">Vos clés API</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
           <li><a href="#docker">Version Docker et agents MCP</a></li>
@@ -74,7 +75,7 @@
 
       <section id="premiers-pas">
         <h2>Premiers pas</h2>
-        <p>Un nouveau diagramme contient déjà un petit processus : un début, une tâche et une fin, à la première ouverture comme après un clic sur <span class="ico" data-icon="new" aria-hidden="true"></span><span class="ui">Nouveau</span>. Partez de là, ou supprimez ces formes pour dessiner autre chose.</p>
+        <p>Un nouveau diagramme contient déjà un petit processus : un début, une tâche et une fin, à la première ouverture comme après un clic sur <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>Nouveau</span>. Partez de là, ou supprimez ces formes pour dessiner autre chose.</p>
         <figure><img src="/src/help/img/fr-editeur.webp" width="1440" height="820" alt="L'éditeur avec un processus de note de frais : la palette à gauche, le canevas, et le panneau de l'assistant IA ouvert à droite." loading="lazy" /><figcaption>L'éditeur, avec le panneau de l'assistant IA ouvert à droite. Le panneau Processus est masqué ici.</figcaption></figure>
         <ol>
           <li>Choisissez une forme dans la palette, à gauche, puis cliquez sur le canevas pour la poser.</li>
@@ -83,7 +84,7 @@
           <li>Donnez un nom au fichier dans le champ à gauche de la barre d'outils. Ce nom sert à l'enregistrement et à tous les exports.</li>
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification, et vous le retrouvez tel quel en rouvrant la page. La mention « Sauvegarde auto », dans la barre d'outils, le rappelle.</p>
-        <p>Le bouton <span class="ui">EN</span> ou <span class="ui">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
+        <p>Le bouton <span class="uib">EN</span> ou <span class="uib">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
         <!-- online -->
         <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur. Si vous utilisez l'assistant, seul le fournisseur d'IA les reçoit. Ni ce site ni son hébergeur n'y ont accès. Le site mesure uniquement sa fréquentation, sans cookie (voir <a href="#confidentialite">Confidentialité</a>).</div>
         <!-- /online -->
@@ -100,20 +101,20 @@
         <p>Quand vous sélectionnez un élément, une série de boutons apparaît à côté de lui. Ils varient selon son type. Pour une tâche, on trouve :</p>
         <ul>
           <li><span class="ico bpmn-icon-end-event-none" aria-hidden="true"></span><span class="ico bpmn-icon-gateway-none" aria-hidden="true"></span><span class="ico bpmn-icon-task" aria-hidden="true"></span><span class="ico bpmn-icon-intermediate-event-none" aria-hidden="true"></span> <strong>Première ligne :</strong> ajouter un événement de fin, une passerelle, une tâche ou un événement intermédiaire. Le nouvel élément est posé à droite et déjà relié par un flux.</li>
-          <li><span class="ico bpmn-icon-text-annotation" aria-hidden="true"></span><span class="ui">Ajouter une annotation</span> (le crochet en pointillé) pose un commentaire relié à l'élément.</li>
-          <li><svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg><span class="ui">Ajouter un élément</span> (les trois points) ouvre la liste complète des éléments qui peuvent suivre, rangés par famille (tâches, passerelles, sous-processus, événements, données), avec un champ de recherche.</li>
-          <li><span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span><span class="ui">Relier à un autre élément</span> (la flèche oblique) : cliquez dessus, puis sur l'élément cible pour tracer un flux.</li>
-          <li><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span><span class="ui">Changer l'élément</span> (la clé à molette) change le type de l'élément sans le redessiner : ses liens et son libellé restent. Voir le détail ci-dessous.</li>
-          <li><span class="ico bpmn-icon-trash" aria-hidden="true"></span><span class="ui">Supprimer</span> (la corbeille) retire l'élément et ses flux.</li>
-          <li><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg><span class="ui">Choisir la couleur</span> (le pinceau) et <svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg><span class="ui">Mise en forme du texte</span> (le bouton A) ouvrent un petit menu de couleurs pour un élément, ou leur menu complet pour plusieurs. Ils sont décrits dans <a href="#couleurs-texte">Couleurs et texte</a>.</li>
-          <li><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 21.5 1-1h2.8l8.6-8.6"/><path d="M3.5 20.5v-2.8l8.6-8.6"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg><span class="ui">Copier le style</span> (la pipette) retient le fond, le contour, la police et la couleur du texte de l'élément. <svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="13" height="5" rx="1.2"/><path d="M16 5.5h2.5v5H10v3"/><rect x="8.6" y="13.5" width="2.8" height="6" rx="1"/></svg><span class="ui">Coller le style</span> (le rouleau), affiché une fois un style copié, les applique à l'élément sélectionné, ou à plusieurs d'un coup.</li>
+          <li><span class="uib"><span class="ico bpmn-icon-text-annotation" aria-hidden="true"></span>Ajouter une annotation</span> (le crochet en pointillé) pose un commentaire relié à l'élément.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 5.82 5.82" fill="currentColor" aria-hidden="true"><path d="M1.3 3.4c.3 0 .5-.2.5-.5s-.2-.4-.5-.4c-.2 0-.4.1-.4.4 0 .3.2.5.4.5zM3 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5zM4.6 3.4c.2 0 .4-.2.4-.5s-.2-.4-.4-.4c-.3 0-.5.1-.5.4 0 .3.2.5.5.5z"/></svg>Ajouter un élément</span> (les trois points) ouvre la liste complète des éléments qui peuvent suivre, rangés par famille (tâches, passerelles, sous-processus, événements, données), avec un champ de recherche.</li>
+          <li><span class="uib"><span class="ico bpmn-icon-connection-multi" aria-hidden="true"></span>Relier à un autre élément</span> (la flèche oblique) : cliquez dessus, puis sur l'élément cible pour tracer un flux.</li>
+          <li><span class="uib"><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Changer l'élément</span> (la clé à molette) change le type de l'élément sans le redessiner : ses liens et son libellé restent. Voir le détail ci-dessous.</li>
+          <li><span class="uib"><span class="ico bpmn-icon-trash" aria-hidden="true"></span>Supprimer</span> (la corbeille) retire l'élément et ses flux.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Choisir la couleur</span> (le pinceau) et <span class="uib"><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Mise en forme du texte</span> (le bouton A) ouvrent un petit menu de couleurs pour un élément, ou leur menu complet pour plusieurs. Ils sont décrits dans <a href="#couleurs-texte">Couleurs et texte</a>.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 21.5 1-1h2.8l8.6-8.6"/><path d="M3.5 20.5v-2.8l8.6-8.6"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>Copier le style</span> (la pipette) retient le fond, le contour, la police et la couleur du texte de l'élément. <span class="uib"><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="13" height="5" rx="1.2"/><path d="M16 5.5h2.5v5H10v3"/><rect x="8.6" y="13.5" width="2.8" height="6" rx="1"/></svg>Coller le style</span> (le rouleau), affiché une fois un style copié, les applique à l'élément sélectionné, ou à plusieurs d'un coup.</li>
         </ul>
         <figure><img src="/src/help/img/fr-menu-contextuel.webp" width="460" height="300" alt="Menu contextuel d'une tâche sélectionnée : éléments à ajouter, connexion, changement de type, couleur, texte, copie du style et suppression." loading="lazy" /><figcaption>Le menu contextuel d'une tâche sélectionnée.</figcaption></figure>
         <h3><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Changer l'élément</h3>
-        <p>La clé à molette ouvre la fenêtre <span class="ui">Changer l'élément</span>. Elle liste les types compatibles avec l'élément choisi : une tâche peut devenir tâche utilisateur, tâche de service, activité d'appel ou sous-processus, un événement de début peut devenir événement de début de message ou de minuteur, etc. Tapez quelques lettres dans le champ de recherche pour filtrer la liste, puis cliquez sur un type ou validez avec <kbd>Entrée</kbd>. La touche <kbd>R</kbd> ouvre la même fenêtre au clavier.</p>
+        <p>La clé à molette ouvre la fenêtre <span class="uib">Changer l'élément</span>. Elle liste les types compatibles avec l'élément choisi : une tâche peut devenir tâche utilisateur, tâche de service, activité d'appel ou sous-processus, un événement de début peut devenir événement de début de message ou de minuteur, etc. Tapez quelques lettres dans le champ de recherche pour filtrer la liste, puis cliquez sur un type ou validez avec <kbd>Entrée</kbd>. La touche <kbd>R</kbd> ouvre la même fenêtre au clavier.</p>
         <p>Pour une tâche ou un sous-processus, les icônes en haut à droite de la fenêtre ajoutent un marqueur sans changer le type : multi-instance parallèle <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, multi-instance séquentielle <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> et boucle <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Un second clic retire le marqueur. Le nombre de boucles et la condition d'achèvement se règlent ensuite dans le <a href="#proprietes">panneau Processus</a>.</p>
         <h3><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler et rétablir</h3>
-        <p>Les boutons <span class="ico" data-icon="undo" aria-hidden="true"></span><span class="ui">Annuler</span> et <span class="ico" data-icon="redo" aria-hidden="true"></span><span class="ui">Rétablir</span>, en haut à gauche du canevas à côté de la simulation de jetons, reprennent vos gestes et ceux de l'assistant un par un, comme <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd>. Ils sont grisés quand il n'y a rien à annuler ou à rétablir.</p>
+        <p>Les boutons <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> et <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Rétablir</span>, en haut à gauche du canevas à côté de la simulation de jetons, reprennent vos gestes et ceux de l'assistant un par un, comme <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd>. Ils sont grisés quand il n'y a rien à annuler ou à rétablir.</p>
         <p>Ranger, ainsi que la mise en page ou le remplacement du diagramme par l'assistant, rechargent tout le diagramme. Juste avant, l'éditeur en garde une copie : Annuler y revient d'un coup, mais les gestes plus anciens ne s'annulent plus un par un. Ouvrir un fichier ou créer un diagramme repart d'un historique vide.</p>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
@@ -132,18 +133,20 @@
               <tr><td><kbd>R</kbd></td><td>Changer le type de l'élément</td></tr>
               <tr><td><kbd>H</kbd>, <kbd>L</kbd>, <kbd>S</kbd>, <kbd>C</kbd></td><td>Outils main, lasso, espace et connexion</td></tr>
               <tr><td><kbd>Ctrl</kbd>+molette</td><td>Zoomer</td></tr>
-              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Mettre à jour l'enregistrement dans Mes diagrammes</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Mettre à jour l'enregistrement dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span></td></tr>
             </tbody>
           </table>
         </div>
         <h3>La minicarte</h3>
-        <p>La minicarte affiche le schéma entier en réduction, en haut à droite du canevas. Elle est repliée à l'ouverture de l'éditeur : cliquez sur <span class="ui">Ouvrir la minicarte</span> pour la déplier, puis sur <span class="ui">Fermer la minicarte</span> pour la replier.</p>
+        <p>La minicarte affiche le schéma entier en réduction, en haut à droite du canevas. Elle est repliée à l'ouverture de l'éditeur : cliquez sur <span class="uib">Ouvrir la minicarte</span> pour la déplier, puis sur <span class="uib">Fermer la minicarte</span> pour la replier.</p>
         <ul>
           <li>Le cadre orange représente la partie visible à l'écran. Faites-le glisser pour vous déplacer.</li>
           <li>Un clic ailleurs dans la minicarte centre la vue sur ce point.</li>
           <li><kbd>Ctrl</kbd>+molette au-dessus de la minicarte zoome sur le canevas.</li>
         </ul>
         <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
+        <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</h3>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>, et <kbd>0</kbd> ajuste le schéma à l'écran. Le diagramme n'est pas modifiable dans ce mode. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
       </section>
 
       <section id="proprietes">
@@ -185,14 +188,14 @@
         <h3><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Couleurs</h3>
         <p>Avec plusieurs éléments sélectionnés, le pinceau du menu contextuel propose 17 couleurs toutes prêtes, chacune avec un fond pâle et un trait foncé lisible. <span class="ui">Couleur personnalisée…</span> accepte n'importe quelle teinte. Le trait est alors calculé pour garder un bon contraste, et un fond foncé reçoit un texte clair.</p>
         <h3><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Mise en forme du texte</h3>
-        <p>Avec plusieurs éléments sélectionnés, le bouton <span class="ui">A</span> du menu contextuel met en forme leurs libellés : gras, italique, souligné, taille (de 10 à 24), police (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) et couleur. La couleur <span class="ui">Auto</span> prend le noir ou le blanc, le plus lisible sur le fond de l'élément. <span class="ui">Texte par défaut</span> retire toute la mise en forme.</p>
+        <p>Avec plusieurs éléments sélectionnés, le bouton <span class="uib">A</span> du menu contextuel met en forme leurs libellés : gras, italique, souligné, taille (de 10 à 24), police (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) et couleur. La couleur <span class="ui">Auto</span> prend le noir ou le blanc, le plus lisible sur le fond de l'élément. <span class="ui">Texte par défaut</span> retire toute la mise en forme.</p>
         <h3>Dans le panneau Processus</h3>
-        <p>Pour un seul élément sélectionné, le pinceau et le bouton <span class="ui">A</span> du menu contextuel ouvrent un petit menu : cinq couleurs de forme ou de texte, puis, sous <span class="ui">Déjà dans le diagramme</span>, jusqu'à trois couleurs utilisées ailleurs, les plus récentes en tête. <span class="ui">Par défaut</span> retire la couleur, et <span class="ui">Plus…</span> ouvre le <a href="#proprietes">panneau Processus</a> sur son groupe <span class="ui">Forme</span> ou <span class="ui">Texte</span>, avec plus de place. Pour plusieurs éléments sélectionnés, ils ouvrent les menus complets décrits plus haut.</p>
+        <p>Pour un seul élément sélectionné, le pinceau et le bouton <span class="uib">A</span> du menu contextuel ouvrent un petit menu : cinq couleurs de forme ou de texte, puis, sous <span class="ui">Déjà dans le diagramme</span>, jusqu'à trois couleurs utilisées ailleurs, les plus récentes en tête. <span class="ui">Par défaut</span> retire la couleur, et <span class="uib">Plus…</span> ouvre le <a href="#proprietes">panneau Processus</a> sur son groupe <span class="ui">Forme</span> ou <span class="ui">Texte</span>, avec plus de place. Pour plusieurs éléments sélectionnés, ils ouvrent les menus complets décrits plus haut.</p>
         <ul>
           <li><span class="ui">Forme</span> : deux lignes de couleurs toutes prêtes, des fonds pâles puis des fonds vifs qui mettent aussi le texte en blanc, puis un <span class="ui">Fond</span> et un <span class="ui">Contour</span> pour régler l'un sans l'autre (le carré ouvre le sélecteur de couleur du système). Le champ à droite du carré donne le code hexadécimal de la couleur, ou en gris celui de la couleur par défaut quand aucune n'est réglée : tapez-en un, par exemple <code>#1E88E5</code>, puis Entrée pour l'appliquer. Un flux n'a qu'un contour.</li>
           <li><span class="ui">Texte</span> : gras, italique, souligné, taille et police (sans réglage, chaque liste affiche la valeur appliquée, par exemple <span class="ui">12</span> et <span class="ui">Arial</span>, ou 11 pour les libellés placés sous la forme, comme ceux des événements), deux lignes de couleurs du texte en pastilles rondes (la première : le noir, un dégradé de gris et quatre teintes foncées pour les fonds clairs ; la seconde : le blanc et des teintes vives, dont trois claires pour les fonds foncés), une ligne <span class="ui">Autre</span> pour n'importe quelle couleur, avec son carré et son code hexadécimal comme pour le fond, puis <span class="ui">Auto</span> et <span class="ui">Texte par défaut</span>.</li>
           <li><span class="ui">Déjà dans le diagramme</span>, dans le groupe <span class="ui">Style</span>, reprend sur une ligne, du plus récent au plus ancien, jusqu'à 8 styles faits à la main ailleurs (couleurs et mise en forme du texte ensemble), par vous ou par l'assistant. Un clic applique l'un d'eux à l'élément sélectionné.</li>
-          <li><span class="ui">Copier le style</span>, dans le groupe <span class="ui">Style</span> placé avant les deux autres, retient le fond, le contour, la police et la couleur du texte de l'élément. Son bouton montre une pipette dans un carré aux couleurs de l'élément sélectionné : c'est ce qui sera copié. <span class="ui">Coller le style</span> applique le style copié à un autre élément. Son bouton en donne un aperçu : un rouleau dans un carré, le carré aux couleurs de la forme, le rouleau à la couleur du texte. Pour traiter plusieurs éléments d'un coup, sélectionnez-les et utilisez le rouleau <span class="ui">Coller le style</span> du menu contextuel. Le navigateur garde cette copie, même d'un schéma à l'autre.</li>
+          <li><span class="uib">Copier le style</span>, dans le groupe <span class="ui">Style</span> placé avant les deux autres, retient le fond, le contour, la police et la couleur du texte de l'élément. Son bouton montre une pipette dans un carré aux couleurs de l'élément sélectionné : c'est ce qui sera copié. <span class="uib">Coller le style</span> applique le style copié à un autre élément. Son bouton en donne un aperçu : un rouleau dans un carré, le carré aux couleurs de la forme, le rouleau à la couleur du texte. Pour traiter plusieurs éléments d'un coup, sélectionnez-les et utilisez le rouleau <span class="uib">Coller le style</span> du menu contextuel. Le navigateur garde cette copie, même d'un schéma à l'autre.</li>
         </ul>
         <p>Chaque réglage s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
         <figure><img src="/src/help/img/fr-panneau-apparence.webp" width="298" height="732" alt="Groupes Style, Forme et Texte du panneau Processus pour une tâche : fond et contour bleus avec leurs codes hexadécimaux, gras activé, pastille rouge sombre pour le texte, la pipette peinte aux couleurs de la tâche, et ce style copié sur le bouton Coller le style et dans Déjà dans le diagramme." loading="lazy" /><figcaption>Les groupes Style, Forme et Texte pour une tâche sélectionnée.</figcaption></figure>
@@ -254,20 +257,20 @@
           <li><a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">Documentation des règles<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a> : le détail de chaque vérification.</li>
         </ul>
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</h3>
-        <p>Le bouton <span class="ico" data-icon="layout" aria-hidden="true"></span><span class="ui">Ranger</span> (après Mes diagrammes) recalcule la disposition de tout le schéma, de gauche à droite. Utile après un import ou un dessin de l'IA.</p>
-        <div class="note warn">Ranger déplace toutes les formes. L'éditeur vous demande de confirmer, et <span class="ico" data-icon="undo" aria-hidden="true"></span><span class="ui">Annuler</span> ramène la disposition d'avant.</div>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</span> (après <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>) recalcule la disposition de tout le schéma, de gauche à droite. Utile après un import ou un dessin de l'IA.</p>
+        <div class="note warn">Ranger déplace toutes les formes. L'éditeur vous demande de confirmer, et <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> ramène la disposition d'avant.</div>
         <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>Le bouton <span class="ico" data-icon="play" aria-hidden="true"></span><span class="ui">Simulation</span> (à côté de Ranger) lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="ui">Arrêter la simulation</span> pour revenir à l'édition.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> (à côté de Ranger) lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="uib">Arrêter la simulation</span> pour revenir à l'édition.</p>
         <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
       </section>
 
       <section id="enregistrer">
         <h2>Enregistrer et Mes diagrammes</h2>
         <h3>Sauvegarde automatique</h3>
-        <p>L'éditeur garde votre travail dans le navigateur une seconde après chaque modification, et affiche l'heure du dernier enregistrement à côté de « Sauvegarde auto ». Cette sauvegarde n'a qu'une place : cliquer sur <span class="ui">Nouveau</span> ou ouvrir un fichier remplace son contenu.</p>
+        <p>L'éditeur garde votre travail dans le navigateur une seconde après chaque modification, et affiche l'heure du dernier enregistrement à côté de « Sauvegarde auto ». Cette sauvegarde n'a qu'une place : cliquer sur <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>Nouveau</span> ou ouvrir un fichier remplace son contenu.</p>
         <h3><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</h3>
-        <p>Pour conserver plusieurs processus, ouvrez <span class="ico" data-icon="library" aria-hidden="true"></span><span class="ui">Mes diagrammes</span>. Donnez un nom à votre travail puis cliquez sur <span class="ui">Enregistrer</span>. La liste permet ensuite de rouvrir, renommer ou supprimer chaque enregistrement. <kbd>Ctrl</kbd>+<kbd>S</kbd> met à jour celui qui est ouvert, et <span class="ui">Enregistrer comme nouveau</span> en crée une copie.</p>
-        <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre Mes diagrammes.</figcaption></figure>
+        <p>Pour conserver plusieurs processus, ouvrez <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>. Donnez un nom à votre travail puis cliquez sur <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Enregistrer</span>. La liste permet ensuite de rouvrir, renommer ou supprimer chaque enregistrement. <kbd>Ctrl</kbd>+<kbd>S</kbd> met à jour celui qui est ouvert, et <span class="uib">Enregistrer comme nouveau</span> en crée une copie.</p>
+        <figure><img src="/src/help/img/fr-mes-diagrammes.webp" width="760" height="470" alt="Fenêtre Mes diagrammes avec deux diagrammes enregistrés dans le navigateur." loading="lazy" /><figcaption>La fenêtre, avec deux diagrammes enregistrés dans le navigateur.</figcaption></figure>
         <!-- online -->
         <div class="note warn">Cette liste vit dans ce navigateur, sur cet appareil. Elle n'est pas synchronisée et disparaît si vous effacez les données du site ou naviguez en mode privé. Pour conserver un processus durablement ou le transmettre, exportez-le en fichier .bpmn.</div>
         <!-- /online -->
@@ -281,14 +284,14 @@
         <h2>Ouvrir, importer, exporter</h2>
         <h3><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</h3>
         <ul>
-          <li><span class="ico" data-icon="open" aria-hidden="true"></span><span class="ui">Ouvrir</span>, puis <span class="ui">Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
-          <li><span class="ui">Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
+          <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
+          <li><span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
           <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
-          <li><span class="ico" data-icon="compare" aria-hidden="true"></span><span class="ui">Comparer avec un fichier…</span> montre les différences entre un fichier de votre disque et le diagramme ouvert, sans rien changer (voir ci-dessous).</li>
+          <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span> montre les différences entre un fichier de votre disque et le diagramme ouvert, sans rien changer (voir ci-dessous).</li>
         </ul>
         <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture.</p>
         <h3 id="comparer"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer deux versions</h3>
-        <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="ui">Ouvrir</span>, puis <span class="ui">Comparer avec un fichier…</span>, ou par le bouton <span class="ui">Avant / après</span> de la pilule de l'assistant.</p>
+        <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span>, ou par le bouton <span class="uib">Avant / après</span> de la pilule de l'assistant.</p>
         <ul>
           <li>En vert, ce qui a été ajouté (à droite). En rouge, ce qui a été supprimé (à gauche). En orange, ce qui a été modifié, des deux côtés.</li>
           <li>En bleu, sur demande, ce qui a seulement bougé ou changé de couleur. Cliquez sur une pastille du haut pour afficher ou masquer un type de différence.</li>
@@ -319,7 +322,7 @@
         <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /docker -->
         <h3>Exports demandés à l'IA</h3>
-        <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="ui">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
+        <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
         <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
         <!-- docker -->
         <p>Le fichier est aussi déposé dans le dossier exports du serveur, quel que soit le choix Destination, sans jamais remplacer un fichier existant.</p>
@@ -330,14 +333,14 @@
 
       <section id="assistant">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Assistant IA</h2>
-        <p>Le bouton <span class="ico" data-icon="assistant" aria-hidden="true"></span><span class="ui">Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste. Sur les écrans assez larges, le bouton affiche le modèle choisi dans <span class="ui">Options</span> et se raccourcit en <span class="ui">IA</span>.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Assistant IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et l'assistant le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, le mettre en couleur, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste. Sur les écrans assez larges, le bouton affiche le modèle choisi dans <span class="uib">Options</span> et se raccourcit en <span class="ui">IA</span>.</p>
 
         <h3>1. Choisir un fournisseur</h3>
         <!-- online -->
-        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant :</p>
+        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix, avec votre propre clé API. Ouvrez <span class="uib">Options</span> dans le panneau de l'assistant :</p>
         <!-- /online -->
         <!-- docker -->
-        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix. Ouvrez <span class="ui">Options</span> dans le panneau de l'assistant. Si des clés sont réglées sur le serveur, le choix <span class="ui">Modèles du serveur</span> arrive en tête de la liste : il n'y a rien à saisir. Sinon, choisissez un fournisseur et collez votre clé API :</p>
+        <p>L'assistant passe par un modèle d'IA chez le fournisseur de votre choix. Ouvrez <span class="uib">Options</span> dans le panneau de l'assistant. Si des clés sont réglées sur le serveur, le choix <span class="ui">Modèles du serveur</span> arrive en tête de la liste : il n'y a rien à saisir. Sinon, choisissez un fournisseur et collez votre clé API :</p>
         <!-- /docker -->
         <div class="table-wrap">
           <table>
@@ -362,7 +365,7 @@
             </tbody>
           </table>
         </div>
-        <p>Sélectionnez le fournisseur en haut de la fenêtre, collez la clé, cliquez sur <span class="ui">Tester</span>, puis choisissez le modèle : la liste se remplit une fois la connexion testée. Un seul fournisseur sert à la fois, et en changer n'efface pas la clé des autres. Le panneau affiche le modèle utilisé.</p>
+        <p>Sélectionnez le fournisseur en haut de la fenêtre, collez la clé, cliquez sur <span class="uib">Tester</span>, puis choisissez le modèle : la liste se remplit une fois la connexion testée. Un seul fournisseur sert à la fois, et en changer n'efface pas la clé des autres. Le panneau affiche le modèle utilisé.</p>
         <figure><img src="/src/help/img/fr-options.webp" width="640" height="530" alt="Fenêtre Options de l'assistant, avec le fournisseur Mistral choisi : adresse, clé API vide, modèles, boutons Tester et Lister les modèles." loading="lazy" /><figcaption>Options de l'assistant : Mistral choisi, en attente de la clé.</figcaption></figure>
 
         <h3>2. Décrire le processus</h3>
@@ -371,8 +374,8 @@
         <p>Sous chaque réponse, de petites étiquettes montrent ce que l'assistant a fait sur le canevas : lecture, ajout de formes, connexions, mise en page… Vous pouvez ensuite lui demander des retouches (« ajoute un rappel si le manager ne répond pas sous 3 jours »), ou les faire vous-même.</p>
         <ul>
           <li>La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pour coller un long texte ou ouvrir un fichier .txt ou .md. <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoie.</li>
-          <li><span class="ui">Nouvelle discussion</span> repart de zéro. Le schéma, lui, ne change pas.</li>
-          <li><span class="ui">Arrêter</span> interrompt une réponse en cours.</li>
+          <li><span class="uib">Nouvelle discussion</span> repart de zéro. Le schéma, lui, ne change pas.</li>
+          <li><span class="uib">Arrêter</span> interrompt une réponse en cours.</li>
         </ul>
 
         <h3>3. Partir d'un fichier</h3>
@@ -399,13 +402,81 @@
         <ul>
           <li>Quand l'assistant change beaucoup d'un coup, par exemple un schéma dessiné de zéro, aucun contour n'est posé : la pilule seule résume. Un clic dessus affiche les contours, un second les masque.</li>
           <li>Vos retouches à la main et la mise en page automatique ne sont jamais marquées. <kbd>Ctrl</kbd>+<kbd>Z</kbd> met le marquage à jour.</li>
-          <li><span class="ui">Avant / après</span>, sur la pilule, compare le diagramme d'avant la réponse avec le diagramme actuel, côte à côte (voir <a href="#comparer">Comparer deux versions</a>).</li>
-          <li><span class="ui">Annuler</span>, sur la pilule, défait d'un coup tout ce que l'assistant a changé depuis votre message, mise en page comprise. Si vous avez retouché le diagramme entre-temps, l'éditeur demande confirmation, car vos retouches partent aussi. <kbd>Ctrl</kbd>+<kbd>Y</kbd> ramène les changements.</li>
+          <li><span class="uib">Avant / après</span>, sur la pilule, compare le diagramme d'avant la réponse avec le diagramme actuel, côte à côte (voir <a href="#comparer">Comparer deux versions</a>).</li>
+          <li><span class="uib">Annuler</span>, sur la pilule, défait d'un coup tout ce que l'assistant a changé depuis votre message, mise en page comprise. Si vous avez retouché le diagramme entre-temps, l'éditeur demande confirmation, car vos retouches partent aussi. <kbd>Ctrl</kbd>+<kbd>Y</kbd> ramène les changements.</li>
           <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
         </ul>
 
         <h3>Combien ça coûte</h3>
         <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur.</p>
+      </section>
+
+      <section id="exemples-prompts">
+        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Exemples de prompts</h2>
+        <p>Des prompts prêts à l'emploi pour l'<a href="#assistant">assistant IA</a>, à adapter à votre contexte. Ils fonctionnent avec tous les fournisseurs, en ligne comme en version Docker. L'assistant répond, et nomme les éléments, dans la langue du prompt.</p>
+
+        <details class="faq prompts-list">
+          <summary>12 prompts de démonstration, prêts à copier-coller</summary>
+        <h3>Modéliser</h3>
+        <div class="prompt">
+          <p class="prompt-title">À partir d'une description</p>
+          <p class="prompt-text">Dessine notre processus de retour client. Le client dépose une demande de retour. Le service client vérifie que l'achat date de moins de 30 jours : sinon, la demande est refusée et le client est prévenu du motif. Sinon, l'entrepôt réceptionne le colis et contrôle l'article. La comptabilité rembourse ensuite le client, en totalité, ou à moitié prix si l'article est abîmé. Un couloir par service.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">À partir d'un document joint</p>
+          <p class="prompt-text">Modélise le processus décrit dans la procédure jointe, avec un couloir par rôle. Reprends les mots du document pour nommer les tâches. Liste ensuite ce que le document laisse flou, au lieu de deviner.</p>
+          <p class="prompt-tip">Pièce jointe : Word, Excel, PowerPoint, PDF ou photo de tableau blanc (voir <a href="#assistant">Partir d'un fichier</a>).</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">À partir d'e-mails</p>
+          <p class="prompt-text">Voici les e-mails échangés pour référencer notre dernier fournisseur. Dessine le processus que nous avons réellement suivi, du premier contact à la première commande. Ajoute une annotation sur chaque étape dont personne n'est clairement responsable.</p>
+          <p class="prompt-tip">E-mails collés à la suite du prompt, ou joints en .eml ou .txt.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Collaboration entre organisations</p>
+          <p class="prompt-text">Modélise les échanges entre le client, notre entreprise et le transporteur, avec un pool chacun. Le client passe commande. Nous la confirmons et réservons le transporteur. Le transporteur enlève le colis, le livre et nous envoie la preuve de livraison. Nous facturons alors le client.</p>
+        </div>
+
+        <h3>Modifications en masse</h3>
+        <div class="prompt">
+          <p class="prompt-title">Mise en forme par type ou par sens</p>
+          <p class="prompt-text">Mets toutes les tâches manuelles en orange, avec le texte en gras. Mets en rouge les événements de fin qui signifient un échec.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Typage et nommage</p>
+          <p class="prompt-text">Transforme chaque tâche faite par une personne en tâche utilisateur, et chaque tâche faite par un logiciel en tâche de service. Renomme ensuite les tâches qui ne suivent pas la forme «&nbsp;verbe + objet&nbsp;».</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Délai sur une tâche</p>
+          <p class="prompt-text">Ajoute une minuterie non interruptive de 3 jours sur la tâche de validation. Quand elle se déclenche, envoie une relance au manager.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Traduction</p>
+          <p class="prompt-text">Traduis toutes les étiquettes du diagramme en anglais, en gardant le sens et les conventions de nommage.</p>
+        </div>
+
+        <h3>Contrôler, ranger, exporter</h3>
+        <div class="prompt">
+          <p class="prompt-title">Revue de conformité BPMN</p>
+          <p class="prompt-text">Relis ce diagramme selon les bonnes pratiques BPMN. Liste les problèmes, du plus important au moins important, avec une correction concrète pour chacun. Ne modifie rien pour l'instant.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Correction et mise en page</p>
+          <p class="prompt-text">Corrige les erreurs de validation, puis range proprement le diagramme. N'ajoute et ne retire aucune étape : si une correction change ce que fait le processus, demande-moi d'abord.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Synthèse du processus</p>
+          <p class="prompt-text">Résume ce processus en dix lignes au plus, pour un nouveau collaborateur : acteurs, enchaînement des étapes et décisions.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Export PDF</p>
+          <p class="prompt-text">Exporte le diagramme en PDF, sous le nom «&nbsp;Retours clients&nbsp;».</p>
+          <p class="prompt-tip">Le fichier n'est téléchargé qu'au clic sur <span class="uib">Télécharger</span>, sous la réponse.</p>
+        </div>
+
+        </details>
+
+        <p>Chaque réponse s'annule en une seule opération (voir <a href="#assistant">Voir ce que l'assistant a changé</a>). En <a href="#docker">version Docker</a>, un agent MCP accepte les mêmes prompts et dispose de quatre prompts intégrés.</p>
       </section>
 
       <section id="cles">
@@ -421,7 +492,7 @@
             <thead><tr><th>Case</th><th>Où est la clé</th><th>Jusqu'à quand</th></tr></thead>
             <tbody>
               <tr><td>Décochée (par défaut)</td><td>Stockage de session de l'onglet</td><td>Elle s'efface à la fermeture de l'onglet</td></tr>
-              <tr><td>Cochée</td><td>Stockage local du navigateur</td><td>Elle reste jusqu'au clic sur <span class="ui">Effacer les clés API</span></td></tr>
+              <tr><td>Cochée</td><td>Stockage local du navigateur</td><td>Elle reste jusqu'au clic sur <span class="uib">Effacer les clés API</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -448,7 +519,7 @@
           <li>Le site stable compte ses visites de façon anonyme, sans cookie (la version de développement ne mesure rien), conformément aux recommandations de la CNIL pour les mesures d'audience exemptées de consentement. L'adresse IP n'est pas enregistrée. Elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation de l'assistant, type de fournisseur connecté, temps d'utilisation par tranche, clic vers la page de soutien). Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
           <li>Le site ne charge aucun script tiers.</li>
         </ul>
-        <p>Le lien <span class="ui">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
+        <p>Le lien <span class="uib">Confidentialité</span>, en bas du canevas, rappelle ces points dans l'éditeur.</p>
           <!-- /online -->
           <!-- docker -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur, ou sur votre serveur pour ce que vous y enregistrez. Rien n'est envoyé à l'auteur de l'éditeur.</li>
@@ -470,7 +541,7 @@
         <ul>
           <li>des clés API rangées sur votre serveur, qui n'arrivent jamais au navigateur,</li>
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
-          <li>un choix <span class="ui">Serveur</span> dans Mes diagrammes, pour retrouver vos enregistrements depuis plusieurs navigateurs,</li>
+          <li>un choix <span class="ui">Serveur</span> dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, pour retrouver vos enregistrements depuis plusieurs navigateurs,</li>
           <li>des exports déposés, au choix, sur le serveur,</li>
           <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
@@ -481,10 +552,11 @@
           <li><code>review_diagram</code> : liste ce qu'il faut améliorer dans le diagramme ouvert, sans rien modifier,</li>
           <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens.</li>
         </ul>
+        <p>Les <a href="#exemples-prompts">Exemples de prompts</a> fonctionnent aussi avec un agent MCP.</p>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer votre travail :</p>
         <ul>
-          <li><code>diagrams</code> : ce que Mes diagrammes enregistre sur le serveur, à raison d'un fichier .bpmn par diagramme, nommé comme lui. Renommer un enregistrement renomme son fichier. Laissez en place <code>.index.json</code>, un fichier caché qui fait le lien avec l'éditeur. Un .bpmn copié dans ce dossier apparaît dans Mes diagrammes, sous son nom.</li>
+          <li><code>diagrams</code> : ce que <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span> enregistre sur le serveur, à raison d'un fichier .bpmn par diagramme, nommé comme lui. Renommer un enregistrement renomme son fichier. Laissez en place <code>.index.json</code>, un fichier caché qui fait le lien avec l'éditeur. Un .bpmn copié dans ce dossier apparaît dans la liste, sous son nom.</li>
           <li><code>exports</code> : les exports faits avec la destination <span class="ui">Serveur</span> ou <span class="ui">Les deux</span>. Un export ne remplace jamais un fichier : un deuxième <code>Mon processus.pdf</code> devient <code>Mon processus (2).pdf</code>.</li>
         </ul>
         <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">README du projet sur GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
@@ -494,7 +566,7 @@
         <h2>Sur téléphone et tablette</h2>
         <p>L'éditeur est conçu pour un écran d'ordinateur, une souris et un clavier. Sur un téléphone, il sert surtout à regarder un diagramme.</p>
         <ul>
-          <li><strong>Ce qui marche :</strong> ouvrir un fichier .bpmn ou un enregistrement de <span class="ui">Mes diagrammes</span>, se déplacer et zoomer avec les doigts, exporter.</li>
+          <li><strong>Ce qui marche :</strong> ouvrir un fichier .bpmn ou un enregistrement de <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, se déplacer et zoomer avec les doigts, exporter.</li>
           <li><strong>Ce qui est pénible :</strong> poser et relier des formes, écrire les libellés, utiliser le panneau Processus et l'assistant, faute de place.</li>
         </ul>
         <p>Sous 900 pixels de large (ou 500 de haut), un bandeau le rappelle au-dessus du canevas. Fermez-le d'un clic sur la croix : il ne revient plus dans ce navigateur. Sur un petit écran, le panneau Processus commence aussi replié. Sur une tablette, le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> à droite de la barre l'ouvre. Sur un téléphone, la barre d'outils dépasse la largeur de l'écran et ses derniers boutons restent hors de portée.</p>
@@ -539,7 +611,7 @@
         <!-- /docker -->
         <details class="faq">
           <summary>L'assistant a dessiné quelque chose d'inattendu.</summary>
-          <p>Le bouton <span class="ui">Annuler</span> de la pilule défait toute la réponse d'un coup, <kbd>Ctrl</kbd>+<kbd>Z</kbd> un changement à la fois. Vous pouvez aussi lui demander la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
+          <p>Le bouton <span class="uib">Annuler</span> de la pilule défait toute la réponse d'un coup, <kbd>Ctrl</kbd>+<kbd>Z</kbd> un changement à la fois. Vous pouvez aussi lui demander la correction en quelques mots. Plus la description est précise (acteurs, décisions, cas d'erreur), meilleur est le résultat. Un modèle plus puissant aide aussi pour les gros processus.</p>
         </details>
         <details class="faq">
           <summary>Puis-je ouvrir mes fichiers dans un autre outil BPMN ?</summary>
@@ -553,7 +625,7 @@
 
       <section id="feedback">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Donner votre avis</h2>
-        <p>Un bug, une idée, une question ? Le bouton <span class="ui">Votre avis</span>, en bas à droite du canevas, vous dit où écrire. Vous pouvez aussi ouvrir un ticket sur <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+        <p>Un bug, une idée, une question ? Le bouton <span class="uib">Votre avis</span>, en bas à droite du canevas, vous dit où écrire. Vous pouvez aussi ouvrir un ticket sur <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
         <p>L'éditeur vous rend service ? Vous pouvez <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="aide">soutenir le projet en offrant un café sur Ko-fi<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg></a>.</p>
       </section>
 
@@ -566,6 +638,7 @@
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
   <script type="module" src="/src/help/channel-link.js"></script>
+  <script type="module" src="/src/help/copy-prompts.js"></script>
   <div id="app-version" title="Version de BPMN-Pilot">%APP_VERSION%</div>
 </body>
 </html>

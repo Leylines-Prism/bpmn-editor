@@ -20,6 +20,7 @@ export function createExportOffer({ container, download }) {
   get.type = 'button'
   get.className = 'export-offer-download'
   get.textContent = T('Download', 'Télécharger')
+  get.title = T('Save the exported file to your computer', 'Enregistrer le fichier exporté sur votre ordinateur')
   const close = document.createElement('button')
   close.type = 'button'
   close.className = 'export-offer-close'
