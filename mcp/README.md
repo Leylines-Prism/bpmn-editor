@@ -171,11 +171,12 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
-| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…) |
+| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, or sets the probability of a gateway branch |
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
 | `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
+| `get_process_report` | returns the process report in Markdown, like the Export menu: findings by level, improvement areas, end events, activities by lane, element sequence. With `simulate`, first computes 100 tokens following the branch probabilities |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
@@ -209,7 +210,7 @@ into the folder by hand is added to the list under its file name. Size and date 
 
 `POST /exports?format=pdf&name=Order%20process` saves an export (body `application/octet-stream`,
 20 MB at most) in `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` in docker), for the "Server" and
-"Both" destinations of the Export menu. Formats: `bpmn`, `xml`, `svg`, `png`, `pdf`, with a check that
+"Both" destinations of the Export menu. Formats: `bpmn`, `xml`, `svg`, `png`, `pdf` and `md` (process report), with a check that
 the content matches. A file is never replaced: the answer gives the name chosen, such as
 `{"file": "Order process (2).pdf"}`.
 

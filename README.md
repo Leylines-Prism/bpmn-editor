@@ -289,6 +289,9 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, token
   simulation, BPMN rule checking, grid, minimap, and the Process panel for the properties of each
   element.
+- **Heatmap and process report**: during the simulation, color the diagram by the number of tokens
+  through each element, played by hand or computed from branch probabilities. Export a process report
+  (PDF or Markdown) with the findings in three levels, improvement areas and the element sequence.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color

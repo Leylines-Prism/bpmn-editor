@@ -262,6 +262,16 @@
         <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
         <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
         <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        <h3 id="heatmap">Heatmap</h3>
+        <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
+        <ol>
+          <li>Start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
+          <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
+          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation and click <span class="uib">Run 100 tokens</span>: the result is immediate, with no animation.</li>
+          <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
+        </ol>
+        <p>The heatmap counts passes: it measures neither durations nor costs. The 100-token run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available to the <a href="#process-report">process report</a> as long as the diagram does not change. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
+        <figure><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
       </section>
 
       <section id="saving">
@@ -309,6 +319,7 @@
               <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
+              <tr><td>Process report (PDF or Markdown)</td><td>Hand the process to a team or an auditor, with the findings and improvement areas (see below)</td></tr>
               <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
@@ -321,6 +332,18 @@
         <!-- docker -->
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
+        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
+        <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
+        <ul>
+          <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
+          <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
+          <li>improvement areas, by priority, with the expected effect;</li>
+          <li>end events, activities by lane, and the element sequence: type, lane, documentation and outgoing flows with their conditions.</li>
+        </ul>
+        <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the number of instances per element, the share of each end event and rework (see <a href="#heatmap">Heatmap</a>).</p>
+        <p>The report sticks to checks. For an analysis of the process itself, ask the AI assistant or an MCP agent, which read the same report (see <a href="#prompt-examples">Prompt examples</a>).</p>
+        <figure><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
         <h3>Exports asked of the AI</h3>
         <p>You can ask the AI assistant or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
@@ -416,7 +439,7 @@
         <p>Ready-to-use prompts for the <a href="#assistant">AI assistant</a>, to adapt to your context. They work with every provider, online and in the Docker version. The assistant replies, and names the elements, in the language of the prompt.</p>
 
         <details class="faq prompts-list">
-          <summary>12 demo prompts, ready to copy and paste</summary>
+          <summary>15 demo prompts, ready to copy and paste</summary>
         <h3>Model</h3>
         <div class="prompt">
           <p class="prompt-title">From a description</p>
@@ -472,6 +495,19 @@
           <p class="prompt-title">PDF export</p>
           <p class="prompt-text">Export the diagram as a PDF named "Customer returns".</p>
           <p class="prompt-tip">The file downloads only when you click <span class="uib">Download</span>, under the answer.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Process analysis</p>
+          <p class="prompt-text">Read the process report, with a 100-token simulation. Suggest three improvements to the process itself, each with the change to the diagram and the expected effect. Do not change anything.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Activity documentation</p>
+          <p class="prompt-text">Fill in the Documentation field of every activity that has none, in one sentence: who does what, with what result.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Branch probabilities</p>
+          <p class="prompt-text">Set a probability on each flow leaving an exclusive gateway, based on the labels and the context. List your assumptions.</p>
+          <p class="prompt-tip">They feed the <span class="uib">Run 100 tokens</span> button of the heatmap.</p>
         </div>
 
         </details>

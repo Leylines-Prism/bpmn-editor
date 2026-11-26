@@ -262,6 +262,16 @@
         <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
         <p>Le bouton <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> (à côté de Ranger) lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Une glissière, en bas du canevas, règle la vitesse des jetons de 0,25× à 4×. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Cliquez sur <span class="uib">Arrêter la simulation</span> pour revenir à l'édition.</p>
         <figure><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
+        <h3 id="carte-chaleur">Carte de chaleur</h3>
+        <p>La carte de chaleur montre où passent les instances d'un processus. Elle colore chaque élément et chaque flux de séquence selon le nombre de jetons qui l'ont traversé, du bleu pâle au rouge. On voit ainsi, sans lire le modèle élément par élément, les chemins jamais empruntés, les activités par lesquelles passent presque toutes les instances, et les boucles de reprise qui font exécuter une même activité plusieurs fois. Elle sert à valider un modèle avant de le diffuser, et à repérer où un processus se répète ou se concentre avant d'en discuter la réorganisation.</p>
+        <ol>
+          <li>Lancez la <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. Le cadre de la vitesse, en bas du canevas, porte deux boutons : <span class="uib">Carte de chaleur</span> et <span class="uib">Lancer 100 jetons</span>.</li>
+          <li><strong>Vérifier la couverture.</strong> Activez <span class="uib">Carte de chaleur</span>, puis faites partir quelques jetons en choisissant à chaque passerelle un chemin différent. La carte suit chaque pas. Ce qui reste en gris pointillé n'a jamais été atteint : une branche oubliée, un événement de fin inaccessible.</li>
+          <li><strong>Mesurer la répartition.</strong> Hors simulation, sélectionnez chaque flux qui sort d'une passerelle exclusive, inclusive ou basée sur les événements, et renseignez le champ <span class="ui">Probabilité (%)</span> du groupe <span class="ui">Simulation</span>, dans le panneau Processus. Les flux sans valeur se partagent le reste à parts égales. Lancez ensuite la simulation et cliquez sur <span class="uib">Lancer 100 jetons</span> : le calcul est immédiat, sans animation.</li>
+          <li>Lisez la carte. Une pastille donne le nombre de passages sur chaque activité et chaque événement, avec la part des instances (« 31 · 31 % »). Au-delà d'un passage par instance, elle donne le nombre moyen d'exécutions (« 131 · 1,3× ») : c'est une boucle de reprise. L'épaisseur des flux suit le même compte.</li>
+        </ol>
+        <p>La carte compte des passages : elle ne mesure ni durées ni coûts. Le calcul des 100 jetons suit les passerelles selon leurs probabilités, et ne déclenche pas les événements en bordure. La carte disparaît à l'arrêt de la simulation, mais ses comptes restent disponibles pour le <a href="#rapport-processus">rapport de processus</a> tant que le diagramme ne change pas. Les probabilités sont enregistrées dans le fichier .bpmn, sous un attribut propre à BPMN Pilot que les autres outils ignorent.</p>
+        <figure><img src="/src/help/img/fr-carte-chaleur.webp" width="1060" height="440" alt="Carte de chaleur après 100 jetons : la vérification des pièces en rouge, passée plus d'une fois par instance, les branches moins empruntées en jaune, avec la pastille de chaque activité et la légende." loading="lazy" /><figcaption>La carte après 100 jetons : la vérification des pièces, en rouge, est l'activité la plus sollicitée.</figcaption></figure>
       </section>
 
       <section id="enregistrer">
@@ -309,6 +319,7 @@
               <tr><td>Image SVG</td><td>Une image nette à toutes les tailles, pour le web ou un logiciel de dessin</td></tr>
               <tr><td>Image PNG</td><td>Une image à coller dans un document, un e-mail ou une présentation</td></tr>
               <tr><td>Document PDF</td><td>Envoyer le schéma ou l'archiver</td></tr>
+              <tr><td>Rapport de processus (PDF ou Markdown)</td><td>Remettre le processus à une équipe ou à un auditeur, avec les constats et les axes d'amélioration (voir ci-dessous)</td></tr>
               <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
               <tr><td>Imprimer…</td><td>Imprimer le schéma seul, sans l'éditeur autour : il tient sur une page, l'orientation suit sa forme</td></tr>
             </tbody>
@@ -321,6 +332,18 @@
         <!-- docker -->
         <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /docker -->
+        <h3 id="rapport-processus"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus</h3>
+        <p>Le rapport de processus transforme le diagramme en document lisible sans outil BPMN : une fiche à remettre à une équipe, à joindre à une procédure qualité ou à présenter au responsable du processus. Il sert aussi de revue de modélisation : il liste les erreurs, les avertissements et les informations manquantes, et en déduit des axes d'amélioration par priorité.</p>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>. Le rapport se construit à partir du diagramme, sans autre saisie :</p>
+        <ul>
+          <li>les chiffres clés et le diagramme, où chaque élément concerné par un constat est entouré de la couleur de son niveau ;</li>
+          <li>les constats de modélisation, en trois niveaux : <strong>Erreur</strong> en rouge (règle bpmnlint enfreinte, élément inaccessible, instance qui ne peut pas se terminer), <strong>Avertissement</strong> en orange (écart aux bonnes pratiques, reprise fréquente), <strong>À compléter</strong> en jaune (documentation absente, conditions sans libellé, couloir à activité unique). Leur source est indiquée : bpmnlint, contrôle du modèle ou simulation ;</li>
+          <li>les axes d'amélioration, par priorité, avec l'effet attendu ;</li>
+          <li>les événements de fin, les activités par couloir, et la séquence des éléments : type, couloir, documentation et flux sortants avec leurs conditions.</li>
+        </ul>
+        <p>Pour un rapport complet, nommez chaque passerelle par sa question et chaque flux sortant par sa réponse, répartissez les activités dans des couloirs, et remplissez le champ <span class="ui">Documentation</span> des activités. Rien de cela n'est obligatoire : le rapport signale ce qui manque. Après une simulation, il ajoute le nombre d'instances par élément, la part de chaque événement de fin et les reprises (voir <a href="#carte-chaleur">Carte de chaleur</a>).</p>
+        <p>Le rapport s'en tient aux contrôles. Une analyse du processus lui-même se demande à l'assistant IA ou à un agent MCP, qui lisent le même rapport (voir <a href="#exemples-prompts">Exemples de prompts</a>).</p>
+        <figure><img src="/src/help/img/fr-rapport-processus.webp" width="1060" height="750" alt="Première page du rapport de processus : chiffres clés, diagramme aux éléments entourés de couleur, et tableau des constats en orange et jaune." loading="lazy" /><figcaption>Première page du rapport : chiffres clés, diagramme annoté et constats.</figcaption></figure>
         <h3>Exports demandés à l'IA</h3>
         <p>Vous pouvez demander un fichier à l'assistant IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
         <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
@@ -416,7 +439,7 @@
         <p>Des prompts prêts à l'emploi pour l'<a href="#assistant">assistant IA</a>, à adapter à votre contexte. Ils fonctionnent avec tous les fournisseurs, en ligne comme en version Docker. L'assistant répond, et nomme les éléments, dans la langue du prompt.</p>
 
         <details class="faq prompts-list">
-          <summary>12 prompts de démonstration, prêts à copier-coller</summary>
+          <summary>15 prompts de démonstration, prêts à copier-coller</summary>
         <h3>Modéliser</h3>
         <div class="prompt">
           <p class="prompt-title">À partir d'une description</p>
@@ -472,6 +495,19 @@
           <p class="prompt-title">Export PDF</p>
           <p class="prompt-text">Exporte le diagramme en PDF, sous le nom «&nbsp;Retours clients&nbsp;».</p>
           <p class="prompt-tip">Le fichier n'est téléchargé qu'au clic sur <span class="uib">Télécharger</span>, sous la réponse.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Analyse du processus</p>
+          <p class="prompt-text">Lis le rapport de processus, avec une simulation de 100 jetons. Propose trois améliorations du processus lui-même, avec pour chacune la modification du diagramme et l'effet attendu. Ne modifie rien.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Documentation des activités</p>
+          <p class="prompt-text">Remplis le champ Documentation de chaque activité qui n'en a pas, en une phrase : qui fait quoi, avec quel résultat.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Probabilités des branches</p>
+          <p class="prompt-text">Renseigne une probabilité sur chaque flux sortant des passerelles exclusives, d'après les libellés et le contexte. Liste tes hypothèses.</p>
+          <p class="prompt-tip">Elles servent au bouton <span class="uib">Lancer 100 jetons</span> de la carte de chaleur.</p>
         </div>
 
         </details>
