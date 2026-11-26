@@ -1356,8 +1356,8 @@ body.presenting #canvas .layer-djs-grid { display: none !important; }
 /* Simulation en présentation : seules ses commandes restent (départ et passerelles sur
    le schéma, pause, journal, vitesse). Sa bascule intégrée laisse la place au bouton
    de la barre, et les autres pastilles du schéma restent masquées. */
-body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed),
-body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]) { display: none !important; }
+body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed):not(.heatmap-legend),
+body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]):not(.djs-overlay-heatmap) { display: none !important; }
 body.presenting #canvas .djs-container { cursor: grab; }
 #presentation-bar {
   position: fixed; top: var(--space-4); right: var(--space-4); z-index: 20;
@@ -1387,3 +1387,40 @@ body.presenting #canvas .djs-container { cursor: grab; }
 #canvas .bts-set-animation-speed .sim-speed { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; cursor: pointer; }
 #canvas .bts-set-animation-speed .sim-speed input { width: 140px; margin: 0; accent-color: var(--token-simulation-primary, var(--accent)); cursor: pointer; }
 #canvas .bts-set-animation-speed .sim-speed output { min-width: 3.2em; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }
+
+/* Carte de chaleur de la simulation (src/heatmap.js). Les boutons s'ajoutent au cadre de la
+   vitesse ; la couche de couleurs passe au-dessus des formes sans capter les clics. */
+#canvas .bts-set-animation-speed { display: flex; align-items: center; }
+#canvas .bts-set-animation-speed.hidden { display: none; }
+#canvas .heatmap-bar { display: flex; gap: 4px; padding: 4px 6px 4px 10px; border-left: 1px solid var(--line); }
+#canvas .heatmap-bar button {
+  font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line-strong); background: transparent; color: inherit; white-space: nowrap;
+}
+#canvas .heatmap-bar button:hover { border-color: var(--accent); }
+#canvas .heatmap-bar .heatmap-toggle.active { background: linear-gradient(90deg, #BFDBFE, #FDE047, #F97316, #DC2626); color: #1F2937; border-color: transparent; font-weight: 600; }
+#canvas .layer-bpmn-pilot-heatmap { pointer-events: none; }
+/* L'extension masque les autres pastilles pendant la simulation : celles de la carte restent. */
+#canvas .bjs-container.simulation .djs-overlay.djs-overlay-heatmap { display: block !important; }
+#canvas .heat-shape { fill-opacity: 0.5; stroke-width: 3px; stroke-opacity: 0.9; }
+#canvas .heat-shape.cold { fill: #9CA3AF; fill-opacity: 0.12; stroke: #9CA3AF; stroke-width: 1.5px; stroke-dasharray: 5 4; }
+#canvas .heat-flow { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.85; }
+#canvas .heat-flow.cold { stroke: #9CA3AF; stroke-width: 1.5px; stroke-dasharray: 5 5; }
+#canvas .heatmap-badge {
+  background: #1F2937; color: #FFFFFF; font-size: 11px; font-weight: 600; line-height: 1;
+  padding: 3px 6px; border-radius: 9px; white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+#canvas .heatmap-legend {
+  position: absolute; left: 16px; bottom: 44px; z-index: 5; display: flex; flex-direction: column; gap: 4px;
+  max-width: 300px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-raised, #FFFFFF); color: var(--ink, inherit); font-size: 12px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.15);
+}
+#canvas .heatmap-legend[hidden] { display: none; }
+#canvas .heatmap-legend .heatmap-scale { height: 10px; border-radius: 5px; }
+#canvas .heatmap-legend .heatmap-ticks { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.75; }
+#canvas .heatmap-legend .heatmap-source, #canvas .heatmap-legend .heatmap-note { font-size: 11px; opacity: 0.8; }
+#canvas .heatmap-legend .heatmap-note.warn { color: #C2410C; opacity: 1; }
+@media (max-width: 560px) {
+  #canvas .heatmap-bar { border-left: 0; padding-left: 4px; }
+  #canvas .heatmap-legend { left: 8px; right: 8px; bottom: 72px; max-width: none; }
+}

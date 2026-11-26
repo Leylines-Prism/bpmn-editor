@@ -10,12 +10,13 @@ import { safeBaseName } from '../mcp/files.js'
 const XML = '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"/>'
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(16)])
 
-test('only the five formats are accepted, with matching content', () => {
+test('only the six formats are accepted, with matching content', () => {
   assert.ok(ExportStore.validContent('bpmn', Buffer.from(XML)))
   assert.ok(ExportStore.validContent('xml', Buffer.from('﻿' + XML)))
   assert.ok(ExportStore.validContent('svg', Buffer.from('<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"/>')))
   assert.ok(ExportStore.validContent('png', PNG))
   assert.ok(ExportStore.validContent('pdf', Buffer.from('%PDF-1.7\n')))
+  assert.ok(ExportStore.validContent('md', Buffer.from('# Rapport de processus\n\n| Niveau | Élément |\n')))
 
   assert.equal(ExportStore.validContent('exe', PNG), false)
   assert.equal(ExportStore.validContent('__proto__', PNG), false)
@@ -24,6 +25,8 @@ test('only the five formats are accepted, with matching content', () => {
   assert.equal(ExportStore.validContent('svg', Buffer.from('<html><script>')), false)
   assert.equal(ExportStore.validContent('bpmn', Buffer.from([0xff, 0xfe, 0x3c])), false)
   assert.equal(ExportStore.validContent('pdf', Buffer.alloc(0)), false)
+  assert.equal(ExportStore.validContent('md', PNG), false)
+  assert.equal(ExportStore.validContent('md', Buffer.from([0x23, 0x00, 0x41])), false)
   assert.equal(ExportStore.validContent('pdf', Buffer.concat([Buffer.from('%PDF-'), Buffer.alloc(MAX_EXPORT_BYTES)])), false)
 })
 
