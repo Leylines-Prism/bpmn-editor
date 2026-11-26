@@ -47,6 +47,7 @@ import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
+import { setupExpertMode, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
@@ -490,6 +491,14 @@ modeler.on('tokenSimulation.toggleMode', ({ active }) => {
 simButton.addEventListener('click', () => {
   modeler.get('toggleMode').toggleMode()
 })
+// La simulation de jetons appartient au mode expert : hors de ce mode, ni le bouton ni la
+// touche T de l'extension ne la lancent, et quitter le mode expert l'arrête.
+{
+  const toggleMode = modeler.get('toggleMode')
+  const toggle = toggleMode.toggleMode.bind(toggleMode)
+  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !isExpert() ? undefined : toggle(active))
+  window.addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && toggleMode._active) toggle(false) })
+}
 
 function download(content, filename, type) {
   const a = document.createElement('a')
@@ -501,6 +510,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupExpertMode(document.getElementById('btn-expert'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.

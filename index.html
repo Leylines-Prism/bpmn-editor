@@ -67,9 +67,9 @@
       <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
       <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
       <button class="btn" id="btn-pdf" title="Vector PDF document" data-icon="pdf" role="menuitem">PDF document</button>
-      <div class="menu-sep" role="separator"></div>
-      <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
-      <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
+      <div class="menu-sep expert-only" role="separator"></div>
+      <button class="btn expert-only" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
+      <button class="btn expert-only" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>
@@ -77,8 +77,9 @@
     <button class="btn" id="btn-library" data-icon="library" title="Save, reopen, rename or delete diagrams (Ctrl+S saves)">My diagrams</button>
     <div class="sep"></div>
     <button class="btn" id="btn-layout" data-icon="layout" title="Tidy up the layout">Tidy up</button>
-    <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process">Simulation</button>
+    <button class="btn expert-only" id="btn-simulation" data-icon="play" title="Run tokens through the process">Simulation</button>
     <button class="btn" id="btn-present" data-icon="present" title="Presentation: the diagram alone, full screen">Presentation</button>
+    <button class="btn" id="btn-expert" data-icon="expert" aria-pressed="false" title="Expert mode: show the heatmap, branch probabilities and process report">Expert</button>
     <span id="autosave-status">Autosave: —</span>
     <a class="btn icon-only" id="btn-help" data-icon="help" href="help.html" target="_blank" rel="noopener" title="Help: how to use the editor" aria-label="Help"></a>
     <button class="btn" id="btn-lang" title="Langue : français" aria-label="Switch to French">FR</button>

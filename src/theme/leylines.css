@@ -218,7 +218,11 @@ a.btn { text-decoration: none; }
   background: var(--white); box-shadow: var(--elevation-1);
 }
 
-/* Bascule de simulation de jetons */
+/* Bascule de simulation de jetons de l'extension : masquée, la simulation se lance par le
+   bouton Simulation de la barre d'outils, en mode expert. */
+#canvas .bts-toggle-mode { display: none !important; }
+/* Pastilles des instances en cours : à droite d'Annuler et Rétablir. */
+#canvas .bts-scopes { left: 112px; top: 26px; }
 #canvas .bts-toggle-mode {
   font-family: var(--font-sans); font-size: 14px; font-weight: 500;
   border-radius: var(--radius-sm); border: 1px solid var(--mist);
@@ -326,8 +330,17 @@ a.btn { text-decoration: none; }
 /* « Confidentialité » reste plus discret (bordure et texte atténués, bouclier en couleur), posé
    au-dessus de « Votre avis » s'il existe. */
 #privacy-button { border-color: var(--line); color: var(--ink-muted); }
-#privacy-button svg { color: var(--accent); }
+#privacy-button svg { color: var(--warm); }
 #feedback-button ~ #privacy-button { bottom: 94px; }
+/* « Votre avis » porte le fin trait leyline (ciel, magenta, orange) du bouton Co-pilote IA. */
+#feedback-button {
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
+}
+#feedback-button:hover {
+  border-color: transparent;
+  background: linear-gradient(var(--surface-sunken), var(--surface-sunken)) padding-box, var(--leyline) border-box;
+}
 .brand-logo.clickable { cursor: pointer; border-radius: var(--radius-sm); }
 .brand-logo.clickable:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
 
@@ -871,6 +884,11 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
   #toolbar #btn-chat.has-model .chat-btn-short { display: none; }
 }
 
+/* Plus étroit encore : le bouton Expert passe aussi en icône seule. */
+@media (max-width: 1200px) {
+  #btn-expert { width: 32px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
+}
+
 /* ── Fenêtre « Connecter un agent » (src/mcp-connect.js) ───────────────── */
 
 #mcp-connect-dialog {
@@ -950,7 +968,7 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #privacy-dialog .pv-close { margin-left: auto; font-size: 20px; flex: none; }
 #privacy-dialog .pv-badge {
   flex: none; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px;
-  background: var(--accent); color: var(--on-accent);
+  background: var(--warm); color: var(--on-accent);
 }
 #privacy-dialog .pv-badge svg { width: 24px; height: 24px; }
 #privacy-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
@@ -1314,10 +1332,9 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .ai-changes-action[hidden] { display: none; }
 #canvas .ai-changes-action:hover { color: var(--leyline-magenta); }
 
-/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, à droite de la
-   bascule de simulation. Leur position horizontale suit la largeur de la bascule (--history-left). */
+/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, au-dessus de la palette. */
 #history-buttons {
-  position: absolute; top: 20px; left: var(--history-left, 210px); z-index: 100;
+  position: absolute; top: 20px; left: 20px; z-index: 100;
   display: inline-flex; overflow: hidden;
   border: 1px solid var(--mist); border-radius: var(--radius-sm);
   background: var(--white); box-shadow: var(--elevation-1);
@@ -1463,6 +1480,33 @@ body.presenting #canvas .djs-container { cursor: grab; }
   #canvas .heatmap-bar { border-left: 0; padding-left: 4px; }
   #canvas .heatmap-legend { left: 8px; right: 8px; bottom: 72px; max-width: none; }
 }
+
+/* Mode expert (src/expert-mode.js) : hors du mode, les fonctions avancées sont masquées. */
+html:not(.expert) .expert-only,
+html:not(.expert) #canvas .heatmap-bar,
+html:not(.expert) #canvas .heatmap-legend,
+html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none !important; }
+
+/* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
+   présentation : dans un petit carré au trait orange de la charte. */
+dialog .dlg-close,
+.cmp-close,
+.pv-close,
+.pres-close {
+  width: 22px !important; height: 22px !important; min-width: 0; padding: 0 !important; align-self: center; margin-block: 0 !important;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1.5px solid var(--warm) !important; border-radius: var(--radius-sm) !important;
+  background: transparent !important; color: var(--warm) !important;
+  font-size: 18px !important; line-height: 1 !important; font-weight: 500;
+}
+dialog .dlg-close:hover,
+.cmp-close:hover,
+.pv-close:hover,
+.pres-close:hover { background: color-mix(in srgb, var(--warm) 14%, transparent) !important; }
+dialog .dlg-close:focus-visible,
+.cmp-close:focus-visible,
+.pv-close:focus-visible,
+.pres-close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
 /* Mode Sapin de Noël de la simulation (simulation-glow.js) : sur chaque étape où entre un
    jeton, contour au dégradé Leylines qui tourne, lueur douce et trait de lumière qui en fait le tour. */
