@@ -524,8 +524,15 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.textContent = active ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
+  simButton.title = active
+    ? T('Back to editing. Expert mode stays on, so you can set the branch probabilities', 'Revenir à l\'édition. Le mode Expert reste actif pour régler les probabilités des branches')
+    : T('Run tokens through the process, with the heatmap and branch probabilities', 'Faire circuler des jetons dans le processus, avec la carte de chaleur et les probabilités des branches')
   simButton.classList.toggle('active', !!active)
   document.getElementById('btn-expert').classList.toggle('running', !!active)
+  // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
+  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités. « Quitter
+  // le mode Expert » revient une fois la simulation arrêtée.
+  document.getElementById('expert-menu').classList.toggle('simulating', !!active)
 })
 simButton.addEventListener('click', () => {
   setExpert(true)
