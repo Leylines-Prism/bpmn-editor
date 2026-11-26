@@ -15,6 +15,10 @@
 
 **Model every process of your context in seconds, from a few exchanges with your AI agent.**
 
+### [▶ Try the online version: bpmn.leylines.fr](https://bpmn.leylines.fr)
+
+No account, nothing to install, in your browser.
+
 Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
 "second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams:
 
@@ -34,8 +38,9 @@ documents (Word, Excel, PDF, emails…), and it draws it.
 font, element names and types, on as many elements at once as you like ("make every manual task
 orange, with bold text"). Each answer undoes in one click.
 
-BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
-with nothing but a browser, or run it on your own machine with Docker.
+BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it online at
+[bpmn.leylines.fr](https://bpmn.leylines.fr), with nothing but a browser, or run it on your own machine
+with Docker.
 
 - **Draw by hand**, with the bpmn-js modeler and its extensions.
 - **Ask the AI assistant**: it draws the processes you describe, in the open tab.

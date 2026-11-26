@@ -16,6 +16,10 @@
 **Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
 agent IA.**
 
+### [▶ Essayer la version en ligne : bpmn.leylines.fr](https://bpmn.leylines.fr)
+
+Sans compte ni installation, dans votre navigateur.
+
 Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
 graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
 
@@ -35,9 +39,9 @@ documents (Word, Excel, PDF, e-mails…), et il le dessine.
 souligné, taille et police, noms et types des éléments, sur autant d'éléments à la fois que vous voulez
 (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic.
 
-BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
-[en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
-machine avec Docker.
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le en ligne sur
+[bpmn.leylines.fr](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre
+propre machine avec Docker.
 
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
 - **Demandez à l'assistant IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
