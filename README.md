@@ -14,16 +14,25 @@
 ![The AI assistant draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
 **Model every process of your context in seconds, from a few exchanges with your AI agent.**
+
 Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
-"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams. No more hours spent working
-out the BPMN structure and drawing it by hand: the agent finds the processes, the editor draws and
-checks them, and you review and adjust the result. A human review is still needed, but the work goes
-much faster. This is the Docker version, where any MCP agent drives the editor. The online version
-follows the same idea with its built-in assistant: describe a process or attach your documents (Word,
-Excel, PDF, emails…), and it draws it. The same conversation also styles the diagram: fill, outline
-and text colors, bold, italic, underline, size and font, as well as element names and types, on as many
-elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in
-one click.
+"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams:
+
+- the agent finds the processes;
+- the editor draws and checks them;
+- you review and adjust the result.
+
+No more hours spent working out the BPMN structure and drawing it by hand. A human review is still
+needed, but the work goes much faster.
+
+**Docker version**: any MCP agent drives the editor.
+
+**Online version**: the same idea, with its built-in assistant. Describe a process or attach your
+documents (Word, Excel, PDF, emails…), and it draws it.
+
+**Styling in the same conversation**: fill, outline and text colors, bold, italic, underline, size and
+font, element names and types, on as many elements at once as you like ("make every manual task
+orange, with bold text"). Each answer undoes in one click.
 
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
 with nothing but a browser, or run it on your own machine with Docker.

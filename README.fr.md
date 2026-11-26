@@ -14,17 +14,26 @@
 ![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
 **Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
-agent IA.** Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG,
-mémoire en graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes
-BPMN. Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main : l'agent trouve
-les processus, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. Une
-relecture humaine reste nécessaire, mais le travail va beaucoup plus vite. C'est la version Docker, où
-tout agent MCP pilote l'éditeur. La version en ligne suit la même idée avec son assistant intégré :
-décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine. La même
-conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique,
-souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que
-vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule
-d'un clic.
+agent IA.**
+
+Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
+graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
+
+- l'agent trouve les processus ;
+- l'éditeur les dessine et les vérifie ;
+- vous relisez et ajustez le résultat.
+
+Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main. Une relecture humaine
+reste nécessaire, mais le travail va beaucoup plus vite.
+
+**Version Docker** : tout agent MCP pilote l'éditeur.
+
+**Version en ligne** : la même idée, avec son assistant intégré. Décrivez un processus ou joignez vos
+documents (Word, Excel, PDF, e-mails…), et il le dessine.
+
+**Mise en forme dans la même conversation** : couleurs de fond, de contour et de texte, gras, italique,
+souligné, taille et police, noms et types des éléments, sur autant d'éléments à la fois que vous voulez
+(« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic.
 
 BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
 [en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
