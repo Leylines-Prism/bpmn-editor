@@ -14,29 +14,27 @@
 ![The AI co-pilot draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
 
 **Model every process of your context in seconds, from a few exchanges with your AI agent.**
+
 Connected to an agent and everything it knows (mail, wiki, document base, RAG, knowledge graph or
-"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams. No more hours spent working
-out the BPMN structure and drawing it by hand: the agent finds the processes, the editor draws and
-checks them, and you review and adjust the result. A human review is still needed, but the work goes
-much faster. This is the Docker version, where any MCP agent drives the editor. The online version
-follows the same idea with its built-in AI co-pilot: describe a process or attach your documents (Word,
-Excel, PDF, emails…), and it draws it. The same conversation also styles the diagram: fill, outline
-and text colors, bold, italic, underline, size and font, as well as element names and types, on as many
-elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in
-one click. You are the pilot, hence the name: the AI co-pilot and your agents prepare the work, and you
-keep the final say on every diagram.
+"second brain"), BPMN-Pilot turns plain conversations into BPMN diagrams: the agent finds the
+processes, the editor draws and checks them, and you review the result. No more hours spent on the
+BPMN structure and on drawing by hand.
 
-BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js). Use it [online](https://bpmn.leylines.fr),
-with nothing but a browser, or run it on your own machine with Docker.
+BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), in English and French:
 
-BPMN 2.0 is an international standard: published by the Object Management Group (OMG) and adopted
-by ISO as [ISO/IEC 19510:2013](https://www.iso.org/standard/62652.html), identical to BPMN 2.0.1 and
-confirmed in 2022. Its notation and execution semantics are defined once for every tool and every team,
-so a diagram made here reads the same in any compliant editor or engine, and the .bpmn file opens there.
-
+- **Connect an agent through MCP** (Docker version), such as Claude Code, Claude Desktop or GitHub Copilot in
+  VS Code. It drives the editor open in your browser.
+- **Ask the built-in AI co-pilot** ([online](https://bpmn.leylines.fr) or Docker): describe a process
+  or attach your documents (Word, Excel, PDF, emails…), and it draws it.
 - **Draw by hand**, with the bpmn-js modeler and its extensions.
-- **Ask the AI co-pilot**: it draws the processes you describe, in the open tab.
-- **Connect an agent through MCP** (Docker version), such as Claude Code.
+
+The same conversation also styles the diagram (colors, fonts, names and types, on as many elements at
+once as you like) and each answer undoes in one click. You are the pilot, hence the name: the AI
+co-pilot and your agents prepare the work, and you keep the final say on every diagram.
+
+BPMN 2.0 is the international standard [ISO/IEC 19510](https://www.iso.org/standard/62652.html),
+published by the OMG. A diagram made here reads the same in any compliant editor or engine, and the
+.bpmn file opens there.
 
 > [!TIP]
 > **The online version is safe to use as is.** The public link (https://bpmn.leylines.fr) is only

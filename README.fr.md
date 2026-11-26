@@ -14,32 +14,29 @@
 ![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
 
 **Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
-agent IA.** Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG,
-mémoire en graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes
-BPMN. Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main : l'agent trouve
-les processus, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. Une
-relecture humaine reste nécessaire, mais le travail va beaucoup plus vite. C'est la version Docker, où
-tout agent MCP pilote l'éditeur. La version en ligne suit la même idée avec son co-pilote IA intégré :
-décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine. La même
-conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique,
-souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que
-vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule
-d'un clic. Le pilote, c'est vous, d'où le nom : le co-pilote IA et vos agents préparent le travail, et
-vous gardez la main sur chaque diagramme.
+agent IA.**
 
-BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
-[en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
-machine avec Docker.
+Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
+graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
+l'agent trouve les processus, l'éditeur les dessine et les vérifie, et vous relisez le résultat. Fini
+les heures passées sur la structure BPMN et le dessin à la main.
 
-BPMN 2.0 est une norme internationale : publiée par l'Object Management Group (OMG) et reprise par
-l'ISO sous la référence [ISO/IEC 19510:2013](https://www.iso.org/fr/standard/62652.html), identique à
-BPMN 2.0.1 et confirmée en 2022. Sa notation et sa sémantique d'exécution sont définies une fois pour
-tous les outils et toutes les équipes : un diagramme fait ici se lit de la même façon dans tout éditeur
-ou moteur conforme, et le fichier .bpmn s'y ouvre.
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
+- **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
+  VS Code. Il pilote l'éditeur ouvert dans votre navigateur.
+- **Demandez au co-pilote IA intégré** ([en ligne](https://bpmn.leylines.fr) ou en Docker) : décrivez
+  un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine.
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
-- **Demandez au co-pilote IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
-- **Connectez un agent par MCP** (version Docker), comme Claude Code.
+
+La même conversation met aussi le schéma en forme (couleurs, polices, noms et types, sur autant
+d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. Le pilote, c'est vous,
+d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
+diagramme.
+
+BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
+publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
+et le fichier .bpmn s'y ouvre.
 
 > [!TIP]
 > **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
