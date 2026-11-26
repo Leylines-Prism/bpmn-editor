@@ -6,6 +6,7 @@
 //   - constats de modélisation en trois niveaux : erreur (rouge), avertissement (orange),
 //     à compléter (jaune). Sources : bpmnlint, contrôles du modèle (accessibilité, chemin
 //     vers une fin, documentation, libellés, couloirs) et dernière simulation ;
+//   - carte de chaleur de la dernière simulation, s'il y en a une ;
 //   - axes d'amélioration déduits des constats, par priorité, avec l'effet attendu ;
 //   - événements de fin (part des instances si une simulation a tourné), activités par
 //     couloir, séquence des éléments.
@@ -13,6 +14,7 @@
 
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
+import { heatColor, heatBadge } from './heatmap.js'
 
 const LEVELS = ['error', 'warning', 'todo']
 const LEVEL_LABEL = {
@@ -396,7 +398,9 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     ends,
     lanes: laneRows,
     sequence,
-    simulation: simulation?.runs ? { runs: simulation.runs, source: simulation.source } : null,
+    simulation: simulation?.runs
+      ? { runs: simulation.runs, source: simulation.source, truncated: simulation.truncated || 0, nodes: { ...simulation.nodes }, flows: { ...simulation.flows } }
+      : null,
     flagged: Object.fromEntries(worst),
   }
 }
@@ -581,6 +585,69 @@ async function flaggedSvg(modeler, flagged) {
   return document.importNode(doc.documentElement, true)
 }
 
+// SVG du diagramme coloré selon les passages de jetons, comme la carte de chaleur du
+// canevas : formes et flux du bleu pâle au rouge, épaisseur des flux selon le compte,
+// pastille du compte sur les activités et les événements, gris pointillé si jamais atteint.
+const rgb = (c) => c.match(/\d+/g).map(Number)
+const SVG_NS = 'http://www.w3.org/2000/svg'
+
+async function heatSvg(modeler, sim) {
+  const { svg } = await modeler.saveSVG()
+  const doc = new DOMParser().parseFromString(svg, 'image/svg+xml')
+  const max = Math.max(1, ...Object.values(sim.nodes))
+  const flowMax = Math.max(1, ...Object.values(sim.flows))
+  const cold = 'stroke:#9CA3AF;stroke-dasharray:4 3;fill:#FFFFFF;opacity:0.7'
+  // Les pastilles passent au-dessus de tout, flux compris.
+  const badges = []
+  for (const el of modeler.get('elementRegistry').getAll()) {
+    if (el.type === 'label') continue
+    const g = doc.querySelector(`g[data-element-id="${CSS.escape(el.id)}"]`)
+    if (el.type === 'bpmn:SequenceFlow') {
+      // Le trait est le chemin hors de <defs> ; la pointe de flèche, dans <defs>, prend la même couleur.
+      const line = g?.querySelector('.djs-visual > path')
+      if (!line) continue
+      const n = sim.flows[el.id] || 0
+      const color = n ? heatColor(n / flowMax) : '#9CA3AF'
+      const width = n ? 2 + 5 * (n / flowMax) : 2
+      line.setAttribute('style', `${line.getAttribute('style') || ''};stroke:${color};` + (n
+        ? `stroke-width:${width.toFixed(1)}px`
+        : 'stroke-dasharray:4 3'))
+      g.querySelectorAll('marker').forEach((marker) => {
+        // Pointe de taille fixe, quelle que soit l'épaisseur du trait.
+        const size = (20 / width).toFixed(2)
+        Object.entries({ markerWidth: size, markerHeight: size }).forEach(([k, v]) => marker.setAttribute(k, v))
+        marker.querySelectorAll('path').forEach((m) => m.setAttribute('style', `${m.getAttribute('style') || ''};stroke:${color};fill:${color}`))
+      })
+      continue
+    }
+    const shape = g?.querySelector('.djs-visual > :first-child')
+    if (!shape) continue
+    if (!el.businessObject?.$instanceOf?.('bpmn:FlowNode') || !el.width) continue
+    const n = sim.nodes[el.id] || 0
+    if (!n) {
+      shape.setAttribute('style', `${shape.getAttribute('style') || ''};${cold}`)
+      continue
+    }
+    const color = heatColor(n / max)
+    shape.setAttribute('style', `${shape.getAttribute('style') || ''};stroke:${color};fill:${color};fill-opacity:0.55`)
+    if (el.type.endsWith('Gateway')) continue
+    // Pastille du compte, au-dessus à droite de la forme.
+    const text = heatBadge(n, sim)
+    const w = text.length * 5.6 + 8
+    const badge = doc.createElementNS(SVG_NS, 'g')
+    badge.setAttribute('transform', `translate(${el.x + el.width - w + (el.width > 60 ? -4 : 12)}, ${el.y - 9})`)
+    const rect = doc.createElementNS(SVG_NS, 'rect')
+    Object.entries({ width: w, height: 13, rx: 6.5, ry: 6.5, style: 'fill:#1F2937;stroke:none' }).forEach(([k, v]) => rect.setAttribute(k, v))
+    const label = doc.createElementNS(SVG_NS, 'text')
+    Object.entries({ x: w / 2, y: 9.5, 'text-anchor': 'middle', style: 'fill:#FFFFFF;font-family:Arial, sans-serif;font-size:9px;font-weight:bold' }).forEach(([k, v]) => label.setAttribute(k, v))
+    label.textContent = text
+    badge.append(rect, label)
+    badges.push(badge)
+  }
+  doc.documentElement.append(...badges)
+  return document.importNode(doc.documentElement, true)
+}
+
 export async function reportToPdf(modeler, r) {
   const [{ jsPDF }, { svg2pdf }, { autoTable }] = await Promise.all([import('jspdf'), import('svg2pdf.js'), import('jspdf-autotable')])
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' })
@@ -641,26 +708,28 @@ export async function reportToPdf(modeler, r) {
 
   // Diagramme.
   // svg2pdf lit les styles calculés : le SVG doit être dans la page le temps du dessin.
-  const host = document.createElement('div')
-  host.style.cssText = 'position:fixed;left:-100000px;top:0;visibility:hidden'
-  host.append(await flaggedSvg(modeler, r.flagged))
-  document.body.appendChild(host)
-  try {
-    const el = host.querySelector('svg')
-    const sw = parseFloat(el.getAttribute('width')) || 800
-    const sh = parseFloat(el.getAttribute('height')) || 600
-    const maxW = W - 2 * M
-    const maxH = Math.max(60, H - y - M - 30)
-    const scale = Math.min(maxW / sw, maxH / sh, 0.35)
-    const dw = sw * scale
-    const dh = sh * scale
-    doc.setDrawColor(229, 231, 235)
-    doc.roundedRect(M, y, maxW, dh + 4, 2, 2, 'S')
-    await svg2pdf(el, doc, { x: M + (maxW - dw) / 2, y: y + 2, width: dw, height: dh })
-    y += dh + 8
-  } finally {
-    host.remove()
+  const drawDiagram = async (svgEl, maxH, maxScale) => {
+    const host = document.createElement('div')
+    host.style.cssText = 'position:fixed;left:-100000px;top:0;visibility:hidden'
+    host.append(svgEl)
+    document.body.appendChild(host)
+    try {
+      const el = host.querySelector('svg')
+      const sw = parseFloat(el.getAttribute('width')) || 800
+      const sh = parseFloat(el.getAttribute('height')) || 600
+      const maxW = W - 2 * M
+      const scale = Math.min(maxW / sw, maxH / sh, maxScale)
+      const dw = sw * scale
+      const dh = sh * scale
+      doc.setDrawColor(229, 231, 235)
+      doc.roundedRect(M, y, maxW, dh + 4, 2, 2, 'S')
+      await svg2pdf(el, doc, { x: M + (maxW - dw) / 2, y: y + 2, width: dw, height: dh })
+      y += dh + 8
+    } finally {
+      host.remove()
+    }
   }
+  await drawDiagram(await flaggedSvg(modeler, r.flagged), Math.max(60, H - y - M - 30), 0.35)
 
   const section = (title) => {
     if (y > H - M - 25) { doc.addPage(); y = M + 4 }
@@ -707,6 +776,39 @@ export async function reportToPdf(modeler, r) {
       ...levelHooks(r.findings.map((f) => f.level), r.findings.map((f) => LEVEL_LABEL[f.level]())),
     })
   } else note(T('No finding.', 'Aucun constat.'))
+
+  // Carte de chaleur, sur sa propre page, si une simulation a tourné.
+  if (r.simulation) {
+    doc.addPage()
+    y = M + 4
+    section(T('Heatmap', 'Carte de chaleur'))
+    const sim = r.simulation
+    doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...ink)
+    doc.text(pdfText(sim.source === 'batch'
+      ? T(`${num(sim.runs)} tokens computed from the gateway probabilities.`, `${num(sim.runs)} jetons calculés selon les probabilités des passerelles.`)
+      : T(`${num(sim.runs)} token(s) played during the simulation.`, `${num(sim.runs)} jeton(s) joué(s) pendant la simulation.`)), M, y + 2)
+    y += 5
+    await drawDiagram(await heatSvg(modeler, sim), H - y - M - 22, 0.6)
+    // Légende : dégradé, bornes et lecture.
+    const max = Math.max(1, ...Object.values(sim.nodes))
+    const lw = 70
+    for (let i = 0; i < 70; i++) {
+      doc.setFillColor(...rgb(heatColor(i / 69)))
+      doc.rect(M + (i * lw) / 70, y, lw / 70 + 0.05, 3, 'F')
+    }
+    doc.setFont('helvetica', 'normal').setFontSize(7.5).setTextColor(...muted)
+    doc.text('1', M, y + 6.5)
+    doc.text(num(max), M + lw, y + 6.5, { align: 'right' })
+    doc.text(pdfText(T('Passes per element, from pale blue to red. Flow width follows the count. Dashed grey: never reached.',
+      'Passages par élément, du bleu pâle au rouge. Épaisseur des flux selon le nombre de passages. Gris pointillé : jamais atteint.')), M + lw + 6, y + 2.6)
+    if (sim.source === 'batch') doc.text(pdfText(T('Badge: passes · share of instances (or executions per instance above one).', 'Pastille : passages · part des instances (ou exécutions par instance au-delà de une).')), M + lw + 6, y + 6.5)
+    y += 10
+    if (sim.truncated) {
+      doc.setTextColor(...hex(COLORS.warning.strong))
+      doc.text(pdfText(T(`${num(sim.truncated)} instance(s) stopped after 5,000 steps: check for a loop without exit.`, `${num(sim.truncated)} instance(s) arrêtée(s) après 5 000 étapes : vérifiez qu'aucune boucle n'est sans sortie.`)), M, y)
+      y += 6
+    }
+  }
 
   section(T('Improvement areas', 'Axes d\'amélioration'))
   if (r.axes.length) {

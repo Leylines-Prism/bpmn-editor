@@ -291,7 +291,7 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   element.
 - **Heatmap and process report**: during the simulation, color the diagram by the number of tokens
   through each element, played by hand or computed from branch probabilities. Export a process report
-  (PDF or Markdown) with the findings in three levels, improvement areas and the element sequence.
+  (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color

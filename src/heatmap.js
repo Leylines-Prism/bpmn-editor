@@ -9,7 +9,7 @@
 //     probabilités saisies sur les flux sortants des passerelles.
 // La carte est dessinée dans une couche du canevas, au-dessus des formes, sans toucher
 // au diagramme. Le dernier résultat reste disponible pour le rapport de processus tant
-// que le diagramme ne change pas.
+// que le diagramme ne change pas, et le rapport en tire une page Carte de chaleur.
 
 import { T, num } from './i18n/lang.js'
 import { runBatch } from './simulation-stats.js'
@@ -38,6 +38,14 @@ export function heatColor(t) {
     }
   }
   return `rgb(${STOPS[STOPS.length - 1][1].join(',')})`
+}
+
+// Texte de la pastille : passages, et pour une série calculée la part des instances, ou
+// le nombre d'exécutions par instance au-delà de une. Repris par le rapport de processus.
+export function heatBadge(n, result) {
+  if (result.source !== 'batch') return num(n)
+  if (n > result.runs) return `${num(n)} · ${num(Math.round((n / result.runs) * 10) / 10)}×`
+  return `${num(n)} · ${Math.round((n / result.runs) * 100)} %`
 }
 
 const isFlowNode = (el) => el.businessObject?.$instanceOf?.('bpmn:FlowNode') && el.type !== 'label'
@@ -176,17 +184,11 @@ export function setupHeatmap(modeler) {
       if (n && !el.type.endsWith('Gateway')) {
         const badge = document.createElement('div')
         badge.className = 'heatmap-badge'
-        badge.textContent = badgeText(n, result)
+        badge.textContent = heatBadge(n, result)
         overlays.add(el, 'heatmap', { position: { top: -11, right: el.width > 60 ? 8 : -12 }, html: badge })
       }
     }
     renderLegend(result, max)
-  }
-
-  function badgeText(n, result) {
-    if (result.source !== 'batch') return num(n)
-    if (n > result.runs) return `${num(n)} · ${num(Math.round((n / result.runs) * 10) / 10)}×`
-    return `${num(n)} · ${Math.round((n / result.runs) * 100)} %`
   }
 
   function drawShape(g, el, n, max) {
