@@ -101,8 +101,10 @@ Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercont
   d'écran de l'auteur. Pour la couper, ajoutez `SHOWCASE=off` au fichier `.env` (ou aux variables
   d'environnement de la pile), puis relancez la commande `up -d`. Le logo ouvre alors la fenêtre
   « Votre avis ».
-- **Mise à jour** : changez le numéro de version des deux images dans `docker-compose.image.yml`
-  (voir les [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)), puis :
+- **Mise à jour** : téléchargez de nouveau `docker-compose.image.yml` avec la même commande `curl`,
+  pour avoir aussi les nouveaux services et réglages (votre fichier `.env` et le dossier `bpmn-data`
+  restent tels quels). Pour rester sur une version donnée, changez plutôt le numéro de version des
+  trois lignes d'image (voir les [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)). Puis :
 
   ```
   docker compose -f docker-compose.image.yml pull
@@ -159,7 +161,11 @@ Où est le dossier :
   son journal au démarrage (`docker compose logs mcp`) et dans l'erreur de l'export, avec le dossier
   en cause.
 - **Ailleurs** : réglez `BPMN_DATA_DIR` sur le chemin d'un autre dossier. Dans un outil de gestion de
-  conteneurs, donnez toujours un chemin absolu.
+  conteneurs, donnez toujours un chemin absolu, et collez le dernier `docker-compose.image.yml` : une
+  copie plus ancienne n'a pas le service `data-init`.
+- **SELinux** (Fedora, RHEL…) : si l'accès est refusé au serveur malgré le bon propriétaire, ajoutez
+  `:z` après le montage (`${BPMN_DATA_DIR:-./bpmn-data}:/data:z`), seulement pour un dossier réservé à
+  BPMN Pilot.
 
 Sécurité : les fichiers ne sont lisibles que par leur propriétaire et son groupe (0640, dossiers 0750).
 Le serveur tourne sur un système de fichiers en lecture seule, sauf ce dossier, sans aucune capacité
@@ -183,6 +189,15 @@ de dossier, pas de fichier caché, pas de nom réservé par Windows).
   Elle distingue une erreur de réglage (clé, adresse, nom du modèle, refus du fournisseur) d'une limite
   du modèle (pas d'appel d'outil, pas de vision, pas de PDF), pour quelques centaines de jetons par
   modèle. Elle ne couvre pas les fournisseurs saisis dans la fenêtre Options, qui restent dans le navigateur.
+
+## Fournisseurs d'IA : vos essais sont les bienvenus
+
+Anthropic (Claude Opus, Sonnet et Haiku 5.5) est vérifié avec de vrais appels : réponse, appels
+d'outils, images et PDF. OpenAI, Mistral, xAI, Ollama et les serveurs compatibles OpenAI suivent leurs
+API publiées, mais les mainteneurs n'ont pas de clé pour les vérifier. Si vous en utilisez un, un court
+retour aide beaucoup : lancez la commande de vérification (voir [En cas de problème](#en-cas-de-problème-version-docker)),
+puis ouvrez une issue avec le formulaire [AI provider test report](https://github.com/Leylines-Prism/bpmn-pilot/issues/new?template=provider_test.yml).
+Ne collez jamais de clé.
 
 ## Le joindre depuis d'autres machines
 

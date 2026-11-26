@@ -96,8 +96,10 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
 - **Showcase page**: the logo in the toolbar opens a showcase page with the author's logo and
   wallpapers. To turn it off, add `SHOWCASE=off` to the `.env` file (or the stack's environment
   variables), then run the `up -d` command again. The logo then opens the Feedback window.
-- **Update**: change the version number of both images in `docker-compose.image.yml` (see the
-  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)), then:
+- **Update**: download `docker-compose.image.yml` again with the same `curl` command, so that you
+  also get the new services and settings (your `.env` file and `bpmn-data` folder stay as they are).
+  To stay on a given version instead, change the version number of the three image lines (see the
+  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)). Then:
 
   ```
   docker compose -f docker-compose.image.yml pull
@@ -150,7 +152,10 @@ Where the folder is:
   server still cannot write in the folder, it says so in its log at startup (`docker compose logs mcp`)
   and in the error of the export, with the folder in question.
 - **Elsewhere**: set `BPMN_DATA_DIR` to the path of another folder. In a container manager, always
-  give an absolute path.
+  give an absolute path, and paste the latest `docker-compose.image.yml`: an older copy has no
+  `data-init` service.
+- **SELinux** (Fedora, RHEL…): if the server is refused access even with the right owner, add `:z`
+  after the mount (`${BPMN_DATA_DIR:-./bpmn-data}:/data:z`), only for a folder dedicated to BPMN Pilot.
 
 Security: the files are readable by their owner and group only (0640, folders 0750). The server runs
 on a read-only file system except for this folder, without any Linux capability and without privilege
@@ -172,6 +177,15 @@ Windows).
   error (key, address, model name, rejected by the provider) from a limit of the model (no tool calls,
   no vision, no PDF), for a few hundred tokens per model. It does not cover the providers typed in the
   Options window, which stay in the browser.
+
+## AI providers: tests welcome
+
+Anthropic (Claude Opus, Sonnet and Haiku 5.5) is checked with real calls: reply, tool calls, images
+and PDFs. OpenAI, Mistral, xAI, Ollama and OpenAI-compatible servers follow their published APIs,
+but the maintainers have no key to check them. If you use one of them, a short report helps a lot:
+run the check command (see [If something fails](#if-something-fails-docker-version)), then open an
+issue with the [AI provider test report](https://github.com/Leylines-Prism/bpmn-pilot/issues/new?template=provider_test.yml)
+form. Never paste a key.
 
 ## Reach it from other machines
 

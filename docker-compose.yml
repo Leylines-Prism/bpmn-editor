@@ -45,7 +45,7 @@ services:
       - -c
       - >-
         mkdir -p /data/diagrams /data/exports &&
-        chown "$$PUID:$$PGID" /data /data/diagrams /data/exports ||
+        chown -R "$$PUID:$$PGID" /data ||
         echo "data-init - could not prepare /data, check the owner of the data folder"
     environment:
       PUID: ${PUID:-1000}

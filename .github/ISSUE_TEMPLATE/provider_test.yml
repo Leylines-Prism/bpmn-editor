@@ -1,0 +1,57 @@
+name: AI provider test report
+description: Share how an AI provider or model works with BPMN Pilot (OpenAI, Mistral, xAI, Ollama, OpenAI-compatible...).
+labels: [provider-test]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing a provider. Only Anthropic is checked by the maintainers with real calls, so every report helps.
+        **Never paste an API key or a token here.** The check command below prints none.
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - OpenAI
+        - Mistral
+        - xAI (Grok)
+        - Ollama
+        - OpenAI-compatible server (LiteLLM, vLLM, LM Studio...)
+        - Anthropic
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: gpt-5.2, mistral-large-latest, qwen3:8b...
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where is the provider set?
+      options:
+        - On the server (.env file of the Docker version)
+        - In the Options window of the editor
+    validations:
+      required: true
+  - type: textarea
+    id: check
+    attributes:
+      label: Output of the check command (Docker version)
+      description: |
+        Run `docker compose -f docker-compose.image.yml exec mcp node mcp/check-providers.js` and paste the output.
+        It tries each model set on the server: reply, tool call, image, PDF.
+      render: text
+  - type: textarea
+    id: notes
+    attributes:
+      label: What you tried in the editor
+      description: Drawing a process, attachments (image, PDF, Word, Excel...), errors seen, with the exact message.
+  - type: input
+    id: version
+    attributes:
+      label: BPMN Pilot version
+      placeholder: 1.3.1

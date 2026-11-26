@@ -69,7 +69,11 @@ function serverStore(baseUrl) {
     const res = await fetch(baseUrl + path, init)
     if (res.status === 404 && init?.method !== 'DELETE') return null
     if (res.status === 413) throw new Error(T('diagram too large for the server', 'diagramme trop volumineux pour le serveur'))
-    if (!res.ok) throw new Error(T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
+    if (!res.ok) {
+      // Le serveur dit la cause (dossier sans droit d'écriture, adresse non autorisée…).
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.error || T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
+    }
     return res.json()
   }
   return {
@@ -231,7 +235,10 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     if (serverError) {
       const p = document.createElement('p')
       p.className = 'hint'
-      p.textContent = T('The server could not be reached: only the diagrams of your browser are listed.', 'Le serveur est injoignable : seuls les diagrammes de votre navigateur sont listés.')
+      p.textContent = serverError.message && !/fetch|network/i.test(serverError.message)
+        ? T(`The server cannot list its diagrams: ${serverError.message} Only the diagrams of your browser are listed.`,
+            `Le serveur ne peut pas lister ses diagrammes : ${serverError.message} Seuls les diagrammes de votre navigateur sont listés.`)
+        : T('The server could not be reached: only the diagrams of your browser are listed.', 'Le serveur est injoignable : seuls les diagrammes de votre navigateur sont listés.')
       listEl.append(p)
     }
     if (!rows.length) {

@@ -174,7 +174,12 @@ function chatCors(req, res, next) {
   // n'envoie pas d'en-tête Origin pour une lecture (GET) sur le même site.
   if (!origin && req.headers['sec-fetch-site'] === 'same-origin') return next()
   if (!origin || !ALLOWED_ORIGIN_SET.has(origin)) {
-    return res.status(403).json({ error: 'Origin not allowed' })
+    return res.status(403).json({
+      error: origin
+        ? T(req, `This address (${origin}) is not allowed by the server: add it to BPMN_EDITOR_ORIGINS, then restart.`,
+            `Cette adresse (${origin}) n'est pas autorisée par le serveur : ajoutez-la à BPMN_EDITOR_ORIGINS, puis redémarrez.`)
+        : 'Origin not allowed',
+    })
   }
   res.set('Access-Control-Allow-Origin', origin)
   res.set('Vary', 'Origin')
@@ -295,34 +300,50 @@ function checkId(req, res, next) {
   if (!DiagramStore.validId(req.params.id)) return res.status(400).json({ error: 'Invalid id' })
   next()
 }
-// Dossiers de données sans droit d'écriture : cas courant d'un dossier monté créé par Docker
-// au nom de root, alors que le conteneur tourne sous l'utilisateur 1000.
-const NOT_WRITABLE = ['EACCES', 'EPERM', 'EROFS']
-const DATA_DIR_HINT = {
-  en: 'With Docker, the mounted data folder must belong to the user the container runs as (1000:1000 by default): chown -R 1000:1000 on the host folder, then restart.',
-  fr: "Avec Docker, le dossier de données monté doit appartenir à l'utilisateur du conteneur (1000:1000 par défaut) : chown -R 1000:1000 sur le dossier de l'hôte, puis redémarrez.",
+// Erreur d'écriture ou de lecture d'un dossier de données : la cause, en clair, avec le dossier
+// et la marche à suivre. Le cas courant est un dossier monté créé par Docker au nom de root.
+const STORAGE_CAUSES = {
+  EACCES: ['the server has no right to write there', "le serveur n'a pas le droit d'y écrire"],
+  EPERM: ['the server has no right to write there', "le serveur n'a pas le droit d'y écrire"],
+  EROFS: ['the folder is read-only', 'le dossier est en lecture seule'],
+  ENOSPC: ['the disk is full', 'le disque est plein'],
+  ENOENT: ['the folder does not exist and could not be created', "le dossier n'existe pas et n'a pas pu être créé"],
+  ENOTDIR: ['the folder does not exist and could not be created', "le dossier n'existe pas et n'a pas pu être créé"],
 }
-const failed = (res, err) => {
+const RIGHTS_HINT = [
+  'With Docker, the data folder must belong to the user the server runs as (PUID:PGID, 1000:1000 by default): use the latest docker-compose file, whose data-init service does it at start, or run chown -R 1000:1000 on the host folder, then restart.',
+  "Avec Docker, le dossier de données doit appartenir à l'utilisateur du serveur (PUID:PGID, 1000:1000 par défaut) : reprenez le dernier fichier docker-compose, dont le service data-init le fait au démarrage, ou lancez chown -R 1000:1000 sur le dossier de l'hôte, puis redémarrez.",
+]
+function storageError(req, err, dir, generic) {
+  const cause = STORAGE_CAUSES[err?.code]
+  if (!cause) return generic
+  const fr = langOf(req) === 'fr'
+  const rights = err.code === 'EACCES' || err.code === 'EPERM'
+  return fr
+    ? `Dossier ${dir} inutilisable : ${cause[1]} (${err.code}).${rights ? ` ${RIGHTS_HINT[1]}` : ''}`
+    : `Folder ${dir} unusable: ${cause[0]} (${err.code}).${rights ? ` ${RIGHTS_HINT[0]}` : ''}`
+}
+const failed = (req, res, err) => {
   log('[diagrams] erreur :', err.message)
-  res.status(500).json({ error: 'Storage error' })
+  res.status(500).json({ error: storageError(req, err, diagrams.dir, T(req, 'Storage error', 'Erreur de stockage')) })
 }
 
 app.options('/diagrams', chatCors)
 app.options('/diagrams/:id', chatCors)
 app.get('/diagrams', chatCors, async (req, res) => {
-  try { res.json({ diagrams: await diagrams.list() }) } catch (err) { failed(res, err) }
+  try { res.json({ diagrams: await diagrams.list() }) } catch (err) { failed(req, res, err) }
 })
 app.get('/diagrams/:id', chatCors, checkId, async (req, res) => {
   try {
     const item = await diagrams.get(req.params.id)
     if (!item) return res.status(404).json({ error: 'Not found' })
     res.json(item)
-  } catch (err) { failed(res, err) }
+  } catch (err) { failed(req, res, err) }
 })
 app.put('/diagrams/:id', chatCors, checkId, xmlBody, async (req, res) => {
   const name = DiagramStore.cleanName(req.query.name)
   if (!name || typeof req.body !== 'string' || !req.body.includes('<')) return res.status(400).json({ error: 'Invalid diagram' })
-  try { res.json(await diagrams.put(req.params.id, name, req.body)) } catch (err) { failed(res, err) }
+  try { res.json(await diagrams.put(req.params.id, name, req.body)) } catch (err) { failed(req, res, err) }
 })
 app.patch('/diagrams/:id', chatCors, checkId, async (req, res) => {
   const name = DiagramStore.cleanName(req.body?.name)
@@ -331,13 +352,13 @@ app.patch('/diagrams/:id', chatCors, checkId, async (req, res) => {
     const meta = await diagrams.rename(req.params.id, name)
     if (!meta) return res.status(404).json({ error: 'Not found' })
     res.json(meta)
-  } catch (err) { failed(res, err) }
+  } catch (err) { failed(req, res, err) }
 })
 app.delete('/diagrams/:id', chatCors, checkId, async (req, res) => {
   try {
     await diagrams.remove(req.params.id)
     res.json({ ok: true })
-  } catch (err) { failed(res, err) }
+  } catch (err) { failed(req, res, err) }
 })
 
 // ── Exports enregistrés sur le serveur ─────────────────────────────────────
@@ -356,12 +377,7 @@ app.post('/exports', chatCors, exportBody, async (req, res) => {
     res.json({ file: await exportsStore.save(name, format, req.body) })
   } catch (err) {
     log('[exports] erreur :', err.message)
-    res.status(500).json({
-      error: NOT_WRITABLE.includes(err.code)
-        ? T(req, `The server cannot write to its exports folder (${exportsStore.dir}). ${DATA_DIR_HINT.en}`,
-            `Le serveur ne peut pas écrire dans son dossier d'exports (${exportsStore.dir}). ${DATA_DIR_HINT.fr}`)
-        : T(req, 'The server could not save the file', "Le serveur n'a pas pu enregistrer le fichier"),
-    })
+    res.status(500).json({ error: storageError(req, err, exportsStore.dir, T(req, 'The server could not save the file', "Le serveur n'a pas pu enregistrer le fichier")) })
   }
 })
 
