@@ -62,7 +62,7 @@ jobs:
         run: |
           stable=$(git tag --list 'v*.*.*' --sort=-v:refname | grep -v -- '-' | head -n 1 || true)
           echo "stable=${stable:-origin/main}" >> "$GITHUB_OUTPUT"
-          git worktree add --detach build-stable "${stable:-origin/main}
+          git worktree add --detach build-stable "${stable:-origin/main}"
       # npm ci : exactement les versions du package-lock.json.
       - name: Build the stable page (${{ steps.refs.outputs.stable }})
         working-directory: build-stable
