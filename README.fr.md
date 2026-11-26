@@ -34,20 +34,42 @@ d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. 
 d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
 diagramme.
 
-**Pour les experts BPMN**, d'autres outils éprouvent un modèle et en rendent compte, décrits dans une
-[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn) :
+**Pour les experts BPMN**, un mode **Expert**, activé depuis la barre d'outils, ajoute des outils qui
+éprouvent un modèle et en rendent compte, sans encombrer l'éditeur des autres (voir la
+[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
 
 - **Simulation de jetons avec carte de chaleur** : 100 jetons d'un coup selon les probabilités des
   branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
 - **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
   d'amélioration, événements de fin, activités par couloir.
-- **Contrôles à chaque réponse du co-pilote** : critique de la demande avant le dessin (ambiguïtés,
+- **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
 
 BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
 publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
 et le fichier .bpmn s'y ouvre.
+
+<details>
+<summary><b>Pourquoi BPMN plutôt qu'un logigramme ?</b></summary>
+
+Les outils de dessin généralistes comme draw.io, Lucidchart ou Visio tracent des boîtes et des flèches.
+Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente ses conventions. BPMN donne
+à chaque symbole un sens défini :
+
+- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de message
+  pour ce qu'ils échangent.
+- **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
+  événements accrochés à une tâche pour les délais et les exceptions.
+- **Comment les chemins se séparent et se rejoignent** : passerelles exclusive (un chemin), parallèle
+  (tous les chemins) et inclusive (certains chemins), chacune avec sa règle.
+- **Un fichier que les outils comprennent** : le fichier .bpmn décrit le processus, pas une image du
+  processus. Il se vérifie, se simule, devient un rapport, se lit et s'écrit par un agent IA, et
+  s'exécute dans un moteur de workflow. Une image de logigramme ne permet rien de tout cela.
+- **Pas d'enfermement** : le même fichier s'ouvre dans tout éditeur conforme, aujourd'hui comme dans dix
+  ans.
+
+</details>
 
 > [!TIP]
 > **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)

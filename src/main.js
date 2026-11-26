@@ -47,6 +47,7 @@ import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
+import { setupExpertMode } from './expert-mode.js'
 import { ProbabilityPanelModule } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
@@ -500,6 +501,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupExpertMode(document.getElementById('btn-expert'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.

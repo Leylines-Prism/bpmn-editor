@@ -11,6 +11,7 @@
 // au diagramme. Le dernier résultat reste disponible pour le rapport de processus tant
 // que le diagramme ne change pas, et le rapport en tire une page Carte de chaleur.
 
+import { EXPERT_EVENT } from './expert-mode.js'
 import { T, num } from './i18n/lang.js'
 import { runBatch } from './simulation-stats.js'
 
@@ -89,6 +90,8 @@ export function setupHeatmap(modeler) {
   container.append(legend)
 
   toggleButton.addEventListener('click', () => setShown(!shown))
+  // Sortie du mode expert : la carte s'efface avec ses boutons.
+  addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && shown) setShown(false) })
   runButton.addEventListener('click', () => {
     batch = runBatch(modeler.getDefinitions(), BATCH_RUNS)
     setShown(true)

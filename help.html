@@ -87,6 +87,17 @@
         <p>Your work is kept in the browser after every change, and you find it as you left it when you reopen the page. The "Autosave" label in the toolbar is there to remind you.</p>
         <p>The <span class="uib">FR</span> or <span class="uib">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
         <p>BPMN 2.0 is an international standard: published by the Object Management Group (OMG) and adopted by ISO as <a href="https://www.iso.org/standard/62652.html" target="_blank" rel="noopener">ISO/IEC 19510:2013</a>, identical to BPMN 2.0.1. Its notation and execution semantics are the same for every tool and every team: a diagram made here reads the same elsewhere, and the .bpmn file opens in any compliant editor or engine.</p>
+        <details class="faq">
+          <summary>Why BPMN rather than a flowchart?</summary>
+          <p>General drawing tools such as draw.io, Lucidchart or Visio draw boxes and arrows. A shape means what its author meant, and every team invents its own conventions. BPMN gives each symbol a defined meaning:</p>
+          <ul>
+            <li><strong>Who does what</strong>: pools for organisations, lanes for roles, message flows for what they exchange.</li>
+            <li><strong>What triggers and what waits</strong>: start, timer, message and error events, and events attached to a task for deadlines and exceptions.</li>
+            <li><strong>How paths split and join</strong>: exclusive (one path), parallel (all paths) and inclusive (some paths) gateways, each with its own rule.</li>
+            <li><strong>A file that tools understand</strong>: the .bpmn file describes the process, not a picture of it. It can be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow engine. A flowchart image allows none of this.</li>
+            <li><strong>No lock-in</strong>: the same file opens in any compliant editor, today and in ten years.</li>
+          </ul>
+        </details>
         <!-- online -->
         <div class="note">There is no account. Your diagrams stay in your browser. If you use the co-pilot, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
         <!-- /online -->
@@ -585,11 +596,12 @@
       <section id="bpmn-experts">
         <h2>For BPMN experts</h2>
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
+        <p>The heatmap, branch probabilities and the process report only show in expert mode, so that they stay out of the way: click <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, in the toolbar, to show or hide them. The browser remembers this choice. Token simulation, the co-pilot checks and the MCP tools are available in both modes.</p>
         <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
         <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
         <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
         <h3 id="probabilities">Branch probabilities</h3>
-        <p>The <span class="ui">Probability (%)</span> field, in the <span class="ui">Simulation</span> group of the <a href="#properties">Process panel</a>, appears for a sequence flow leaving an exclusive, inclusive, complex or event-based gateway. It takes a value from 0 to 100 and can be undone like any change.</p>
+        <p>The <span class="ui">Probability (%)</span> field, in the <span class="ui">Simulation</span> group of the <a href="#properties">Process panel</a>, appears in expert mode for a sequence flow leaving an exclusive, inclusive, complex or event-based gateway. It takes a value from 0 to 100 and can be undone like any change.</p>
         <ul>
           <li><strong>Exclusive, complex or event-based gateway:</strong> a single flow is taken. Flows without a value share equally what remains up to 100%, then the whole set is scaled to a total of 100%.</li>
           <li><strong>Inclusive gateway:</strong> each flow is taken according to its own probability, and at least one always is. The join waits for as many tokens as the split sent.</li>
@@ -599,7 +611,7 @@
         <h3 id="heatmap">Heatmap</h3>
         <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
         <ol>
-          <li>Start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
+          <li>In expert mode, start the <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>. The speed box, at the bottom of the canvas, holds two buttons: <span class="uib">Heatmap</span> and <span class="uib">Run 100 tokens</span>.</li>
           <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
           <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation and click <span class="uib">Run 100 tokens</span>: the result is immediate, with no animation.</li>
           <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
@@ -608,7 +620,7 @@
         <figure><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
         <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
         <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
-        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
+        <p>In expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
         <ul>
           <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
           <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>

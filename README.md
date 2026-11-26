@@ -32,20 +32,39 @@ The same conversation also styles the diagram (colors, fonts, names and types, o
 once as you like) and each answer undoes in one click. You are the pilot, hence the name: the AI
 co-pilot and your agents prepare the work, and you keep the final say on every diagram.
 
-**For BPMN experts**, further tools test a model and report on it, described in a
-[dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts):
+**For BPMN experts**, an **Expert** mode, turned on from the toolbar, adds tools that test a model and
+report on it, without cluttering the editor for everyone else (see the
+[dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts)):
 
 - **Token simulation with a heatmap**: run 100 tokens at once following branch probabilities, and see
   which paths are taken, never reached, or looped through.
 - **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
   activities by lane.
-- **Checks on every co-pilot answer**: a review of the request before drawing (ambiguities, missing
+- **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
   reimport, bpmnlint), with automatic correction.
 
 BPMN 2.0 is the international standard [ISO/IEC 19510](https://www.iso.org/standard/62652.html),
 published by the OMG. A diagram made here reads the same in any compliant editor or engine, and the
 .bpmn file opens there.
+
+<details>
+<summary><b>Why BPMN rather than a flowchart?</b></summary>
+
+General drawing tools such as draw.io, Lucidchart or Visio draw boxes and arrows. A shape means what its
+author meant, and every team invents its own conventions. BPMN gives each symbol a defined meaning:
+
+- **Who does what**: pools for organisations, lanes for roles, message flows for what they exchange.
+- **What triggers and what waits**: start, timer, message and error events, and events attached to a
+  task for deadlines and exceptions.
+- **How paths split and join**: exclusive (one path), parallel (all paths) and inclusive (some paths)
+  gateways, each with its own rule.
+- **A file that tools understand**: the .bpmn file describes the process, not a picture of it. It can
+  be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow
+  engine. A flowchart image allows none of this.
+- **No lock-in**: the same file opens in any compliant editor, today and in ten years.
+
+</details>
 
 > [!TIP]
 > **The online version is safe to use as is.** The public link (https://bpmn.leylines.fr) is only
