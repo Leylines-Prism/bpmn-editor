@@ -11,35 +11,81 @@
 
 [English](README.md) | **Français**
 
-![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
+![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
 
 **Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
-agent IA.** Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG,
-mémoire en graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes
-BPMN. Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main : l'agent trouve
-les processus, l'éditeur les dessine et les vérifie, et vous relisez et ajustez le résultat. Une
-relecture humaine reste nécessaire, mais le travail va beaucoup plus vite. C'est la version Docker, où
-tout agent MCP pilote l'éditeur. La version en ligne suit la même idée avec son co-pilote IA intégré :
-décrivez un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine. La même
-conversation met aussi le schéma en forme : couleurs de fond, de contour et de texte, gras, italique,
-souligné, taille et police, mais aussi noms et types des éléments, sur autant d'éléments à la fois que
-vous voulez (« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule
-d'un clic. Le pilote, c'est vous, d'où le nom : le co-pilote IA et vos agents préparent le travail, et
-vous gardez la main sur chaque diagramme.
+agent IA.**
 
-BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le
-[en ligne](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre propre
-machine avec Docker.
+Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
+graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
+l'agent trouve les processus, l'éditeur les dessine et les vérifie, et vous relisez le résultat. Fini
+les heures passées sur la structure BPMN et le dessin à la main.
 
-BPMN 2.0 est une norme internationale : publiée par l'Object Management Group (OMG) et reprise par
-l'ISO sous la référence [ISO/IEC 19510:2013](https://www.iso.org/fr/standard/62652.html), identique à
-BPMN 2.0.1 et confirmée en 2022. Sa notation et sa sémantique d'exécution sont définies une fois pour
-tous les outils et toutes les équipes : un diagramme fait ici se lit de la même façon dans tout éditeur
-ou moteur conforme, et le fichier .bpmn s'y ouvre.
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
+- **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
+  VS Code. Il pilote l'éditeur ouvert dans votre navigateur.
+- **Demandez au co-pilote IA intégré** ([en ligne](https://bpmn.leylines.fr) ou en Docker) : décrivez
+  un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine.
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
-- **Demandez au co-pilote IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
-- **Connectez un agent par MCP** (version Docker), comme Claude Code.
+
+La même conversation met aussi le schéma en forme (couleurs, polices, noms et types, sur autant
+d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. Le pilote, c'est vous,
+d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
+diagramme.
+
+**Pour les experts BPMN**, un mode **Expert**, activé depuis la barre d'outils, ajoute des outils qui
+éprouvent un modèle et en rendent compte, sans encombrer l'éditeur des autres (voir la
+[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
+
+- **Simulation de jetons avec carte de chaleur** : 100 jetons d'un coup selon les probabilités des
+  branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
+  d'amélioration, événements de fin, activités par couloir.
+- **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
+  manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
+  bpmnlint), avec autocorrection.
+
+<details><summary><b>Voir les outils experts en action</b> (un processus d'achat interne à quatre couloirs)</summary>
+
+**Simulation de jetons**, ralentie puis accélérée avec la glissière de vitesse :
+
+![Un jeton parcourt le processus d'achat, à 0,5× puis à 3×](docs/token-simulation.fr.gif)
+
+**Carte de chaleur** : la probabilité saisie sur une branche, puis 100 jetons calculés d'un coup :
+
+![La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 100 jetons](docs/heatmap.fr.gif)
+
+**Rapport de processus** en PDF, avec la page carte de chaleur après une simulation :
+
+![Export du rapport de processus en PDF, puis ses quatre pages](docs/process-report.fr.gif)
+
+</details>
+
+BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
+publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
+et le fichier .bpmn s'y ouvre.
+
+<details>
+<summary><b>Pourquoi BPMN plutôt qu'un logigramme ?</b></summary>
+
+Les outils de dessin généralistes comme draw.io, Lucidchart ou Visio tracent des boîtes et des flèches.
+Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente ses conventions. BPMN donne
+à chaque symbole un sens défini :
+
+- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de message
+  pour ce qu'ils échangent.
+- **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
+  événements accrochés à une tâche pour les délais et les exceptions.
+- **Comment les chemins se séparent et se rejoignent** : passerelles exclusive (un chemin), parallèle
+  (tous les chemins) et inclusive (certains chemins), chacune avec sa règle.
+- **Un fichier que les outils comprennent** : le fichier .bpmn décrit le processus, pas une image du
+  processus. Il se vérifie, se simule, devient un rapport, se lit et s'écrit par un agent IA, et
+  s'exécute dans un moteur de workflow. Une image de logigramme ne permet rien de tout cela.
+- **Pas d'enfermement** : le même fichier s'ouvre dans tout éditeur conforme, aujourd'hui comme dans dix
+  ans.
+
+</details>
 
 > [!TIP]
 > **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
@@ -312,9 +358,10 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
-  simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
+  vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
-- **Carte de chaleur et rapport de processus** : pendant la simulation, colorer le diagramme selon
+- **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
+  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
   le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
   probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
   niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
