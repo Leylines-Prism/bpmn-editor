@@ -175,7 +175,7 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
-| `validate_diagram` | checks the diagram with bpmnlint and returns errors and warnings, element by element |
+| `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 
@@ -188,7 +188,7 @@ the tools and give modeling rules: start and end events, verb + object for tasks
 events, a question on each exclusive gateway, no implicit split or join, the happy path from left to right.
 Most of them match what `validate_diagram` checks. The built-in chat sends the same text.
 
-The server also offers four MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
+The server also offers five MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
 
 | Prompt | Arguments | Purpose |
 |---|---|---|
@@ -196,6 +196,7 @@ The server also offers four MCP prompts (`src/ai/prompts.js`), which the user pi
 | `model_collaboration` | `description`, `participants` (optional) | draws one pool per participant, linked by message flows |
 | `review_diagram` | none | reviews the open diagram against the rules and the validator, without changing anything |
 | `tidy_diagram` | none | renames elements to the conventions, fixes validation errors and lays the diagram out, keeping its meaning |
+| `critique_description` | `description` | lists what is ambiguous or missing in a description (severity, quoted passage, question) before drawing |
 
 ## Saved diagrams
 

@@ -407,8 +407,20 @@
           <li>The marking is cleared by the pill's cross, by your next message, or when another diagram is opened. It never appears in the file or in exports.</li>
         </ul>
 
+        <h3 id="ai-checks">Review, checks and traceability</h3>
+        <p>Around each answer, the assistant shows what it understood, what the editor checked and where the result comes from.</p>
+        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="Assistant panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <ul>
+          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
+          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
+          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
+          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
+          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
+        </ul>
+        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
+
         <h3>What it costs</h3>
-        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
+        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
       </section>
 
       <section id="prompt-examples">
@@ -545,13 +557,15 @@
           <li>exports dropped on the server, if you choose,</li>
           <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, color and format it, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
-        <p>The MCP server gives the agent modeling rules (naming, gateways, happy path) along with its tools, and four ready-made prompts. Depending on the agent, they appear in a prompt menu (the <span class="ui">+</span> button in Claude Desktop) or as commands (<code>/mcp__bpmn-pilot__review_diagram</code> in Claude Code):</p>
+        <p>The MCP server gives the agent modeling rules (naming, gateways, happy path) along with its tools, and five ready-made prompts. Depending on the agent, they appear in a prompt menu (the <span class="ui">+</span> button in Claude Desktop) or as commands (<code>/mcp__bpmn-pilot__review_diagram</code> in Claude Code):</p>
         <ul>
           <li><code>model_process</code>: draws a process from your description,</li>
           <li><code>model_collaboration</code>: draws one pool per organization, with the messages between them,</li>
           <li><code>review_diagram</code>: lists what to improve in the open diagram, without changing anything,</li>
-          <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning.</li>
+          <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning,</li>
+          <li><code>critique_description</code>: lists what is ambiguous or missing in a description, with severity, quoted passage and question, before drawing.</li>
         </ul>
+        <p>The <code>validate_diagram</code> tool returns the same check report as the assistant: counts and six checks.</p>
         <p>The <a href="#prompt-examples">Prompt examples</a> also work with an MCP agent.</p>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>

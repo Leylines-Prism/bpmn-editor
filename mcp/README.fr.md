@@ -176,7 +176,7 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `style_elements` | règle le fond, le contour, la couleur du texte et la police (gras, italique, souligné, taille, famille) d'éléments |
 | `remove_elements` | supprime des formes ou des connexions |
 | `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
-| `validate_diagram` | vérifie le diagramme avec bpmnlint et renvoie les erreurs et avertissements, élément par élément |
+| `validate_diagram` | renvoie un rapport de contrôle : compteurs d'éléments et six contrôles (XML bien formé, métamodèle BPMN 2.0, références et portées, DI complet, réimport bpmn-js, bpmnlint), avec erreurs et avertissements élément par élément |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
@@ -190,7 +190,7 @@ pour les tâches, objet + état pour les événements, une question sur chaque p
 séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
 que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
 
-Le serveur propose aussi quatre prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
+Le serveur propose aussi cinq prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
 
 | Prompt | Arguments | Rôle |
 |---|---|---|
@@ -198,6 +198,7 @@ Le serveur propose aussi quatre prompts MCP (`src/ai/prompts.js`), que l'utilisa
 | `model_collaboration` | `description`, `participants` (facultatif) | dessine un pool par participant, reliés par des flux de messages |
 | `review_diagram` | aucun | relit le diagramme ouvert d'après les règles et le validateur, sans rien modifier |
 | `tidy_diagram` | aucun | renomme selon les conventions, corrige les erreurs de validation et range, sans changer le sens |
+| `critique_description` | `description` | relève ce qui est ambigu ou manquant dans une description (gravité, passage cité, question) avant de dessiner |
 
 ## Diagrammes enregistrés
 

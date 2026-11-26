@@ -407,8 +407,20 @@
           <li>Le marquage s'efface avec la croix de la pilule, au message suivant, ou à l'ouverture d'un autre diagramme. Il n'apparaît ni dans le fichier ni dans les exports.</li>
         </ul>
 
+        <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
+        <p>Autour de chaque réponse, l'assistant montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
+        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau de l'assistant après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <ul>
+          <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
+          <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de message relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
+          <li><strong>Autocorrection.</strong> Si un contrôle échoue, les problèmes repartent au modèle, qui corrige seul, deux tours au plus. Une correction qui ne réduit pas le nombre de problèmes est annulée. Le rapport en rend compte, par exemple « 1 correction demandée, 1 retenue ».</li>
+          <li><strong>Traçabilité.</strong> Sous chaque réponse : fournisseur, modèle, durée, date et heure, et la source (taille du message, noms des fichiers joints). <span class="uib">Relancer depuis la même source</span>, sur la dernière réponse, remet le diagramme dans l'état d'avant cette réponse et renvoie la même demande au modèle choisi à ce moment, par exemple pour comparer deux modèles.</li>
+          <li><strong>Destination.</strong> Une ligne au-dessus du champ dit où part le message, vers quel fournisseur et quel modèle : depuis votre navigateur dans la version en ligne, par votre serveur dans la version Docker. Un fournisseur sur votre réseau, comme Ollama, est signalé comme tel. Le message, les fichiers joints et le diagramme en cours partent à chaque envoi.</li>
+        </ul>
+        <p>La critique et l'autocorrection envoient des requêtes en plus au modèle : elles prennent du temps et se paient comme les autres. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, les coupe toutes les deux. Le rapport, la traçabilité et la ligne de destination restent.</p>
+
         <h3>Combien ça coûte</h3>
-        <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur.</p>
+        <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur. La critique de la demande et l'autocorrection ajoutent des requêtes : elles se coupent dans <span class="uib">Options</span>.</p>
       </section>
 
       <section id="exemples-prompts">
@@ -545,13 +557,15 @@
           <li>des exports déposés, au choix, sur le serveur,</li>
           <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux de l'assistant. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
-        <p>Avec ses outils, le serveur MCP donne à l'agent des règles de modélisation (nommage, passerelles, chemin nominal) et quatre prompts tout prêts. Selon l'agent, ils apparaissent dans un menu de prompts (le bouton <span class="ui">+</span> de Claude Desktop) ou comme des commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) :</p>
+        <p>Avec ses outils, le serveur MCP donne à l'agent des règles de modélisation (nommage, passerelles, chemin nominal) et cinq prompts tout prêts. Selon l'agent, ils apparaissent dans un menu de prompts (le bouton <span class="ui">+</span> de Claude Desktop) ou comme des commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) :</p>
         <ul>
           <li><code>model_process</code> : dessine un processus d'après votre description,</li>
           <li><code>model_collaboration</code> : dessine un pool par organisation, avec les messages échangés,</li>
           <li><code>review_diagram</code> : liste ce qu'il faut améliorer dans le diagramme ouvert, sans rien modifier,</li>
-          <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens.</li>
+          <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens,</li>
+          <li><code>critique_description</code> : relève ce qui est ambigu ou manquant dans une description, avec gravité, passage cité et question, avant de dessiner.</li>
         </ul>
+        <p>L'outil <code>validate_diagram</code> rend le même rapport de contrôle que l'assistant : compteurs et six contrôles.</p>
         <p>Les <a href="#exemples-prompts">Exemples de prompts</a> fonctionnent aussi avec un agent MCP.</p>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans un dossier <code>bpmn-data</code>, à côté de son fichier compose (ou dans le dossier réglé par <code>BPMN_DATA_DIR</code>). Ouvrez-le avec votre explorateur de fichiers pour récupérer votre travail :</p>
