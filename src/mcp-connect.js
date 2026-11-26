@@ -99,8 +99,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
           </li>
           <li class="new-token">
             <p class="hint">${T(
-              'Open the folder where the editor is installed, then its <strong>mcp</strong> subfolder, and open the <strong>.env</strong> file with a text editor (Notepad, for example). If there is no .env file, copy <strong>.env.example</strong> and rename the copy to .env. Add this line at the end, then save the file:',
-              'Ouvrez le dossier où l\'éditeur est installé, puis son sous-dossier <strong>mcp</strong>, et ouvrez le fichier <strong>.env</strong> avec un éditeur de texte (le Bloc-notes, par exemple). S\'il n\'y a pas de fichier .env, copiez <strong>.env.example</strong> et renommez la copie en .env. Ajoutez cette ligne à la fin, puis enregistrez le fichier :',
+              'Open the folder where the editor is installed, then its <strong>mcp</strong> subfolder, and open the <strong>.env</strong> file with a text editor (Notepad, for example). If there is no .env file, copy <strong>.env.example</strong> and rename the copy to .env. Add this line at the end, then save the file. With a Docker stack, add it to the variables of the stack instead:',
+              'Ouvrez le dossier où l\'éditeur est installé, puis son sous-dossier <strong>mcp</strong>, et ouvrez le fichier <strong>.env</strong> avec un éditeur de texte (le Bloc-notes, par exemple). S\'il n\'y a pas de fichier .env, copiez <strong>.env.example</strong> et renommez la copie en .env. Ajoutez cette ligne à la fin, puis enregistrez le fichier. Avec une pile Docker, ajoutez-la plutôt aux variables de la pile :',
             )}</p>
             ${code('mcp-env')}
           </li>
@@ -188,8 +188,8 @@ export function setupMcpConnect({ badge, mcpUrl, infoUrl }) {
     )
 
     $('#mcp-auth').textContent = serverAuth
-      ? T('This server already asks for a token. Paste it below: it is the MCP_TOKEN value in the mcp/.env file of the editor. The setting of your agent, above, then holds it.',
-          'Ce serveur demande déjà un jeton. Collez-le ci-dessous : c\'est la valeur MCP_TOKEN du fichier mcp/.env de l\'éditeur. Le réglage de votre agent, plus haut, le contient alors.')
+      ? T('This server already asks for a token. Paste it below: it is the MCP_TOKEN variable of the server (Docker stack or mcp/.env). The setting of your agent, above, then holds it.',
+          'Ce serveur demande déjà un jeton. Collez-le ci-dessous : c\'est la variable MCP_TOKEN du serveur (pile Docker ou mcp/.env). Le réglage de votre agent, plus haut, le contient alors.')
       : T('This server asks for no token for now. To set one:', 'Ce serveur ne demande pas de jeton pour l\'instant. Pour en mettre un :')
     $('#mcp-token-label').textContent = serverAuth
       ? T('The token of this server:', 'Le jeton de ce serveur :')
