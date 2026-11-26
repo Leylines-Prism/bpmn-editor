@@ -190,7 +190,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     autosave.before(toggle)
     toggle.classList.add('push-right')
     autosave.style.marginLeft = '8px'
-  } else document.getElementById('btn-simulation').after(toggle)
+  } else document.getElementById('btn-expert').after(toggle)
 
   const log = panel.querySelector('#chat-log')
   const form = panel.querySelector('#chat-form')

@@ -8,6 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-pilot/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-pilot)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
 **English** | [Français](README.fr.md)
 
@@ -55,11 +56,12 @@ At home, on your machine or your server, with the MCP server that connects your 
 </tr>
 </table>
 
-**For BPMN experts**, an **Expert** mode, turned on from the toolbar, adds tools that test a model and
-report on it, without cluttering the editor for everyone else (see the
+**For BPMN experts**, the **Expert** button of the toolbar opens what you need to test a model and
+report on it: the token simulation and the process report. It turns blue while expert mode is on,
+and the toolbar stays uncluttered for everyone else (see the
 [dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts)):
 
-- **Token simulation with a heatmap**: run 100 tokens at once following branch probabilities, and see
+- **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
   which paths are taken, never reached, or looped through.
 - **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
   activities by lane.
@@ -70,25 +72,26 @@ report on it, without cluttering the editor for everyone else (see the
 **Presentation** (toolbar button): the diagram alone, full screen and read-only, to walk a meeting
 through a process. In Expert mode, the token simulation runs there too.
 
-<details><summary><b>See the expert tools in action</b> (an internal purchase process with four lanes)</summary>
+The expert tools on an internal purchase process with four lanes:
 
-**Presentation mode**: the diagram alone, full screen, then a token simulation at 2×:
-
-![The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×](docs/presentation.gif)
-
-**Token simulation**, slowed down then sped up with the speed slider:
-
-![A token runs through the purchase process, at 0.5× then 3×](docs/token-simulation.gif)
-
-**Heatmap**: the probability set on a branch, then 100 tokens computed at once:
-
-![The branch probability in the Process panel, then the heatmap after 100 tokens](docs/heatmap.gif)
-
-**Process report** in PDF, with the heatmap page after a simulation:
-
-![Export of the process report in PDF, then its four pages](docs/process-report.gif)
-
-</details>
+<table>
+<tr>
+<th width="50%">Presentation mode</th>
+<th width="50%">Token simulation</th>
+</tr>
+<tr>
+<td><img src="docs/presentation.gif" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" width="100%"></td>
+<td><img src="docs/token-simulation.gif" alt="A token runs through the purchase process, at 0.5× then 3×" width="100%"></td>
+</tr>
+<tr>
+<th width="50%">Heatmap</th>
+<th width="50%">Process report</th>
+</tr>
+<tr>
+<td><img src="docs/heatmap.gif" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" width="100%"></td>
+<td><img src="docs/process-report.gif" alt="The process report in PDF from the Expert menu, then its four pages" width="100%"></td>
+</tr>
+</table>
 
 BPMN 2.0 is the international standard [ISO/IEC 19510](https://www.iso.org/standard/62652.html),
 published by the OMG. A diagram made here reads the same in any compliant editor or engine, and the
@@ -103,7 +106,7 @@ author meant, and every team invents its own conventions. BPMN gives each symbol
 - **Who does what**: pools for organisations, lanes for roles, message flows for what they exchange.
 - **What triggers and what waits**: start, timer, message and error events, and events attached to a
   task for deadlines and exceptions.
-- **How paths split and join**: exclusive (one path), parallel (all paths) and inclusive (some paths)
+- **How paths split and join**: exclusive (one branch), parallel (all of them) and inclusive (some)
   gateways, each with its own rule.
 - **A file that tools understand**: the .bpmn file describes the process, not a picture of it. It can
   be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow
@@ -126,11 +129,11 @@ author meant, and every team invents its own conventions. BPMN gives each symbol
 > - **The only other request** is anonymous usage statistics without cookies, which never contain a
 >   diagram, a message or a key.
 >
-> Still, always use an API key created for this editor alone, with a limited validity period and a
-> spending limit. Details, limits and how to check it yourself:
+> Still, use an API key reserved for this editor, one that expires on its own and has a spending cap.
+> What is protected, what is not, and how to check it yourself:
 > [Your data and API keys in the online version](docs/online-privacy.md).
 
-The MCP connection goes further than drawing on screen. An agent brings its own memory and context, with
+The MCP connection goes further than drawing on screen. An agent brings its memory, its context and
 everything it is connected to, and uses BPMN diagrams in its own workflows:
 
 - it loads a diagram from BPMN XML, or draws one;
@@ -141,9 +144,9 @@ everything it is connected to, and uses BPMN diagrams in its own workflows:
 The tools run in an editor tab, which only needs to stay open.
 
 > [!WARNING]
-> **Docker version only: not made to be exposed on the internet, by design.** This concerns running
-> your own copy, not the online version above. The Docker version is meant for your own machine or a
-> private network, so it has no login. The risk stays limited, but publishing it means
+> **Docker version only: not made to be exposed on the internet, by design.** This concerns the copy you
+> run yourself, not the online version above. Meant for your machine or a private network, the Docker
+> version has no login. The risk stays limited, but publishing it means
 > a service open to anyone without authentication: your API keys can be used or stolen, and the
 > diagrams stored in the container (the BPMN files of "My diagrams") can be read or deleted. By
 > default it only answers on this machine (`127.0.0.1`). If you put it on the internet anyway, you
@@ -378,7 +381,6 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 | `BPMN_BIND` | Network interface the site listens on (`127.0.0.1` by default). `0.0.0.0` opens it to your network, without HTTPS. |
 | `BPMN_DATA_DIR` | Folder of the server files, My diagrams and exports (`./bpmn-data` by default). In a container manager, an absolute path. |
 | `PUID`, `PGID` | User and group the server runs as, and that own the data folder (1000 by default). |
-| `PUID`, `PGID` | User and group the server runs as, owners of its files (1000 by default). |
 | `SHOWCASE` | `off` turns off the showcase page (`about.html`) and its wallpapers. The logo in the toolbar then opens the Feedback window. `on` by default. |
 
 ## What the editor does
@@ -445,8 +447,11 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
 form described in [SECURITY.md](SECURITY.md). There is no guaranteed response time, but everything
 is read.
 
-If the editor is useful to you, you can support the project with a coffee on
-[Ko-fi](https://ko-fi.com/leylines_prism).
+## Support development
+
+BPMN-Pilot is free, with no subscription. My buddy Claude runs on caffeine. If it saves you time, a coffee on Ko-fi keeps the project going:
+
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20the%20project-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/leylines_prism)
 
 ## License
 

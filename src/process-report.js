@@ -10,7 +10,7 @@
 //   - axes d'amélioration déduits des constats, par priorité, avec l'effet attendu ;
 //   - événements de fin (part des instances si une simulation a tourné), activités par
 //     couloir, séquence des éléments.
-// Le menu Exporter et l'outil get_process_report passent par ici.
+// Le menu Expert et l'outil get_process_report passent par ici.
 
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'

@@ -47,7 +47,7 @@ import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
-import { setupExpertMode, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
@@ -383,7 +383,7 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
-// Rapport de processus (menu Exporter et outil get_process_report). Il reprend les comptes
+// Rapport de processus (menu Expert et outil get_process_report). Il reprend les comptes
 // de la dernière simulation, s'il y en a une.
 const reportName = () => `${baseName()} - ${T('process report', 'rapport de processus')}`
 
@@ -407,8 +407,9 @@ async function exportReport(format, button) {
     button.disabled = false
   }
 }
-document.getElementById('btn-report-pdf').addEventListener('click', (e) => exportReport('pdf', e.currentTarget))
-document.getElementById('btn-report-md').addEventListener('click', (e) => exportReport('md', e.currentTarget))
+// Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
+document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
+document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
 
 async function processReportForAi({ simulate } = {}) {
   if (!hasShapes(modeler)) throw new Error('The diagram is empty: nothing to report.')
@@ -480,15 +481,18 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
   }
 })
 
-// Le bouton suit l'état réel de la simulation : on pilote le service de
-// l'extension, et l'événement qu'elle émet met à jour le libellé, que la
-// bascule vienne de ce bouton ou du contrôle intégré au canevas.
+// L'entrée Simulation du menu Expert suit l'état réel de la simulation : on pilote le
+// service de l'extension, et l'événement qu'elle émet met à jour le libellé, que la
+// bascule vienne de ce menu, de la touche T ou du contrôle intégré au canevas. Le bouton
+// Expert porte un point lumineux tant qu'une simulation tourne.
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.textContent = active ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
   simButton.classList.toggle('active', !!active)
+  document.getElementById('btn-expert').classList.toggle('running', !!active)
 })
 simButton.addEventListener('click', () => {
+  setExpert(true)
   modeler.get('toggleMode').toggleMode()
 })
 // La simulation de jetons appartient au mode expert : hors de ce mode, ni le bouton ni la
@@ -510,7 +514,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
-setupExpertMode(document.getElementById('btn-expert'))
+setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.

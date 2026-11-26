@@ -10,16 +10,15 @@ It does not cover the Docker version, which has its own server (see the [README]
 - The online version is only static files served by GitHub Pages. There is no application server, no
   account and no database behind it. Nothing receives your diagrams or your API keys, apart from the AI
   provider you choose.
-- Your diagrams stay in your browser. Your API keys stay in your browser and are only sent to the AI
-  provider you chose, straight from your browser.
+- Your diagrams and your API keys stay in your browser. The keys only go to the AI provider you chose,
+  with no middleman.
 - When you use the AI co-pilot, your message, your attachments and the diagram it reads go straight to
   that provider, under its own terms.
 - The only other request is anonymous usage statistics without cookies, which never contain a diagram, a
   message or a key.
 
-Entering an API key on this page is safe within the limits listed below. Still, always use an API key
-created for this editor alone, with a limited validity period and a spending limit (see
-[Good practice](#good-practice)).
+Entering an API key on this page is safe, with the caveats listed below. Still, use a key reserved for
+this editor, one that expires on its own and has a spending cap (see [Good practice](#good-practice)).
 
 ## Where each piece of data lives
 
@@ -31,7 +30,7 @@ created for this editor alone, with a limited validity period and a spending lim
 | API keys | `sessionStorage` by default (gone when the tab closes), `localStorage` if "Remember API keys on your device" is checked | only in the request headers sent to the provider you chose |
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
-| Chat attachments (images, PDF, office documents, text files) | page memory (office documents and text files are read in the page, only their text is kept) | to the provider, with the message |
+| Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
 
 ## Every request the page makes
 
@@ -50,7 +49,7 @@ address is forced to empty when the online version is built ([src/main.js](../sr
 ## What protects your keys and diagrams
 
 - **No third-party script.** The Content Security Policy only allows the site's own scripts
-  (`script-src 'self'`, no inline script apart from one small script allowed by its hash). No CDN, no
+  (`script-src 'self'`, plus one short inline script allowed by its hash). No CDN, no
   tracker script, no external font.
 - **No HTML from outside.** The co-pilot's replies, diagram names and model names are shown as plain
   text, never interpreted as HTML. The code uses no `eval`.

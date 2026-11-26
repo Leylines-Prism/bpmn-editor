@@ -1,4 +1,4 @@
-// Série de jetons calculée d'un coup, sans animation : « Lancer 100 jetons » de la
+// Série de jetons calculée d'un coup, sans animation : « Lancer N jetons » de la
 // carte de chaleur. Chaque instance part de l'événement de début du processus et suit
 // les flux de séquence selon la sémantique BPMN, simplifiée :
 //   - passerelle exclusive, basée sur les événements ou complexe : un seul flux sortant,

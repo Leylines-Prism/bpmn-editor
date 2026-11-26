@@ -10,16 +10,16 @@ Elle ne couvre pas la version Docker, qui a son propre serveur (voir le [README]
 - La version en ligne n'est que des fichiers statiques servis par GitHub Pages. Aucun serveur applicatif,
   aucun compte, aucune base de données derrière. Rien ne reçoit vos diagrammes ni vos clés API, à part le
   fournisseur d'IA que vous choisissez.
-- Vos diagrammes restent dans votre navigateur. Vos clés API restent dans votre navigateur et ne sont
-  envoyées qu'au fournisseur d'IA choisi, directement depuis votre navigateur.
+- Vos diagrammes et vos clés API restent dans votre navigateur. Les clés ne partent que chez le
+  fournisseur d'IA choisi, sans intermédiaire.
 - Quand vous utilisez le co-pilote IA, votre message, vos pièces jointes et le diagramme qu'il lit partent
   directement chez ce fournisseur, selon ses propres conditions.
 - La seule autre requête est une mesure d'audience sans cookie, qui ne contient jamais de diagramme, de
   message ni de clé.
 
-Saisir une clé API sur cette page est sûr, dans les limites listées plus bas. Utilisez tout de même
-toujours une clé API créée pour cet éditeur seul, avec une durée de validité limitée et une limite de
-dépense (voir [Bonnes pratiques](#bonnes-pratiques)).
+Saisir une clé API sur cette page est sûr, avec les réserves listées plus bas. Prenez tout de même une
+clé réservée à cet éditeur, qui expire d'elle-même et dont la dépense est plafonnée (voir
+[Bonnes pratiques](#bonnes-pratiques)).
 
 ## Où vit chaque donnée
 
@@ -31,7 +31,7 @@ dépense (voir [Bonnes pratiques](#bonnes-pratiques)).
 | Clés API | `sessionStorage` par défaut (effacées à la fermeture de l'onglet), `localStorage` si « Se souvenir des clés API sur votre appareil » est coché | seulement dans les en-têtes des requêtes envoyées au fournisseur choisi |
 | Adresses et modèles des fournisseurs | `localStorage` | nulle part |
 | Conversation avec le co-pilote | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
-| Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (documents et fichiers texte sont lus dans la page, seul leur texte est gardé) | chez le fournisseur, avec le message |
+| Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (pour les documents et les fichiers texte, seul le texte extrait est gardé) | chez le fournisseur, avec le message |
 
 ## Toutes les requêtes de la page
 
@@ -52,7 +52,7 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
 ## Ce qui protège vos clés et vos diagrammes
 
 - **Aucun script tiers.** La politique de sécurité du contenu n'autorise que les scripts du site
-  (`script-src 'self'`, pas de script en ligne hormis un petit script autorisé par son empreinte). Ni CDN,
+  (`script-src 'self'`, plus un court script intégré, autorisé par son empreinte). Ni CDN,
   ni script de suivi, ni police externe.
 - **Aucun HTML venu de l'extérieur.** Les réponses du co-pilote, les noms de diagrammes et de modèles
   s'affichent en texte simple, jamais interprétés comme du HTML. Le code n'utilise pas `eval`.

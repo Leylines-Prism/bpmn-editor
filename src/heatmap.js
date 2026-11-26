@@ -5,8 +5,9 @@
 // Deux sources :
 //   - les jetons joués à la main pendant la simulation, comptés en direct par
 //     l'événement de trace de bpmn-js-token-simulation ;
-//   - « Lancer 100 jetons », calculé d'un coup (src/simulation-stats.js) selon les
-//     probabilités saisies sur les flux sortants des passerelles.
+//   - « Lancer N jetons », calculé d'un coup (src/simulation-stats.js) selon les
+//     probabilités saisies sur les flux sortants des passerelles. N se saisit dans le
+//     champ du bouton, de 1 à MAX_RUNS (100 par défaut).
 // La carte est dessinée dans une couche du canevas, au-dessus des formes, sans toucher
 // au diagramme. Le dernier résultat reste disponible pour le rapport de processus tant
 // que le diagramme ne change pas, et le rapport en tire une page Carte de chaleur.
@@ -19,6 +20,13 @@ const TRACE_EVENT = 'tokenSimulation.simulator.trace'
 const TOGGLE_MODE_EVENT = 'tokenSimulation.toggleMode'
 const RESET_SIMULATION_EVENT = 'tokenSimulation.resetSimulation'
 const BATCH_RUNS = 100
+const MAX_RUNS = 10000
+
+// Nombre de jetons saisi : entier de 1 à MAX_RUNS, 100 si le champ est vide ou illisible.
+export function clampRuns(value) {
+  const n = Math.round(Number(value))
+  return Number.isFinite(n) && n >= 1 ? Math.min(n, MAX_RUNS) : BATCH_RUNS
+}
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
 // Du bleu pâle au rouge, en passant par le jaune et l'orange.
@@ -77,9 +85,14 @@ export function setupHeatmap(modeler) {
   bar.className = 'heatmap-bar'
   bar.innerHTML = `
     <button type="button" class="heatmap-toggle" aria-pressed="false" title="${T('Color the diagram by the number of tokens that went through each element', 'Colorer le diagramme selon le nombre de jetons passés par chaque élément')}">${T('Heatmap', 'Carte de chaleur')}</button>
-    <button type="button" class="heatmap-run" title="${T('Compute 100 tokens at once, following the probabilities set on the gateway flows', 'Calculer 100 jetons d\'un coup, selon les probabilités des flux sortants des passerelles')}">${T('Run 100 tokens', 'Lancer 100 jetons')}</button>`
+    <span class="heatmap-run-group" title="${T(`Compute this number of tokens at once (1 to ${num(MAX_RUNS)}), following the probabilities set on the gateway flows`, `Calculer ce nombre de jetons d'un coup (de 1 à ${num(MAX_RUNS)}), selon les probabilités des flux sortants des passerelles`)}">
+      <button type="button" class="heatmap-run">${T('Run', 'Lancer')}</button>
+      <input type="number" class="heatmap-runs" min="1" max="${MAX_RUNS}" step="1" value="${BATCH_RUNS}" inputmode="numeric" aria-label="${T('Number of tokens to run', 'Nombre de jetons à lancer')}">
+      <span class="heatmap-runs-unit">${T('tokens', 'jetons')}</span>
+    </span>`
   const toggleButton = bar.querySelector('.heatmap-toggle')
   const runButton = bar.querySelector('.heatmap-run')
+  const runsInput = bar.querySelector('.heatmap-runs')
   const speed = container.querySelector('.bts-set-animation-speed')
   if (speed) speed.append(bar)
   else container.append(bar)
@@ -92,10 +105,17 @@ export function setupHeatmap(modeler) {
   toggleButton.addEventListener('click', () => setShown(!shown))
   // Sortie du mode expert : la carte s'efface avec ses boutons.
   addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && shown) setShown(false) })
-  runButton.addEventListener('click', () => {
-    batch = runBatch(modeler.getDefinitions(), BATCH_RUNS)
+  function runTokens() {
+    const runs = clampRuns(runsInput.value)
+    runsInput.value = runs
+    batch = runBatch(modeler.getDefinitions(), runs)
     setShown(true)
+  }
+  runButton.addEventListener('click', runTokens)
+  runsInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); runTokens() }
   })
+  runsInput.addEventListener('change', () => { runsInput.value = clampRuns(runsInput.value) })
 
   function setShown(value) {
     shown = value
@@ -169,7 +189,7 @@ export function setupHeatmap(modeler) {
         legend.innerHTML = `<strong>${T('Heatmap', 'Carte de chaleur')}</strong><span class="heatmap-note"></span>`
         legend.querySelector('.heatmap-note').textContent = batch
           ? T('No start event: nothing to simulate.', 'Aucun événement de début : rien à simuler.')
-          : T('Send a token, or click Run 100 tokens.', 'Faites partir un jeton, ou cliquez sur Lancer 100 jetons.')
+          : T('Send a token, or click Run.', 'Faites partir un jeton, ou cliquez sur Lancer.')
       }
       return
     }

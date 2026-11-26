@@ -252,6 +252,14 @@ figure img {
 }
 figcaption { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
 
+/* Deux images côte à côte (animation et capture), titre au-dessus de chacune. Une seule colonne
+   sur écran étroit. */
+.fig-pair { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin: var(--space-4) 0; align-items: start; }
+.fig-pair figure { margin: 0; }
+.fig-title { margin: 0 0 var(--space-2); font-size: 14px; line-height: 20px; font-weight: 600; text-align: center; }
+figure.fig-anim img { width: 100%; }
+@media (max-width: 720px) { .fig-pair { grid-template-columns: 1fr; } }
+
 /* Version : petit encadré discret en bas à gauche de la page, comme dans l'éditeur. Sur écran
    étroit, il s'efface : la version reste dans le pied de page. */
 #app-version {
@@ -297,3 +305,13 @@ figcaption { margin-top: var(--space-2); font-size: 14px; line-height: 20px; col
 
 .checks-table td:first-child { white-space: nowrap; font-weight: 500; }
 @media (max-width: 560px) { .checks-table td:first-child { white-space: normal; } }
+
+/* Bouton Ko-fi, aux couleurs de Ko-fi. */
+.kofi-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px;
+  background: #FF5E5B; color: #fff !important; font-weight: 600; text-decoration: none !important;
+  box-shadow: var(--elevation-1);
+}
+.kofi-btn:hover { filter: brightness(1.06); }
+.kofi-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.kofi-cup { width: 18px; height: 18px; }
