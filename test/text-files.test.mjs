@@ -100,3 +100,32 @@ test('adds the text of the files to the message', () => {
   assert.equal(withTextFiles('Draw it', []), 'Draw it')
   assert.equal(withTextFiles('Draw it', [{ name: 'a\nb.md', text: 'x' }]), 'Draw it\n\n--- Attached file: a b.md ---\nx\n--- End of attached file ---')
 })
+
+test('an .eml e-mail gives its headers and readable body, not raw MIME', async () => {
+  const { emailToText } = await import('../src/ai/email-text.js')
+  const raw = [
+    'From: =?utf-8?B?SsOpcsO0bWU=?= <a@example.com>',
+    'Subject: =?iso-8859-1?Q?Proc=E9dure?=',
+    'MIME-Version: 1.0',
+    'Content-Type: multipart/mixed; boundary="XX"',
+    '',
+    '--XX',
+    'Content-Type: text/html; charset=utf-8',
+    'Content-Transfer-Encoding: base64',
+    '',
+    Buffer.from('<p>Vérifier le stock</p><p>Expédier</p>').toString('base64'),
+    '--XX',
+    'Content-Type: application/pdf; name="devis.pdf"',
+    'Content-Disposition: attachment; filename="devis.pdf"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    'JVBERi0xLjQK',
+    '--XX--',
+  ].join('\r\n')
+  const text = emailToText(new Uint8Array(Buffer.from(raw, 'latin1')))
+  assert.match(text, /From: Jérôme <a@example.com>/)
+  assert.match(text, /Subject: Procédure/)
+  assert.match(text, /Vérifier le stock\nExpédier/)
+  assert.match(text, /Attachments not included: devis\.pdf/)
+  assert.doesNotMatch(text, /JVBERi0|base64|<p>/)
+})

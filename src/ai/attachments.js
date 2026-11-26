@@ -7,9 +7,11 @@
 export const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
 export const PDF_TYPE = 'application/pdf'
 export const MAX_ATTACHMENTS = 5
-export const MAX_IMAGE_BYTES = 5 * 1024 * 1024 // limite de l'API Claude par image
+// L'API Claude limite une image à 5 Mo une fois en base64, soit 3,75 Mo de fichier.
+export const MAX_IMAGE_BYTES = 3.75 * 1024 * 1024
 export const MAX_PDF_BYTES = 20 * 1024 * 1024
-export const MAX_TOTAL_BYTES = 24 * 1024 * 1024
+// 20 Mo de fichiers font 26,7 Mo en base64 : sous la limite de 32 Mo par requête d'Anthropic.
+export const MAX_TOTAL_BYTES = 20 * 1024 * 1024
 
 // Taille réelle d'un contenu en base64.
 export const base64Bytes = (data) => Math.floor((data.length * 3) / 4) - (data.endsWith('==') ? 2 : data.endsWith('=') ? 1 : 0)

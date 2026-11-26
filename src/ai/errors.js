@@ -15,21 +15,34 @@ const isLocalhost = (url) => {
   }
 }
 
-// Pièce jointe refusée par le modèle (400 qui parle d'image, de vision ou de PDF) : c'est une
-// limite du modèle choisi, pas un réglage. Renvoie le message, ou null.
+// Pièce jointe refusée (400) : renvoie un message clair, ou null. Trois cas, dans cet ordre :
+// une limite (taille, pages, dimensions), un format refusé, puis un modèle qui ne lit pas ce
+// type de contenu. Ce sont des limites du fournisseur ou du modèle, pas des réglages.
+const ATTACHMENT_WORDS = /image|vision|multimodal|multi-modal|\bpdf\b|document|file_data|document_url|image_url/i
+const LIMIT_WORDS = /too large|too big|too long|exceed|maximum|\bmax\b|limit|pages?\b|dimension|pixels?|bytes|\bmb\b/i
+const FORMAT_WORDS = /format|media.?type|mime|content.?type|extension|webp|gif/i
+const UNSUPPORTED = /not supported|unsupported|does not support|doesn't support|do not support|not enabled|not available|no vision|text[- ]only|only supports? text|cannot (read|process|accept)|not (a )?multimodal/i
+
 export function attachmentRefused(err, lang = 'en') {
   if (err?.status !== 400) return null
   const text = err?.message || ''
+  if (!ATTACHMENT_WORDS.test(text)) return null
   const T = (en, fr) => (lang === 'fr' ? fr : en)
-  if (/\bpdf\b|document_url|file_data|\bfile\b.*not supported/i.test(text)) {
-    return T(`This model cannot read PDF files. Choose a model that reads them, or paste the text of the document (${text}).`,
-      `Ce modèle ne sait pas lire les PDF. Choisissez un modèle qui les lit, ou collez le texte du document (${text}).`)
+  const pdf = /\bpdf\b|document|file_data/i.test(text)
+  if (LIMIT_WORDS.test(text)) {
+    return T(`An attached file goes beyond the provider's limits (size, number of pages or dimensions). Send a smaller file, or only the useful pages (${text}).`,
+      `Un fichier joint dépasse les limites du fournisseur (taille, nombre de pages ou dimensions). Envoyez un fichier plus petit, ou seulement les pages utiles (${text}).`)
   }
-  if (/image|vision|multimodal|multi-modal/i.test(text)) {
-    return T(`This model cannot read images. Choose a model with vision, or describe the image in text (${text}).`,
-      `Ce modèle ne sait pas lire les images. Choisissez un modèle avec vision, ou décrivez l'image en texte (${text}).`)
+  if (!pdf && FORMAT_WORDS.test(text)) {
+    return T(`The provider does not accept this file format. Convert the image to PNG or JPEG (${text}).`,
+      `Le fournisseur n'accepte pas ce format de fichier. Convertissez l'image en PNG ou JPEG (${text}).`)
   }
-  return null
+  if (!UNSUPPORTED.test(text)) return null
+  return pdf
+    ? T(`This model cannot read PDF files. Choose a model that reads them, or paste the text of the document (${text}).`,
+        `Ce modèle ne sait pas lire les PDF. Choisissez un modèle qui les lit, ou collez le texte du document (${text}).`)
+    : T(`This model cannot read images. Choose a model with vision, or describe the image in text (${text}).`,
+        `Ce modèle ne sait pas lire les images. Choisissez un modèle avec vision, ou décrivez l'image en texte (${text}).`)
 }
 
 export function describeProviderError(err, { label, providerId, baseUrl = '', browser = false, origin = '', lang = 'en' } = {}) {

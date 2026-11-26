@@ -60,8 +60,15 @@ test('Ollama models are listed from /v1/models', async () => {
 test('a 400 about images or PDF says the model cannot read them', async () => {
   const { attachmentRefused, describeProviderError } = await import('../src/ai/errors.js')
   assert.match(attachmentRefused({ status: 400, message: 'Image input is not supported for this model' }), /cannot read images/)
-  assert.match(attachmentRefused({ status: 400, message: 'Invalid content type: file_data' }, 'fr'), /ne sait pas lire les PDF/)
+  assert.match(attachmentRefused({ status: 400, message: 'Invalid content: file_data is not supported' }, 'fr'), /ne sait pas lire les PDF/)
   assert.equal(attachmentRefused({ status: 400, message: 'max_tokens is too large' }), null)
   assert.equal(attachmentRefused({ status: 500, message: 'image' }), null)
   assert.match(describeProviderError({ status: 400, message: 'model does not support vision' }, { label: 'X' }), /cannot read images/)
+})
+
+test('a size, page or format limit is not reported as "cannot read"', async () => {
+  const { attachmentRefused } = await import('../src/ai/errors.js')
+  assert.match(attachmentRefused({ status: 400, message: 'image exceeds 5 MB maximum: 5308416 bytes > 5242880 bytes' }), /limits/)
+  assert.match(attachmentRefused({ status: 400, message: 'A maximum of 100 PDF pages may be provided.' }), /limits/)
+  assert.match(attachmentRefused({ status: 400, message: 'Unsupported image format: image/webp' }), /file format/)
 })

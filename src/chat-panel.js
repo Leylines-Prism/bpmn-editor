@@ -116,7 +116,10 @@ async function prepareImage(file) {
   canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height)
   bitmap.close?.()
   const type = file.type === 'image/png' ? 'image/png' : 'image/jpeg'
-  return new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), type, 0.9))
+  const encode = (as, quality) => new Promise((resolve) => canvas.toBlob((blob) => resolve(blob), as, quality))
+  const blob = await encode(type, 0.9)
+  // Une photo enregistrée en PNG peut rester trop lourde : on passe alors en JPEG.
+  return blob && blob.size > MAX_IMAGE_BYTES && type === 'image/png' ? encode('image/jpeg', 0.85) : blob
 }
 
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
@@ -653,6 +656,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     let gotText = false
     let toolSinceText = false
     let failed = false
+    let errorText = ''
     controller = new AbortController()
     setBusy(true)
 
@@ -705,6 +709,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         renderStatus()
       } else if (event.type === 'error') {
         failed = true
+        errorText = event.message || ''
         add('error', event.message)
       }
       log.scrollTop = log.scrollHeight
@@ -720,6 +725,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       else await sendServer({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
     } catch (err) {
       failed = true
+      errorText = err?.message || ''
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
@@ -727,7 +733,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
-      if (failed && files.length && !controller.signal.aborted && kindOf(model).endsWith(':openai'))
+      // Conseil général, sauf chez Claude (lit images et PDF) et quand l'erreur dit déjà la cause.
+      const explained = /cannot read|ne sait pas lire|limits|limites|file format|format de fichier/i.test(errorText)
+      if (failed && files.length && !controller.signal.aborted && !kindOf(model).endsWith(':anthropic') && !explained)
         add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null

@@ -19,6 +19,15 @@ import { buildCatalog } from './models.js'
 
 const MAX_CONVERSATIONS = 20
 
+// Fournisseur au sens des pièces jointes, d'après l'hôte d'OPENAI_BASE_URL. Les PDF partent
+// chez OpenAI, Azure OpenAI et OpenRouter, qui lisent la partie « file » ; xAI ne lit que les
+// images PNG et JPEG ; les autres serveurs (Ollama, LiteLLM, vLLM…) sont « compat ».
+function openaiKind(host) {
+  if (host === 'api.openai.com' || host.endsWith('.openai.azure.com') || host === 'openrouter.ai') return 'openai'
+  if (host === 'api.x.ai') return 'xai'
+  return 'compat'
+}
+
 const openaiHost = (url) => {
   try {
     return new URL(url || 'https://api.openai.com/v1').hostname
@@ -54,9 +63,9 @@ export class ChatService {
         })
       : null
     this.openaiEffort = process.env.OPENAI_REASONING_EFFORT || null
-    // OPENAI_BASE_URL sert aussi à Ollama, LiteLLM, vLLM… Seule l'API d'OpenAI lit les PDF :
-    // les autres serveurs sont vus comme « compat » pour les pièces jointes.
-    this.openaiProviderId = openaiHost(process.env.OPENAI_BASE_URL) === 'api.openai.com' ? 'openai' : 'compat'
+    // OPENAI_BASE_URL sert aussi à xAI, Ollama, LiteLLM, vLLM… Pour les pièces jointes, on
+    // reconnaît l'hôte : voir openaiKind.
+    this.openaiProviderId = openaiKind(openaiHost(process.env.OPENAI_BASE_URL))
     // Mistral passe par le même client : son API suit le format /chat/completions.
     this.mistral = process.env.MISTRAL_API_KEY
       ? new OpenAICompatClient({

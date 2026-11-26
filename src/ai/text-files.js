@@ -7,6 +7,8 @@
 // sans dépendance : répertoire central du zip, DecompressionStream, puis un parcours
 // simple des balises XML (le code tourne aussi sous Node, pour les tests).
 
+import { emailToText } from './email-text.js'
+
 export const TEXT_EXTENSIONS = ['txt', 'md', 'markdown', 'csv', 'tsv', 'json', 'xml', 'bpmn', 'html', 'htm', 'yaml', 'yml', 'log', 'eml']
 export const OFFICE_EXTENSIONS = ['docx', 'odt', 'pptx', 'odp', 'xlsx', 'ods']
 const TEXT_TYPES = ['application/json', 'application/xml', 'application/yaml', 'message/rfc822']
@@ -33,6 +35,9 @@ export function textFileKind(file) {
 // Texte d'un fichier (File ou Blob avec un nom). Lève une erreur lisible sinon.
 export async function fileToText(file) {
   const kind = textFileKind(file)
+  if (kind === 'text' && (extension(file.name) === 'eml' || (file.type || '').startsWith('message/rfc822'))) {
+    return clean(emailToText(new Uint8Array(await file.arrayBuffer())))
+  }
   if (kind === 'text') return clean(await file.text())
   if (kind !== 'office') throw new Error('unsupported file type')
   if (file.size > MAX_OFFICE_BYTES) throw new Error('file too large')

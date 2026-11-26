@@ -38,6 +38,10 @@ test('server models behind OPENAI_BASE_URL only send PDF to the OpenAI API', asy
     delete process.env.OPENAI_BASE_URL
     assert.equal(new ChatService({ bridge: {} }).providerId('openai'), 'openai')
     assert.equal(new ChatService({ bridge: {} }).providerId('mistral'), 'mistral')
+    process.env.OPENAI_BASE_URL = 'https://api.x.ai/v1'
+    assert.equal(new ChatService({ bridge: {} }).providerId('openai'), 'xai')
+    process.env.OPENAI_BASE_URL = 'https://openrouter.ai/api/v1'
+    assert.equal(new ChatService({ bridge: {} }).providerId('openai'), 'openai')
   } finally {
     process.env = saved
   }
