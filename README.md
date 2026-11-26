@@ -11,7 +11,7 @@
 
 **English** | [Français](README.fr.md)
 
-![The AI co-pilot draws an online order process with two pools and four lanes, then tidies it up](docs/demo.gif)
+![The AI co-pilot draws an online order process with two pools and four lanes](docs/demo.gif)
 
 **Model every process of your context in seconds, from a few exchanges with your AI agent.**
 
@@ -43,6 +43,22 @@ report on it, without cluttering the editor for everyone else (see the
 - **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
   reimport, bpmnlint), with automatic correction.
+
+<details><summary><b>See the expert tools in action</b> (an internal purchase process with four lanes)</summary>
+
+**Token simulation**, slowed down then sped up with the speed slider:
+
+![A token runs through the purchase process, at 0.5× then 3×](docs/token-simulation.gif)
+
+**Heatmap**: the probability set on a branch, then 100 tokens computed at once:
+
+![The branch probability in the Process panel, then the heatmap after 100 tokens](docs/heatmap.gif)
+
+**Process report** in PDF, with the heatmap page after a simulation:
+
+![Export of the process report in PDF, then its four pages](docs/process-report.gif)
+
+</details>
 
 BPMN 2.0 is the international standard [ISO/IEC 19510](https://www.iso.org/standard/62652.html),
 published by the OMG. A diagram made here reads the same in any compliant editor or engine, and the

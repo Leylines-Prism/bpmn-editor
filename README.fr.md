@@ -11,7 +11,7 @@
 
 [English](README.md) | **Français**
 
-![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
+![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
 
 **Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
 agent IA.**
@@ -45,6 +45,22 @@ diagramme.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
+
+<details><summary><b>Voir les outils experts en action</b> (un processus d'achat interne à quatre couloirs)</summary>
+
+**Simulation de jetons**, ralentie puis accélérée avec la glissière de vitesse :
+
+![Un jeton parcourt le processus d'achat, à 0,5× puis à 3×](docs/token-simulation.fr.gif)
+
+**Carte de chaleur** : la probabilité saisie sur une branche, puis 100 jetons calculés d'un coup :
+
+![La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 100 jetons](docs/heatmap.fr.gif)
+
+**Rapport de processus** en PDF, avec la page carte de chaleur après une simulation :
+
+![Export du rapport de processus en PDF, puis ses quatre pages](docs/process-report.fr.gif)
+
+</details>
 
 BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
 publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
