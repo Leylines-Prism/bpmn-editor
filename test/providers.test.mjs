@@ -1,7 +1,7 @@
 // Liste des modèles d'un fournisseur (src/ai/providers.js).
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { PROVIDERS, listModels } from '../src/ai/providers.js'
+import { PROVIDERS, listModels, providerBaseUrl } from '../src/ai/providers.js'
 
 const fakeFetch = (body, seen) => async (url, init) => {
   seen.push({ url, init })
@@ -33,4 +33,26 @@ test('other OpenAI-compatible providers keep /models', async () => {
   const seen = []
   await listModels({ format: 'openai', baseUrl: 'https://api.openai.com/v1', fetch: fakeFetch({ data: [{ id: 'gpt' }] }, seen) })
   assert.equal(seen[0].url, 'https://api.openai.com/v1/models')
+})
+
+test('an Ollama address without a path, or in /api, points to its OpenAI-compatible API under /v1', () => {
+  assert.equal(providerBaseUrl('ollama', 'http://localhost:11434'), 'http://localhost:11434/v1')
+  assert.equal(providerBaseUrl('ollama', 'http://localhost:11434/'), 'http://localhost:11434/v1')
+  assert.equal(providerBaseUrl('ollama', ' http://127.0.0.1:11434/api/ '), 'http://127.0.0.1:11434/v1')
+  assert.equal(providerBaseUrl('ollama', 'http://localhost:11434/v1/'), 'http://localhost:11434/v1')
+  assert.equal(providerBaseUrl('ollama', 'https://ollama.example.com/proxy/v1'), 'https://ollama.example.com/proxy/v1')
+  assert.equal(providerBaseUrl('ollama', 'not an address'), 'not an address')
+  // Les autres fournisseurs gardent leur adresse.
+  assert.equal(providerBaseUrl('compat', 'http://localhost:4000'), 'http://localhost:4000')
+})
+
+test('Ollama models are listed from /v1/models', async () => {
+  const seen = []
+  const models = await listModels({
+    format: 'openai',
+    baseUrl: providerBaseUrl('ollama', 'http://localhost:11434'),
+    fetch: fakeFetch({ object: 'list', data: [{ id: 'qwen3:8b', object: 'model', owned_by: 'library' }] }, seen),
+  })
+  assert.equal(seen[0].url, 'http://localhost:11434/v1/models')
+  assert.deepEqual(models.map((m) => m.id), ['qwen3:8b'])
 })

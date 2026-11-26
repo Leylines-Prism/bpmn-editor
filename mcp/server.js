@@ -29,7 +29,7 @@ import { buildPrompts } from '../src/ai/prompts.js'
 import { describeProviderError } from '../src/ai/errors.js'
 import { checkAttachments } from '../src/ai/attachments.js'
 import { imageCaption, isImageResult } from '../src/ai/image-result.js'
-import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels } from '../src/ai/providers.js'
+import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels, providerBaseUrl } from '../src/ai/providers.js'
 
 // Variables d'environnement facultatives dans mcp/.env (exclu de git).
 try {
@@ -192,7 +192,7 @@ function readCustom(value, { needModel }) {
   if (!value || typeof value !== 'object') return null
   const { provider, label, format, baseUrl, apiKey, model } = value
   if (!PROVIDER_IDS.has(provider) || (format !== 'anthropic' && format !== 'openai')) return null
-  const url = checkBaseUrl(baseUrl)
+  const url = checkBaseUrl(providerBaseUrl(provider, baseUrl))
   if (!url || isForbiddenAddress(new URL(url).hostname)) return null
   if (apiKey !== undefined && apiKey !== null && (typeof apiKey !== 'string' || apiKey.length > 500)) return null
   if (needModel && (typeof model !== 'string' || !model.trim() || model.length > 200)) return null

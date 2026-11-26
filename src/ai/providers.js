@@ -93,6 +93,21 @@ function isXai(base) {
 
 export const trimUrl = (url) => String(url ?? '').trim().replace(/\/+$/, '')
 
+// Ollama sert son API compatible OpenAI sous /v1 (/v1/models, /v1/chat/completions),
+// et son API native sous /api. Une adresse donnée sans chemin (http://localhost:11434,
+// celle qu'Ollama affiche) ou en /api pointe donc vers /v1. Les autres adresses
+// restent telles quelles.
+export function providerBaseUrl(providerId, url) {
+  const value = trimUrl(url)
+  if (providerId !== 'ollama') return value
+  try {
+    const parsed = new URL(value)
+    const path = parsed.pathname.replace(/\/+$/, '')
+    if (path === '' || path === '/api') return `${parsed.origin}/v1`
+  } catch {}
+  return value
+}
+
 // Adresse http(s) valide, sans identifiants. Renvoie l'adresse nettoyée ou null.
 export function checkBaseUrl(url) {
   const value = trimUrl(url)
