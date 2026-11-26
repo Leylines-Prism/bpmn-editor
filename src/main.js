@@ -1,3 +1,5 @@
+// En premier : refuse de démarrer dans le cadre d'un autre site (voir frame-guard.js).
+import './frame-guard.js'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { BpmnPropertiesPanelModule, BpmnPropertiesProviderModule } from 'bpmn-js-properties-panel'
 import minimapModule from 'diagram-js-minimap'

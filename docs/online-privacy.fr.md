@@ -63,6 +63,10 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
 - **Aucune sortie par l'assistant.** Les outils de l'assistant ne font que lire et modifier le diagramme,
   ou proposer un téléchargement. Aucun n'envoie de données vers une adresse : des consignes cachées dans un
   diagramme ou un PDF ne peuvent pas faire envoyer votre clé ailleurs.
+- **Aucun affichage dans un autre site.** GitHub Pages ne peut pas envoyer l'en-tête qui l'interdit, la
+  page le vérifie donc elle-même : dans le cadre d'une autre page, l'éditeur ne démarre pas et n'affiche
+  qu'un lien qui l'ouvre dans son propre onglet ([src/frame-guard.js](../src/frame-guard.js)). Rien ne peut
+  être cliqué à votre insu.
 - **Gardé pour ce site seulement.** Les autres sites ne peuvent pas lire ce que cette page garde dans votre
   navigateur.
 - **Une construction verrouillée.** Versions exactes des dépendances (`npm ci` sur le fichier de
@@ -79,8 +83,6 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
 - **Connexions ouvertes.** La page peut se connecter à toute adresse `https`, car vous pouvez choisir
   n'importe quel fournisseur. La protection contre le vol d'une clé repose donc sur les points ci-dessus
   (aucun script tiers, aucun HTML venu de l'extérieur), pas sur une liste d'adresses autorisées.
-- **Affichage dans un autre site.** GitHub Pages ne peut pas envoyer l'en-tête qui interdit d'afficher la
-  page à l'intérieur d'un autre site. Un tel site ne pourrait rien lire de la page.
 - **Les pages stable et `/dev/` partagent une même origine.** Elles gardent des diagrammes et des réglages
   séparés, mais le code de l'une pourrait techniquement lire ce que l'autre conserve.
 

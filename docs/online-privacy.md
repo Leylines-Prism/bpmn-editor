@@ -61,6 +61,10 @@ address is forced to empty when the online version is built ([src/main.js](../sr
 - **No exit through the assistant.** The assistant's tools only read and change the diagram, or offer a
   download. None of them sends data to an address, so instructions hidden in a diagram or a PDF cannot
   make the assistant send your key elsewhere.
+- **No display inside another site.** GitHub Pages cannot send the header that forbids it, so the page
+  checks it itself: inside a frame of another page, the editor does not start and only shows a link that
+  opens it in its own tab ([src/frame-guard.js](../src/frame-guard.js)). Nothing can be clicked without
+  you seeing it.
 - **Stored for this site only.** Other websites cannot read what this page keeps in your browser.
 - **A locked build.** Exact dependency versions (`npm ci` on the lock file), GitHub Actions pinned by
   commit, and no known vulnerability in the bundled dependencies (`npm audit`) on the review date.
@@ -74,8 +78,6 @@ address is forced to empty when the online version is built ([src/main.js](../sr
 - **Open connections.** The page may connect to any `https` address, because you can choose any provider.
   Protection against a stolen key therefore rests on the points above (no third-party script, no HTML from
   outside), not on a list of allowed addresses.
-- **Framing by another site.** GitHub Pages cannot send the header that forbids showing the page inside
-  another site. Such a site could not read anything from the page.
 - **Stable and `/dev/` pages share one origin.** They keep separate diagrams and settings, but the code
   of one page could technically read what the other stores.
 
