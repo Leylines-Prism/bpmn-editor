@@ -1382,3 +1382,8 @@ body.presenting #canvas .djs-container { cursor: grab; }
 /* Pendant la simulation, la commande de vitesse (en bas au centre) prend la place de la
    pastille « Aucun problème » de la vérification, qui la couvrait : le diagramme n'est pas modifiable à ce moment. */
 #canvas .bjs-container.simulation .bjsl-button { display: none; }
+
+/* Glissière de vitesse de la simulation (src/simulation-speed.js), dans le cadre de l'extension. */
+#canvas .bts-set-animation-speed .sim-speed { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; cursor: pointer; }
+#canvas .bts-set-animation-speed .sim-speed input { width: 140px; margin: 0; accent-color: var(--token-simulation-primary, var(--accent)); cursor: pointer; }
+#canvas .bts-set-animation-speed .sim-speed output { min-width: 3.2em; font-size: 13px; font-variant-numeric: tabular-nums; text-align: right; }

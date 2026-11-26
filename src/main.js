@@ -45,6 +45,7 @@ import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
+import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
@@ -467,6 +468,7 @@ setupPanelToggle({
 })
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
+setupSimulationSpeed(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
