@@ -2,8 +2,8 @@
 
 [English](online-privacy.md) | **Français**
 
-Cette page résume une revue de la version en ligne (https://bpmn.leylines.fr, la page stable et la page
-`/dev/`), faite le 2026-11-26 sur la version v1.2.2. Elle suit où vit chaque donnée et où elle peut aller.
+Cette page résume une revue de la version en ligne (https://bpmn.leylines.fr, et la page de développement
+https://dev.bpmn.leylines.fr), faite le 2026-11-26 sur la version v1.2.2. Elle suit où vit chaque donnée et où elle peut aller.
 Elle ne couvre pas la version Docker, qui a son propre serveur (voir le [README](../README.fr.md)).
 
 ## En bref
@@ -67,7 +67,8 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
   qu'un lien qui l'ouvre dans son propre onglet ([src/frame-guard.js](../src/frame-guard.js)). Rien ne peut
   être cliqué à votre insu.
 - **Gardé pour ce site seulement.** Les autres sites ne peuvent pas lire ce que cette page garde dans votre
-  navigateur.
+  navigateur. La page de développement vit à sa propre adresse : son code, construit à partir de
+  changements pas encore publiés, ne peut pas non plus lire ce que garde la page stable.
 - **Une construction verrouillée.** Versions exactes des dépendances (`npm ci` sur le fichier de
   verrouillage), actions GitHub épinglées par commit, et aucune vulnérabilité connue dans les dépendances
   embarquées (`npm audit`) à la date de la revue.
@@ -82,8 +83,6 @@ leur adresse de serveur est forcée à vide quand la version en ligne est constr
 - **Connexions ouvertes.** La page peut se connecter à toute adresse `https`, car vous pouvez choisir
   n'importe quel fournisseur. La protection contre le vol d'une clé repose donc sur les points ci-dessus
   (aucun script tiers, aucun HTML venu de l'extérieur), pas sur une liste d'adresses autorisées.
-- **Les pages stable et `/dev/` partagent une même origine.** Elles gardent des diagrammes et des réglages
-  séparés, mais le code de l'une pourrait techniquement lire ce que l'autre conserve.
 
 ## Bonnes pratiques
 

@@ -2,8 +2,8 @@
 
 **English** | [Français](online-privacy.fr.md)
 
-This page sums up a review of the online version (https://bpmn.leylines.fr, the stable page and the `/dev/`
-page), done on 2026-11-26 on version v1.2.2. It traces where each piece of data lives and where it can go.
+This page sums up a review of the online version (https://bpmn.leylines.fr, and the development page
+https://dev.bpmn.leylines.fr), done on 2026-11-26 on version v1.2.2. It traces where each piece of data lives and where it can go.
 It does not cover the Docker version, which has its own server (see the [README](../README.md)).
 
 ## In short
@@ -64,7 +64,9 @@ address is forced to empty when the online version is built ([src/main.js](../sr
   checks it itself: inside a frame of another page, the editor does not start and only shows a link that
   opens it in its own tab ([src/frame-guard.js](../src/frame-guard.js)). Nothing can be clicked without
   you seeing it.
-- **Stored for this site only.** Other websites cannot read what this page keeps in your browser.
+- **Stored for this site only.** Other websites cannot read what this page keeps in your browser. The
+  development page lives on its own address, so its code, built from changes not yet released, cannot
+  read what the stable page keeps either.
 - **A locked build.** Exact dependency versions (`npm ci` on the lock file), GitHub Actions pinned by
   commit, and no known vulnerability in the bundled dependencies (`npm audit`) on the review date.
 
@@ -77,8 +79,6 @@ address is forced to empty when the online version is built ([src/main.js](../sr
 - **Open connections.** The page may connect to any `https` address, because you can choose any provider.
   Protection against a stolen key therefore rests on the points above (no third-party script, no HTML from
   outside), not on a list of allowed addresses.
-- **Stable and `/dev/` pages share one origin.** They keep separate diagrams and settings, but the code
-  of one page could technically read what the other stores.
 
 ## Good practice
 

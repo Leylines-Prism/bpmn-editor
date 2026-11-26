@@ -282,9 +282,10 @@ explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA.
 la barre d'outils l'ouvre aussi.
 
 Le site existe en deux pages. La racine suit les versions publiées (le dernier tag `vX.Y.Z`), et
-https://bpmn.leylines.fr/dev/ suit la branche main, avec les dernières modifications avant leur
-publication. La page de développement garde ses propres diagrammes et réglages dans le navigateur :
-l'essayer ne touche pas à ceux de la page stable. Les deux affichent leur version en bas à gauche
+https://dev.bpmn.leylines.fr suit la branche main, avec les dernières modifications avant leur
+publication. La page de développement vit à sa propre adresse : elle garde ses propres diagrammes,
+réglages et clés API dans le navigateur, l'essayer ne touche pas à ceux de la page stable, et son code
+ne peut pas les lire. Les deux affichent leur version en bas à gauche
 du canevas et du guide d'utilisation.
 
 Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
