@@ -1518,8 +1518,10 @@ html:not(.expert) .expert-only,
 html:not(.expert) #canvas .heatmap-bar,
 html:not(.expert) #canvas .heatmap-legend,
 html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none !important; }
-/* Simulation en cours : « Quitter le mode Expert » et son séparateur s'effacent du menu (src/main.js). */
+/* Simulation en cours : « Quitter le mode Expert », les entrées du Co-pilote (le canevas est
+   verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
 #expert-menu.simulating #btn-expert-off,
+#expert-menu.simulating .menu-row,
 #expert-menu.simulating .menu-sep { display: none !important; }
 
 /* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
