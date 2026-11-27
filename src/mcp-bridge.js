@@ -233,6 +233,9 @@ function buildTools(modeler, exportDiagram, processReport) {
     if (bo.cancelActivity === false) out.interrupting = false
     const style = styleOf(element)
     if (style) out.style = style
+    // Documentation (Markdown) : le Co-pilote s'appuie dessus pour répondre et rédiger.
+    const documentation = (bo.documentation || []).map((d) => d.text || '').join('\n\n').trim()
+    if (documentation) out.documentation = documentation.length > 1500 ? documentation.slice(0, 1500) + '…' : documentation
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id

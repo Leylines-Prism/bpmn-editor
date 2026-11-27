@@ -59,7 +59,7 @@
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
+    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
@@ -67,6 +67,9 @@
       <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
       <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
       <button class="btn" id="btn-pdf" title="Vector PDF document" data-icon="pdf" role="menuitem">PDF document</button>
+      <div class="menu-sep" role="separator"></div>
+      <button class="btn" id="btn-sheets-pdf" title="One page per activity, in the order of the flow, with its documentation" data-icon="pdf" role="menuitem">Procedure sheets (PDF)</button>
+      <button class="btn" id="btn-sheets-md" title="The same procedure sheets, as Markdown text" data-icon="code" role="menuitem">Procedure sheets (Markdown)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>
@@ -95,9 +98,10 @@
   </div>
   <div id="main">
     <div id="canvas">
-      <div id="history-buttons" role="group" aria-label="History">
+      <div id="history-buttons" role="group" aria-label="History and search">
         <button type="button" id="btn-undo" data-icon="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled></button>
         <button type="button" id="btn-redo" data-icon="redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled></button>
+        <button type="button" id="btn-search" data-icon="search" title="Search the labels and the documentation (Ctrl+F)" aria-label="Search"></button>
       </div>
       <div id="credit">Powered by <a href="https://bpmn.io" target="_blank">bpmn.io</a></div>
     </div>

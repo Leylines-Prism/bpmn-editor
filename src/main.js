@@ -41,6 +41,7 @@ import '@fontsource/urbanist/500.css'
 import '@fontsource/urbanist/600.css'
 import './brand/tokens.css'
 import './theme/leylines.css'
+import './doc/doc.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
@@ -63,6 +64,9 @@ import { setupFeedback } from './feedback.js'
 import { setupAnalytics, track } from './analytics.js'
 import { setupUsageEvents } from './usage-events.js'
 import { APP_VERSION, IS_DEV_SITE, OTHER_SITE } from './site-channel.js'
+import { setupDocEditor } from './doc/doc-editor.js'
+import { setupDocBadges } from './doc/doc-badges.js'
+import { setupDocSearch } from './doc/doc-search.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -420,6 +424,26 @@ async function exportReport(format, button) {
 document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
 document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
 
+// Exporter > Fiches de procédure : une fiche par activité, avec sa documentation.
+async function exportSheets(format, button) {
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ sheetsToMarkdown, sheetsToPdf }, report] = await Promise.all([import('./doc/procedure-sheets.js'), processReport()])
+    const name = `${baseName()} - ${T('procedure sheets', 'fiches de procédure')}`
+    if (format === 'md') await deliver(sheetsToMarkdown(report), name, 'md', 'text/markdown')
+    else await deliver(await sheetsToPdf(report), name, 'pdf', 'application/pdf')
+    track('export', { format: `sheets-${format}` })
+  } catch (err) {
+    console.error('Procedure sheets error:', err)
+    alert(T('Procedure sheets failed: ', 'Fiches de procédure impossibles : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+}
+document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => exportSheets('pdf', e.currentTarget))
+document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
+
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
 const askCopilot = (text) => window.dispatchEvent(new CustomEvent('bpmn-pilot-copilot-ask', { detail: { text } }))
@@ -587,6 +611,11 @@ setupSimulationGlow(modeler)
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
 setupPanelPopup(modeler.get('eventBus'))
+// Documentation des éléments : fenêtre Markdown, pastilles du canevas, recherche.
+const docEditor = setupDocEditor(modeler)
+setupDocBadges(modeler, { openEditor: docEditor.open })
+const docSearch = setupDocSearch(modeler)
+document.getElementById('btn-search').addEventListener('click', () => docSearch.open())
 makeResizable(document.getElementById('properties-panel'), {
   name: 'properties', label: T('Process panel width', 'Largeur du panneau Processus'), min: 240, max: 640, fallback: 300,
 })
