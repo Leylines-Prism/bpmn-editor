@@ -75,6 +75,7 @@ body {
 .sep { width: 1px; height: 24px; flex-shrink: 0; background: var(--line-strong); margin: 0 var(--space-3); }
 .btn.icon-only { width: 32px; padding: 0; justify-content: center; }
 a.btn { text-decoration: none; }
+#btn-install[hidden] { display: none; }
 
 #autosave-status { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted); margin-left: auto; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 #toolbar > .btn, #toolbar > .brand, #mcp-status { flex-shrink: 0; }
