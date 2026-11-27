@@ -17,6 +17,7 @@ import * as z from 'zod/v4'
 
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 
 import { LOCAL_HOSTS, LOCKED_MESSAGE, mcpAccess } from './auth.js'
 import { EditorBridge } from './bridge.js'
@@ -36,6 +37,10 @@ import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels, providerBaseUrl }
 try {
   process.loadEnvFile(new URL('.env', import.meta.url))
 } catch {}
+
+// Version annoncée aux clients MCP : celle de mcp/package.json, tenue égale à celle de
+// l'application (test/version.test.mjs le vérifie).
+const VERSION = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8')).version
 
 const HOST = process.env.MCP_HOST || '127.0.0.1'
 const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
@@ -71,7 +76,7 @@ const TOOLS = buildTools(z)
 const PROMPTS = buildPrompts(z)
 
 function buildMcpServer() {
-  const server = new McpServer({ name: 'bpmn-pilot', version: '0.1.0' }, { instructions: INSTRUCTIONS })
+  const server = new McpServer({ name: 'bpmn-pilot', version: VERSION }, { instructions: INSTRUCTIONS })
   for (const tool of TOOLS) {
     server.registerTool(
       tool.name,
