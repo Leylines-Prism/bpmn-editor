@@ -253,7 +253,8 @@ Then open http://localhost:8080. No `curl`? `wget https://raw.githubusercontent.
 - **Update**: download `docker-compose.image.yml` again with the same `curl` command, so that you
   also get the new services and settings (your `.env` file and `bpmn-data` folder stay as they are).
   To stay on a given version instead, change the version number of the three image lines (see the
-  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)). Then:
+  [versions](https://github.com/Leylines-Prism/bpmn-pilot/tags)). The `edge` tag follows the
+  development branch (`main`) at each change: useful for testing, not for daily use. Then:
 
   ```
   docker compose -f docker-compose.image.yml pull
