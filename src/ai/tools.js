@@ -45,7 +45,8 @@ policy no two rules may apply together; use First or Priority when they must ove
 test_decision evaluates a decision table on input cases (with no cases, one case per rule): use it to check a table you wrote.
 
 Modeling rules (validate_diagram checks most of them):
-- Every process has a start event and at least one end event. Use a single blank start event per process.
+- Every process has a start event and at least one end event. At most one blank start event per process: when the trigger is known, use a typed one (message, timer, signal, conditional).
+- Each event takes only the triggers the BPMN standard allows for its kind (for example no timer end event, no error start event outside an event subprocess, no non-interrupting error boundary event): the tools refuse the others.
 - Name every task, event, splitting gateway, pool and lane, in the user's business words, not technical terms.
 - Task: verb + object ("Check invoice"). Avoid vague verbs such as handle, process or manage.
 - Event: object + state reached ("Invoice received", "Order shipped"). End events name the result.
@@ -55,6 +56,8 @@ Modeling rules (validate_diagram checks most of them):
 - Do not name parallel gateways or joining gateways.
 - Put the happy path on a straight line from left to right, with exceptions below it.
 - Exceptions on a task: a boundary event (timer, error, message), not a gateway after the task.
+- Something that can happen at any time during a process or subprocess: an event subprocess (eventSubProcess: true) with a typed start event.
+- Repeated work: a marker (loop, parallel or sequential multi-instance) on the activity, not a loop back. Link events (throw and catch with the same name) only to avoid long flows across a large diagram.
 - Lanes only when the user names roles or departments. Separate organizations are separate pools linked by message flows.
 - No retry loops for technical failures. A loop back is for a business reason ("Correct the request").
 - Keep default sizes. Use color only to convey meaning, and say what it means.`
@@ -72,8 +75,8 @@ export function buildTools(z) {
     .describe(
       'BPMN type, with or without the "bpmn:" prefix. Examples: StartEvent, EndEvent, IntermediateThrowEvent, ' +
         'IntermediateCatchEvent, Task, UserTask, ServiceTask, ScriptTask, ManualTask, SendTask, ReceiveTask, ' +
-        'BusinessRuleTask, SubProcess, CallActivity, ExclusiveGateway, ParallelGateway, InclusiveGateway, ' +
-        'EventBasedGateway, DataObjectReference, DataStoreReference, TextAnnotation, Participant, Lane',
+        'BusinessRuleTask, SubProcess, Transaction, AdHocSubProcess, CallActivity, ExclusiveGateway, ParallelGateway, ' +
+        'InclusiveGateway, EventBasedGateway, ComplexGateway, DataObjectReference, DataStoreReference, TextAnnotation, Group, Participant, Lane',
     )
 
   const eventDefinition = z
@@ -81,7 +84,23 @@ export function buildTools(z) {
     .describe(
       'For an event only: definition type, for example TimerEventDefinition, MessageEventDefinition, ' +
         'SignalEventDefinition, ErrorEventDefinition, EscalationEventDefinition, ConditionalEventDefinition, ' +
-        'TerminateEventDefinition',
+        'LinkEventDefinition, CompensateEventDefinition, CancelEventDefinition, TerminateEventDefinition. ' +
+        'Only the combinations allowed by the BPMN standard are accepted: for example a timer is never an end event or a throw event, ' +
+        'an error, escalation or compensation start event goes only in an event subprocess, a cancel event only in or on a Transaction',
+    )
+
+  const marker = z
+    .enum(['loop', 'parallel', 'sequential', 'compensation', 'none'])
+    .describe(
+      'Activities only: loop (repeats while a condition holds), parallel or sequential multi-instance (one run per item of a list), ' +
+        'compensation (the activity undoes completed work, linked to a compensation boundary event), none to remove the marker',
+    )
+
+  const interrupting = z
+    .boolean()
+    .describe(
+      'Boundary event, or start event of an event subprocess, only: false for a non-interrupting event (the activity or process goes on). ' +
+        'Default: true. Error, compensation and cancel events are always interrupting',
     )
 
   const color = z
@@ -191,10 +210,16 @@ export function buildTools(z) {
                     'on the bottom edge of that activity; give its eventDefinition (TimerEventDefinition, ErrorEventDefinition…). ' +
                     'Continue from it with "after" for the exception path',
                 ),
-              interrupting: z
+              interrupting: interrupting.optional(),
+              marker: marker.optional(),
+              eventSubProcess: z
                 .boolean()
                 .optional()
-                .describe('Boundary event only: false for a non-interrupting event (the activity goes on). Default: true'),
+                .describe('SubProcess only: true for an event subprocess (dotted border, no incoming flow), started by its typed start event. Add its start event with parent: this subprocess'),
+              expanded: z
+                .boolean()
+                .optional()
+                .describe('SubProcess, Transaction or AdHocSubProcess: true to draw it expanded, so shapes can go inside with parent: its id. Default: collapsed'),
               x: z.number().optional().describe('Horizontal position of the shape centre, in diagram pixels. Give x and y together, without "after"'),
               y: z.number().optional().describe('Vertical position of the shape centre, in diagram pixels'),
               parent: elementId
@@ -234,7 +259,7 @@ export function buildTools(z) {
       name: 'update_elements',
       title: 'Update elements',
       description:
-        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
+        'Renames elements, changes their type (for example Task to UserTask), sets an activity marker or whether an event interrupts, fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
         'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls and regulatory requirements of an activity. ' +
         'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_shapes), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
@@ -248,6 +273,8 @@ export function buildTools(z) {
               name: z.string().optional().describe('New label. Empty string to clear it'),
               type: bpmnType.optional(),
               eventDefinition: eventDefinition.optional(),
+              interrupting: interrupting.optional(),
+              marker: marker.optional(),
               documentation: z.string().max(4000).optional().describe('Text of the Documentation field, in Markdown (## headings, - lists, **bold**, [links](https://…)). It replaces the whole field: to complete a documentation, send the existing text with your additions. Empty string to clear it'),
               probability: z
                 .number()

@@ -39,6 +39,7 @@
             <ol>
               <li><a href="#getting-started">Getting started</a></li>
               <li><a href="#drawing">Drawing</a></li>
+              <li><a href="#bpmn-symbols">BPMN symbol memo</a></li>
               <li><a href="#colors-text">Colors and text</a></li>
               <li><a href="#checking">Check and tidy up</a></li>
               <li><a href="#saving">Saving and My diagrams</a></li>
@@ -68,7 +69,7 @@
             <ol>
               <li><a href="#privacy">Privacy</a></li>
               <li><a href="#docker">Docker version and MCP agents</a></li>
-              <li><a href="#install-app">Install as an app</a></li>
+              <li><a href="#install-app">Install on your device (PWA)</a></li>
               <li><a href="#small-screens">On a phone or tablet</a></li>
               <li><a href="#faq">FAQ</a></li>
               <li><a href="#feedback">Send feedback</a></li>
@@ -156,10 +157,10 @@
           <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 21.5 1-1h2.8l8.6-8.6"/><path d="M3.5 20.5v-2.8l8.6-8.6"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>Copy style</span> (the eyedropper) remembers the element's fill, stroke, font and text color. <span class="uib"><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="13" height="5" rx="1.2"/><path d="M16 5.5h2.5v5H10v3"/><rect x="8.6" y="13.5" width="2.8" height="6" rx="1"/></svg>Paste style</span> (the roller), shown once a style has been copied, applies them to the selected element, or to several at once.</li>
         </ul>
         <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text, copy style and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
-        <h3><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Change element</h3>
+        <h3>Change element<span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span></h3>
         <p>The wrench opens the <span class="uib">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
         <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, sequential multi-instance <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> and loop <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
-        <h3><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo and redo</h3>
+        <h3>Undo and redo<span class="ico" data-icon="undo" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> and <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Redo</span> buttons, at the top left of the canvas, step through your edits and the co-pilot's one at a time, like <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd>. They are greyed out when there is nothing to undo or redo.</p>
         <p>Tidy up, and a layout or a diagram replaced by the co-pilot, reload the whole diagram. Just before, the editor keeps a copy: Undo goes back to it in one step, but older edits can no longer be undone one by one. Opening a file or creating a diagram starts with an empty history.</p>
         <h3>Keyboard shortcuts</h3>
@@ -192,12 +193,68 @@
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
       </section>
+      <section id="bpmn-symbols">
+        <h2>BPMN symbol memo<span class="ico bpmn-icon-gateway-xor" aria-hidden="true"></span></h2>
+        <p>Each palette symbol has a meaning set by the standard. This memo groups them by family, then crosses events with what triggers them. The icons are the editor's own.</p>
+        <h3>The families</h3>
+        <div class="table-wrap"><table class="symbols-table">
+          <thead><tr><th>Symbol</th><th>Element</th><th>Role</th></tr></thead><tbody>
+            <tr class="fam"><th colspan="3">Participants</th></tr>
+            <tr><td><span class="ico bpmn-icon-participant" role="img" aria-label="Pool"></span></td><td>Pool</td><td>A participant: an organization, a customer, a system. Each pool holds its own process.</td></tr>
+            <tr><td><span class="ico bpmn-icon-lane" role="img" aria-label="Lane"></span></td><td>Lane</td><td>A role, a department or a person inside a pool. It says who performs the activities it contains.</td></tr>
+            <tr class="fam"><th colspan="3">Activities</th></tr>
+            <tr><td><span class="ico bpmn-icon-task" role="img" aria-label="Task"></span></td><td>Task</td><td>A unit of work that is not broken down any further.</td></tr>
+            <tr><td><span class="ico bpmn-icon-subprocess-collapsed" role="img" aria-label="Subprocess"></span></td><td>Subprocess</td><td>Activities grouped under one name, collapsed (+ sign) or expanded on the canvas.</td></tr>
+            <tr><td><span class="ico bpmn-icon-call-activity" role="img" aria-label="Call activity"></span></td><td>Call activity</td><td>Starts a process defined elsewhere, reusable by several diagrams. Thick border.</td></tr>
+            <tr><td><span class="ico bpmn-icon-event-subprocess-expanded" role="img" aria-label="Event subprocess"></span></td><td>Event subprocess</td><td>Dotted border. No flow leads to it: it starts when its start event occurs while the process runs.</td></tr>
+            <tr><td><span class="ico bpmn-icon-transaction" role="img" aria-label="Transaction"></span></td><td>Transaction</td><td>Double-bordered subprocess whose activities succeed or are undone together.</td></tr>
+            <tr><td><span class="ico bpmn-icon-ad-hoc-subprocess" role="img" aria-label="Ad hoc subprocess"></span></td><td>Ad hoc subprocess</td><td>Tilde marker. Its activities run in the order the participants choose, with no imposed flow.</td></tr>
+            <tr class="fam"><th colspan="3">Gateways</th></tr>
+            <tr><td><span class="ico bpmn-icon-gateway-xor" role="img" aria-label="Exclusive"></span></td><td>Exclusive</td><td>Exactly one branch is taken, based on a condition. As a join, it lets each arrival through.</td></tr>
+            <tr><td><span class="ico bpmn-icon-gateway-parallel" role="img" aria-label="Parallel"></span></td><td>Parallel</td><td>All branches start at once. As a join, it waits for every arrival.</td></tr>
+            <tr><td><span class="ico bpmn-icon-gateway-or" role="img" aria-label="Inclusive"></span></td><td>Inclusive</td><td>One or more branches, based on their conditions. As a join, it waits for the branches that were started.</td></tr>
+            <tr><td><span class="ico bpmn-icon-gateway-eventbased" role="img" aria-label="Event-based"></span></td><td>Event-based</td><td>The first of the following events to occur picks the branch.</td></tr>
+            <tr><td><span class="ico bpmn-icon-gateway-complex" role="img" aria-label="Complex"></span></td><td>Complex</td><td>A split or join rule written freely, for example 3 answers out of 5. Rare.</td></tr>
+            <tr class="fam"><th colspan="3">Data and artifacts</th></tr>
+            <tr><td><span class="ico bpmn-icon-data-object" role="img" aria-label="Data object"></span></td><td>Data object</td><td>Information produced or used during one process instance: a form, an invoice.</td></tr>
+            <tr><td><span class="ico bpmn-icon-data-store" role="img" aria-label="Data store"></span></td><td>Data store</td><td>A database or an application that keeps information beyond the instance.</td></tr>
+            <tr><td><span class="ico bpmn-icon-text-annotation" role="img" aria-label="Annotation"></span></td><td>Annotation</td><td>A free comment linked to an element. It does not change the behavior.</td></tr>
+            <tr><td><span class="ico bpmn-icon-group" role="img" aria-label="Group"></span></td><td>Group</td><td>A dashed frame that groups elements visually, with no effect on the flow.</td></tr>
+            <tr class="fam"><th colspan="3">Flows</th></tr>
+            <tr><td><span class="ico bpmn-icon-connection" role="img" aria-label="Sequence flow"></span></td><td>Sequence flow</td><td>The order of execution, inside one pool.</td></tr>
+            <tr><td><span class="ico bpmn-icon-conditional-flow" role="img" aria-label="Conditional flow"></span></td><td>Conditional flow</td><td>Taken only when its condition is true (diamond at the start).</td></tr>
+            <tr><td><span class="ico bpmn-icon-default-flow" role="img" aria-label="Default flow"></span></td><td>Default flow</td><td>Taken when no other condition is true (slash at the start).</td></tr>
+            <tr><td><span class="ico bpmn-icon-connection-multi" role="img" aria-label="Message flow"></span></td><td>Message flow</td><td>An exchange between two pools, dashed. Never inside one pool.</td></tr>
+          </tbody></table></div>
+        <h3>Task types</h3><p>A small icon at the top left of the task says who or what performs it:</p>
+        <ul class="symbol-list"><li><span class="ico bpmn-icon-user-task" role="img" aria-label="User"></span><strong>User</strong>: a person, in an application</li><li><span class="ico bpmn-icon-manual-task" role="img" aria-label="Manual"></span><strong>Manual</strong>: a person, without an application</li><li><span class="ico bpmn-icon-service-task" role="img" aria-label="Service"></span><strong>Service</strong>: a system, through an automated call</li><li><span class="ico bpmn-icon-script-task" role="img" aria-label="Script"></span><strong>Script</strong>: a script run by the engine</li><li><span class="ico bpmn-icon-business-rule-task" role="img" aria-label="Business rule"></span><strong>Business rule</strong>: a decision, often a DMN table</li><li><span class="ico bpmn-icon-send-task" role="img" aria-label="Send"></span><strong>Send</strong>: sends a message, then goes on</li><li><span class="ico bpmn-icon-receive-task" role="img" aria-label="Receive"></span><strong>Receive</strong>: waits for a message</li></ul>
+        <h3>Markers</h3><p>A marker at the bottom center of an activity says how it runs:</p>
+        <ul class="symbol-list"><li><span class="ico bpmn-icon-loop-marker" role="img" aria-label="Loop"></span><strong>Loop</strong>: repeats while a condition requires it</li><li><span class="ico bpmn-icon-parallel-mi-marker" role="img" aria-label="Parallel multi-instance"></span><strong>Parallel multi-instance</strong>: one run per item of a list, at the same time</li><li><span class="ico bpmn-icon-sequential-mi-marker" role="img" aria-label="Sequential multi-instance"></span><strong>Sequential multi-instance</strong>: one run per item, one after the other</li><li><span class="ico bpmn-icon-compensation-marker" role="img" aria-label="Compensation"></span><strong>Compensation</strong>: undoes the work of an activity already completed</li><li><span class="ico bpmn-icon-ad-hoc-marker" role="img" aria-label="Ad hoc"></span><strong>Ad hoc</strong>: activities in a free order</li></ul>
+        <h3 id="event-matrix">Event matrix</h3><p>A single circle for a start, a double one for an intermediate event, a thick one for an end. A filled symbol throws, a hollow one catches. A dashed border marks a non-interrupting event: the activity or the process goes on. An empty cell is a combination the standard does not allow: the checks flag it (rule <code>bpmnpilot/event-triggers</code>), and the AI co-pilot cannot create it.</p>
+        <div class="table-wrap"><table class="event-matrix">
+          <thead><tr><th rowspan="2">Trigger</th><th colspan="3">Start</th><th colspan="4">Intermediate</th><th rowspan="2">End</th></tr>
+          <tr><th>Process</th><th>Event subprocess</th><th>Same, non-interrupting</th><th>Catch</th><th>Boundary</th><th>Non-interrupting boundary</th><th>Throw</th></tr></thead><tbody>
+            <tr><th scope="row">None<small>start or end with no specific trigger, milestone reached</small></th><td><span class="ico bpmn-icon-start-event-none" role="img" aria-label="None : Process"></span></td><td></td><td></td><td></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-none" role="img" aria-label="None : Throw"></span></td><td><span class="ico bpmn-icon-end-event-none" role="img" aria-label="None : End"></span></td></tr>
+            <tr><th scope="row">Message<small>a message sent to or received from a participant</small></th><td><span class="ico bpmn-icon-start-event-message" role="img" aria-label="Message : Process"></span></td><td><span class="ico bpmn-icon-start-event-message" role="img" aria-label="Message : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-message" role="img" aria-label="Message : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-message" role="img" aria-label="Message : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-message" role="img" aria-label="Message : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-message" role="img" aria-label="Message : Non-interrupting boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-throw-message" role="img" aria-label="Message : Throw"></span></td><td><span class="ico bpmn-icon-end-event-message" role="img" aria-label="Message : End"></span></td></tr>
+            <tr><th scope="row">Timer<small>a date, a delay or a cycle</small></th><td><span class="ico bpmn-icon-start-event-timer" role="img" aria-label="Timer : Process"></span></td><td><span class="ico bpmn-icon-start-event-timer" role="img" aria-label="Timer : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-timer" role="img" aria-label="Timer : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-timer" role="img" aria-label="Timer : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-timer" role="img" aria-label="Timer : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-timer" role="img" aria-label="Timer : Non-interrupting boundary"></span></td><td></td><td></td></tr>
+            <tr><th scope="row">Conditional<small>a condition on the data becomes true</small></th><td><span class="ico bpmn-icon-start-event-condition" role="img" aria-label="Conditional : Process"></span></td><td><span class="ico bpmn-icon-start-event-condition" role="img" aria-label="Conditional : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-condition" role="img" aria-label="Conditional : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-condition" role="img" aria-label="Conditional : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-condition" role="img" aria-label="Conditional : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-condition" role="img" aria-label="Conditional : Non-interrupting boundary"></span></td><td></td><td></td></tr>
+            <tr><th scope="row">Link<small>a jump to another place in the same process</small></th><td></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-catch-link" role="img" aria-label="Link : Catch"></span></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-throw-link" role="img" aria-label="Link : Throw"></span></td><td></td></tr>
+            <tr><th scope="row">Signal<small>a broadcast heard by everyone listening</small></th><td><span class="ico bpmn-icon-start-event-signal" role="img" aria-label="Signal : Process"></span></td><td><span class="ico bpmn-icon-start-event-signal" role="img" aria-label="Signal : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-signal" role="img" aria-label="Signal : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-signal" role="img" aria-label="Signal : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-signal" role="img" aria-label="Signal : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-signal" role="img" aria-label="Signal : Non-interrupting boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-throw-signal" role="img" aria-label="Signal : Throw"></span></td><td><span class="ico bpmn-icon-end-event-signal" role="img" aria-label="Signal : End"></span></td></tr>
+            <tr><th scope="row">Error<small>a business failure that stops the activity</small></th><td></td><td><span class="ico bpmn-icon-start-event-error" role="img" aria-label="Error : Event subprocess"></span></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-catch-error" role="img" aria-label="Error : Boundary"></span></td><td></td><td></td><td><span class="ico bpmn-icon-end-event-error" role="img" aria-label="Error : End"></span></td></tr>
+            <tr><th scope="row">Escalation<small>a report to a higher level, not always interrupting</small></th><td></td><td><span class="ico bpmn-icon-start-event-escalation" role="img" aria-label="Escalation : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-escalation" role="img" aria-label="Escalation : Same, non-interrupting"></span></td><td></td><td><span class="ico bpmn-icon-intermediate-event-catch-escalation" role="img" aria-label="Escalation : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-escalation" role="img" aria-label="Escalation : Non-interrupting boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-throw-escalation" role="img" aria-label="Escalation : Throw"></span></td><td><span class="ico bpmn-icon-end-event-escalation" role="img" aria-label="Escalation : End"></span></td></tr>
+            <tr><th scope="row">Compensation<small>triggers the undoing of work already done</small></th><td></td><td><span class="ico bpmn-icon-start-event-compensation" role="img" aria-label="Compensation : Event subprocess"></span></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-catch-compensation" role="img" aria-label="Compensation : Boundary"></span></td><td></td><td><span class="ico bpmn-icon-intermediate-event-throw-compensation" role="img" aria-label="Compensation : Throw"></span></td><td><span class="ico bpmn-icon-end-event-compensation" role="img" aria-label="Compensation : End"></span></td></tr>
+            <tr><th scope="row">Cancel<small>cancels a transaction</small></th><td></td><td></td><td></td><td></td><td><span class="ico bpmn-icon-intermediate-event-catch-cancel" role="img" aria-label="Cancel : Boundary"></span></td><td></td><td></td><td><span class="ico bpmn-icon-end-event-cancel" role="img" aria-label="Cancel : End"></span></td></tr>
+            <tr><th scope="row">Terminate<small>stops the whole process at once</small></th><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="ico bpmn-icon-end-event-terminate" role="img" aria-label="Terminate : End"></span></td></tr>
+            <tr><th scope="row">Multiple<small>any one of the listed triggers</small></th><td><span class="ico bpmn-icon-start-event-multiple" role="img" aria-label="Multiple : Process"></span></td><td><span class="ico bpmn-icon-start-event-multiple" role="img" aria-label="Multiple : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-multiple" role="img" aria-label="Multiple : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-multiple" role="img" aria-label="Multiple : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-multiple" role="img" aria-label="Multiple : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-multiple" role="img" aria-label="Multiple : Non-interrupting boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-throw-multiple" role="img" aria-label="Multiple : Throw"></span></td><td><span class="ico bpmn-icon-end-event-multiple" role="img" aria-label="Multiple : End"></span></td></tr>
+            <tr><th scope="row">Parallel multiple<small>all of the listed triggers are required</small></th><td><span class="ico bpmn-icon-start-event-parallel-multiple" role="img" aria-label="Parallel multiple : Process"></span></td><td><span class="ico bpmn-icon-start-event-parallel-multiple" role="img" aria-label="Parallel multiple : Event subprocess"></span></td><td><span class="ico bpmn-icon-start-event-non-interrupting-parallel-multiple" role="img" aria-label="Parallel multiple : Same, non-interrupting"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-parallel-multiple" role="img" aria-label="Parallel multiple : Catch"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-parallel-multiple" role="img" aria-label="Parallel multiple : Boundary"></span></td><td><span class="ico bpmn-icon-intermediate-event-catch-non-interrupting-parallel-multiple" role="img" aria-label="Parallel multiple : Non-interrupting boundary"></span></td><td></td><td></td></tr>
+          </tbody></table></div>
+      </section>
 
       <section id="colors-text">
         <h2>Colors and text</h2>
-        <h3><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Colors</h3>
+        <h3>Colors<svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg></h3>
         <p>With several elements selected, the brush in the context menu offers 17 ready-made colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to keep good contrast, and a dark fill gets light text.</p>
-        <h3><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Text formatting</h3>
+        <h3>Text formatting<svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg></h3>
         <p>With several elements selected, the <span class="uib">A</span> button in the context menu formats their labels: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
         <h3>In the Process panel</h3>
         <p>For a single selected element, the brush and the <span class="uib">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors used elsewhere, the most recent first. <span class="ui">Default</span> removes the color, and <span class="uib">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
@@ -214,8 +271,8 @@
 
       <section id="checking">
         <h2>Check and tidy up</h2>
-        <h3>BPMN correctness checks</h3>
-        <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice and never block saving.</p>
+        <h3>BPMN checks (bpmnlint)</h3>
+        <p>The editor has a built-in BPMN checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules and one rule of BPMN Pilot's own: disconnected element, process with no start or end, badly connected gateway, element without a label, trigger not allowed on an event… A few rules apply the standard, most are modeling best practices: a diagram that breaks them is still valid BPMN, but it reads or runs less well. The Nature column of the table tells them apart. They are advice and never block saving.</p>
         <ul>
           <li>A badge on the element flags an issue: red for an error, orange for a warning.</li>
           <li>Hover the badge to read the message. The rule name follows in brackets, for example <code>no-implicit-end</code>.</li>
@@ -223,38 +280,39 @@
           <li>The counter at the bottom left of the canvas shows the number of errors and warnings. Click it to hide or show the badges.</li>
         </ul>
         <details class="faq">
-          <summary>The 27 rules checked, with their explanation</summary>
+          <summary>The 28 rules checked, with their explanation</summary>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Rule</th><th>What it checks</th><th>Level</th></tr></thead>
+              <thead><tr><th>Rule</th><th>What it checks</th><th>Nature</th><th>Level</th></tr></thead>
               <tbody>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/start-event-required.md" target="_blank" rel="noopener"><code>start-event-required</code></a></td><td>Every process and subprocess has a start event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/end-event-required.md" target="_blank" rel="noopener"><code>end-event-required</code></a></td><td>Every process and subprocess has an end event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-start.md" target="_blank" rel="noopener"><code>no-implicit-start</code></a></td><td>No element starts the process in place of a start event (element with no incoming flow).</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-end.md" target="_blank" rel="noopener"><code>no-implicit-end</code></a></td><td>No element ends the process in place of an end event (element with no outgoing flow).</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-disconnected.md" target="_blank" rel="noopener"><code>no-disconnected</code></a></td><td>Every element is connected to the rest of the process.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/label-required.md" target="_blank" rel="noopener"><code>label-required</code></a></td><td>Tasks, events and gateways have a label.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/conditional-flows.md" target="_blank" rel="noopener"><code>conditional-flows</code></a></td><td>A flow leaving a conditional split has a condition, unless it is the default flow.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-split.md" target="_blank" rel="noopener"><code>no-implicit-split</code></a></td><td>A task does not split into several unconditional flows: add a parallel gateway.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/fake-join.md" target="_blank" rel="noopener"><code>fake-join</code></a></td><td>A task does not receive several incoming flows: add a joining gateway.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-gateway-join-fork.md" target="_blank" rel="noopener"><code>no-gateway-join-fork</code></a></td><td>A gateway does not both join and split.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-gateway.md" target="_blank" rel="noopener"><code>superfluous-gateway</code></a></td><td>A gateway with a single incoming and a single outgoing flow does nothing.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-label.md" target="_blank" rel="noopener"><code>superfluous-label</code></a></td><td>A plain flow, without a condition or a splitting gateway, needs no label.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-termination.md" target="_blank" rel="noopener"><code>superfluous-termination</code></a></td><td>A terminate end event is superfluous when it is the only end of the process.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-multi-instance-termination.md" target="_blank" rel="noopener"><code>no-multi-instance-termination</code></a></td><td>In a multi-instance subprocess, a terminate end only stops the current instance, not the others.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-duplicate-sequence-flows.md" target="_blank" rel="noopener"><code>no-duplicate-sequence-flows</code></a></td><td>No two identical flows connect the same elements.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-overlapping-elements.md" target="_blank" rel="noopener"><code>no-overlapping-elements</code></a></td><td>Shapes do not overlap and stay inside their container.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-inclusive-gateway.md" target="_blank" rel="noopener"><code>no-inclusive-gateway</code></a></td><td>The inclusive gateway is discouraged: it is hard to read.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-complex-gateway.md" target="_blank" rel="noopener"><code>no-complex-gateway</code></a></td><td>The complex gateway is discouraged.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-based-gateway.md" target="_blank" rel="noopener"><code>event-based-gateway</code></a></td><td>An event-based gateway has at least two outgoing flows, none of them conditional.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-blank-start-event.md" target="_blank" rel="noopener"><code>single-blank-start-event</code></a></td><td>A process has at most one untyped start event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-event-definition.md" target="_blank" rel="noopener"><code>single-event-definition</code></a></td><td>An event has only one type (message, timer, signal…).</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/sub-process-blank-start-event.md" target="_blank" rel="noopener"><code>sub-process-blank-start-event</code></a></td><td>A subprocess starts with an untyped start event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-sub-process-typed-start-event.md" target="_blank" rel="noopener"><code>event-sub-process-typed-start-event</code></a></td><td>An event subprocess starts with a typed start event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/ad-hoc-sub-process.md" target="_blank" rel="noopener"><code>ad-hoc-sub-process</code></a></td><td>An ad hoc subprocess contains no start or end event.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/link-event.md" target="_blank" rel="noopener"><code>link-event</code></a></td><td>Link events come in pairs (throw and catch) with the same name.</td><td>Error</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Messages, signals, errors and escalations have a unique name and are used somewhere.</td><td>Warning</td></tr>
-              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Every process element has a shape on the diagram.</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/start-event-required.md" target="_blank" rel="noopener"><code>start-event-required</code></a></td><td>Every process and subprocess has a start event.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/end-event-required.md" target="_blank" rel="noopener"><code>end-event-required</code></a></td><td>Every process and subprocess has an end event.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-start.md" target="_blank" rel="noopener"><code>no-implicit-start</code></a></td><td>No element starts the process in place of a start event (element with no incoming flow).</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-end.md" target="_blank" rel="noopener"><code>no-implicit-end</code></a></td><td>No element ends the process in place of an end event (element with no outgoing flow).</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-disconnected.md" target="_blank" rel="noopener"><code>no-disconnected</code></a></td><td>Every element is connected to the rest of the process.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/label-required.md" target="_blank" rel="noopener"><code>label-required</code></a></td><td>Tasks, events and gateways have a label.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/conditional-flows.md" target="_blank" rel="noopener"><code>conditional-flows</code></a></td><td>A flow leaving a conditional split has a condition, unless it is the default flow.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-implicit-split.md" target="_blank" rel="noopener"><code>no-implicit-split</code></a></td><td>A task does not split into several unconditional flows: add a parallel gateway.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/fake-join.md" target="_blank" rel="noopener"><code>fake-join</code></a></td><td>A task does not receive several incoming flows: add a joining gateway.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-gateway-join-fork.md" target="_blank" rel="noopener"><code>no-gateway-join-fork</code></a></td><td>A gateway does not both join and split.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-gateway.md" target="_blank" rel="noopener"><code>superfluous-gateway</code></a></td><td>A gateway with a single incoming and a single outgoing flow does nothing.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-label.md" target="_blank" rel="noopener"><code>superfluous-label</code></a></td><td>A plain flow, without a condition or a splitting gateway, needs no label.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/superfluous-termination.md" target="_blank" rel="noopener"><code>superfluous-termination</code></a></td><td>A terminate end event is superfluous when it is the only end of the process.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-multi-instance-termination.md" target="_blank" rel="noopener"><code>no-multi-instance-termination</code></a></td><td>In a multi-instance subprocess, a terminate end only stops the current instance, not the others.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-duplicate-sequence-flows.md" target="_blank" rel="noopener"><code>no-duplicate-sequence-flows</code></a></td><td>No two identical flows connect the same elements.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-overlapping-elements.md" target="_blank" rel="noopener"><code>no-overlapping-elements</code></a></td><td>Shapes do not overlap and stay inside their container.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-inclusive-gateway.md" target="_blank" rel="noopener"><code>no-inclusive-gateway</code></a></td><td>The inclusive gateway is discouraged: it is hard to read.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-complex-gateway.md" target="_blank" rel="noopener"><code>no-complex-gateway</code></a></td><td>The complex gateway is discouraged: the standard allows it, but its rule is hard to read.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-based-gateway.md" target="_blank" rel="noopener"><code>event-based-gateway</code></a></td><td>An event-based gateway has at least two outgoing flows, none of them conditional.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-blank-start-event.md" target="_blank" rel="noopener"><code>single-blank-start-event</code></a></td><td>A process has at most one untyped start event.</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/single-event-definition.md" target="_blank" rel="noopener"><code>single-event-definition</code></a></td><td>An event has only one type (message, timer, signal…).</td><td>Best practice</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/sub-process-blank-start-event.md" target="_blank" rel="noopener"><code>sub-process-blank-start-event</code></a></td><td>A subprocess starts with an untyped start event.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/event-sub-process-typed-start-event.md" target="_blank" rel="noopener"><code>event-sub-process-typed-start-event</code></a></td><td>An event subprocess starts with a typed start event.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/ad-hoc-sub-process.md" target="_blank" rel="noopener"><code>ad-hoc-sub-process</code></a></td><td>An ad hoc subprocess contains no start or end event.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/link-event.md" target="_blank" rel="noopener"><code>link-event</code></a></td><td>Link events come in pairs (throw and catch) with the same name.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Messages, signals, errors and escalations have a unique name and are used somewhere.</td><td>Best practice</td><td>Warning</td></tr>
+              <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Every process element has a shape on the diagram.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><code>bpmnpilot/event-triggers</code></td><td>Each event has only a trigger the standard allows for its kind: no timer end event, no error start event outside an event subprocess, no non-interrupting error, cancel only in a transaction. See the <a href="#event-matrix">event matrix</a>.</td><td>Standard</td><td>Error</td></tr>
               </tbody>
             </table>
           </div>
@@ -266,7 +324,7 @@
           <li>Video lessons: the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French).</li>
           <li><a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">Rule documentation<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>: the details of each check.</li>
         </ul>
-        <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
+        <h3>Tidy up (auto layout)<span class="ico" data-icon="layout" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
         <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in the <a href="#expert-part">Expert mode</a> part.</p>
@@ -274,9 +332,9 @@
 
       <section id="saving">
         <h2>Saving and My diagrams</h2>
-        <h3>Autosave</h3>
+        <h3>Autosave (localStorage)</h3>
         <p>The editor keeps your work in the browser one second after each change, and shows the time of the last save next to "Autosave". This autosave has a single slot: clicking <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>New</span> or opening a file replaces its content.</p>
-        <h3><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</h3>
+        <h3>My diagrams<span class="ico" data-icon="library" aria-hidden="true"></span></h3>
         <p>To keep several processes, open <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>. Give your work a name and click <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Save</span>. The list then lets you reopen, rename or delete each entry. <kbd>Ctrl</kbd>+<kbd>S</kbd> updates the one that is open, and <span class="uib">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="452" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The window, with two diagrams saved in the browser.</figcaption></figure>
         <!-- online -->
@@ -289,8 +347,8 @@
       </section>
 
       <section id="open-export">
-        <h2>Open, import, export</h2>
-        <h3><span class="ico" data-icon="open" aria-hidden="true"></span>Open</h3>
+        <h2>Open, import, export (XML, SVG, PNG, PDF)</h2>
+        <h3>Open<span class="ico" data-icon="open" aria-hidden="true"></span></h3>
         <ul>
           <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>.bpmn, .xml or encrypted file…</span>, opens a file from your disk.</li>
           <li><span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
@@ -300,7 +358,7 @@
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening. An <a href="#encrypted-file">encrypted file</a> (.bpmn.enc) opens the same way, after its password.</p>
-        <h3 id="from-table"><span class="ico" data-icon="table" aria-hidden="true"></span>Create from a table (no AI)</h3>
+        <h3 id="from-table">Create from a table (no AI)<span class="ico" data-icon="table" aria-hidden="true"></span></h3>
         <p>Many procedures already exist as a list of steps in Excel. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>From a table…</span>, turns them into a diagram: copy the rows in Excel, header included, and paste them into the window, or choose a .csv, .tsv or .xlsx file. The conversion runs in the page, with no AI and nothing sent. A preview counts the steps, links, decisions and lanes before creation, and flags errors (next step not found, duplicate ID).</p>
         <div class="table-wrap">
           <table>
@@ -319,10 +377,10 @@
         </div>
         <p>The headers of Microsoft Visio Data Visualizer (Process Step ID, Next Step ID, Connector Label, Shape Type, Function) and the What / Who / How columns are read as they are, in English and in French. The <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Template (.xlsx)</span> button gives a workbook ready to fill in. The editor adds what the diagram lacks: start event, end event, and a merge gateway before a step where several paths join.</p>
         <figure><img src="/src/help/img/en-depuis-tableau.webp" width="720" height="514" alt="Create a process from a table window: six rows pasted from Excel with the columns ID, Description, Next step ID, Connector label, Shape type and Function, and the preview: 6 steps, 6 links, 1 decision, 4 lanes." loading="lazy" /><figcaption>Six rows pasted from Excel, and the preview before creation.</figcaption></figure>
-        <h3 id="roles-grid"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid (workshop)</h3>
+        <h3 id="roles-grid">Roles × tasks grid (workshop)<span class="ico" data-icon="grid" aria-hidden="true"></span></h3>
         <p>In a workshop, listing is faster than drawing. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid…</span>, shows a grid: roles in columns, tasks in rows, in order. One click in the cell of the role that performs each task is enough. <kbd>Enter</kbd> on the last row adds a task in the same role. A task ending with "?" becomes a decision: Yes leads to the next task, No to an end you can reconnect. <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Continue in the table…</span> carries the grid over to the From a table window, to add branches, labels or types.</p>
         <figure><img src="/src/help/img/en-grille-roles.webp" width="920" height="452" alt="Roles × tasks grid window: three roles in columns (Employee, Manager, Accounting) and four tasks, each checked in the column of its role, including the decision Approve?." loading="lazy" /><figcaption>Four tasks shared between three roles, including a decision.</figcaption></figure>
-        <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
+        <h3 id="compare">Compare two versions (diff)<span class="ico" data-icon="compare" aria-hidden="true"></span></h3>
         <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the co-pilot's pill.</p>
         <ul>
           <li>In green, what was added (on the right). In red, what was removed (on the left). In orange, what was changed, on both sides.</li>
@@ -331,7 +389,7 @@
           <li>Both views scroll and zoom together. <kbd>Esc</kbd> closes the window.</li>
         </ul>
         <figure><img src="/src/help/img/en-avant-apres.webp" width="1440" height="720" alt="Before and after window: the diagram before the co-pilot on the left, the current diagram on the right, with an added element in green, a removed one in red, a changed one in orange, and the list of differences." loading="lazy" /><figcaption>The Before and after window, opened from the co-pilot's pill.</figcaption></figure>
-        <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Export</h3>
+        <h3>Export<span class="ico" data-icon="save" aria-hidden="true"></span></h3>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Format</th><th>Use it to</th></tr></thead>
@@ -365,16 +423,16 @@
         <!-- docker -->
         <p>The file is also saved in the exports folder of the server, whatever the Destination choice, never replacing an existing file.</p>
         <!-- /docker -->
-        <h3 id="encrypted-file"><span class="ico" data-icon="lock" aria-hidden="true"></span>Encrypted file (AES-256)</h3>
+        <h3 id="encrypted-file">Encrypted file (AES-256)<span class="ico" data-icon="lock" aria-hidden="true"></span></h3>
         <p>A process can reveal an organization, amounts or weaknesses. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="lock" aria-hidden="true"></span>Encrypted .bpmn file…</span>, asks twice for a password of at least 8 characters, then downloads a .bpmn.enc file encrypted in your browser: AES-256-GCM, with a key derived from the password by PBKDF2-SHA-256 (600,000 iterations). The password is neither kept nor sent: if it is lost, the file can no longer be opened. Only BPMN-Pilot reopens this file, with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span> or by drag and drop. Send the password through another channel than the file.</p>
         <p>A reopened encrypted file is not kept in the browser's automatic save: the note "Encrypted file opened, not kept in the browser" says so, and you need to export it again before closing the tab. Only the .bpmn.enc file is encrypted: the other exports (.bpmn, PDF, Word, images) are in clear.</p>
         <figure><img src="/src/help/img/en-mot-de-passe.webp" width="460" height="346" alt="Encrypted .bpmn file window: explanation of the encryption, Password and Confirm the password fields, Cancel and Encrypt and save buttons." loading="lazy" /><figcaption>The password window, before saving.</figcaption></figure>
-        <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
+        <h3>Print<span class="ico" data-icon="print" aria-hidden="true"></span></h3>
         <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
 
       <section id="presenting">
-        <h2><span class="ico" data-icon="present" aria-hidden="true"></span>Presenting</h2>
+        <h2>Presenting<span class="ico" data-icon="present" aria-hidden="true"></span></h2>
         <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. A click on an element shows its <a href="#documenting">documentation sheet</a>, and <kbd>D</kbd> turns the sheets on or off. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
         <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
         <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
@@ -397,7 +455,7 @@
       </section>
 
       <section id="documenting">
-        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenting elements</h2>
+        <h2>Documenting elements (bpmn:documentation)<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
         <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
         <h3>The documentation window</h3>
         <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
@@ -440,7 +498,7 @@
       </section>
 
       <section id="properties">
-        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Process panel</h2>
+        <h2>Process panel<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
         <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
         <h3>Show and hide the panel</h3>
         <ul>
@@ -487,11 +545,11 @@
       </section>
 
       <section id="assistant">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</h2>
+        <h2>AI co-pilot<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
         <figure class="fig-anim"><p class="fig-title">The co-pilot draws a process</p><img src="/docs/demo.gif" width="1200" height="675" alt="The AI co-pilot draws an online order process with two pools and four lanes" loading="lazy" /><figcaption>A request in plain language, and the diagram builds up in the editor.</figcaption></figure>
 
-        <h3>1. Choose a provider</h3>
+        <h3>1. Choose an LLM provider</h3>
         <!-- online -->
         <p>The co-pilot uses an AI model from the provider of your choice, with your own API key. Open <span class="uib">Options</span> in the co-pilot panel:</p>
         <!-- /online -->
@@ -567,7 +625,7 @@
         <h3>Review and checks</h3>
         <p>Around each answer, the co-pilot points out what the request leaves open, checks the diagram it produced, fixes on its own what fails, and shows where the result comes from. The details are in <a href="#ai-checks">Review, checks and traceability</a>. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns off the extra requests.</p>
 
-        <h3>What it costs</h3>
+        <h3>What it costs (API tokens)</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
       </section>
 
@@ -605,7 +663,7 @@
       </section>
 
       <section id="prompt-examples">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Prompt examples</h2>
+        <h2>Prompt examples<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Ready-to-use prompts for the <a href="#assistant">AI co-pilot</a>, to adapt to your context. They work with every provider, online and in the Docker version. The co-pilot replies, and names the elements, in the language of the prompt.</p>
         <figure><p class="fig-title">One prompt, one diagram</p><img src="/docs/prompt-example.png" width="1400" height="1083" alt="Diagram drawn by the co-pilot from the prompt: a Company pool with Employee, Manager, Purchasing and Accounting lanes, a Request approved? decision, and message flows to a Supplier pool." loading="lazy" /><figcaption>"Draw a purchase request: the employee enters the request, their manager accepts or rejects it. If accepted, purchasing orders from the supplier, then accounting pays the invoice. If rejected, the employee is told." One message, one pass.</figcaption></figure>
 
@@ -757,18 +815,18 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </div>
 
       <section id="bpmn-experts" class="expert-part">
-        <h2><span class="ico" data-icon="expert" aria-hidden="true"></span>Turn on Expert mode</h2>
+        <h2>Turn on Expert mode<span class="ico" data-icon="expert" aria-hidden="true"></span></h2>
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and linking the decisions of the process to DMN tables.</p>
         <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu, with the commands of the <a href="#modules">modules that are on</a>: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, <a href="#probabilities">Propose probabilities</a>, <a href="#process-report">Co-pilot analysis</a> and <a href="#ai-potential">AI potential by activity</a>, the last three greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The <a href="#ai-checks">co-pilot checks</a> and the MCP drawing tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
-        <h3 id="modules"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules</h3>
+        <h3 id="modules">Choose modules<span class="ico" data-icon="modules" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span>, at the bottom of the menu, opens a window with one switch per function: <span class="ui">Token simulation</span>, <span class="ui">Heatmap</span>, <span class="ui">Process report</span>, <span class="ui">AI potential</span>, <span class="ui">Risks and compliance</span>, <span class="ui">Camunda export</span> and <span class="ui">Decision tables (DMN)</span>. Turn on only what you use: the Expert menu and the Process panel only show the commands of the modules that are on. The heatmap needs the simulation. By default, the simulation, the heatmap, the report, the AI potential and the risks are on, and the Camunda export and decision tables are off. The browser remembers your choices.</p>
         <figure><img src="/src/help/img/en-modules-experts.webp" width="1040" height="1680" alt="The Expert modules window: Token simulation, Heatmap, Process report, AI potential, Risks and compliance, Camunda export and Decision tables (DMN), each with its switch, a line of explanation and a link to the help." loading="lazy" /><figcaption>The Expert modules window: here, the Camunda export and decision tables are off.</figcaption></figure>
         <p>Turning a module off leaves the diagram as it is: the probabilities, decisions, AI potential, risks and process identity already set stay in the file. The <span class="ui">Decision tables (DMN)</span> module, once on, adds the markers of business rule tasks, the <span class="ui">Decision (DMN)</span> group of the Process panel and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span> entry: see <a href="#dmn-decisions">Decision tables (DMN)</a>. AI agents, through the co-pilot or MCP, keep all their tools, whatever modules are on.</p>
       </section>
 
       <section id="simulation" class="expert-part">
-        <h2><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation and heatmap</h2>
+        <h2>Simulation and heatmap<span class="ico" data-icon="play" aria-hidden="true"></span></h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
         <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
         <div class="fig-pair">
@@ -801,7 +859,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="process-report" class="expert-part">
-        <h2><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h2>
+        <h2>Process report<span class="ico" data-icon="pdf" aria-hidden="true"></span></h2>
         <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
         <ul>
@@ -824,13 +882,13 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="ai-potential" class="expert-part">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity (AI adoption)</h2>
+        <h2>AI potential by activity (AI adoption)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Where does AI pay off in this process, and with what safeguard? In Expert mode, the Process panel of an activity gains the <span class="ui">AI adoption</span> group: <span class="ui">AI potential</span> (Automatable, by an AI agent with human review; AI-assisted; Human) and <span class="ui">Why, and safeguard</span>. You can fill them by hand, or choose <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span> in the Expert menu: the co-pilot rates each activity from its name, lane, documentation, assignee and systems, saves its rating and reason, then sums up where AI pays off first and the risks to frame. For each automatable or AI-assisted activity, it also adds the risks of handing it to AI and the matching controls, in the <a href="#risks-compliance">Risks and Controls</a> fields, without erasing those already written. The process report lists these ratings in a table, with their reasons.</p>
         <p>This function needs the <span class="ui">AI potential</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
       </section>
 
       <section id="risks-compliance" class="expert-part">
-        <h2><span class="ico" data-icon="lock" aria-hidden="true"></span>Risks, controls and requirements (compliance)</h2>
+        <h2>Risks, controls and requirements (compliance)<span class="ico" data-icon="lock" aria-hidden="true"></span></h2>
         <p>To prepare an audit, or to frame a step handed to AI, the Process panel of an activity gains the <span class="ui">Risks and compliance</span> group in Expert mode:</p>
         <ul>
           <li><span class="ui">Risks</span>: what can go wrong at this step, one per line.</li>
@@ -846,7 +904,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="camunda-export" class="expert-part">
-        <h2><span class="ico" data-icon="engine" aria-hidden="true"></span>Export for Camunda (8 and 7)</h2>
+        <h2>Export for Camunda (8 and 7)<span class="ico" data-icon="engine" aria-hidden="true"></span></h2>
         <p>In Expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span> offers <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 8</span> and <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 7</span>. The file opens in Camunda Modeler on the right platform, with what BPMN Pilot can already translate for the engine:</p>
         <ul>
           <li>the platform and its version are set, and each process is marked executable;</li>
@@ -859,7 +917,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="dmn-decisions" class="expert-part">
-        <h2><span class="ico" data-icon="table" aria-hidden="true"></span>Decision tables (DMN)</h2>
+        <h2>Decision tables (DMN)<span class="ico" data-icon="table" aria-hidden="true"></span></h2>
         <p>A business rule task applies a decision: grant a loan, pick a price, route a request. The DMN standard (Decision Model and Notation, from the OMG, like BPMN) describes that decision as a table: inputs, outputs, and one rule per row. The editor links each business rule task to its table, opens it in dmn-js, the DMN editor from bpmn.io, and stores the decisions in the .bpmn file itself.</p>
         <p>Everything below needs the <span class="ui">Decision tables (DMN)</span> module, turned on from <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>. The browser remembers the setting.</p>
         <figure><img src="/src/help/img/en-dmn-task.webp" width="1250" height="538" alt="An Assess the risk business rule task with its Table marker, and the Decision (DMN) group of the Process panel: linked decision, table summary, Open the table and Unlink buttons." loading="lazy" /><figcaption>A task linked to its table: the marker on the canvas, the Decision (DMN) group in the panel.</figcaption></figure>
@@ -927,7 +985,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </div>
 
       <section id="privacy">
-        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>
+        <h2>Privacy<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></h2>
         <ul>
           <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
@@ -984,24 +1042,24 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="install-app">
-        <h2>Install as an app</h2>
-        <p>BPMN-Pilot installs like an application: it then opens in its own window, without the address bar, from the Start menu, the Dock or the home screen.</p>
+        <h2>Install on your device (PWA)</h2>
+        <p>BPMN-Pilot is a PWA (Progressive Web App): thanks to its web app manifest, the browser installs it in its own window, without the address bar, launched from the Start menu, the Dock or the home screen.</p>
         <ul>
           <li><strong>Chrome and Edge</strong> (computer and Android): the <span class="uib"><span class="ico" data-icon="install" aria-hidden="true"></span>Install</span> button in the toolbar, which appears only when the browser offers installation, or the install icon at the right of the address bar.</li>
           <li><strong>Safari on a Mac</strong>: <strong>File</strong> menu, <strong>Add to Dock</strong>.</li>
           <li><strong>iPhone and iPad</strong>: <strong>Share</strong> button, <strong>Add to Home Screen</strong>.</li>
-          <li><strong>Firefox</strong> on a computer does not install web apps.</li>
+          <li><strong>Firefox</strong> on a computer does not support installing PWAs.</li>
         </ul>
-        <figure><img src="/src/help/img/en-installer.webp" width="335" height="54" alt="Right end of the toolbar: the Install button, before Help, language, theme and panel." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the app is installed.</figcaption></figure>
+        <figure><img src="/src/help/img/en-installer.webp" width="335" height="54" alt="Right end of the toolbar: the Install button, before Help, language, theme and panel." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the PWA is installed.</figcaption></figure>
         <!-- online -->
-        <h3 id="offline">Offline</h3>
-        <p>After a first visit, the editor, this guide and the showcase page open without a connection, installed or not: the browser keeps a copy of the site's files. The animated pictures of this guide are kept once viewed. The AI co-pilot needs a connection to reach its provider: offline, it says so.</p>
-        <p>When a new version is published, a banner above the canvas offers to <span class="uib">Reload</span>. Nothing reloads on its own, and reloading keeps the diagram in progress.</p>
+        <h3 id="offline">Offline (service worker)</h3>
+        <p>After a first visit, the editor, this guide and the showcase page open without a connection, installed or not: a service worker caches the site's files (Cache API). The GIFs of this guide are cached once displayed. The AI co-pilot needs a connection to reach its provider's API: offline, it says so.</p>
+        <p>When a new version is published, its service worker waits: a banner above the canvas offers to <span class="uib">Reload</span>. Nothing reloads on its own, and reloading keeps the diagram in progress.</p>
         <figure><img src="/src/help/img/en-mise-a-jour.webp" width="980" height="66" alt="Banner under the toolbar: a new version of BPMN-Pilot is available, with a Reload button and a cross." loading="lazy" /><figcaption>The banner of a new version. The cross closes it: the new version applies the next time you open the editor.</figcaption></figure>
-        <div class="note">On iPhone and iPad, the installed app has its own storage, separate from Safari: the diagrams of <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span> in Safari do not appear in it. To move a diagram from one to the other, export it as a .bpmn file and open it on the other side.</div>
+        <div class="note">On iPhone and iPad, the installed PWA has its own storage (localStorage and IndexedDB), separate from Safari: the diagrams of <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span> in Safari do not appear in it. To move a diagram from one to the other, export it as a .bpmn file and open it on the other side.</div>
         <!-- /online -->
         <!-- docker -->
-        <p>Docker version: installation is offered on localhost or over HTTPS. The installed app does not work offline, since the AI co-pilot, the MCP server and saved diagrams go through the server.</p>
+        <p>Docker version: the PWA installs on localhost or over HTTPS (the secure context browsers require). Without a service worker, it does not work offline: the AI co-pilot, the MCP server and saved diagrams go through the server.</p>
         <!-- /docker -->
       </section>
 
@@ -1076,7 +1134,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="feedback">
-        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
+        <h2>Send feedback<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg></h2>
         <p>A bug, an idea, a question? The <span class="uib">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
         <h3 id="support">Support development</h3>
         <p>BPMN-Pilot is free, with no subscription. My buddy Claude runs on caffeine. If the editor is useful to you, a coffee on Ko-fi keeps the project going.</p>

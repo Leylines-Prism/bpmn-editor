@@ -19,13 +19,14 @@ import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
 import { setDecisionTable, summarize as summarizeDmn, checkDecision } from './dmn/dmn-model.js'
 import { evaluateDecision, casesPerRule } from './dmn/dmn-eval.js'
-
-// Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
-const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
+import { eventTriggerProblem } from './lint/event-triggers.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
 import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
+
+// Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
+const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
 
 const RETRY_MIN_MS = 1000
 // Dernier client MCP relié : l'analyse qu'il enregistre porte son nom.
@@ -245,7 +246,10 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
     const eventDef = bo.eventDefinitions?.[0]
     if (eventDef) out.eventDefinition = eventDef.$type
     if (element.host) out.attachedTo = element.host.id
-    if (bo.cancelActivity === false) out.interrupting = false
+    if (bo.cancelActivity === false || bo.isInterrupting === false) out.interrupting = false
+    const marker = markerOf(bo)
+    if (marker) out.marker = marker
+    if (bo.triggeredByEvent) out.eventSubProcess = true
     const style = styleOf(element)
     if (style) out.style = style
     // Documentation (Markdown) : le Co-pilote s'appuie dessus pour répondre et rédiger.
@@ -362,9 +366,55 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
     return position
   }
 
+  // Marqueur d'une activité : boucle, multi-instance parallèle ou séquentielle, compensation.
+  function markerOf(bo) {
+    const loop = bo.loopCharacteristics
+    if (loop && loop.$type === 'bpmn:StandardLoopCharacteristics') return 'loop'
+    if (loop && loop.$type === 'bpmn:MultiInstanceLoopCharacteristics') return loop.isSequential ? 'sequential' : 'parallel'
+    if (bo.isForCompensation) return 'compensation'
+    return null
+  }
+
+  function setMarker(element, marker) {
+    if (!is(element, 'bpmn:Activity')) throw new Error(`A marker applies only to a task, subprocess or call activity: ${element.id}`)
+    if (marker === 'compensation') return modeling.updateProperties(element, { isForCompensation: true })
+    let loopCharacteristics
+    if (marker === 'loop') loopCharacteristics = bpmnFactory.create('bpmn:StandardLoopCharacteristics')
+    else if (marker === 'parallel' || marker === 'sequential') {
+      loopCharacteristics = bpmnFactory.create('bpmn:MultiInstanceLoopCharacteristics', { isSequential: marker === 'sequential' })
+    }
+    modeling.updateProperties(element, { loopCharacteristics, ...(marker === 'none' ? { isForCompensation: false } : {}) })
+  }
+
+  // Après création ou modification : options propres aux événements et aux activités,
+  // puis refus d'une combinaison d'événement et de déclencheur que la norme n'admet pas.
+  function finishElement(element, spec) {
+    const bo = getBusinessObject(element)
+    if (spec.interrupting !== undefined) {
+      if (is(element, 'bpmn:BoundaryEvent')) modeling.updateProperties(element, { cancelActivity: spec.interrupting })
+      else if (is(element, 'bpmn:StartEvent') && bo.$parent?.triggeredByEvent) modeling.updateProperties(element, { isInterrupting: spec.interrupting })
+      else throw new Error(`interrupting applies only to a boundary event or to the start event of an event subprocess: ${element.id}`)
+    }
+    if (spec.marker) setMarker(element, spec.marker)
+    // Un événement de lien se repère à son nom : la définition prend celui de l'événement.
+    const link = (bo.eventDefinitions || []).find((d) => d.$type === 'bpmn:LinkEventDefinition')
+    if (link && bo.name && link.name !== bo.name) modeling.updateModdleProperties(element, link, { name: bo.name })
+    const problem = eventTriggerProblem(bo)
+    if (problem) {
+      throw new Error(`${problem} (BPMN 2.0): ${element.id}, ${element.type.replace('bpmn:', '')} with ${bo.eventDefinitions?.[0]?.$type.replace('bpmn:', '') || 'no event definition'}. Nothing was changed.`)
+    }
+  }
+
   function createShape(spec) {
     const attrs = { type: withPrefix(spec.type) }
     if (spec.eventDefinition) attrs.eventDefinitionType = withPrefix(spec.eventDefinition)
+    if (spec.eventSubProcess) {
+      if (attrs.type !== 'bpmn:SubProcess') throw new Error('eventSubProcess applies only to a SubProcess.')
+      attrs.triggeredByEvent = true
+      attrs.isExpanded = true
+    } else if (spec.expanded !== undefined && ['bpmn:SubProcess', 'bpmn:Transaction', 'bpmn:AdHocSubProcess'].includes(attrs.type)) {
+      attrs.isExpanded = spec.expanded
+    }
     try {
       // Un pool reçoit son propre processus, pour pouvoir contenir des lanes et des formes.
       if (attrs.type === 'bpmn:Participant') return elementFactory.createParticipantShape({})
@@ -490,8 +540,8 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
               throw new Error(`Cannot attach the event to ${host.id}`)
             }
             const element = modeling.createShape(shape, position, host, { attach: true })
-            if (spec.interrupting === false) modeling.updateProperties(element, { cancelActivity: false })
             if (spec.name) modeling.updateLabel(element, spec.name)
+            finishElement(element, spec)
             if (spec.key) byKey[spec.key] = element
             const entry = describe(element)
             if (spec.key) entry.key = spec.key
@@ -535,6 +585,7 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
           }
 
           if (spec.name) modeling.updateLabel(element, spec.name)
+          finishElement(element, spec)
           if (spec.key) byKey[spec.key] = element
           const entry = describe(element)
           if (spec.key) entry.key = spec.key
@@ -622,6 +673,7 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
             for (const k of activityFields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
             modeling.updateModdleProperties(element, bo, props)
           }
+          finishElement(element, spec)
           updated.push({ previousId: spec.id, ...describe(element) })
         }
         return { updated }

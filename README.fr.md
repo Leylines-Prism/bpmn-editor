@@ -11,8 +11,6 @@
 [![BPMN-Pilot MCP server on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/score.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-soutenir-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
-[![Serveur MCP bpmn-pilot : note de qualité et de maintenance sur Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
-
 [English](README.md) | **Français**
 
 ![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
@@ -144,7 +142,7 @@ Les outils de dessin généralistes comme draw.io, Lucidchart ou Visio tracent d
 Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente ses conventions. BPMN donne
 à chaque symbole un sens défini :
 
-- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de message
+- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de messages
   pour ce qu'ils échangent.
 - **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
   événements accrochés à une tâche pour les délais et les exceptions.
@@ -213,7 +211,7 @@ dit ce qui sort du navigateur, et
 
 La page stable compte son audience de façon anonyme, sans cookie :
 visites (pages d'aide comprises), provenance, version de l'app et usage de chaque fonction (diagramme créé, ouvert
-ou exporté, mode Expert, installation et ouverture en application, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
+ou exporté, mode Expert, installation et ouverture en PWA, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
 fournisseur connecté, types de fichiers joints, classes d'erreur, Votre avis, exemples de prompts copiés, liens
 GitHub et de soutien, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
@@ -222,20 +220,20 @@ indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image
 n'envoient quoi que ce soit. Le réglage suit les [recommandations de la CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) pour les mesures d'audience
 exemptées de consentement.
 
-### L'installer comme une application
+### L'installer sur votre poste (PWA)
 
-Chrome et Edge (ordinateur et Android) proposent d'installer l'éditeur comme une application :
-bouton Installer de la barre d'outils, ou icône à droite de la barre d'adresse. Sur iPhone et iPad :
+La version en ligne est une PWA (Progressive Web App), avec un manifeste d'application web. Chrome
+et Edge (ordinateur et Android) proposent de l'installer : bouton Installer de la barre d'outils, ou icône à droite de la barre d'adresse. Sur iPhone et iPad :
 Partager, Sur l'écran d'accueil. Dans Safari sur Mac : Fichier, Ajouter au Dock. Firefox sur
-ordinateur n'installe pas les applications web. L'application s'ouvre dans sa propre fenêtre.
+ordinateur ne prend pas en charge l'installation des PWA. La PWA s'ouvre dans sa propre fenêtre.
 
 Après une première visite, l'éditeur et son guide fonctionnent aussi hors connexion, installés ou
-non : un service worker ([src/pwa/sw.js](src/pwa/sw.js)) garde une copie des fichiers du site dans
-le navigateur. Il ne traite que les requêtes vers le site lui-même : les appels aux fournisseurs
+non : un service worker ([src/pwa/sw.js](src/pwa/sw.js)) met en cache les fichiers du site
+(Cache API). Il ne traite que les requêtes vers le site lui-même : les appels aux fournisseurs
 d'IA et la mesure d'audience ne passent jamais par lui. Le co-pilote IA a besoin du réseau pour
 joindre son fournisseur. Une nouvelle version s'annonce par un bandeau avec un bouton Recharger :
-rien ne se recharge tout seul. Sur iPhone et iPad, l'application installée a son propre stockage,
-séparé de Safari : pour passer un diagramme de l'un à l'autre, passez par un fichier .bpmn.
+rien ne se recharge tout seul. Sur iPhone et iPad, la PWA installée a son propre stockage
+(localStorage et IndexedDB), séparé de Safari : pour passer un diagramme de l'un à l'autre, passez par un fichier .bpmn.
 
 ## Le lancer avec Docker
 
@@ -298,14 +296,14 @@ Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autr
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
 
-### L'installer comme une application
+### L'installer sur votre poste (PWA)
 
-Sur `http://localhost:8080`, Chrome et Edge proposent d'installer l'éditeur comme une application
+Sur `http://localhost:8080`, Chrome et Edge proposent d'installer l'éditeur en PWA
 (icône dans la barre d'adresse, ou menu > Installer). Il s'ouvre dans sa propre fenêtre, que l'on
 garde ouverte pour qu'un agent y dessine. Les navigateurs ne proposent l'installation qu'en HTTPS ou
 sur localhost : depuis une autre machine, passez par une adresse HTTPS (voir
-[Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). La version Docker ne
-fonctionne pas hors ligne : le Co-pilote IA, le serveur MCP et les diagrammes enregistrés ont besoin
+[Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). La version Docker n'a
+pas de service worker et ne fonctionne pas hors ligne : le Co-pilote IA, le serveur MCP et les diagrammes enregistrés ont besoin
 du serveur.
 
 ## Vos fichiers (version Docker)
@@ -563,6 +561,8 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les
 [issues](https://github.com/Leylines-Prism/bpmn-pilot/issues), et les failles de sécurité passent
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
+
+[![Serveur MCP bpmn-pilot : note de qualité et de maintenance sur Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 
 ## Soutenir le développement
 
