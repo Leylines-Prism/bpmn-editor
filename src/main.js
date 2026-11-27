@@ -553,7 +553,12 @@ document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => 
   try {
     if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
     const [{ raciRows }, report] = await Promise.all([import('./raci.js'), processReport()])
-    if (!report.raci) throw new Error(T('no activity has an Accountable, Consulted or Informed role yet (Responsibilities group of the properties panel)', 'aucune activité n\'a encore de rôle Valide, Consultés ou Informés (groupe Responsabilités du panneau de propriétés)'))
+    // Cas normal d'un diagramme sans RACI : on dit quoi remplir, sans parler d'échec.
+    if (!report.raci) {
+      alert(T('No activity has an Accountable (A), Consulted (C) or Informed (I) role yet. Select an activity and fill in the Responsibilities (RACI) group of the Process panel.',
+        'Aucune activité n\'a encore de rôle Valide (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.'))
+      return
+    }
     const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')
     const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     await deliver(new Blob([bytes], { type }), `${baseName()} - ${T('RACI matrix', 'matrice RACI')}`, 'xlsx', type)
