@@ -56,6 +56,11 @@ a:focus-visible, .btn:focus-visible { outline: 2px solid var(--focus-ring); outl
 .btn:hover { background: var(--surface-sunken); }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .btn.primary:hover { filter: brightness(1.08); }
+.btn.round { width: 36px; padding: 0; justify-content: center; border-radius: var(--radius-pill); }
+.btn[data-icon]::before {
+  content: ''; width: 18px; height: 18px; background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
+}
 
 /* ── Mise en page : sommaire à gauche, texte à droite ────────────────── */
 
@@ -125,7 +130,7 @@ svg.ico { overflow: visible; }
    des vrais boutons de l'éditeur. Les autres noms (champs, groupes, choix) restent en gras (.ui). */
 .uib {
   display: inline-flex; align-items: center; gap: 4px;
-  height: 24px; padding: 0 7px; vertical-align: -1px;
+  height: 24px; padding: 0 7px; vertical-align: middle;
   border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
   background: var(--surface-raised); color: var(--ink);
   font-size: 14px; line-height: 20px; font-weight: 500; white-space: nowrap;

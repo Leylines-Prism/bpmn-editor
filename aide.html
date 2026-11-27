@@ -24,6 +24,7 @@
     </a>
     <span class="name">BPMN-Pilot · Aide</span>
     <span class="grow"></span>
+    <button class="btn round" id="btn-theme" type="button" data-icon="theme" aria-label="Thème : auto"></button>
     <a class="btn" href="help.html" hreflang="en" lang="en">English</a>
     <a class="btn primary" href="./">Ouvrir l'éditeur</a>
   </header>
@@ -85,7 +86,7 @@
           <li>Donnez un nom au fichier dans le champ à gauche de la barre d'outils. Ce nom sert à l'enregistrement et à tous les exports.</li>
         </ol>
         <p>Votre travail est gardé dans le navigateur à chaque modification, et vous le retrouvez tel quel en rouvrant la page. La mention « Sauvegarde auto », dans la barre d'outils, le rappelle.</p>
-        <p>Le bouton <span class="uib">EN</span> ou <span class="uib">FR</span> change la langue de l'interface, et le bouton rond <span class="ico" data-icon="theme" aria-hidden="true"></span> à côté choisit le thème : clair, sombre, ou celui de votre système. Le navigateur retient les deux choix.</p>
+        <p>Le bouton <span class="uib">EN</span> ou <span class="uib">FR</span> change la langue de l'interface. Le bouton <span class="uib"><span class="ico" data-icon="theme" aria-hidden="true"></span>Thème</span>, juste à côté, passe à chaque clic au thème suivant : automatique (celui du système), clair, puis sombre. Son infobulle indique le thème en cours. L'aide suit le même choix et a son propre bouton, en haut à droite. Le navigateur retient les deux choix.</p>
         <p>BPMN 2.0 est une norme internationale : publiée par l'Object Management Group (OMG) et reprise par l'ISO sous la référence <a href="https://www.iso.org/fr/standard/62652.html" target="_blank" rel="noopener">ISO/IEC 19510:2013</a>, identique à BPMN 2.0.1. Sa notation et sa sémantique d'exécution sont les mêmes pour tous les outils et toutes les équipes : un diagramme fait ici se lit de la même façon ailleurs, et le fichier .bpmn s'ouvre dans tout éditeur ou moteur conforme.</p>
         <details class="faq">
           <summary>Pourquoi BPMN plutôt qu'un logigramme ?</summary>
@@ -800,6 +801,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
       </footer>
     </main>
   </div>
+  <script type="module" src="/src/help/theme-button.js"></script>
   <script type="module" src="/src/help/sections.js"></script>
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
