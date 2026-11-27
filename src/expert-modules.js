@@ -32,7 +32,7 @@ const modules = [
   {
     id: 'report', icon: 'pdf', default: true, help: ['rapport-processus', 'process-report'],
     name: () => T('Process report', 'Rapport de processus'),
-    detail: () => T('Findings, improvement areas and element sequence, as a PDF or Markdown.', 'Constats, axes d\'amélioration et séquence des éléments, en PDF ou en Markdown.'),
+    detail: () => T('Findings, improvement areas and element sequence, as a PDF, Markdown or Word file.', 'Constats, axes d\'amélioration et séquence des éléments, en PDF, Markdown ou Word.'),
   },
   {
     id: 'ai-potential', icon: 'assistant', default: true, help: ['potentiel-ia', 'ai-potential'],
