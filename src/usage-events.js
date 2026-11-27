@@ -4,6 +4,7 @@
 
 import { track, range, trackGithubLinks } from './analytics.js'
 import { EXPERT_EVENT } from './expert-mode.js'
+import { openedAsApp } from './pwa/install.js'
 
 export function setupUsageEvents(modeler) {
   const on = (id, handler) => document.getElementById(id)?.addEventListener('click', handler)
@@ -41,6 +42,10 @@ export function setupUsageEvents(modeler) {
   on('btn-ai-analysis', () => track('copilote-expert', { action: 'analyse' }))
   on('btn-lang', () => track('langue-changee'))
   on('btn-theme', () => track('theme-change'))
+
+  // Éditeur ouvert dans la fenêtre de l'application installée. L'installation elle-même
+  // (« app-installee ») et le bouton Installer sont comptés par src/pwa/install.js.
+  if (openedAsApp()) track('ouverte-en-app')
 
   trackGithubLinks(document)
 }

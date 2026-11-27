@@ -54,6 +54,7 @@ import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { setupPwa } from './pwa/register.js'
+import { setupInstallButton } from './pwa/install.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDeepLink } from './deep-link.js'
@@ -577,6 +578,7 @@ setupPanelToggle({
 })
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'), save: () => autosave({ quiet: true }) })
+setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 const heatmap = setupHeatmap(modeler)

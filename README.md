@@ -170,7 +170,7 @@ some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the 
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
 The stable page measures its audience anonymously, without cookies: visits (help pages included), referrers, app version and the use of each function (diagram created, opened or exported,
-expert mode, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
+expert mode, installation and opening as an app, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
 error classes, feedback, prompt examples copied, GitHub and support links, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
@@ -180,8 +180,8 @@ Docker image nor `npm run dev` measure anything. The measurement is configured a
 
 ### Install it as an app
 
-Chrome and Edge (computer and Android) offer to install the editor as an app: icon at the right of
-the address bar, or the browser menu, Install. On iPhone and iPad: Share, Add to Home Screen. In
+Chrome and Edge (computer and Android) offer to install the editor as an app: Install button in
+the toolbar, or icon at the right of the address bar. On iPhone and iPad: Share, Add to Home Screen. In
 Safari on a Mac: File, Add to Dock. Firefox on a computer does not install web apps. The app opens
 in its own window.
 

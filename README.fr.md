@@ -179,7 +179,7 @@ dit ce qui sort du navigateur, et
 
 La page stable compte son audience de façon anonyme, sans cookie :
 visites (pages d'aide comprises), provenance, version de l'app et usage de chaque fonction (diagramme créé, ouvert
-ou exporté, mode Expert, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
+ou exporté, mode Expert, installation et ouverture en application, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
 fournisseur connecté, types de fichiers joints, classes d'erreur, Votre avis, exemples de prompts copiés, liens
 GitHub et de soutien, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
@@ -191,7 +191,7 @@ exemptées de consentement.
 ### L'installer comme une application
 
 Chrome et Edge (ordinateur et Android) proposent d'installer l'éditeur comme une application :
-icône à droite de la barre d'adresse, ou menu du navigateur, Installer. Sur iPhone et iPad :
+bouton Installer de la barre d'outils, ou icône à droite de la barre d'adresse. Sur iPhone et iPad :
 Partager, Sur l'écran d'accueil. Dans Safari sur Mac : Fichier, Ajouter au Dock. Firefox sur
 ordinateur n'installe pas les applications web. L'application s'ouvre dans sa propre fenêtre.
 
