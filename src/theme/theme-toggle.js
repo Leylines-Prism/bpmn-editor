@@ -5,27 +5,28 @@ import { T } from '../i18n/lang.js'
 
 const KEY = 'bpmn-editor-theme'
 const MODES = ['auto', 'light', 'dark']
-const LABELS = { auto: T('Theme: auto', 'Thème : auto'), light: T('Theme: light', 'Thème : clair'), dark: T('Theme: dark', 'Thème : sombre') }
 
 function read() {
   try { return MODES.includes(localStorage.getItem(KEY)) ? localStorage.getItem(KEY) : 'auto' } catch { return 'auto' }
 }
 
-function apply(mode, button) {
+function apply(mode, button, t) {
+  const labels = { auto: t('Theme: auto', 'Thème : auto'), light: t('Theme: light', 'Thème : clair'), dark: t('Theme: dark', 'Thème : sombre') }
   if (mode === 'auto') delete document.documentElement.dataset.theme
   else document.documentElement.dataset.theme = mode
   if (button) {
-    button.title = LABELS[mode] + T(' (click to change)', ' (cliquer pour changer)')
-    button.setAttribute('aria-label', LABELS[mode])
+    button.title = labels[mode] + t(' (click to change)', ' (cliquer pour changer)')
+    button.setAttribute('aria-label', labels[mode])
   }
 }
 
-export function setupThemeToggle(button) {
+// t traduit les libellés : par défaut la langue de l'interface, l'aide passe celle de sa page.
+export function setupThemeToggle(button, t = T) {
   let mode = read()
-  apply(mode, button)
+  apply(mode, button, t)
   button?.addEventListener('click', () => {
     mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length]
     try { localStorage.setItem(KEY, mode) } catch { /* stockage indisponible : le choix vaut pour cette page */ }
-    apply(mode, button)
+    apply(mode, button, t)
   })
 }

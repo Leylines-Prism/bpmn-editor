@@ -24,6 +24,7 @@
     </a>
     <span class="name">BPMN-Pilot · Help</span>
     <span class="grow"></span>
+    <button class="btn round" id="btn-theme" type="button" data-icon="theme" aria-label="Theme: auto"></button>
     <a class="btn" href="aide.html" hreflang="fr" lang="fr">Français</a>
     <a class="btn primary" href="./">Open the editor</a>
   </header>
@@ -85,7 +86,7 @@
           <li>Name the file in the field on the left of the toolbar. That name is used when saving and for every export.</li>
         </ol>
         <p>Your work is kept in the browser after every change, and you find it as you left it when you reopen the page. The "Autosave" label in the toolbar is there to remind you.</p>
-        <p>The <span class="uib">FR</span> or <span class="uib">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <p>The <span class="uib">FR</span> or <span class="uib">EN</span> button switches the interface language. The <span class="uib"><span class="ico" data-icon="theme" aria-hidden="true"></span>Theme</span> button next to it moves to the next theme on each click: automatic (your system's), light, then dark. Its tooltip shows the current theme. The help follows the same choice and has its own button, top right. The browser remembers both choices.</p>
         <p>BPMN 2.0 is an international standard: published by the Object Management Group (OMG) and adopted by ISO as <a href="https://www.iso.org/standard/62652.html" target="_blank" rel="noopener">ISO/IEC 19510:2013</a>, identical to BPMN 2.0.1. Its notation and execution semantics are the same for every tool and every team: a diagram made here reads the same elsewhere, and the .bpmn file opens in any compliant editor or engine.</p>
         <details class="faq">
           <summary>Why BPMN rather than a flowchart?</summary>
@@ -800,6 +801,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </footer>
     </main>
   </div>
+  <script type="module" src="/src/help/theme-button.js"></script>
   <script type="module" src="/src/help/sections.js"></script>
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
