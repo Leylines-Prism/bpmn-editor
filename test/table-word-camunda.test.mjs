@@ -169,3 +169,33 @@ test('the Assigned to column of a table lands on the tasks', async () => {
   const task = rootElement.rootElements.find((e) => e.$type === 'bpmn:Process').flowElements.find((e) => e.name === 'Approve')
   assert.equal(task.get('bpmnpilot:assignee'), 'Jane Doe')
 })
+
+test('the RACI matrix gathers performers, accountable, consulted and informed roles', async () => {
+  const { buildRaci, raciRows } = await import('../src/raci.js')
+  const seq = [
+    { number: 1, name: 'Start', activity: false },
+    { number: 2, name: 'Approve', activity: true, lane: 'Managers', assignee: 'Jane', accountable: 'Director', consulted: 'HR, Finance', informed: 'Employee' },
+    { number: 3, name: 'Pay', activity: true, lane: 'Accounting', informed: 'Employee; Jane' },
+  ]
+  const raci = buildRaci(seq)
+  assert.deepEqual(raci.roles, ['Jane', 'Director', 'HR', 'Finance', 'Employee', 'Accounting'])
+  assert.deepEqual(raciRows(raci, (en) => en)[1], ['2', 'Approve', 'R', 'A', 'C', 'C', 'I', ''])
+  assert.deepEqual(raciRows(raci, (en) => en)[2], ['3', 'Pay', 'I', '', '', '', 'I', 'R'])
+  assert.equal(buildRaci(seq.map((s) => ({ ...s, accountable: '', consulted: '', informed: '' }))), null)
+  const table = readTable([['Description', 'Function', 'A', 'C', 'I', 'Systems'], ['Approve', 'Managers', 'Director', 'HR', 'Employee', 'ERP']])
+  const { rootElement } = await parse(tableToXml(table))
+  const task = rootElement.rootElements.find((e) => e.$type === 'bpmn:Process').flowElements.find((e) => e.name === 'Approve')
+  assert.equal(task.get('bpmnpilot:accountable'), 'Director')
+  assert.equal(task.get('bpmnpilot:systems'), 'ERP')
+})
+
+test('an encrypted .bpmn file opens only with its password', async () => {
+  const { encryptText, decryptText, isEncrypted } = await import('../src/encrypted-file.js')
+  const box = await encryptText('<definitions>é</definitions>', 'correct horse')
+  assert.ok(isEncrypted(box))
+  assert.doesNotMatch(box, /definitions/)
+  assert.equal(await decryptText(box, 'correct horse'), '<definitions>é</definitions>')
+  await assert.rejects(decryptText(box, 'wrong horse!'), /wrong password/)
+  await assert.rejects(encryptText('x', 'short'), /too short/)
+  assert.equal(isEncrypted('<?xml version="1.0"?>'), false)
+})

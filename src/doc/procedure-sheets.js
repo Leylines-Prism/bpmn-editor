@@ -38,6 +38,9 @@ export function sheetsToMarkdown(report) {
     const facts = [`**Type**${colon()}${s.type}`]
     if (s.lane) facts.push(`**${T('Lane', 'Couloir')}**${colon()}${s.lane}`)
     if (s.assignee) facts.push(`**${T('Assigned to', 'Assigné à')}**${colon()}${s.assignee}`)
+    if (s.systems) facts.push(`**${T('Systems', 'Systèmes')}**${colon()}${s.systems}`)
+    const raci = [['A', s.accountable], ['C', s.consulted], ['I', s.informed]].filter(([, v]) => v).map(([k, v]) => `${k}${colon()}${v}`)
+    if (raci.length) facts.push(`**RACI**${colon()}${raci.join(', ')}`)
     lines.push(facts.join(' · '))
     if (s.previous?.length) lines.push('', `**${T('Before', 'Avant')}**${colon()}${s.previous.join(' ; ')}`)
     if (s.next) lines.push('', `**${T('Next', 'Ensuite')}**${colon()}${s.next}`)

@@ -69,6 +69,7 @@ import { setupDocEditor } from './doc/doc-editor.js'
 import { setupDocBadges } from './doc/doc-badges.js'
 import { setupDocSearch } from './doc/doc-search.js'
 import { setupTableDialog } from './table-dialog.js'
+import { setupGridDialog } from './grid-dialog.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -258,6 +259,29 @@ async function importAndReport(xml, fileName) {
 }
 
 async function importFile(file) {
+  // Fichier chiffré par mot de passe : déchiffré dans la page, puis ouvert comme un .bpmn.
+  if (/\.enc$/i.test(file.name)) {
+    const { isEncrypted, decryptText, askPassword } = await import('./encrypted-file.js')
+    const content = await file.text()
+    if (!isEncrypted(content)) {
+      alert(T('This file is not an encrypted BPMN Pilot diagram.', 'Ce fichier n\'est pas un diagramme BPMN Pilot chiffré.'))
+      return
+    }
+    for (;;) {
+      const password = await askPassword({ fileName: file.name })
+      if (password === null) return
+      try {
+        const xml = await decryptText(content, password)
+        const failure = await importAndReport(xml, file.name.replace(/\.enc$/i, ''))
+        if (failure) alert(T('Import failed: ', 'Import impossible : ') + failure)
+        else track('fichier-ouvert', { source: 'chiffre' })
+        return
+      } catch (err) {
+        if (err.message !== 'wrong password') { alert(T('Import failed: ', 'Import impossible : ') + err.message); return }
+        alert(T('Wrong password.', 'Mot de passe incorrect.'))
+      }
+    }
+  }
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
     track('fichier-invalide', { cause: 'format' })
     alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
@@ -288,13 +312,25 @@ setupXmlDialog({
 setupFileDrop({ onFile: importFile })
 
 // Ouvrir > Depuis un tableau : une ligne par étape, convertie sans IA.
-setupTableDialog({
+const tableDialog = setupTableDialog({
   openButton: document.getElementById('btn-import-table'),
   download: (content, name, ext, type) => download(content, `${name}.${ext}`, type),
   onCreate: async (xml, name) => {
     const failure = await importAndReport(xml, name)
     if (!failure) setStatus(T('Diagram created from the table', 'Diagramme créé depuis le tableau'))
     track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'tableau' } : { source: 'tableau' })
+    return failure
+  },
+})
+
+// Ouvrir > Grille rôles × tâches : saisie d'atelier, un clic par tâche dans la colonne du rôle.
+setupGridDialog({
+  openButton: document.getElementById('btn-import-grid'),
+  openTable: (rows) => tableDialog.openWith(rows),
+  onCreate: async (xml, name) => {
+    const failure = await importAndReport(xml, name)
+    if (!failure) setStatus(T('Diagram created from the grid', 'Diagramme créé depuis la grille'))
+    track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'grille' } : { source: 'grille' })
     return failure
   },
 })
@@ -428,6 +464,21 @@ async function exportCamunda(target, button) {
     button.disabled = false
   }
 }
+// Exporter > Fichier .bpmn chiffré : le XML chiffré dans la page avec un mot de passe.
+document.getElementById('btn-save-encrypted').addEventListener('click', async () => {
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const { encryptText, askPassword, ENCRYPTED_EXT } = await import('./encrypted-file.js')
+    const password = await askPassword({ confirm: true })
+    if (password === null) return
+    const { xml } = await modeler.saveXML({ format: true })
+    await deliver(await encryptText(xml, password), baseName(), ENCRYPTED_EXT, 'application/json')
+    track('export', { format: 'bpmn-chiffre' })
+  } catch (err) {
+    console.error('Encryption error:', err)
+    alert(T('Encrypted export failed: ', 'Export chiffré impossible : ') + err.message)
+  }
+})
 document.getElementById('btn-camunda-8').addEventListener('click', (e) => exportCamunda(8, e.currentTarget))
 document.getElementById('btn-camunda-7').addEventListener('click', (e) => exportCamunda(7, e.currentTarget))
 
@@ -493,6 +544,26 @@ async function exportSheets(format, button) {
 document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => exportSheets('pdf', e.currentTarget))
 document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
 document.getElementById('btn-sheets-docx').addEventListener('click', (e) => exportSheets('docx', e.currentTarget))
+
+// Exporter > Matrice RACI (Excel) : une ligne par activité, une colonne par rôle.
+document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => {
+  const button = e.currentTarget
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ raciRows }, { rowsToXlsx }, report] = await Promise.all([import('./raci.js'), import('./sheet-io.js'), processReport()])
+    if (!report.raci) throw new Error(T('no activity has an Accountable, Consulted or Informed role yet (Responsibilities group of the properties panel)', 'aucune activité n\'a encore de rôle Valide, Consultés ou Informés (groupe Responsabilités du panneau de propriétés)'))
+    const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')
+    const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    await deliver(new Blob([bytes], { type }), `${baseName()} - ${T('RACI matrix', 'matrice RACI')}`, 'xlsx', type)
+    track('export', { format: 'raci-xlsx' })
+  } catch (err) {
+    console.error('RACI export error:', err)
+    alert(T('RACI matrix failed: ', 'Matrice RACI impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+})
 
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.

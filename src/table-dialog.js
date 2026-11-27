@@ -74,6 +74,15 @@ export function setupTableDialog({ openButton, onCreate, download }) {
     dialog.showModal()
     text.focus()
   })
+  // Ouverture avec des lignes déjà prêtes (depuis la grille rôles × tâches).
+  function openWith(initial) {
+    rows = initial
+    fileName = ''
+    text.value = initial.map((r) => r.join('\t')).join('\n')
+    show()
+    dialog.showModal()
+    text.focus()
+  }
   dialog.querySelector('#table-cancel').addEventListener('click', () => dialog.close())
   dialog.querySelector('#table-file').addEventListener('click', () => input.click())
   input.addEventListener('change', async () => {
@@ -114,4 +123,5 @@ export function setupTableDialog({ openButton, onCreate, download }) {
       dialog.close()
     }
   })
+  return { openWith }
 }

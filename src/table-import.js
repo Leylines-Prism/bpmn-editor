@@ -25,6 +25,10 @@ const HEADERS = {
   type: ['shape type', 'type', 'type de forme', 'forme', 'element', 'type d element'],
   lane: ['function', 'fonction', 'role', 'acteur', 'actor', 'responsable', 'swimlane', 'couloir', 'lane', 'service', 'department', 'departement', 'funktion', 'who', 'qui'],
   assignee: ['assignee', 'assigned to', 'assigne a', 'assignee a', 'attribue a', 'affecte a', 'owner name', 'person', 'personne', 'qui exactement', 'zustandig'],
+  systems: ['systems', 'system', 'systems used', 'systemes', 'systeme', 'systemes utilises', 'outils', 'outil', 'tools', 'applications', 'application', 'logiciels'],
+  accountable: ['accountable', 'a', 'valide', 'validateur', 'approbateur', 'approver', 'responsable du resultat'],
+  consulted: ['consulted', 'c', 'consulte', 'consultes'],
+  informed: ['informed', 'i', 'informe', 'informes'],
   doc: ['how', 'comment', 'commentaire', 'commentaires', 'details', 'detail', 'notes', 'note', 'documentation', 'mode operatoire', 'instructions'],
 }
 
@@ -99,6 +103,10 @@ export function readTable(rows, T = (en) => en) {
       lane: cols.lane !== undefined ? (r[cols.lane] || '').trim() : '',
       doc: cols.doc !== undefined ? (r[cols.doc] || '').trim() : '',
       assignee: cols.assignee !== undefined ? (r[cols.assignee] || '').trim() : '',
+      systems: cols.systems !== undefined ? (r[cols.systems] || '').trim() : '',
+      accountable: cols.accountable !== undefined ? (r[cols.accountable] || '').trim() : '',
+      consulted: cols.consulted !== undefined ? (r[cols.consulted] || '').trim() : '',
+      informed: cols.informed !== undefined ? (r[cols.informed] || '').trim() : '',
     }
     steps.push(step)
     byKey.set(fold(key), step)
@@ -159,8 +167,9 @@ export function tableToXml(table, { name = 'Process', T = (en) => en } = {}) {
   }
   const tails = all.filter((s) => s.type !== 'bpmn:EndEvent' && !outgoing(s).length)
   if (tails.length) {
-    const ends = steps.filter((s) => s.type === 'bpmn:EndEvent')
-    let end = ends.length === 1 ? ends[0] : null
+    // Une fin déclarée sans lien entrant sert de fin commune ; sinon une fin est ajoutée.
+    const loose = steps.filter((s) => s.type === 'bpmn:EndEvent' && !incoming(s).length)
+    let end = loose.length === 1 ? loose[0] : null
     if (!end) {
       end = { label: T('End', 'Fin'), type: 'bpmn:EndEvent', lane: tails[tails.length - 1]?.lane || '', added: true }
       ids.set(end, 'EndEvent_1')
@@ -192,7 +201,9 @@ export function tableToXml(table, { name = 'Process', T = (en) => en } = {}) {
     // bpmn:UserTask (type moddle) s'écrit <bpmn:userTask> dans le XML.
     const tag = s.type.replace(':timer', '').replace(/^bpmn:(\w)/, (m, c) => `bpmn:${c.toLowerCase()}`)
     const doc = s.doc ? [`      <bpmn:documentation>${escapeXml(s.doc)}</bpmn:documentation>`] : []
-    const assignee = s.assignee && /Task$|^bpmn:callActivity$/i.test(tag) ? ` bpmnpilot:assignee="${escapeXml(s.assignee)}"` : ''
+    const activity = /Task$|^bpmn:(callActivity|subProcess)$/i.test(tag)
+    const assignee = activity ? ['assignee', 'systems', 'accountable', 'consulted', 'informed']
+      .filter((k) => s[k]).map((k) => ` bpmnpilot:${k}="${escapeXml(s[k])}"`).join('') : ''
     return [`    <${tag} id="${id}"${xmlName(s.label)}${assignee}>`, ...doc, ...ins, ...outs, ...timer, `    </${tag}>`].join('\n')
   })
   const seq = links.map((l, i) =>

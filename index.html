@@ -50,20 +50,22 @@
       <span class="file-name-ext" aria-hidden="true">.bpmn</span>
     </label>
     <button class="btn" id="btn-new" title="Start an empty diagram (replaces the autosave)" data-icon="new">New</button>
-    <button class="btn" id="btn-open-menu" title="Open a file, paste XML or compare with a file" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
+    <button class="btn" id="btn-open-menu" title="Open a file, paste XML, build from a table or a grid, or compare with a file" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
     <div id="open-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-open" title="Open a BPMN 2.0 diagram from your computer" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
+      <button class="btn" id="btn-open" title="Open a BPMN 2.0 diagram from your computer, or an encrypted .bpmn.enc file" data-icon="open" role="menuitem">.bpmn, .xml or encrypted file…</button>
       <button class="btn" id="btn-import-xml" title="Paste BPMN XML; a process without layout is laid out automatically" data-icon="code" role="menuitem">Paste XML…</button>
       <button class="btn" id="btn-import-table" title="Build a process from a table of steps pasted from Excel, or a .csv or .xlsx file, without AI" data-icon="table" role="menuitem">From a table…</button>
+      <button class="btn" id="btn-import-grid" title="For a workshop: roles in columns, tasks in rows, one click per task; the diagram is built with one lane per role" data-icon="grid" role="menuitem">Roles × tasks grid…</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-compare-file" title="Compare the open diagram with a .bpmn file, side by side" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
-    <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
+    <input type="file" id="file-input" accept=".bpmn,.xml,.enc" style="display:none" />
     <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets (PDF, Word, Markdown), or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
+      <button class="btn" id="btn-save-encrypted" title="The .bpmn file encrypted in your browser with a password (AES-256), to send a sensitive process" data-icon="lock" role="menuitem">Encrypted .bpmn file…</button>
       <button class="btn expert-only" id="btn-camunda-8" title="BPMN file prepared for Camunda 8: platform set, executable process, gateway conditions in FEEL from the flow labels" data-icon="engine" role="menuitem">BPMN for Camunda 8</button>
       <button class="btn expert-only" id="btn-camunda-7" title="BPMN file prepared for Camunda 7: platform set, executable process, gateway conditions in JUEL from the flow labels" data-icon="engine" role="menuitem">BPMN for Camunda 7</button>
       <div class="menu-sep" role="separator"></div>
@@ -74,6 +76,7 @@
       <button class="btn" id="btn-sheets-pdf" title="One page per activity, in the order of the flow, with its documentation" data-icon="pdf" role="menuitem">Procedure sheets (PDF)</button>
       <button class="btn" id="btn-sheets-md" title="The same procedure sheets, as Markdown text" data-icon="code" role="menuitem">Procedure sheets (Markdown)</button>
       <button class="btn" id="btn-sheets-docx" title="The same procedure sheets, as an editable Word document" data-icon="word" role="menuitem">Procedure sheets (Word)</button>
+      <button class="btn" id="btn-raci-xlsx" title="Who performs, answers for, is consulted on and informed of each activity, as an Excel workbook" data-icon="table" role="menuitem">RACI matrix (Excel)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>

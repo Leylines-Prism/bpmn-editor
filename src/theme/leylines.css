@@ -585,16 +585,16 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 
 /* ── Fenêtre « Importer XML » et dépôt de fichier ─────────────────────── */
 
-#xml-dialog, #xml-export-dialog, #table-dialog, #chat-editor {
+#xml-dialog, #xml-export-dialog, #table-dialog, #password-dialog, #grid-dialog, #chat-editor {
   margin: auto; width: min(720px, calc(100vw - 32px));
   border: 1px solid var(--line); border-radius: var(--radius-lg);
   background: var(--surface-raised); color: var(--ink);
   box-shadow: var(--elevation-1); padding: var(--space-6);
 }
-#xml-dialog::backdrop, #xml-export-dialog::backdrop, #table-dialog::backdrop, #chat-editor::backdrop { background: rgba(5, 8, 18, 0.45); }
-#xml-dialog form, #xml-export-dialog form, #table-dialog form, #chat-editor form { display: flex; flex-direction: column; gap: var(--space-3); }
-#xml-dialog h2, #xml-export-dialog h2, #table-dialog h2, #chat-editor h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
-#xml-dialog .hint, #xml-export-dialog .hint, #table-dialog .hint { color: var(--ink-muted); font-size: 13px; }
+#xml-dialog::backdrop, #xml-export-dialog::backdrop, #table-dialog::backdrop, #password-dialog::backdrop, #grid-dialog::backdrop, #chat-editor::backdrop { background: rgba(5, 8, 18, 0.45); }
+#xml-dialog form, #xml-export-dialog form, #table-dialog form, #grid-dialog form, #chat-editor form { display: flex; flex-direction: column; gap: var(--space-3); }
+#xml-dialog h2, #xml-export-dialog h2, #table-dialog h2, #grid-dialog h2, #chat-editor h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#xml-dialog .hint, #xml-export-dialog .hint, #table-dialog .hint, #grid-dialog .hint { color: var(--ink-muted); font-size: 13px; }
 #xml-dialog textarea, #xml-export-dialog textarea, #table-dialog textarea {
   width: 100%; height: 320px; resize: vertical;
   padding: var(--space-3); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
@@ -602,12 +602,36 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
   font-family: var(--font-mono); font-size: 12px; line-height: 18px;
 }
 #xml-dialog textarea:focus-visible, #xml-export-dialog textarea:focus-visible, #table-dialog textarea:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
-#xml-dialog .error, #xml-export-dialog .error, #table-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
-#xml-dialog .error:empty, #xml-export-dialog .error:empty, #table-dialog .error:empty { display: none; }
-#xml-dialog .actions, #xml-export-dialog .actions, #table-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
-#xml-dialog .grow, #xml-export-dialog .grow, #table-dialog .grow { flex: 1; }
+#xml-dialog .error, #xml-export-dialog .error, #table-dialog .error, #grid-dialog .error { color: var(--magenta); font-size: 13px; min-height: 20px; }
+#xml-dialog .error:empty, #xml-export-dialog .error:empty, #table-dialog .error:empty, #grid-dialog .error:empty { display: none; }
+#xml-dialog .actions, #xml-export-dialog .actions, #table-dialog .actions, #grid-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#xml-dialog .grow, #xml-export-dialog .grow, #table-dialog .grow, #grid-dialog .grow { flex: 1; }
 #xml-export-dialog .status { color: var(--accent); font-size: 13px; min-height: 20px; }
 #xml-export-dialog .status:empty { display: none; }
+#grid-dialog { width: min(920px, calc(100vw - 32px)); }
+#grid-dialog .grid-wrap { max-height: 52vh; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius-md); }
+#grid-dialog .grid-table { border-collapse: collapse; width: 100%; font-size: 13px; }
+#grid-dialog .grid-table th, #grid-dialog .grid-table td { border-bottom: 1px solid var(--line); padding: 4px 6px; text-align: center; }
+#grid-dialog .grid-table th { position: sticky; top: 0; background: var(--surface-raised); z-index: 1; }
+#grid-dialog .grid-table th:first-child, #grid-dialog .grid-table td:first-child { text-align: left; min-width: 240px; }
+#grid-dialog .grid-table th:first-child { color: var(--ink-muted); font-weight: 600; }
+#grid-dialog .grid-table input { width: 100%; min-width: 110px; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm, 6px); background: var(--surface); color: var(--ink); font: inherit; }
+#grid-dialog .grid-table th input { font-weight: 600; text-align: center; }
+#grid-dialog .grid-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line-strong); background: transparent; cursor: pointer; padding: 0; }
+#grid-dialog .grid-dot:hover { border-color: var(--accent); }
+#grid-dialog .grid-dot.on { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent); }
+#grid-dialog .grid-dot:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+#grid-dialog .grid-tools { display: flex; gap: var(--space-2); }
+#password-dialog { width: min(460px, calc(100vw - 32px)); }
+#password-dialog form { display: flex; flex-direction: column; gap: var(--space-3); }
+#password-dialog h2 { font-size: 18px; line-height: 24px; font-weight: 600; }
+#password-dialog .hint { color: var(--ink-muted); font-size: 13px; }
+#password-dialog label { display: flex; flex-direction: column; gap: var(--space-1); font-size: 13px; font-weight: 600; }
+#password-dialog input { padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-md); background: var(--surface); color: var(--ink); font: inherit; font-weight: 400; }
+#password-dialog .error { color: var(--magenta); font-size: 13px; }
+#password-dialog .error:empty { display: none; }
+#password-dialog .actions { display: flex; align-items: center; gap: var(--space-2); }
+#password-dialog .grow { flex: 1; }
 #table-dialog textarea { height: 220px; white-space: pre; tab-size: 16; }
 #table-dialog .table-preview { font-size: 13px; color: var(--ink-muted); min-height: 20px; }
 #table-dialog .table-preview strong { color: var(--ink); font-weight: 600; }

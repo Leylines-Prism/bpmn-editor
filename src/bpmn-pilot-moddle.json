@@ -17,7 +17,11 @@
       "name": "AssignedActivity",
       "extends": ["bpmn:Activity"],
       "properties": [
-        { "name": "assignee", "isAttr": true, "type": "String" }
+        { "name": "assignee", "isAttr": true, "type": "String" },
+        { "name": "systems", "isAttr": true, "type": "String" },
+        { "name": "accountable", "isAttr": true, "type": "String" },
+        { "name": "consulted", "isAttr": true, "type": "String" },
+        { "name": "informed", "isAttr": true, "type": "String" }
       ]
     },
     {

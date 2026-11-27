@@ -17,6 +17,7 @@
 //     probabilités qu'il a proposées et que personne n'a encore revues.
 // Le menu Expert et l'outil get_process_report passent par ici.
 
+import { buildRaci, raciRows } from './raci.js'
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
@@ -109,7 +110,7 @@ const docOf = (bo) => markdownToLine(docSource(bo))
 // Condition d'un flux écrite en clair (« Avance < 3000 ») et personne ou rôle assigné à une activité.
 export const conditionText = (flow) => clean(flow?.conditionExpression?.body)
 export const assigneeOf = (bo) => clean(bo?.get?.('bpmnpilot:assignee'))
-const laneCell = (s) => [s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${T(': ', ' : ')}${s.assignee}` : ''].filter(Boolean).join(' · ')
+const laneCell = (s) => [s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${T(': ', ' : ')}${s.assignee}` : '', s.systems ? `${T('Systems', 'Systèmes')}${T(': ', ' : ')}${s.systems}` : ''].filter(Boolean).join(' · ')
 
 export function typeLabel(bo) {
   const base = TYPE_LABELS[short(bo)] ? pick(TYPE_LABELS[short(bo)]) : short(bo)
@@ -397,6 +398,11 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     type: typeLabel(n),
     lane: laneName(n),
     assignee: assigneeOf(n),
+    activity: isActivity(n),
+    systems: clean(n.get?.('bpmnpilot:systems')),
+    accountable: clean(n.get?.('bpmnpilot:accountable')),
+    consulted: clean(n.get?.('bpmnpilot:consulted')),
+    informed: clean(n.get?.('bpmnpilot:informed')),
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -529,6 +535,7 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     ends,
     lanes: laneRows,
     sequence,
+    raci: buildRaci(sequence),
     gatewayDocs,
     // Documentation des réserves et des processus, en tête des fiches et du rapport.
     processDocs: [...participants, ...processes]
@@ -727,6 +734,12 @@ export function reportToMarkdown(r) {
     lines.push('', `## ${T('Activities by lane', 'Activités par couloir')}`, '')
     lines.push(`| ${T('Lane', 'Couloir')} | ${T('Activities', 'Activités')} |`, '|---|---|')
     for (const l of r.lanes) lines.push(`| ${mdCell(l.name)} | ${mdCell(l.activities.join(' · '))} |`)
+  }
+  if (r.raci) {
+    const [head, ...body] = raciRows(r.raci, T)
+    lines.push('', `## ${T('RACI matrix', 'Matrice RACI')}`, '', T('R performs, A answers for it, C is consulted, I is informed.', 'R réalise, A en répond, C est consulté, I est informé.'), '')
+    lines.push(`| ${head.map(mdCell).join(' | ')} |`, `|${head.map(() => '---').join('|')}|`)
+    for (const row of body) lines.push(`| ${row.map(mdCell).join(' | ')} |`)
   }
   lines.push('', `## ${T('Element sequence', 'Séquence des éléments')}`, '')
   lines.push(`| N° | ${T('Element', 'Élément')} | Type | ${T('Lane', 'Couloir')} | Documentation | ${T('Outgoing flows', 'Flux sortants')} |${r.simulation ? ` ${T('Instances', 'Instances')} |` : ''}`,
@@ -1110,6 +1123,17 @@ export async function reportToPdf(modeler, r) {
       head: [[T('Lane', 'Couloir'), T('Activities', 'Activités')]],
       body: r.lanes.map((l) => [pdfText(l.name), pdfText(l.activities.join(' · '))]),
       columnStyles: { 0: { cellWidth: 50, fontStyle: 'bold', textColor: [37, 99, 235] } },
+    })
+  }
+
+  if (r.raci) {
+    const [head, ...body] = raciRows(r.raci, T)
+    section(T('RACI matrix', 'Matrice RACI'))
+    table({
+      head: [head.map(pdfText)],
+      body: body.map((row) => row.map(pdfText)),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index > 1) { d.cell.styles.halign = 'center'; d.cell.styles.fontStyle = 'bold' } },
     })
   }
 

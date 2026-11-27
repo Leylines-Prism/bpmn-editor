@@ -1,8 +1,10 @@
-// Deux champs du panneau de propriétés, pour tous (pas seulement en mode Expert) :
+// Champs du panneau de propriétés, pour tous (pas seulement en mode Expert) :
 //
 // - « Assigné à », sur les activités : la personne ou le rôle précis qui réalise
 //   l'activité, en plus du couloir. Attribut bpmnpilot:assignee, repris par le rapport,
 //   les fiches de procédure, le tableau d'import et l'export pour Camunda.
+// - « Systèmes utilisés » (bpmnpilot:systems) et le groupe « Responsabilités (RACI) » :
+//   Valide (A), Consultés (C), Informés (I), qui donnent la matrice RACI du rapport.
 // - « Condition », sur les flux qui sortent d'une passerelle exclusive ou inclusive :
 //   la règle en clair (« Avance < 3000 »), rangée dans bpmn:conditionExpression, l'élément
 //   standard que les autres outils lisent. Tant que le flux n'a pas de libellé (ou que son
@@ -28,21 +30,35 @@ export function isConditionalFlow(element) {
 
 const isAssignable = (element) => is(element, 'bpmn:Activity') && !is(element, 'bpmn:SubProcess') && element.type !== 'label'
 
-function AssigneeEntry(props) {
-  const { element, id } = props
-  const modeling = useService('modeling')
-  const debounce = useService('debounceInput')
-  const bo = getBusinessObject(element)
-  return TextFieldEntry({
-    element,
-    id,
-    label: T('Assigned to', 'Assigné à'),
-    description: T('Person or precise role who performs it, in addition to the lane.', 'Personne ou rôle précis qui la réalise, en plus du couloir.'),
-    debounce,
-    getValue: () => bo.get('bpmnpilot:assignee') || '',
-    setValue: (value) => modeling.updateModdleProperties(element, bo, { 'bpmnpilot:assignee': (value || '').trim() || undefined }),
-  })
+// Champ texte rangé dans un attribut bpmnpilot: de l'activité.
+function attrEntry(attr, label, description) {
+  return function AttrEntry(props) {
+    const { element, id } = props
+    const modeling = useService('modeling')
+    const debounce = useService('debounceInput')
+    const bo = getBusinessObject(element)
+    return TextFieldEntry({
+      element,
+      id,
+      label: label(),
+      description: description(),
+      debounce,
+      getValue: () => bo.get(`bpmnpilot:${attr}`) || '',
+      setValue: (value) => modeling.updateModdleProperties(element, bo, { [`bpmnpilot:${attr}`]: (value || '').trim() || undefined }),
+    })
+  }
 }
+
+const AssigneeEntry = attrEntry('assignee', () => T('Assigned to', 'Assigné à'),
+  () => T('Person or precise role who performs it (R), in addition to the lane.', 'Personne ou rôle précis qui la réalise (R), en plus du couloir.'))
+const SystemsEntry = attrEntry('systems', () => T('Systems used', 'Systèmes utilisés'),
+  () => T('Applications or tools, comma-separated: ERP, email, business tool…', 'Applications ou outils, séparés par des virgules : ERP, messagerie, outil métier…'))
+const AccountableEntry = attrEntry('accountable', () => T('Accountable (A)', 'Valide (A)'),
+  () => T('Who answers for the result.', 'Qui répond du résultat.'))
+const ConsultedEntry = attrEntry('consulted', () => T('Consulted (C)', 'Consultés (C)'),
+  () => T('Roles asked for their opinion, comma-separated.', 'Rôles dont on demande l\'avis, séparés par des virgules.'))
+const InformedEntry = attrEntry('informed', () => T('Informed (I)', 'Informés (I)'),
+  () => T('Roles told of the result, comma-separated.', 'Rôles tenus au courant, séparés par des virgules.'))
 
 function ConditionEntry(props) {
   const { element, id } = props
@@ -83,7 +99,19 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
       if (general) general.entries.push(entry)
       else groups.unshift({ id: 'general', label: T('General', 'Général'), entries: [entry] })
     }
-    if (isAssignable(element)) add({ id: 'bpmn-pilot-assignee', component: AssigneeEntry, isEdited: isTextFieldEntryEdited })
+    if (isAssignable(element)) {
+      add({ id: 'bpmn-pilot-assignee', component: AssigneeEntry, isEdited: isTextFieldEntryEdited })
+      add({ id: 'bpmn-pilot-systems', component: SystemsEntry, isEdited: isTextFieldEntryEdited })
+      groups.push({
+        id: 'bpmn-pilot-raci',
+        label: T('Responsibilities (RACI)', 'Responsabilités (RACI)'),
+        entries: [
+          { id: 'bpmn-pilot-accountable', component: AccountableEntry, isEdited: isTextFieldEntryEdited },
+          { id: 'bpmn-pilot-consulted', component: ConsultedEntry, isEdited: isTextFieldEntryEdited },
+          { id: 'bpmn-pilot-informed', component: InformedEntry, isEdited: isTextFieldEntryEdited },
+        ],
+      })
+    }
     if (isConditionalFlow(element)) add({ id: 'bpmn-pilot-condition', component: ConditionEntry, isEdited: isTextFieldEntryEdited })
     return groups
   }
