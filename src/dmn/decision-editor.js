@@ -10,11 +10,13 @@
 
 import { lang, T } from '../i18n/lang.js'
 import { createBench, decisionFromXml } from './decision-bench.js'
+import { createCompare } from './decision-compare.js'
 import frBpmn from '../i18n/fr.js'
 
 let dialog = null
 let current = null // { modeler, baseline, mode, onSave, onClose, ... }
 let bench = null
+let compare = null
 
 async function loadDmnJs() {
   const [{ default: DmnModeler }, { default: frDmn }] = await Promise.all([
@@ -48,13 +50,14 @@ function build() {
       </div>
       <span class="dmn-grow"></span>
       <button type="button" class="btn" id="dmn-test" data-icon="play" aria-pressed="false" title="${T('Try input values on this table and see which rules apply', 'Essayer des valeurs d\'entrée sur cette table et voir les règles qui s\'appliquent')}">${T('Test', 'Tester')}</button>
+      <button type="button" class="btn" id="dmn-compare" data-icon="compare" aria-pressed="false" title="${T('See what changed in the decisions since the window opened, or compared with a .dmn file', 'Voir ce qui a changé dans les décisions depuis l\'ouverture de la fenêtre, ou par rapport à un fichier .dmn')}">${T('Compare', 'Comparer')}</button>
       <button type="button" class="btn" id="dmn-add" data-icon="new" hidden></button>
       <button type="button" class="btn" id="dmn-library" data-icon="library"></button>
       <button type="button" class="btn" id="dmn-export" data-icon="save">${T('Export .dmn', 'Exporter .dmn')}</button>
       <button type="button" class="btn icon-only dmn-close" aria-label="${T('Close', 'Fermer')}" title="${T('Close (Esc)', 'Fermer (Échap)')}">×</button>
     </div>
     <p class="dmn-status" id="dmn-status" role="status"></p>
-    <div class="dmn-main"><div class="dmn-body" id="dmn-body"></div><aside class="dmn-bench" id="dmn-bench" hidden></aside></div>`
+    <div class="dmn-main"><div class="dmn-body" id="dmn-body"></div><aside class="dmn-bench" id="dmn-bench" hidden></aside><aside class="dmn-bench" id="dmn-compare-panel" hidden></aside></div>`
   document.body.append(dialog)
   dialog.querySelector('.dmn-close').addEventListener('click', () => close())
   dialog.querySelector('#dmn-back').addEventListener('click', () => close())
@@ -78,7 +81,14 @@ function build() {
     },
     onHits: markRules,
   })
-  dialog.querySelector('#dmn-test').addEventListener('click', () => setBench(dialog.querySelector('#dmn-bench').hidden))
+  compare = createCompare(dialog.querySelector('#dmn-compare-panel'), {
+    currentXml,
+    baseline: () => current.baseline,
+    activeDecision: () => { const v = current?.modeler.getActiveView(); return v?.type === 'decisionTable' ? v.element.id : null },
+    onRules: ({ added, changed }) => markDiff(added, changed),
+  })
+  dialog.querySelector('#dmn-test').addEventListener('click', () => setSide(side === 'bench' ? null : 'bench'))
+  dialog.querySelector('#dmn-compare').addEventListener('click', () => setSide(side === 'compare' ? null : 'compare'))
   dialog.querySelector('#dmn-export').addEventListener('click', async () => {
     if (!current) return
     const xml = await currentXml()
@@ -111,12 +121,26 @@ function markRules(rules) {
   rows.forEach((tr, i) => tr.classList.toggle('dmn-hit', rules.includes(i + 1)))
 }
 
-function setBench(open) {
-  const aside = dialog.querySelector('#dmn-bench')
-  aside.hidden = !open
-  dialog.querySelector('#dmn-test').setAttribute('aria-pressed', String(open))
-  if (open) bench.refresh()
-  else markRules([])
+function markDiff(added, changed) {
+  const rows = dialog.querySelectorAll('#dmn-body .tjs-table tbody tr')
+  rows.forEach((tr, i) => {
+    tr.classList.toggle('dmn-diff-added', added.includes(i + 1))
+    tr.classList.toggle('dmn-diff-changed', changed.includes(i + 1))
+  })
+}
+
+// Panneau de droite : banc d'essai, comparaison, ou rien.
+let side = null
+function setSide(next) {
+  side = next
+  dialog.querySelector('#dmn-bench').hidden = next !== 'bench'
+  dialog.querySelector('#dmn-compare-panel').hidden = next !== 'compare'
+  dialog.querySelector('#dmn-test').setAttribute('aria-pressed', String(next === 'bench'))
+  dialog.querySelector('#dmn-compare').setAttribute('aria-pressed', String(next === 'compare'))
+  markRules([])
+  markDiff([], [])
+  if (next === 'bench') bench.refresh()
+  if (next === 'compare') compare.refresh()
 }
 
 function say(msg, error = false) {
@@ -157,8 +181,8 @@ function syncTabs() {
   }
   const onTable = view.type === 'decisionTable'
   dialog.querySelector('#dmn-test').hidden = !onTable
-  if (!onTable && !dialog.querySelector('#dmn-bench').hidden) setBench(false)
-  else if (!dialog.querySelector('#dmn-bench').hidden) bench.refresh()
+  if (side === 'bench') setSide(onTable ? 'bench' : null)
+  else if (side === 'compare') setSide('compare')
   // Pas de table à montrer : l'onglet Table de décision ne mène nulle part.
   dialog.querySelector('.dmn-tabs [data-view="table"]').disabled = !current.modeler.getViews().some((v) => v.type !== 'drd')
 }
@@ -218,7 +242,8 @@ export async function close() {
   const changed = xml && baseline && xml !== baseline
   if (changed && mode === 'library' && !confirm(T('Close without saving the changes to this decision model?', 'Fermer sans enregistrer les changements de ce modèle de décision ?'))) return
   current = null
-  setBench(false)
+  setSide(null)
+  compare.reset()
   if (dialog.open) dialog.close()
   modeler.destroy()
   if (changed && mode === 'diagram' && onSave) await onSave(xml)

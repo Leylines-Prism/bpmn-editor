@@ -83,6 +83,8 @@ function DecisionEntry({ element, id }) {
           <span class="dmn-ico" dangerouslySetInnerHTML=${{ __html: TABLE_ICON }}></span>${T('Open the table', 'Ouvrir la table')}</button>` : null}
         <button type="button" class="dmn-button" disabled=${busy} onClick=${() => run(() => actions.service.unlink(element))}>${T('Unlink', 'Délier')}</button>
       </div>
+      ${decision && actions.copilotReady() ? html`<button type="button" class="dmn-button ai" disabled=${busy} onClick=${() => actions.explainWithCopilot(element, decision)}>
+        ${T('✦ Explain and test with the co-pilot', '✦ Expliquer et tester avec le Co-pilote')}</button>` : null}
       ${message ? html`<p class="dmn-message">${message}</p>` : null}
     </div>`
   }

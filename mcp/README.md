@@ -185,6 +185,7 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `get_decisions` | lists the DMN decisions kept in the diagram file: decision tables (hit policy, inputs, outputs, rules), the business rule tasks that call them, and the findings (overlapping rules, uncovered values, unlinked tasks) |
 | `set_decision_table` | creates a DMN decision table, or replaces one, in the decision model of the diagram, and can link a task to it (`linkTo`). The link is written for BPMN-Pilot and for Camunda 8 (`zeebe:calledDecision`) |
 | `link_decision` | links a task to a decision of the diagram, or unlinks it |
+| `test_decision` | evaluates a decision table on input cases without changing it: rules that apply and result under the hit policy. Without cases, one case per rule, to check that each rule fires |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 

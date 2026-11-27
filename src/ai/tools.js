@@ -42,6 +42,7 @@ set_decision_table creates or replaces a decision table and can link it to a tas
 a task. Write FEEL: text between double quotes ("A"), numbers bare, "-" for any value, comparisons (< 1000, >= 18),
 ranges ([1..10], ]1000..5000]), lists ("A","B"). Give the allowed values of text inputs and outputs. With the Unique hit
 policy no two rules may apply together; use First or Priority when they must overlap. Check the findings each tool returns.
+test_decision evaluates a decision table on input cases (with no cases, one case per rule): use it to check a table you wrote.
 
 Modeling rules (validate_diagram checks most of them):
 - Every process has a start event and at least one end event. Use a single blank start event per process.
@@ -374,6 +375,24 @@ export function buildTools(z) {
           )
           .max(60),
         linkTo: elementId.optional().describe('Id of the task that calls this decision'),
+      },
+    },
+    {
+      name: 'test_decision',
+      title: 'Test a decision table',
+      description:
+        'Evaluates a DMN decision table of the diagram on input cases, without changing anything: for each case, the rules that apply and the result ' +
+        'under the hit policy, or the conflict (two rules under Unique, different outputs under Any). Give each case its input values in column order, ' +
+        'or as an object keyed by input label or expression. Without cases, builds one case per rule from its simple entries and says whether each rule fires. ' +
+        'Use it after set_decision_table to check the table, and to explain it with examples. Read-only.',
+      annotations: READ,
+      inputSchema: {
+        decisionId: z.string().min(1).describe('Id of the decision, as returned by get_decisions'),
+        cases: z
+          .array(z.union([z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])), z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))]))
+          .max(50)
+          .optional()
+          .describe('Input cases: each an array of values in column order, or an object { "input label or expression": value }. Omit for one case per rule'),
       },
     },
     {

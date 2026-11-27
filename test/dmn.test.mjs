@@ -8,6 +8,7 @@ import zeebe from 'zeebe-bpmn-moddle/resources/zeebe.json' with { type: 'json' }
 import bpmnpilot from '../src/bpmn-pilot-moddle.json' with { type: 'json' }
 import { setDecisionTable, mergeDmn, summarize, checkDecision, parseEntry, quoteStrings, parseDmn } from '../src/dmn/dmn-model.js'
 import { evaluateDecision, casesPerRule, inputValue } from '../src/dmn/dmn-eval.js'
+import { diffModels } from '../src/dmn/dmn-diff.js'
 import { readDecisionXml, decisionModelUpdates, linkProperties, checkLinks, resultVariable } from '../src/dmn/decision-store.js'
 import { createToolSet, runTool } from '../src/ai/chat-loop.js'
 
@@ -164,14 +165,35 @@ test('the decision model and the task links are kept in the .bpmn, with the Camu
   assert.deepEqual(decisionModelUpdates(moddle, back, back.rootElements[0], '').map((u) => u.extensionElements), [undefined])
 })
 
+test('comparing two versions lists added, removed, changed and moved rules', async () => {
+  const first = await setDecisionTable('', RISK)
+  const before = await summarize(first.xml)
+  const after = structuredClone(before)
+  const d = after.decisions[0]
+  d.hitPolicy = 'FIRST'
+  d.rules[0].outputs[0] = '"moyen"'
+  d.rules.reverse()
+  d.rules.push({ id: 'Rule_new', inputs: ['-', '"Pro"'], outputs: ['"moyen"'], annotation: '' })
+  const { changes, rules } = diffModels(before, after)
+  assert.deepEqual(changes.map((c) => c.change), ['changed', 'moved', 'changed', 'added'])
+  assert.match(changes[2].text, /Rule 2 \(was 1\): Risque: "faible" → "moyen"/)
+  assert.deepEqual(rules[d.id], { added: [3], removed: [], changed: [2] })
+  assert.deepEqual(diffModels(before, before).changes, [])
+  const { changes: gone } = diffModels(before, { ...after, decisions: [] })
+  assert.deepEqual(gone.map((c) => c.change), ['removed'])
+})
+
 const toolSet = createToolSet(z)
 const run = (name, input) => runTool({ toolSet, name, input, executeTool: async () => ({ ok: true }), emit: () => {}, log: () => {} })
 
 test('decision tools are offered and check their arguments', async () => {
-  for (const name of ['get_decisions', 'set_decision_table', 'link_decision']) assert.ok(toolSet.anthropic.some((t) => t.name === name), name)
+  for (const name of ['get_decisions', 'set_decision_table', 'link_decision', 'test_decision']) assert.ok(toolSet.anthropic.some((t) => t.name === name), name)
   assert.equal((await run('get_decisions', {})).isError, false)
   assert.equal((await run('set_decision_table', { ...RISK, linkTo: 'T1' })).isError, false)
   assert.equal((await run('set_decision_table', { ...RISK, hitPolicy: 'SOME' })).isError, true)
   assert.equal((await run('link_decision', { elementId: 'T1', decisionId: '' })).isError, false)
   assert.equal((await run('link_decision', { decisionId: 'D' })).isError, true)
+  assert.equal((await run('test_decision', { decisionId: 'D' })).isError, false)
+  assert.equal((await run('test_decision', { decisionId: 'D', cases: [[500, 'Pro'], { Montant: 2000, Catégorie: null }] })).isError, false)
+  assert.equal((await run('test_decision', { cases: [] })).isError, true)
 })

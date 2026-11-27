@@ -120,6 +120,13 @@ export function setupDecisions({ modeler, library, download, baseName, setStatus
       `Rédige la table de décision DMN de la tâche de règle métier ${task.id} (« ${nameOf(task)} »), d'après son libellé, sa documentation et le reste du processus. ` +
         'Utilise set_decision_table avec linkTo sur cette tâche : nomme les entrées et sorties en termes métier, donne les valeurs prévues des entrées et sorties texte, ' +
         'choisis la politique de résultat, et écris des règles qui ne se chevauchent pas, sauf si la politique le permet. Résume ensuite la table en quelques lignes et dis ce que l\'utilisateur doit confirmer.')),
+    explainWithCopilot: (task, decision) => askCopilot(T(
+      `Explain in plain words, in a few lines, the DMN decision table ${decision.id} ("${decision.name || decision.id}") called by the task ${task.id} ("${nameOf(task)}"). ` +
+        'Then check it with test_decision: one case per rule, then two or three edge cases (limits of ranges, values no rule covers). ' +
+        'Report the gaps, overlaps and surprising results, and propose corrections, but do not change the table unless I ask.',
+      `Explique en langage courant, en quelques lignes, la table de décision DMN ${decision.id} (« ${decision.name || decision.id} ») appelée par la tâche ${task.id} (« ${nameOf(task)} »). ` +
+        'Vérifie-la ensuite avec test_decision : un cas par règle, puis deux ou trois cas limites (bornes des intervalles, valeurs qu\'aucune règle ne couvre). ' +
+        'Signale les trous, les chevauchements et les résultats surprenants, et propose des corrections, sans modifier la table sauf si je le demande.')),
     showPanelGroup: () => {
       const toggle = document.getElementById('btn-properties')
       if (toggle?.getAttribute('aria-expanded') === 'false') toggle.click()

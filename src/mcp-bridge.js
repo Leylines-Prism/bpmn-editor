@@ -14,6 +14,10 @@ import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
 import { setDecisionTable, summarize as summarizeDmn, checkDecision } from './dmn/dmn-model.js'
+import { evaluateDecision, casesPerRule } from './dmn/dmn-eval.js'
+
+// Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
+const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -680,6 +684,33 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
         rules: decision?.rules.length || 0,
         ...(spec.linkTo ? { linkedTo: spec.linkTo } : {}),
         findings: checkDecision(decision).map(({ fr, ...f }) => f),
+      }
+    },
+
+    async test_decision({ decisionId, cases }) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      const summary = await decisions.getSummary()
+      const decision = summary.decisions.find((d) => d.id === decisionId)
+      if (!decision) throw new Error(`Unknown decision ${decisionId}. Read the ids with get_decisions.`)
+      if (decision.kind !== 'table') throw new Error(`Decision ${decisionId} is not a decision table.`)
+      const run = (inputs) => {
+        try {
+          const r = evaluateDecision(decision, inputs)
+          return { matched: r.matched, result: plain(r.result), ...(r.error ? { error: r.error } : {}), ...(r.warnings.length ? { warnings: r.warnings } : {}) }
+        } catch (err) {
+          return { error: err.message }
+        }
+      }
+      if (cases?.length) return { decisionId, hitPolicy: decision.hitPolicy, cases: cases.map((inputs) => ({ inputs, ...run(inputs) })) }
+      const perRule = casesPerRule(decision)
+      return {
+        decisionId,
+        hitPolicy: decision.hitPolicy,
+        cases: perRule.map((c) => {
+          const r = run(c.inputs)
+          return { rule: c.rule, inputs: c.inputs, ...r, fires: !r.error && !!r.matched?.includes(c.rule) && (decision.hitPolicy !== 'FIRST' || r.matched[0] === c.rule) }
+        }),
+        ...(perRule.length < decision.rules.length ? { skippedRules: decision.rules.map((_, n) => n + 1).filter((n) => !perRule.some((c) => c.rule === n)) } : {}),
       }
     },
 

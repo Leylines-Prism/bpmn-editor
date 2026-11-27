@@ -186,6 +186,7 @@ onglets de l'éditeur, et son journal part sur la sortie d'erreur. Les contrôle
 | `get_decisions` | liste les décisions DMN rangées dans le fichier du diagramme : tables de décision (politique de résultat, entrées, sorties, règles), tâches de règle métier qui les appellent, et constats (règles qui se chevauchent, valeurs non couvertes, tâches non liées) |
 | `set_decision_table` | crée une table de décision DMN, ou en remplace une, dans le modèle de décision du diagramme, et peut y lier une tâche (`linkTo`). Le lien est écrit pour BPMN-Pilot et pour Camunda 8 (`zeebe:calledDecision`) |
 | `link_decision` | lie une tâche à une décision du diagramme, ou la délie |
+| `test_decision` | évalue une table de décision sur des cas d'entrée, sans la modifier : règles qui s'appliquent et résultat selon la politique. Sans cas, un cas par règle, pour vérifier que chacune se déclenche |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
