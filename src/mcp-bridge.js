@@ -8,6 +8,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isBranchFlow } from './probability-panel.js'
 import { isConditionalFlow } from './rules-panel.js'
+import { IDENTITY_FIELDS } from './compliance.js'
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
@@ -544,6 +545,20 @@ function buildTools(modeler, exportDiagram, processReport) {
       return atomic(() => {
         const updated = []
         for (const spec of elements) {
+          // La racine du diagramme ne porte que la fiche d'identité du processus.
+          const root = canvas.getRootElement()
+          if (spec.id === root.id) {
+            const fields = IDENTITY_FIELDS.filter((k) => spec[k] !== undefined)
+            const other = Object.keys(spec).filter((k) => k !== 'id' && !IDENTITY_FIELDS.includes(k) && spec[k] !== undefined)
+            if (other.length || !fields.length) throw new Error(`The diagram root ${spec.id} takes only the process identity: ${IDENTITY_FIELDS.join(', ')}`)
+            const props = {}
+            for (const k of fields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
+            modeling.updateModdleProperties(root, getBusinessObject(root), props)
+            updated.push({ previousId: spec.id, id: root.id, type: root.type, identity: fields })
+            continue
+          }
+          const misplaced = IDENTITY_FIELDS.filter((k) => spec[k] !== undefined)
+          if (misplaced.length) throw new Error(`${misplaced.join(', ')} apply only to the diagram root (${root.id}): ${spec.id}`)
           let element = getElement(spec.id)
           if (spec.type || spec.eventDefinition) {
             const target = { type: withPrefix(spec.type || element.type) }
@@ -579,7 +594,7 @@ function buildTools(modeler, exportDiagram, processReport) {
             if (!name || name === previous) props.name = text || undefined
             modeling.updateProperties(element, props)
           }
-          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason'].filter((k) => spec[k] !== undefined)
+          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements'].filter((k) => spec[k] !== undefined)
           if (activityFields.length) {
             if (!is(element, 'bpmn:Activity')) throw new Error(`${activityFields.join(', ')} apply only to activities: ${spec.id}`)
             const bo = getBusinessObject(element)

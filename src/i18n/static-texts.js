@@ -35,7 +35,7 @@ const FR = {
   '#btn-report-pdf': { text: 'Rapport de processus (PDF)', title: 'Rapport de processus : constats, axes d\'amélioration et séquence des éléments, en PDF' },
   '#btn-report-docx': { text: 'Rapport de processus (Word)', title: 'Le même rapport de processus, en document Word modifiable' },
   '#btn-report-md': { text: 'Rapport de processus (Markdown)', title: 'Le même rapport de processus, en texte Markdown' },
-  '#btn-ai-potential': { text: 'Potentiel d\'IA par activité', title: 'Le Co-pilote IA note chaque activité : automatisable, assistée par IA ou humaine, avec sa raison et son garde-fou ; le résultat va dans le rapport de processus' },
+  '#btn-ai-potential': { text: 'Potentiel d\'IA par activité', title: 'Le Co-pilote IA note chaque activité : automatisable, assistée par IA ou humaine, avec sa raison et son garde-fou, et note les risques et contrôles des étapes confiées à l\'IA ; le résultat va dans le rapport de processus' },
   '#btn-ai-probabilities': { text: 'Proposer les probabilités', title: 'Demander au Co-pilote IA des probabilités réalistes pour les branches, à revoir avant la simulation' },
   '#help-ai-probabilities': { 'aria-label': "Connectez un modèle d'IA au Co-pilote pour utiliser cette fonction" },
   '#help-ai-analysis': { 'aria-label': "Connectez un modèle d'IA au Co-pilote pour utiliser cette fonction" },

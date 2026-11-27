@@ -226,7 +226,8 @@ export function buildTools(z) {
       title: 'Update elements',
       description:
         'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
-        'or fills in the assignee, systems used, RACI roles and AI potential of an activity. ' +
+        'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls and regulatory requirements of an activity. ' +
+        'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_diagram), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
         'For colors and fonts use style_elements; to move shapes, auto_layout. The user can undo the call with Ctrl+Z.',
       annotations: edit(false, false),
@@ -256,6 +257,14 @@ export function buildTools(z) {
               aiPotential: z.enum(['automate', 'assist', 'human']).nullable().optional()
                 .describe('Activities only: AI potential. automate = an AI agent or automation can perform it with a human review; assist = a human performs it with AI help; human = stays human (judgment, relationship, accountability). null to clear it'),
               aiPotentialReason: z.string().max(400).optional().describe('Activities only: one or two sentences on why, and the safeguard needed (review, data, accountability)'),
+              risks: z.string().max(1000).optional().describe('Activities only: what can go wrong at this step, one risk per line. Empty string to clear it'),
+              controls: z.string().max(1000).optional().describe('Activities only: what prevents or detects those risks (review, double check, threshold, log), one control per line. Empty string to clear it'),
+              requirements: z.string().max(500).optional().describe('Activities only: regulatory or standard references this step must meet, separated by semicolons, e.g. "GDPR art. 30; ISO 9001 §8.5; AI Act art. 14". Empty string to clear it'),
+              owner: z.string().max(200).optional().describe('Diagram root only: process owner, the person or role who answers for the process'),
+              version: z.string().max(50).optional().describe('Diagram root only: version of the process, e.g. "2.1"'),
+              status: z.enum(['draft', 'review', 'approved', 'retired']).nullable().optional().describe('Diagram root only: status of the process. null to clear it'),
+              validatedOn: z.string().max(50).optional().describe('Diagram root only: approval date, e.g. "2026-11-27"'),
+              scope: z.string().max(1000).optional().describe('Diagram root only: where the process applies, where it starts and ends, what it leaves out'),
             }),
           )
           .min(1),

@@ -18,6 +18,7 @@
 // Le menu Expert et l'outil get_process_report passent par ici.
 
 import { buildRaci, raciRows } from './raci.js'
+import { buildCompliance, identityOf, identityRows, splitLines, splitRefs } from './compliance.js'
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
@@ -343,6 +344,17 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     }
   }
 
+  // Risques sans contrôle (mode Expert, groupe Risques et conformité).
+  for (const n of order) {
+    if (isActivity(n) && splitLines(n.get?.('bpmnpilot:risks')).length && !splitLines(n.get?.('bpmnpilot:controls')).length) {
+      add({
+        kind: 'risk-control', level: 'todo', element: n, source: 'check',
+        title: T('Risk without control', 'Risque sans contrôle'),
+        detail: T('Risks are listed for this activity, but no control.', 'Des risques sont notés pour cette activité, mais aucun contrôle.'),
+      })
+    }
+  }
+
   // Probabilités proposées par le Co-pilote IA et pas encore revues : un constat par passerelle.
   for (const n of nodes) {
     if (!isGateway(n)) continue
@@ -411,6 +423,9 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     informed: clean(n.get?.('bpmnpilot:informed')),
     aiPotential: AI_POTENTIAL[n.get?.('bpmnpilot:aiPotential')] ? n.get('bpmnpilot:aiPotential') : null,
     aiPotentialReason: clean(n.get?.('bpmnpilot:aiPotentialReason')),
+    risks: isActivity(n) ? splitLines(n.get?.('bpmnpilot:risks')) : [],
+    controls: isActivity(n) ? splitLines(n.get?.('bpmnpilot:controls')) : [],
+    requirements: isActivity(n) ? splitRefs(n.get?.('bpmnpilot:requirements')) : [],
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -544,6 +559,8 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     lanes: laneRows,
     sequence,
     raci: buildRaci(sequence),
+    compliance: buildCompliance(sequence),
+    identity: identityOf([...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')), ...processes]),
     gatewayDocs,
     // Documentation des réserves et des processus, en tête des fiches et du rapport.
     processDocs: [...participants, ...processes]
@@ -627,6 +644,14 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
       effect: T('The simulation and the heatmap rest on reviewed figures.', 'La simulation et la carte de chaleur reposent sur des chiffres revus.'),
     }
   }
+  if (kind === 'risk-control') {
+    return {
+      title: T('Give each risk a control', 'Doter chaque risque d\'un contrôle'),
+      change: T(`Name the control that prevents or detects the risks of ${quoted(elements)}, or accept the risk explicitly.`,
+        `Nommer le contrôle qui prévient ou détecte les risques de ${quoted(elements)}, ou accepter le risque explicitement.`),
+      effect: T('Every listed risk is covered.', 'Chaque risque noté est couvert.'),
+    }
+  }
   if (kind === 'doc') {
     return {
       title: T('Complete the documentation', 'Compléter la documentation'),
@@ -675,6 +700,12 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
 
 // ── Markdown ────────────────────────────────────────────────────────────────
 
+// Fiche d'identité, en tête du rapport et des fiches de procédure : une ligne par champ rempli.
+export function identityMarkdown(identity) {
+  const rows = identityRows(identity)
+  return rows.length ? [...rows.map(([k, v]) => T(`- **${k}**: ${v}`, `- **${k}** : ${v}`)), ''] : []
+}
+
 // Cellule de tableau : barres verticales et barres obliques inverses échappées.
 const mdCell = (s) => clean(s).replace(/[\\|]/g, '\\$&')
 
@@ -685,6 +716,7 @@ export function reportToMarkdown(r) {
     '',
     T(`Process report generated on ${dateText(r.date)} by BPMN Pilot`, `Rapport de processus généré le ${dateText(r.date)} par BPMN Pilot`) + (r.fileName ? ` · ${r.fileName}.bpmn` : '') + '.',
     '',
+    ...identityMarkdown(r.identity),
     T(`${c.activities} activities, ${c.events} events, ${c.gateways} gateways, ${c.lanes} lanes. **${c.error} error(s), ${c.warning} warning(s), ${c.todo} to complete.**`,
       `${c.activities} activités, ${c.events} événements, ${c.gateways} passerelles, ${c.lanes} couloirs. **${c.error} erreur(s), ${c.warning} avertissement(s), ${c.todo} à compléter.**`),
     '',
@@ -757,6 +789,16 @@ export function reportToMarkdown(r) {
     lines.push('', `## ${T('RACI matrix', 'Matrice RACI')}`, '', T('R performs, A answers for it, C is consulted, I is informed.', 'R réalise, A en répond, C est consulté, I est informé.'), '')
     lines.push(`| ${head.map(mdCell).join(' | ')} |`, `|${head.map(() => '---').join('|')}|`)
     for (const row of body) lines.push(`| ${row.map(mdCell).join(' | ')} |`)
+  }
+  if (r.compliance?.risks.length) {
+    lines.push('', `## ${T('Risks and controls', 'Risques et contrôles')}`, '')
+    lines.push(`| N° | ${T('Activity', 'Activité')} | ${T('Risks', 'Risques')} | ${T('Controls', 'Contrôles')} |`, '|---|---|---|---|')
+    for (const x of r.compliance.risks) lines.push(`| ${x.number} | ${mdCell(x.name)} | ${mdCell(x.risks.join(' · '))} | ${x.controls.length ? mdCell(x.controls.join(' · ')) : `*${T('none', 'aucun')}*`} |`)
+  }
+  if (r.compliance?.requirements.length) {
+    lines.push('', `## ${T('Compliance matrix', 'Matrice de conformité')}`, '')
+    lines.push(`| ${T('Requirement', 'Exigence')} | ${T('Activities concerned', 'Activités concernées')} |`, '|---|---|')
+    for (const q of r.compliance.requirements) lines.push(`| ${mdCell(q.ref)} | ${mdCell(q.activities.join(' · '))} |`)
   }
   lines.push('', `## ${T('Element sequence', 'Séquence des éléments')}`, '')
   lines.push(`| N° | ${T('Element', 'Élément')} | Type | ${T('Lane', 'Couloir')} | Documentation | ${T('Outgoing flows', 'Flux sortants')} |${r.simulation ? ` ${T('Instances', 'Instances')} |` : ''}`,
@@ -900,6 +942,20 @@ export async function reportToPdf(modeler, r) {
   doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...muted)
   doc.text(pdfText(T(`Process report · generated on ${dateText(r.date)} by BPMN Pilot`, `Rapport de processus · généré le ${dateText(r.date)} par BPMN Pilot`) + (r.fileName ? ` · ${r.fileName}.bpmn` : '')), M, y)
   y += 4
+  // Fiche d'identité : une ligne pour les champs courts, puis le périmètre.
+  const idRows = identityRows(r.identity)
+  if (idRows.length) {
+    const scope = r.identity.scope
+    const short = idRows.filter(([, v]) => v !== scope).map(([k, v]) => `${k}${T(': ', ' : ')}${v}`).join('   ·   ')
+    doc.setFontSize(8.5).setTextColor(...ink)
+    y += 1
+    if (short) { doc.text(pdfText(short), M, y); y += 4 }
+    if (scope) {
+      const wrapped = doc.splitTextToSize(pdfText(`${T('Scope', 'Périmètre')}${T(': ', ' : ')}${scope}`), W - 2 * M)
+      doc.text(wrapped.slice(0, 3), M, y)
+      y += 3.6 * Math.min(3, wrapped.length) + 0.4
+    }
+  }
 
   // Chiffres clés.
   const c = r.counts
@@ -1163,6 +1219,26 @@ export async function reportToPdf(modeler, r) {
       body: body.map((row) => row.map(pdfText)),
       columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' } },
       didParseCell: (d) => { if (d.section === 'body' && d.column.index > 1) { d.cell.styles.halign = 'center'; d.cell.styles.fontStyle = 'bold' } },
+    })
+  }
+
+  if (r.compliance?.risks.length) {
+    const risks = r.compliance.risks
+    section(T('Risks and controls', 'Risques et contrôles'))
+    table({
+      head: [['N°', T('Activity', 'Activité'), T('Risks', 'Risques'), T('Controls', 'Contrôles')]],
+      body: risks.map((x) => [String(x.number), pdfText(x.name), pdfText(x.risks.map((t) => `• ${t}`).join('\n') || '–'), pdfText(x.controls.map((t) => `• ${t}`).join('\n') || T('none', 'aucun'))]),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index === 3 && !risks[d.row.index].controls.length) d.cell.styles.fillColor = hex(COLORS.todo.soft) },
+    })
+  }
+
+  if (r.compliance?.requirements.length) {
+    section(T('Compliance matrix', 'Matrice de conformité'))
+    table({
+      head: [[T('Requirement', 'Exigence'), T('Activities concerned', 'Activités concernées')]],
+      body: r.compliance.requirements.map((q) => [pdfText(q.ref), pdfText(q.activities.join('\n'))]),
+      columnStyles: { 0: { cellWidth: 70, fontStyle: 'bold' } },
     })
   }
 

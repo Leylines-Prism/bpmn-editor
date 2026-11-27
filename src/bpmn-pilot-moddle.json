@@ -23,7 +23,21 @@
         { "name": "consulted", "isAttr": true, "type": "String" },
         { "name": "informed", "isAttr": true, "type": "String" },
         { "name": "aiPotential", "isAttr": true, "type": "String" },
-        { "name": "aiPotentialReason", "isAttr": true, "type": "String" }
+        { "name": "aiPotentialReason", "isAttr": true, "type": "String" },
+        { "name": "risks", "isAttr": true, "type": "String" },
+        { "name": "controls", "isAttr": true, "type": "String" },
+        { "name": "requirements", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "ProcessIdentity",
+      "extends": ["bpmn:Process", "bpmn:Collaboration"],
+      "properties": [
+        { "name": "owner", "isAttr": true, "type": "String" },
+        { "name": "version", "isAttr": true, "type": "String" },
+        { "name": "status", "isAttr": true, "type": "String" },
+        { "name": "validatedOn", "isAttr": true, "type": "String" },
+        { "name": "scope", "isAttr": true, "type": "String" }
       ]
     },
     {

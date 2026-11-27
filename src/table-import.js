@@ -29,6 +29,9 @@ const HEADERS = {
   accountable: ['accountable', 'a', 'valide', 'validateur', 'approbateur', 'approver', 'responsable du resultat'],
   consulted: ['consulted', 'c', 'consulte', 'consultes'],
   informed: ['informed', 'i', 'informe', 'informes'],
+  risks: ['risks', 'risk', 'risques', 'risque'],
+  controls: ['controls', 'control', 'controles', 'controle', 'mesures de controle'],
+  requirements: ['requirements', 'requirement', 'exigences', 'exigence', 'reglementation', 'references', 'compliance', 'conformite', 'normes'],
   doc: ['how', 'comment', 'commentaire', 'commentaires', 'details', 'detail', 'notes', 'note', 'documentation', 'mode operatoire', 'instructions'],
 }
 
@@ -50,6 +53,8 @@ const TYPES = [
   [/^(timer|delai|minuterie|attente|wait)/, 'bpmn:IntermediateCatchEvent:timer'],
 ]
 const GATEWAYS = ['bpmn:ExclusiveGateway', 'bpmn:ParallelGateway', 'bpmn:InclusiveGateway']
+
+const items = (cell) => String(cell ?? '').split(/[;\n]/).map((t) => t.trim()).filter(Boolean)
 
 function findColumns(header) {
   const cols = {}
@@ -107,6 +112,10 @@ export function readTable(rows, T = (en) => en) {
       accountable: cols.accountable !== undefined ? (r[cols.accountable] || '').trim() : '',
       consulted: cols.consulted !== undefined ? (r[cols.consulted] || '').trim() : '',
       informed: cols.informed !== undefined ? (r[cols.informed] || '').trim() : '',
+      // Plusieurs risques ou contrôles dans une cellule : un par ligne, ou séparés par « ; ».
+      risks: cols.risks !== undefined ? items(r[cols.risks]).join('\n') : '',
+      controls: cols.controls !== undefined ? items(r[cols.controls]).join('\n') : '',
+      requirements: cols.requirements !== undefined ? items(r[cols.requirements]).join(' ; ') : '',
     }
     steps.push(step)
     byKey.set(fold(key), step)
@@ -202,8 +211,9 @@ export function tableToXml(table, { name = 'Process', T = (en) => en } = {}) {
     const tag = s.type.replace(':timer', '').replace(/^bpmn:(\w)/, (m, c) => `bpmn:${c.toLowerCase()}`)
     const doc = s.doc ? [`      <bpmn:documentation>${escapeXml(s.doc)}</bpmn:documentation>`] : []
     const activity = /Task$|^bpmn:(callActivity|subProcess)$/i.test(tag)
-    const assignee = activity ? ['assignee', 'systems', 'accountable', 'consulted', 'informed']
-      .filter((k) => s[k]).map((k) => ` bpmnpilot:${k}="${escapeXml(s[k])}"`).join('') : ''
+    const assignee = activity ? ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'risks', 'controls', 'requirements']
+      // Retours à la ligne gardés dans l'attribut (un risque par ligne).
+      .filter((k) => s[k]).map((k) => ` bpmnpilot:${k}="${escapeXml(s[k]).replace(/\n/g, '&#10;')}"`).join('') : ''
     return [`    <${tag} id="${id}"${xmlName(s.label)}${assignee}>`, ...doc, ...ins, ...outs, ...timer, `    </${tag}>`].join('\n')
   })
   const seq = links.map((l, i) =>

@@ -83,6 +83,9 @@ and the toolbar stays uncluttered for everyone else (see the
   activities by lane, RACI matrix.
 - **AI potential by activity**: automatable, AI-assisted or human, with the reason and the safeguard,
   rated by the co-pilot or by hand, and listed in the report.
+- **Risks, controls and compliance**: risks and controls for each activity, regulatory references
+  (GDPR, ISO 9001, AI Act…), and a process identity (owner, version, status, scope) at the top of the
+  report and the procedure sheets. The report adds a risk and control table and a compliance matrix.
 - **BPMN for Camunda 8 or 7**: platform set, executable process, gateway conditions in FEEL or JUEL,
   assignees on user tasks.
 - **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing

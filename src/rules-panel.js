@@ -11,13 +11,18 @@
 //   libellé reprend l'ancienne condition), le libellé suit la condition, pour la voir sur
 //   le diagramme. Le flux par défaut n'a pas de condition.
 //
+// En mode Expert seulement : le groupe « Adoption de l'IA » et le groupe « Risques et
+// conformité » des activités, et la « Fiche d'identité du processus » sur la racine du
+// diagramme (voir src/compliance.js).
+//
 // Chaque saisie passe par modeling : Ctrl+Z l'annule.
 
-import { TextFieldEntry, SelectEntry, isTextFieldEntryEdited, isSelectEntryEdited } from '@bpmn-io/properties-panel'
+import { TextFieldEntry, TextAreaEntry, SelectEntry, isTextFieldEntryEdited, isTextAreaEntryEdited, isSelectEntryEdited } from '@bpmn-io/properties-panel'
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { isExpert } from './expert-mode.js'
+import { PROCESS_STATUS } from './compliance.js'
 
 const LOW_PRIORITY = 450
 const CONDITIONAL_SOURCES = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway']
@@ -31,21 +36,26 @@ export function isConditionalFlow(element) {
 
 const isAssignable = (element) => is(element, 'bpmn:Activity') && !is(element, 'bpmn:SubProcess') && element.type !== 'label'
 
-// Champ texte rangé dans un attribut bpmnpilot: de l'activité.
-function attrEntry(attr, label, description) {
+// Champ texte rangé dans un attribut bpmnpilot: de l'élément. multiline : zone de texte,
+// une valeur par ligne (les lignes vides sont retirées).
+function attrEntry(attr, label, description, { multiline = false } = {}) {
   return function AttrEntry(props) {
     const { element, id } = props
     const modeling = useService('modeling')
     const debounce = useService('debounceInput')
     const bo = getBusinessObject(element)
-    return TextFieldEntry({
+    const tidy = (value) => (multiline
+      ? String(value || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean).join('\n')
+      : String(value || '').trim())
+    return (multiline ? TextAreaEntry : TextFieldEntry)({
       element,
       id,
       label: label(),
       description: description(),
       debounce,
+      ...(multiline ? { rows: 3, autoResize: true } : {}),
       getValue: () => bo.get(`bpmnpilot:${attr}`) || '',
-      setValue: (value) => modeling.updateModdleProperties(element, bo, { [`bpmnpilot:${attr}`]: (value || '').trim() || undefined }),
+      setValue: (value) => modeling.updateModdleProperties(element, bo, { [`bpmnpilot:${attr}`]: tidy(value) || undefined }),
     })
   }
 }
@@ -82,6 +92,41 @@ function AiPotentialEntry(props) {
 }
 const AiReasonEntry = attrEntry('aiPotentialReason', () => T('Why, and safeguard', 'Raison et garde-fou'),
   () => T('Proposed by the AI co-pilot (Expert menu) or written by hand.', 'Proposé par le Co-pilote IA (menu Expert) ou écrit à la main.'))
+
+// Risques et conformité (mode Expert).
+const RisksEntry = attrEntry('risks', () => T('Risks', 'Risques'),
+  () => T('One per line: what can go wrong at this step (error, delay, fraud, personal data…).', 'Un par ligne : ce qui peut mal tourner à cette étape (erreur, retard, fraude, données personnelles…).'), { multiline: true })
+const ControlsEntry = attrEntry('controls', () => T('Controls', 'Contrôles'),
+  () => T('One per line: what prevents or detects these risks (review, double check, threshold, log…).', 'Un par ligne : ce qui prévient ou détecte ces risques (relecture, double contrôle, seuil, trace…).'), { multiline: true })
+const RequirementsEntry = attrEntry('requirements', () => T('Requirements', 'Exigences'),
+  () => T('References separated by semicolons: GDPR art. 30; ISO 9001 §8.5; AI Act art. 14.', 'Références séparées par des points-virgules : RGPD art. 30 ; ISO 9001 §8.5 ; AI Act art. 14.'))
+
+// Fiche d'identité du processus (mode Expert), sur la racine du diagramme.
+const OwnerEntry = attrEntry('owner', () => T('Process owner', 'Propriétaire du processus'),
+  () => T('Person or role who answers for the process and approves its changes.', 'Personne ou rôle qui répond du processus et valide ses changements.'))
+const VersionEntry = attrEntry('version', () => T('Version', 'Version'),
+  () => T('Version of the process, e.g. 2.1.', 'Version du processus, par exemple 2.1.'))
+const ValidatedOnEntry = attrEntry('validatedOn', () => T('Approved on', 'Validé le'),
+  () => T('Date of approval, e.g. 2026-11-27.', 'Date de validation, par exemple 27/11/2026.'))
+const ScopeEntry = attrEntry('scope', () => T('Scope', 'Périmètre'),
+  () => T('Where the process applies, where it starts and ends, what it leaves out.', 'Où le processus s\'applique, où il commence et finit, ce qu\'il exclut.'), { multiline: true })
+function StatusEntry(props) {
+  const { element, id } = props
+  const modeling = useService('modeling')
+  const bo = getBusinessObject(element)
+  return SelectEntry({
+    element,
+    id,
+    label: T('Status', 'Statut'),
+    getValue: () => bo.get('bpmnpilot:status') || '',
+    setValue: (value) => modeling.updateModdleProperties(element, bo, { 'bpmnpilot:status': value || undefined }),
+    getOptions: () => [{ value: '', label: T('Not set', 'Non renseigné') },
+      ...Object.entries(PROCESS_STATUS).map(([value, label]) => ({ value, label: label() }))],
+  })
+}
+
+// La racine du diagramme : le processus, ou la collaboration quand il y a des pools.
+const isDiagramRoot = (element) => !element.parent && ['bpmn:Process', 'bpmn:Collaboration'].includes(element.type)
 
 function ConditionEntry(props) {
   const { element, id } = props
@@ -143,7 +188,29 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
             { id: 'bpmn-pilot-ai-reason', component: AiReasonEntry, isEdited: isTextFieldEntryEdited },
           ],
         })
+        groups.push({
+          id: 'bpmn-pilot-compliance',
+          label: T('Risks and compliance', 'Risques et conformité'),
+          entries: [
+            { id: 'bpmn-pilot-risks', component: RisksEntry, isEdited: isTextAreaEntryEdited },
+            { id: 'bpmn-pilot-controls', component: ControlsEntry, isEdited: isTextAreaEntryEdited },
+            { id: 'bpmn-pilot-requirements', component: RequirementsEntry, isEdited: isTextFieldEntryEdited },
+          ],
+        })
       }
+    }
+    if (isExpert() && isDiagramRoot(element)) {
+      groups.splice(1, 0, {
+        id: 'bpmn-pilot-identity',
+        label: T('Process identity', 'Fiche d\'identité du processus'),
+        entries: [
+          { id: 'bpmn-pilot-owner', component: OwnerEntry, isEdited: isTextFieldEntryEdited },
+          { id: 'bpmn-pilot-version', component: VersionEntry, isEdited: isTextFieldEntryEdited },
+          { id: 'bpmn-pilot-status', component: StatusEntry, isEdited: isSelectEntryEdited },
+          { id: 'bpmn-pilot-validated-on', component: ValidatedOnEntry, isEdited: isTextFieldEntryEdited },
+          { id: 'bpmn-pilot-scope', component: ScopeEntry, isEdited: isTextAreaEntryEdited },
+        ],
+      })
     }
     if (isConditionalFlow(element)) add({ id: 'bpmn-pilot-condition', component: ConditionEntry, isEdited: isTextFieldEntryEdited })
     return groups

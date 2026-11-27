@@ -595,10 +595,12 @@ document.getElementById('btn-ai-potential').addEventListener('click', () => {
     'Rate the AI potential of each activity of this diagram, from its name, lane, documentation, assignee and systems: ' +
       'automate (an AI agent or automation performs it, with a human review), assist (a human performs it with AI help) or human (judgment, relationship or accountability). ' +
       'Save it with update_elements (aiPotential and aiPotentialReason: one or two sentences on why and the safeguard needed), without changing anything else. ' +
+      'For each automate or assist activity, also add to its risks field the risks of handing it to AI (error, personal data, missing review…), one per line, and to its controls field the matching controls, one per line, keeping the risks and controls already written. ' +
       'Then sum up in three lines where AI pays off first, and the risks to frame.',
     'Note le potentiel d\'IA de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes : ' +
       'automate (un agent IA ou une automatisation la réalise, avec une revue humaine), assist (un humain la réalise aidé par l\'IA) ou human (jugement, relation ou responsabilité). ' +
       'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
+      'Pour chaque activité automate ou assist, ajoute aussi dans son champ risks les risques de la confier à l\'IA (erreur, données personnelles, absence de revue…), un par ligne, et dans son champ controls les contrôles correspondants, un par ligne, en gardant les risques et contrôles déjà écrits. ' +
       'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.'))
 })
 document.getElementById('btn-ai-analysis').addEventListener('click', () => {

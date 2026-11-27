@@ -85,6 +85,10 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
   d'amélioration, événements de fin, activités par couloir, matrice RACI.
 - **Potentiel d'IA par activité** : automatisable, assistée par IA ou humaine, avec la raison et le
   garde-fou, noté par le co-pilote ou à la main, et repris dans le rapport.
+- **Risques, contrôles et conformité** : risques et contrôles de chaque activité, références
+  réglementaires (RGPD, ISO 9001, AI Act…), et une fiche d'identité du processus (propriétaire, version,
+  statut, périmètre) en tête du rapport et des fiches de procédure. Le rapport ajoute un tableau des
+  risques et contrôles et une matrice de conformité.
 - **BPMN pour Camunda 8 ou 7** : plateforme indiquée, processus exécutable, conditions des passerelles
   en FEEL ou en JUEL, assignations sur les tâches utilisateur.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
