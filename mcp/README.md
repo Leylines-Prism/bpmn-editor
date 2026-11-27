@@ -171,12 +171,13 @@ For Claude Code, the `.mcp.json` file at the root already declares the server
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
-| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, or sets the probability of a gateway branch |
+| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, or sets the probability of a gateway branch, marked as proposed by the AI until the user reviews it |
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
 | `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element |
 | `get_process_report` | returns the process report in Markdown, like the Export menu: findings by level, improvement areas, end events, activities by lane, element sequence. With `simulate`, first computes 100 tokens following the branch probabilities |
+| `set_report_commentary` | saves your analysis of the process (summary, bottlenecks, rare paths, risks, improvements, each tied to elements) in the diagram file; the process report shows it as written by the AI co-pilot |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 

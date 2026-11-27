@@ -89,7 +89,7 @@ main { min-width: 0; }
 section { margin-top: var(--space-12); }
 /* Deux niveaux bien distincts : le H2 porte la ligne de lumière sur toute la largeur du texte,
    le H3, plus petit, une barre d'accent à gauche. */
-h2 { font-size: 30px; line-height: 38px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: var(--space-4); }
+h2 { font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: var(--space-4); }
 h2::after { content: ''; display: block; height: 2px; margin-top: 8px; border-radius: var(--radius-pill); background: var(--leyline); }
 h3 {
   font-size: 18px; line-height: 26px; font-weight: 600; margin: var(--space-6) 0 var(--space-2);
@@ -135,9 +135,11 @@ svg.ico { overflow: visible; }
 .uib svg.ico { width: 15px; height: 15px; }
 td .uib { white-space: normal; height: auto; }
 /* Devant un titre de section qui correspond à un bouton : un peu plus grand, et décollé du texte. */
-h2 > .ico, h3 > .ico { margin: 0 10px 0 0; }
-h2 > .ico, h2 > .ico[data-icon] { width: 26px; height: 26px; vertical-align: -4px; }
-h2 > .ico[class*="bpmn-icon-"] { font-size: 26px; line-height: 26px; }
+/* Le titre d'une section repliable passe dans son bouton .sec-toggle (src/help/sections.js) :
+   « h2 .ico » vise l'icône dans les deux cas. */
+h3 > .ico { margin: 0 10px 0 0; }
+h2 .ico, h2 .ico[data-icon] { width: 26px; height: 26px; margin: 0 12px 0 0; vertical-align: -4px; }
+h2 .ico[class*="bpmn-icon-"] { font-size: 26px; line-height: 26px; }
 h3 > .ico { vertical-align: -3px; }
 
 table { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
@@ -205,6 +207,8 @@ details.faq summary + * { margin-top: var(--space-3); }
   border-left: 3px solid var(--accent); border-radius: var(--radius-sm);
   background: var(--surface-sunken); font-size: 15px; line-height: 24px;
 }
+/* Prompt structuré : les retours à la ligne du texte source s'affichent et se copient. */
+.prompt-text.structured { white-space: pre-line; }
 .prompt-tip { margin-top: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-muted); }
 .copy-prompt {
   display: inline-flex; align-items: center; gap: 6px;

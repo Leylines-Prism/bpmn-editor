@@ -49,7 +49,7 @@ import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupSimulationGlow } from './simulation-glow.js'
-import { ProbabilityPanelModule } from './probability-panel.js'
+import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
@@ -389,7 +389,9 @@ const reportName = () => `${baseName()} - ${T('process report', 'rapport de proc
 
 async function processReport({ simulate = false } = {}) {
   const simulation = simulate ? heatmap.runBatch() : heatmap.getResult()
-  return buildReport(modeler, { name: baseName(), simulation })
+  const { checkDiagram } = await import('./diagram-checks.js')
+  const checks = await checkDiagram(modeler).catch((err) => { console.warn('Quality checks for the report:', err); return null })
+  return buildReport(modeler, { name: baseName(), simulation, checks })
 }
 
 async function exportReport(format, button) {
@@ -410,6 +412,40 @@ async function exportReport(format, button) {
 // Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
 document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
 document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
+
+// Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
+// une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
+const askCopilot = (text) => window.dispatchEvent(new CustomEvent('bpmn-pilot-copilot-ask', { detail: { text } }))
+document.getElementById('btn-ai-probabilities').addEventListener('click', () => {
+  setExpert(true)
+  const branches = modeler.get('elementRegistry').filter(isBranchFlow)
+  if (!branches.length) {
+    alert(T('No gateway with several outgoing flows (exclusive, inclusive, complex or event-based): there is no probability to propose.',
+      'Aucune passerelle à plusieurs flux sortants (exclusive, inclusive, complexe ou basée sur les événements) : pas de probabilité à proposer.'))
+    return
+  }
+  askCopilot(T(
+    'Propose realistic probabilities for the branches of each gateway of this diagram, from the labels, conditions and documentation. ' +
+      'Set them with update_elements (the branches of one gateway add up to 100 %), without changing anything else. ' +
+      'Then give, in one line per gateway, what justifies your values.',
+    'Propose des probabilités réalistes pour les branches de chaque passerelle de ce diagramme, d\'après les libellés, les conditions et la documentation. ' +
+      'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
+      'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.'))
+})
+document.getElementById('btn-ai-analysis').addEventListener('click', () => {
+  setExpert(true)
+  if (!hasShapes(modeler)) {
+    alert(T('The diagram is empty: nothing to analyze.', 'Le diagramme est vide : rien à analyser.'))
+    return
+  }
+  askCopilot(T(
+    'Analyze this process for its report: read get_process_report with simulate, then save your analysis with set_report_commentary ' +
+      '(summary, bottlenecks, rare paths, risks, improvements, each tied to the elements concerned and to the figures of the report). ' +
+      'Do not change the diagram. Finish with a short summary of what you saved.',
+    'Analyse ce processus pour son rapport : lis get_process_report avec simulate, puis enregistre ton analyse avec set_report_commentary ' +
+      '(synthèse, goulots, chemins rares, risques, pistes d\'amélioration, chacun relié aux éléments concernés et aux chiffres du rapport). ' +
+      'Ne modifie pas le diagramme. Termine par un court résumé de ce que tu as enregistré.'))
+})
 
 async function processReportForAi({ simulate } = {}) {
   if (!hasShapes(modeler)) throw new Error('The diagram is empty: nothing to report.')
@@ -488,8 +524,15 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.textContent = active ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
+  simButton.title = active
+    ? T('Back to editing. Expert mode stays on, so you can set the branch probabilities', 'Revenir à l\'édition. Le mode Expert reste actif pour régler les probabilités des branches')
+    : T('Run tokens through the process, with the heatmap and branch probabilities', 'Faire circuler des jetons dans le processus, avec la carte de chaleur et les probabilités des branches')
   simButton.classList.toggle('active', !!active)
   document.getElementById('btn-expert').classList.toggle('running', !!active)
+  // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
+  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités. « Quitter
+  // le mode Expert » revient une fois la simulation arrêtée.
+  document.getElementById('expert-menu').classList.toggle('simulating', !!active)
 })
 simButton.addEventListener('click', () => {
   setExpert(true)

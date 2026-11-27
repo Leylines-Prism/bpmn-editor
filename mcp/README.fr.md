@@ -172,12 +172,13 @@ Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
-| `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…), remplit leur champ Documentation, ou règle la probabilité d'une branche de passerelle |
+| `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…), remplit leur champ Documentation, ou règle la probabilité d'une branche de passerelle, marquée comme proposée par l'IA jusqu'à sa revue |
 | `style_elements` | règle le fond, le contour, la couleur du texte et la police (gras, italique, souligné, taille, famille) d'éléments |
 | `remove_elements` | supprime des formes ou des connexions |
 | `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
 | `validate_diagram` | renvoie un rapport de contrôle : compteurs d'éléments et six contrôles (XML bien formé, métamodèle BPMN 2.0, références et portées, DI complet, réimport bpmn-js, bpmnlint), avec erreurs et avertissements élément par élément |
 | `get_process_report` | renvoie le rapport de processus en Markdown, comme le menu Exporter : constats par niveau, axes d'amélioration, événements de fin, activités par couloir, séquence des éléments. Avec `simulate`, calcule d'abord 100 jetons selon les probabilités des branches |
+| `set_report_commentary` | enregistre votre analyse du processus (synthèse, goulots, chemins rares, risques, pistes d'amélioration, chacun relié aux éléments) dans le fichier du diagramme ; le rapport de processus la présente comme rédigée par le Co-pilote IA |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 

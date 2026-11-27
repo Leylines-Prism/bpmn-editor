@@ -536,6 +536,32 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 }
 #toolbar .menu:popover-open { display: flex; }
 #toolbar .menu .btn { justify-content: flex-start; }
+/* Entrées du Co-pilote IA grisées sans modèle : une petite icône d'aide dit pourquoi au survol
+   (un bouton désactivé ne montre pas sa bulle partout). */
+#expert-menu { overflow: visible; }
+#toolbar .menu-row { position: relative; display: flex; }
+#toolbar .menu-row:hover, #toolbar .menu-row:focus-within { z-index: 2; }
+#toolbar .menu-row > .btn { flex: 1; }
+#toolbar .copilot-help {
+  display: none; position: absolute; right: var(--space-2); top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; cursor: help; border-radius: 50%; color: var(--ink-muted);
+}
+#toolbar .copilot-help-icon {
+  display: block; width: 100%; height: 100%; background-color: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+          mask: var(--icon) center / contain no-repeat;
+}
+#toolbar .copilot-help:hover, #toolbar .copilot-help:focus-visible { color: var(--accent); }
+#toolbar .copilot-help:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+/* Bulle immédiate, sous l'icône, avec le texte de aria-label. */
+#toolbar .copilot-help:hover::after, #toolbar .copilot-help:focus-visible::after {
+  content: attr(aria-label); position: absolute; right: -6px; top: calc(100% + 8px); z-index: 1;
+  width: 260px; padding: 8px 10px; border-radius: var(--radius-sm, 8px);
+  background: var(--ink); color: var(--surface-raised); box-shadow: var(--elevation-1);
+  font-size: 12px; line-height: 1.4; font-weight: 400; white-space: normal; text-align: left;
+}
+#toolbar .menu-row:has(> .btn:disabled) .copilot-help { display: block; }
+#toolbar .menu-row:has(> .btn:disabled) > .btn { padding-right: 32px; }
 #toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
 /* Destination des exports (version docker) : un choix à faire avant de cliquer, souligné
    par le même trait leyline que le bouton Co-pilote. */
@@ -1492,6 +1518,11 @@ html:not(.expert) .expert-only,
 html:not(.expert) #canvas .heatmap-bar,
 html:not(.expert) #canvas .heatmap-legend,
 html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none !important; }
+/* Simulation en cours : « Quitter le mode Expert », les entrées du Co-pilote (le canevas est
+   verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
+#expert-menu.simulating #btn-expert-off,
+#expert-menu.simulating .menu-row,
+#expert-menu.simulating .menu-sep { display: none !important; }
 
 /* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
    présentation : dans un petit carré au trait orange de la charte. */

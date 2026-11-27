@@ -7,6 +7,7 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isBranchFlow } from './probability-panel.js'
+import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
 import { reloadWithCopy } from './history.js'
@@ -18,6 +19,8 @@ import { T } from './i18n/lang.js'
 import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
 
 const RETRY_MIN_MS = 1000
+// Dernier client MCP relié : l'analyse qu'il enregistre porte son nom.
+let mcpClientName = ''
 const RETRY_MAX_MS = 15000
 
 // Renvoie l'état du pont : tabId est l'identifiant que le serveur a donné à
@@ -54,6 +57,7 @@ export function connectMcpBridge(modeler, url, options = {}) {
       }
       if (msg.type === 'mcp-client') {
         mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), lastCall: Number(msg.lastCall) || null }
+        mcpClientName = mcpClient.name ? clientLabel(mcpClient.name) : ''
         if (badge.dataset.state === 'connected') setBadge(badge, 'connected', mcpClient)
         return
       }
@@ -537,7 +541,11 @@ function buildTools(modeler, exportDiagram, processReport) {
           if (spec.probability !== undefined) {
             if (!isBranchFlow(element)) throw new Error(`probability applies only to a sequence flow leaving an exclusive, inclusive, complex or event-based gateway: ${spec.id}`)
             const bo = getBusinessObject(element)
-            modeling.updateModdleProperties(element, bo, { 'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability })
+            // Valeur proposée par l'IA : marquée jusqu'à sa revue dans le panneau Probabilité.
+            modeling.updateModdleProperties(element, bo, {
+              'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability,
+              'bpmnpilot:probabilitySource': spec.probability === null ? undefined : AI_SOURCE,
+            })
           }
           updated.push({ previousId: spec.id, ...describe(element) })
         }
@@ -616,6 +624,29 @@ function buildTools(modeler, exportDiagram, processReport) {
     async get_process_report({ simulate } = {}) {
       if (!processReport) throw new Error('The process report is not available in this editor.')
       return processReport({ simulate: !!simulate })
+    },
+
+    // Analyse du processus, enregistrée dans le .bpmn pour le rapport (src/copilot-analysis.js).
+    set_report_commentary({ summary = '', points = [] }) {
+      const definitions = modeler.getDefinitions()
+      const root = canvas.getRootElement()
+      for (const p of points) for (const id of p.elements || []) getElement(id)
+      const text = String(summary).trim()
+      const data = text || points.length
+        ? {
+            author: getChatModel() || mcpClientName || 'MCP',
+            date: new Date().toISOString(),
+            fingerprint: structureFingerprint(definitions),
+            summary: text,
+            points: points.map((p) => ({ kind: p.kind, elements: [...new Set(p.elements || [])], text: String(p.text).trim() })),
+          }
+        : null
+      return atomic(() => {
+        for (const { bo, extensionElements } of analysisUpdates(modeler.get('moddle'), definitions, getBusinessObject(root), data)) {
+          modeling.updateModdleProperties(root, bo, { extensionElements })
+        }
+        return data ? { saved: true, points: data.points.length, author: data.author } : { removed: true }
+      })
     },
 
     remove_elements({ ids }) {
