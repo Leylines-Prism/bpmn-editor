@@ -584,6 +584,22 @@ document.getElementById('btn-ai-probabilities').addEventListener('click', () => 
       'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
       'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.'))
 })
+document.getElementById('btn-ai-potential').addEventListener('click', () => {
+  setExpert(true)
+  if (!modeler.get('elementRegistry').some((el) => el.businessObject?.$instanceOf?.('bpmn:Activity'))) {
+    alert(T('The diagram has no activity to rate.', 'Le diagramme n\'a aucune activité à noter.'))
+    return
+  }
+  askCopilot(T(
+    'Rate the AI potential of each activity of this diagram, from its name, lane, documentation, assignee and systems: ' +
+      'automate (an AI agent or automation performs it, with a human review), assist (a human performs it with AI help) or human (judgment, relationship or accountability). ' +
+      'Save it with update_elements (aiPotential and aiPotentialReason: one or two sentences on why and the safeguard needed), without changing anything else. ' +
+      'Then sum up in three lines where AI pays off first, and the risks to frame.',
+    'Note le potentiel d\'IA de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes : ' +
+      'automate (un agent IA ou une automatisation la réalise, avec une revue humaine), assist (un humain la réalise aidé par l\'IA) ou human (jugement, relation ou responsabilité). ' +
+      'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
+      'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.'))
+})
 document.getElementById('btn-ai-analysis').addEventListener('click', () => {
   setExpert(true)
   if (!hasShapes(modeler)) {

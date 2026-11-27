@@ -110,6 +110,12 @@ const docOf = (bo) => markdownToLine(docSource(bo))
 // Condition d'un flux écrite en clair (« Avance < 3000 ») et personne ou rôle assigné à une activité.
 export const conditionText = (flow) => clean(flow?.conditionExpression?.body)
 export const assigneeOf = (bo) => clean(bo?.get?.('bpmnpilot:assignee'))
+// Potentiel d'IA d'une activité, noté par le Co-pilote (mode Expert) ou à la main.
+export const AI_POTENTIAL = {
+  automate: () => T('Automatable (AI agent, human review)', 'Automatisable (agent IA, revue humaine)'),
+  assist: () => T('AI-assisted', 'Assistée par IA'),
+  human: () => T('Human', 'Humaine'),
+}
 const laneCell = (s) => [s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${T(': ', ' : ')}${s.assignee}` : '', s.systems ? `${T('Systems', 'Systèmes')}${T(': ', ' : ')}${s.systems}` : ''].filter(Boolean).join(' · ')
 
 export function typeLabel(bo) {
@@ -403,6 +409,8 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     accountable: clean(n.get?.('bpmnpilot:accountable')),
     consulted: clean(n.get?.('bpmnpilot:consulted')),
     informed: clean(n.get?.('bpmnpilot:informed')),
+    aiPotential: AI_POTENTIAL[n.get?.('bpmnpilot:aiPotential')] ? n.get('bpmnpilot:aiPotential') : null,
+    aiPotentialReason: clean(n.get?.('bpmnpilot:aiPotentialReason')),
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -734,6 +742,15 @@ export function reportToMarkdown(r) {
     lines.push('', `## ${T('Activities by lane', 'Activités par couloir')}`, '')
     lines.push(`| ${T('Lane', 'Couloir')} | ${T('Activities', 'Activités')} |`, '|---|---|')
     for (const l of r.lanes) lines.push(`| ${mdCell(l.name)} | ${mdCell(l.activities.join(' · '))} |`)
+  }
+  const potential = r.sequence.filter((s) => s.aiPotential)
+  if (potential.length) {
+    const count = (k) => potential.filter((s) => s.aiPotential === k).length
+    lines.push('', `## ${T('AI potential by activity', 'Potentiel d\'IA par activité')}`, '')
+    lines.push(T(`${count('automate')} automatable, ${count('assist')} AI-assisted, ${count('human')} human, out of ${potential.length} rated activities.`,
+      `${count('automate')} automatisable(s), ${count('assist')} assistée(s) par IA, ${count('human')} humaine(s), sur ${potential.length} activité(s) notée(s).`), '')
+    lines.push(`| N° | ${T('Activity', 'Activité')} | ${T('Potential', 'Potentiel')} | ${T('Why, and safeguard', 'Raison et garde-fou')} |`, '|---|---|---|---|')
+    for (const s of potential) lines.push(`| ${s.number} | ${mdCell(s.name)} | **${AI_POTENTIAL[s.aiPotential]()}** | ${mdCell(s.aiPotentialReason)} |`)
   }
   if (r.raci) {
     const [head, ...body] = raciRows(r.raci, T)
@@ -1123,6 +1140,18 @@ export async function reportToPdf(modeler, r) {
       head: [[T('Lane', 'Couloir'), T('Activities', 'Activités')]],
       body: r.lanes.map((l) => [pdfText(l.name), pdfText(l.activities.join(' · '))]),
       columnStyles: { 0: { cellWidth: 50, fontStyle: 'bold', textColor: [37, 99, 235] } },
+    })
+  }
+
+  const potential = r.sequence.filter((s) => s.aiPotential)
+  if (potential.length) {
+    section(T('AI potential by activity', 'Potentiel d\'IA par activité'))
+    const tint = { automate: [219, 234, 254], assist: [254, 243, 199], human: [243, 244, 246] }
+    table({
+      head: [['N°', T('Activity', 'Activité'), T('Potential', 'Potentiel'), T('Why, and safeguard', 'Raison et garde-fou')]],
+      body: potential.map((s) => [String(s.number), pdfText(s.name), pdfText(AI_POTENTIAL[s.aiPotential]()), pdfText(s.aiPotentialReason || '–')]),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' }, 2: { cellWidth: 42 } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index === 2) d.cell.styles.fillColor = tint[potential[d.row.index].aiPotential] },
     })
   }
 

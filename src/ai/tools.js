@@ -225,7 +225,8 @@ export function buildTools(z) {
       name: 'update_elements',
       title: 'Update elements',
       description:
-        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, or sets the probability of a gateway branch. ' +
+        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
+        'or fills in the assignee, systems used, RACI roles and AI potential of an activity. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
         'For colors and fonts use style_elements; to move shapes, auto_layout. The user can undo the call with Ctrl+Z.',
       annotations: edit(false, false),
@@ -245,6 +246,16 @@ export function buildTools(z) {
                 .nullable()
                 .optional()
                 .describe('Sequence flows leaving an exclusive, inclusive, complex or event-based gateway only: probability of this branch in %, used by the heatmap simulation. null to clear it'),
+              condition: z.string().max(300).nullable().optional()
+                .describe('Sequence flows leaving an exclusive or inclusive gateway only: the rule in plain words, e.g. "Advance < 3000". Shown on the flow while it has no other label. null or empty to clear it'),
+              assignee: z.string().max(200).optional().describe('Activities only: person or precise role who performs it (R), in addition to the lane. Empty string to clear it'),
+              systems: z.string().max(300).optional().describe('Activities only: applications or tools used, comma-separated. Empty string to clear it'),
+              accountable: z.string().max(200).optional().describe('Activities only, RACI: who answers for the result (A). Empty string to clear it'),
+              consulted: z.string().max(300).optional().describe('Activities only, RACI: roles consulted (C), comma-separated. Empty string to clear it'),
+              informed: z.string().max(300).optional().describe('Activities only, RACI: roles informed (I), comma-separated. Empty string to clear it'),
+              aiPotential: z.enum(['automate', 'assist', 'human']).nullable().optional()
+                .describe('Activities only: AI potential. automate = an AI agent or automation can perform it with a human review; assist = a human performs it with AI help; human = stays human (judgment, relationship, accountability). null to clear it'),
+              aiPotentialReason: z.string().max(400).optional().describe('Activities only: one or two sentences on why, and the safeguard needed (review, data, accountability)'),
             }),
           )
           .min(1),

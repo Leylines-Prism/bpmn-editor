@@ -7,6 +7,7 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isBranchFlow } from './probability-panel.js'
+import { isConditionalFlow } from './rules-panel.js'
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
@@ -567,6 +568,24 @@ function buildTools(modeler, exportDiagram, processReport) {
               'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability,
               'bpmnpilot:probabilitySource': spec.probability === null ? undefined : AI_SOURCE,
             })
+          }
+          if (spec.condition !== undefined) {
+            if (!isConditionalFlow(element)) throw new Error(`condition applies only to a non-default sequence flow leaving an exclusive or inclusive gateway: ${spec.id}`)
+            const text = (spec.condition || '').trim()
+            const bo = getBusinessObject(element)
+            const previous = (bo.conditionExpression?.body || '').trim()
+            const name = (bo.name || '').trim()
+            const props = { conditionExpression: text ? bpmnFactory.create('bpmn:FormalExpression', { body: text }) : undefined }
+            if (!name || name === previous) props.name = text || undefined
+            modeling.updateProperties(element, props)
+          }
+          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason'].filter((k) => spec[k] !== undefined)
+          if (activityFields.length) {
+            if (!is(element, 'bpmn:Activity')) throw new Error(`${activityFields.join(', ')} apply only to activities: ${spec.id}`)
+            const bo = getBusinessObject(element)
+            const props = {}
+            for (const k of activityFields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
+            modeling.updateModdleProperties(element, bo, props)
           }
           updated.push({ previousId: spec.id, ...describe(element) })
         }

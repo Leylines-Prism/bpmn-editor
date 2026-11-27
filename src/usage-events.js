@@ -40,6 +40,7 @@ export function setupUsageEvents(modeler) {
   on('btn-library', () => track('mes-diagrammes'))
   on('btn-ai-probabilities', () => track('copilote-expert', { action: 'probabilites' }))
   on('btn-ai-analysis', () => track('copilote-expert', { action: 'analyse' }))
+  on('btn-ai-potential', () => track('copilote-expert', { action: 'potentiel-ia' }))
   on('btn-lang', () => track('langue-changee'))
   on('btn-theme', () => track('theme-change'))
 

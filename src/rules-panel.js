@@ -13,10 +13,11 @@
 //
 // Chaque saisie passe par modeling : Ctrl+Z l'annule.
 
-import { TextFieldEntry, isTextFieldEntryEdited } from '@bpmn-io/properties-panel'
+import { TextFieldEntry, SelectEntry, isTextFieldEntryEdited, isSelectEntryEdited } from '@bpmn-io/properties-panel'
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
+import { isExpert } from './expert-mode.js'
 
 const LOW_PRIORITY = 450
 const CONDITIONAL_SOURCES = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway']
@@ -59,6 +60,28 @@ const ConsultedEntry = attrEntry('consulted', () => T('Consulted (C)', 'Consult�
   () => T('Roles asked for their opinion, comma-separated.', 'Rôles dont on demande l\'avis, séparés par des virgules.'))
 const InformedEntry = attrEntry('informed', () => T('Informed (I)', 'Informés (I)'),
   () => T('Roles told of the result, comma-separated.', 'Rôles tenus au courant, séparés par des virgules.'))
+
+// Potentiel d'IA (mode Expert) : noté par le Co-pilote ou à la main, repris par le rapport.
+function AiPotentialEntry(props) {
+  const { element, id } = props
+  const modeling = useService('modeling')
+  const bo = getBusinessObject(element)
+  return SelectEntry({
+    element,
+    id,
+    label: T('AI potential', 'Potentiel d\'IA'),
+    getValue: () => bo.get('bpmnpilot:aiPotential') || '',
+    setValue: (value) => modeling.updateModdleProperties(element, bo, { 'bpmnpilot:aiPotential': value || undefined }),
+    getOptions: () => [
+      { value: '', label: T('Not rated', 'Non noté') },
+      { value: 'automate', label: T('Automatable (AI agent, human review)', 'Automatisable (agent IA, revue humaine)') },
+      { value: 'assist', label: T('AI-assisted', 'Assistée par IA') },
+      { value: 'human', label: T('Human', 'Humaine') },
+    ],
+  })
+}
+const AiReasonEntry = attrEntry('aiPotentialReason', () => T('Why, and safeguard', 'Raison et garde-fou'),
+  () => T('Proposed by the AI co-pilot (Expert menu) or written by hand.', 'Proposé par le Co-pilote IA (menu Expert) ou écrit à la main.'))
 
 function ConditionEntry(props) {
   const { element, id } = props
@@ -111,6 +134,16 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
           { id: 'bpmn-pilot-informed', component: InformedEntry, isEdited: isTextFieldEntryEdited },
         ],
       })
+      if (isExpert()) {
+        groups.push({
+          id: 'bpmn-pilot-ai-adoption',
+          label: T('AI adoption', 'Adoption de l\'IA'),
+          entries: [
+            { id: 'bpmn-pilot-ai-potential', component: AiPotentialEntry, isEdited: isSelectEntryEdited },
+            { id: 'bpmn-pilot-ai-reason', component: AiReasonEntry, isEdited: isTextFieldEntryEdited },
+          ],
+        })
+      }
     }
     if (isConditionalFlow(element)) add({ id: 'bpmn-pilot-condition', component: ConditionEntry, isEdited: isTextFieldEntryEdited })
     return groups

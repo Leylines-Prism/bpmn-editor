@@ -21,7 +21,9 @@
         { "name": "systems", "isAttr": true, "type": "String" },
         { "name": "accountable", "isAttr": true, "type": "String" },
         { "name": "consulted", "isAttr": true, "type": "String" },
-        { "name": "informed", "isAttr": true, "type": "String" }
+        { "name": "informed", "isAttr": true, "type": "String" },
+        { "name": "aiPotential", "isAttr": true, "type": "String" },
+        { "name": "aiPotentialReason", "isAttr": true, "type": "String" }
       ]
     },
     {
