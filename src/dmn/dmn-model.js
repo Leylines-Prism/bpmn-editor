@@ -32,7 +32,9 @@ export async function parseDmn(xml) {
   if (text.length > MAX_DMN_BYTES) throw new Error('DMN document too large')
   if (!/<([\w-]+:)?definitions[\s>]/.test(text)) throw new Error('not a DMN document (no definitions element)')
   let source = text
-  if (!text.includes(DMN13_NS)) {
+  // Version lue dans la déclaration d'espace de noms (xmlns ou xmlns:préfixe), pas n'importe où dans le texte.
+  const ns13 = /\sxmlns(:[\w-]+)?=["']https:\/\/www\.omg\.org\/spec\/DMN\/20191111\/MODEL\/["']/
+  if (!ns13.test(text)) {
     try {
       source = await migrateDiagram(text)
     } catch (err) {
@@ -159,7 +161,7 @@ const edge = (m, requirement, from, to) =>
 export function quoteStrings(value, type) {
   const v = String(value ?? '').trim()
   if (type !== 'string' || !v || v === '-' || /^not\s*\(/.test(v) || /["(<>=[\]]/.test(v) || /^(null|true|false)$/.test(v)) return v
-  return v.split(',').map((s) => s.trim()).filter(Boolean).map((s) => `"${s.replace(/"/g, '\\"')}"`).join(',')
+  return v.split(',').map((s) => s.trim()).filter(Boolean).map((s) => `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`).join(',')
 }
 
 const valueList = (values, type) => (Array.isArray(values) ? values : values ? [values] : []).map((v) => quoteStrings(v, type)).filter(Boolean).join(',')

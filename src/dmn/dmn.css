@@ -94,14 +94,48 @@ body.presenting .dmn-badge:not(:has(svg)), body.presenting .dmn-badge.broken,
 #dmn-dialog .dmn-status { margin: 0; padding: 6px var(--space-4); font-size: 13px; background: var(--accent-soft); color: var(--ink); }
 #dmn-dialog .dmn-status.error { background: color-mix(in srgb, #B42318 12%, transparent); }
 #dmn-dialog .dmn-status[hidden] { display: none; }
+#dmn-dialog .dmn-main { flex: 1; min-height: 0; display: flex; }
 #dmn-dialog .dmn-body {
-  flex: 1; min-height: 0; position: relative; overflow: auto;
+  flex: 1; min-width: 0; min-height: 0; position: relative; overflow: auto;
   background: #FFFFFF; color: #22242A; color-scheme: light;
 }
 #dmn-dialog .dmn-body .dmn-decision-table-container,
 #dmn-dialog .dmn-body .dmn-literal-expression-container,
 #dmn-dialog .dmn-body .dmn-boxed-expression-container { padding: var(--space-3); font-family: var(--font-sans); }
 #dmn-dialog .dmn-body .dmn-drd-container { height: 100%; }
+/* Banc d'essai, à droite de la table. */
+#dmn-dialog .dmn-head .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+#dmn-dialog .dmn-bench {
+  flex: none; width: 340px; overflow: auto; padding: var(--space-3) var(--space-4);
+  border-left: 1px solid var(--line); background: var(--surface-raised); font-size: 13px; line-height: 18px;
+}
+#dmn-dialog .dmn-bench[hidden] { display: none; }
+#dmn-dialog .dmn-bench h3 { margin: 0 0 4px; font-size: 15px; line-height: 20px; font-weight: 600; }
+#dmn-dialog .dmn-bench-head p { margin: 0; color: var(--ink-muted); font-size: 12px; }
+#dmn-dialog .dmn-bench-form { display: flex; flex-direction: column; gap: 10px; margin-top: var(--space-3); }
+#dmn-dialog .dmn-bench-field label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 3px; font-weight: 600; }
+#dmn-dialog .dmn-bench-field small { font-weight: 400; color: var(--ink-muted); font-family: var(--font-mono); }
+#dmn-dialog .dmn-bench-field input, #dmn-dialog .dmn-bench-field select {
+  width: 100%; box-sizing: border-box; min-height: 32px; padding: 4px 8px; font: inherit; font-size: 13px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink);
+}
+#dmn-dialog .dmn-bench-empty { margin: 0; color: var(--ink-muted); }
+#dmn-dialog .dmn-bench-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+#dmn-dialog .dmn-bench-result { margin: var(--space-3) 0 0; padding: 8px 10px; border-radius: var(--radius-sm); white-space: pre-line; background: var(--surface-sunken); }
+#dmn-dialog .dmn-bench-result.ok { background: color-mix(in srgb, #1E8E3E 12%, transparent); }
+#dmn-dialog .dmn-bench-result.error { background: color-mix(in srgb, #B42318 12%, transparent); }
+#dmn-dialog .dmn-bench-result[hidden], #dmn-dialog .dmn-bench-cases[hidden] { display: none; }
+#dmn-dialog .dmn-bench-cases table { width: 100%; margin-top: var(--space-2); border-collapse: collapse; font-size: 12px; }
+#dmn-dialog .dmn-bench-cases th, #dmn-dialog .dmn-bench-cases td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+#dmn-dialog .dmn-bench-cases tr.ko td:last-child { color: var(--danger, #B42318); font-weight: 700; }
+#dmn-dialog .dmn-bench-cases tr.ok td:last-child { color: #1E8E3E; }
+/* Règles retenues par le banc d'essai, dans la table de dmn-js (toujours claire). */
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-hit td { background: #FFF1C2 !important; }
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-hit td:first-child { box-shadow: inset 4px 0 0 #E8A200; }
+@media (max-width: 720px) {
+  #dmn-dialog .dmn-main { flex-direction: column; }
+  #dmn-dialog .dmn-bench { width: auto; max-height: 45vh; border-left: 0; border-top: 1px solid var(--line); }
+}
 @media (max-width: 720px) {
   #dmn-dialog { width: 100vw; height: 100vh; margin: 0; border-radius: 0; }
   #dmn-dialog .dmn-title h2 { max-width: 60vw; }

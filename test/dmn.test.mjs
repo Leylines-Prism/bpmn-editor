@@ -6,7 +6,8 @@ import * as z from 'zod'
 import { BpmnModdle } from 'bpmn-moddle'
 import zeebe from 'zeebe-bpmn-moddle/resources/zeebe.json' with { type: 'json' }
 import bpmnpilot from '../src/bpmn-pilot-moddle.json' with { type: 'json' }
-import { setDecisionTable, mergeDmn, summarize, checkDecision, parseEntry, quoteStrings } from '../src/dmn/dmn-model.js'
+import { setDecisionTable, mergeDmn, summarize, checkDecision, parseEntry, quoteStrings, parseDmn } from '../src/dmn/dmn-model.js'
+import { evaluateDecision, casesPerRule, inputValue } from '../src/dmn/dmn-eval.js'
 import { readDecisionXml, decisionModelUpdates, linkProperties, checkLinks, resultVariable } from '../src/dmn/decision-store.js'
 import { createToolSet, runTool } from '../src/ai/chat-loop.js'
 
@@ -104,6 +105,31 @@ test('FEEL entries are read for numbers, text and booleans, and left alone other
   assert.equal(quoteStrings('A, B', 'string'), '"A","B"')
   assert.equal(quoteStrings('not("A")', 'string'), 'not("A")')
   assert.equal(quoteStrings('42', 'number'), '42')
+  // Une barre oblique inverse est doublée : la chaîne FEEL reste fermée.
+  assert.equal(quoteStrings('a\\', 'string'), '"a\\\\"')
+})
+
+test('DMN 1.1 files are migrated, a 1.3 namespace in plain text does not count', async () => {
+  const v11 = '<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="d" name="D" namespace="https://www.omg.org/spec/DMN/20191111/MODEL/"><decision id="dec" name="Dec"><decisionTable id="t"><input id="i" label="A"><inputExpression id="e" typeRef="string"><text>a</text></inputExpression></input><output id="o" name="r" typeRef="string"/></decisionTable></decision></definitions>'
+  const { definitions } = await parseDmn(v11)
+  assert.equal(definitions.drgElement[0].id, 'dec')
+})
+
+test('the test bench applies the hit policy and builds one case per rule', async () => {
+  const [d] = (await summarize((await setDecisionTable('', RISK)).xml)).decisions
+  assert.deepEqual(evaluateDecision(d, [500, 'Particulier']), { matched: [1], warnings: [], result: { risque: 'faible' } })
+  assert.deepEqual(evaluateDecision(d, { Montant: '1000', categorie: '"Pro"' }).result, { risque: 'élevé' })
+  assert.deepEqual(evaluateDecision(d, { Montant: 500, Catégorie: 'Pro' }), { matched: [], warnings: [], result: null })
+  assert.throws(() => evaluateDecision(d, ['beaucoup', 'Pro']), /Montant.*not a number/)
+  const cases = casesPerRule(d)
+  assert.deepEqual(cases, [{ rule: 1, inputs: [999, 'Particulier'] }, { rule: 2, inputs: [1000, 'Particulier'] }])
+  for (const c of cases) assert.deepEqual(evaluateDecision(d, c.inputs).matched, [c.rule])
+
+  const unique = (await summarize((await setDecisionTable('', { ...RISK, rules: [{ inputs: ['<= 1000', '-'], outputs: ['faible'] }, { inputs: ['>= 1000', '-'], outputs: ['élevé'] }] })).xml)).decisions[0]
+  assert.equal(evaluateDecision(unique, [1000, 'Pro']).error, 'unique-conflict')
+  const collect = (await summarize((await setDecisionTable('', { name: 'Frais', hitPolicy: 'COLLECT', aggregation: 'SUM', inputs: [{ label: 'Pays', type: 'string' }], outputs: [{ label: 'Frais', name: 'frais', type: 'number' }], rules: [{ inputs: ['-'], outputs: ['10'] }, { inputs: ['"FR"'], outputs: ['5'] }] })).xml)).decisions[0]
+  assert.equal(evaluateDecision(collect, ['FR']).result, 15)
+  assert.equal(inputValue('2026-01-31', 'date').toString(), '2026-01-31')
 })
 
 const BPMN = `<?xml version="1.0" encoding="UTF-8"?>

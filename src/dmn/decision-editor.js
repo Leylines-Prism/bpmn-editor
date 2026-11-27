@@ -9,10 +9,12 @@
 // Le filigrane bpmn.io de dmn-js reste visible, comme le veut sa licence.
 
 import { lang, T } from '../i18n/lang.js'
+import { createBench, decisionFromXml } from './decision-bench.js'
 import frBpmn from '../i18n/fr.js'
 
 let dialog = null
 let current = null // { modeler, baseline, mode, onSave, onClose, ... }
+let bench = null
 
 async function loadDmnJs() {
   const [{ default: DmnModeler }, { default: frDmn }] = await Promise.all([
@@ -45,19 +47,20 @@ function build() {
         <button type="button" role="tab" data-view="drd">${T('Requirements (DRD)', 'Exigences (DRD)')}</button>
       </div>
       <span class="dmn-grow"></span>
+      <button type="button" class="btn" id="dmn-test" data-icon="play" aria-pressed="false" title="${T('Try input values on this table and see which rules apply', 'Essayer des valeurs d\'entrée sur cette table et voir les règles qui s\'appliquent')}">${T('Test', 'Tester')}</button>
       <button type="button" class="btn" id="dmn-add" data-icon="new" hidden></button>
       <button type="button" class="btn" id="dmn-library" data-icon="library"></button>
       <button type="button" class="btn" id="dmn-export" data-icon="save">${T('Export .dmn', 'Exporter .dmn')}</button>
       <button type="button" class="btn icon-only dmn-close" aria-label="${T('Close', 'Fermer')}" title="${T('Close (Esc)', 'Fermer (Échap)')}">×</button>
     </div>
     <p class="dmn-status" id="dmn-status" role="status"></p>
-    <div class="dmn-body" id="dmn-body"></div>`
+    <div class="dmn-main"><div class="dmn-body" id="dmn-body"></div><aside class="dmn-bench" id="dmn-bench" hidden></aside></div>`
   document.body.append(dialog)
   dialog.querySelector('.dmn-close').addEventListener('click', () => close())
   dialog.querySelector('#dmn-back').addEventListener('click', () => close())
   dialog.addEventListener('cancel', (e) => {
     // Échap pendant une saisie dans la table ferme d'abord la saisie (dmn-js), pas la fenêtre.
-    if (dialog.querySelector('.dmn-body').contains(document.activeElement) && document.activeElement.matches('[contenteditable], input, select, textarea')) {
+    if (dialog.querySelector('.dmn-main').contains(document.activeElement) && document.activeElement.matches('[contenteditable], input, select, textarea')) {
       e.preventDefault()
       return
     }
@@ -67,6 +70,15 @@ function build() {
   for (const tab of dialog.querySelectorAll('.dmn-tabs [data-view]')) {
     tab.addEventListener('click', () => showView(tab.dataset.view))
   }
+  bench = createBench(dialog.querySelector('#dmn-bench'), {
+    getDecision: async () => {
+      const view = current?.modeler.getActiveView()
+      if (!view || view.type !== 'decisionTable') return null
+      return decisionFromXml(await currentXml(), view.element.id)
+    },
+    onHits: markRules,
+  })
+  dialog.querySelector('#dmn-test').addEventListener('click', () => setBench(dialog.querySelector('#dmn-bench').hidden))
   dialog.querySelector('#dmn-export').addEventListener('click', async () => {
     if (!current) return
     const xml = await currentXml()
@@ -91,6 +103,20 @@ function build() {
       say(T(`Cannot add it: ${err.message}`, `Ajout impossible : ${err.message}`), true)
     }
   })
+}
+
+// Surligne dans la table de dmn-js les règles retenues par le banc d'essai (n° à partir de 1).
+function markRules(rules) {
+  const rows = dialog.querySelectorAll('#dmn-body .tjs-table tbody tr')
+  rows.forEach((tr, i) => tr.classList.toggle('dmn-hit', rules.includes(i + 1)))
+}
+
+function setBench(open) {
+  const aside = dialog.querySelector('#dmn-bench')
+  aside.hidden = !open
+  dialog.querySelector('#dmn-test').setAttribute('aria-pressed', String(open))
+  if (open) bench.refresh()
+  else markRules([])
 }
 
 function say(msg, error = false) {
@@ -129,6 +155,10 @@ function syncTabs() {
     tab.classList.toggle('on', on)
     tab.setAttribute('aria-selected', String(on))
   }
+  const onTable = view.type === 'decisionTable'
+  dialog.querySelector('#dmn-test').hidden = !onTable
+  if (!onTable && !dialog.querySelector('#dmn-bench').hidden) setBench(false)
+  else if (!dialog.querySelector('#dmn-bench').hidden) bench.refresh()
   // Pas de table à montrer : l'onglet Table de décision ne mène nulle part.
   dialog.querySelector('.dmn-tabs [data-view="table"]').disabled = !current.modeler.getViews().some((v) => v.type !== 'drd')
 }
@@ -188,6 +218,7 @@ export async function close() {
   const changed = xml && baseline && xml !== baseline
   if (changed && mode === 'library' && !confirm(T('Close without saving the changes to this decision model?', 'Fermer sans enregistrer les changements de ce modèle de décision ?'))) return
   current = null
+  setBench(false)
   if (dialog.open) dialog.close()
   modeler.destroy()
   if (changed && mode === 'diagram' && onSave) await onSave(xml)
