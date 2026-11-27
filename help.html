@@ -218,7 +218,7 @@
       </section>
 
       <section id="documenting">
-        <h2>Documenting elements<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
+        <h2>Documenting elements (bpmn:documentation)<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
         <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
         <h3>The documentation window</h3>
         <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
@@ -281,7 +281,7 @@
 
       <section id="checking">
         <h2>Check and tidy up</h2>
-        <h3>BPMN correctness checks</h3>
+        <h3>BPMN correctness checks (bpmnlint)</h3>
         <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice and never block saving.</p>
         <ul>
           <li>A badge on the element flags an issue: red for an error, orange for a warning.</li>
@@ -333,7 +333,7 @@
           <li>Video lessons: the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French).</li>
           <li><a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">Rule documentation<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>: the details of each check.</li>
         </ul>
-        <h3>Tidy up<span class="ico" data-icon="layout" aria-hidden="true"></span></h3>
+        <h3>Tidy up (auto layout)<span class="ico" data-icon="layout" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
         <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
@@ -341,7 +341,7 @@
 
       <section id="saving">
         <h2>Saving and My diagrams</h2>
-        <h3>Autosave</h3>
+        <h3>Autosave (localStorage)</h3>
         <p>The editor keeps your work in the browser one second after each change, and shows the time of the last save next to "Autosave". This autosave has a single slot: clicking <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>New</span> or opening a file replaces its content.</p>
         <h3>My diagrams<span class="ico" data-icon="library" aria-hidden="true"></span></h3>
         <p>To keep several processes, open <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>. Give your work a name and click <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Save</span>. The list then lets you reopen, rename or delete each entry. <kbd>Ctrl</kbd>+<kbd>S</kbd> updates the one that is open, and <span class="uib">Save as new</span> makes a copy.</p>
@@ -356,7 +356,7 @@
       </section>
 
       <section id="open-export">
-        <h2>Open, import, export</h2>
+        <h2>Open, import, export (XML, SVG, PNG, PDF)</h2>
         <h3>Open<span class="ico" data-icon="open" aria-hidden="true"></span></h3>
         <ul>
           <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>.bpmn or .xml file…</span>, opens a file from your disk.</li>
@@ -365,7 +365,7 @@
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening.</p>
-        <h3 id="compare">Compare two versions<span class="ico" data-icon="compare" aria-hidden="true"></span></h3>
+        <h3 id="compare">Compare two versions (diff)<span class="ico" data-icon="compare" aria-hidden="true"></span></h3>
         <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the co-pilot's pill.</p>
         <ul>
           <li>In green, what was added (on the right). In red, what was removed (on the left). In orange, what was changed, on both sides.</li>
@@ -413,7 +413,7 @@
         <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
         <figure class="fig-anim"><p class="fig-title">The co-pilot draws a process</p><img src="/docs/demo.gif" width="1200" height="675" alt="The AI co-pilot draws an online order process with two pools and four lanes" loading="lazy" /><figcaption>A request in plain language, and the diagram builds up in the editor.</figcaption></figure>
 
-        <h3>1. Choose a provider</h3>
+        <h3>1. Choose an LLM provider</h3>
         <!-- online -->
         <p>The co-pilot uses an AI model from the provider of your choice, with your own API key. Open <span class="uib">Options</span> in the co-pilot panel:</p>
         <!-- /online -->
@@ -489,7 +489,7 @@
         <h3>Review and checks</h3>
         <p>Around each answer, the co-pilot points out what the request leaves open, checks the diagram it produced, fixes on its own what fails, and shows where the result comes from. The details are in <a href="#ai-checks">Review, checks and traceability</a>. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns off the extra requests.</p>
 
-        <h3>What it costs</h3>
+        <h3>What it costs (API tokens)</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
       </section>
 
@@ -644,7 +644,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
         <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <a href="#probabilities">Propose probabilities</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
-        <h3 id="simulation">Simulation<span class="ico" data-icon="play" aria-hidden="true"></span></h3>
+        <h3 id="simulation">Token simulation<span class="ico" data-icon="play" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
         <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
         <div class="fig-pair">
