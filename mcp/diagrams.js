@@ -1,6 +1,6 @@
 // Diagrammes enregistrés sur le serveur (« Mes diagrammes », version docker).
 //
-// Chaque diagramme est un fichier .bpmn qui porte son nom dans l'éditeur (« Mon processus.bpmn »,
+// Chaque diagramme est un fichier .bpmn (ou .dmn pour un modèle de décision, mode Expert) qui porte son nom dans l'éditeur (« Mon processus.bpmn »,
 // ou « Mon processus (2).bpmn » si le nom est pris), pour qu'on le retrouve dans un explorateur
 // de fichiers. Renommer le diagramme renomme le fichier. L'index caché .index.json relie
 // l'identifiant de chaque diagramme à son fichier et à son nom. Un .bpmn déposé à la main dans le
@@ -19,6 +19,10 @@ const MAX_NAME = 120
 const ID = /^[a-z0-9][a-z0-9-]{0,63}$/
 const INDEX = '.index.json'
 const EXT = 'bpmn'
+// Genres de fichiers rangés : processus BPMN et modèles de décision DMN.
+export const KINDS = { bpmn: 'bpmn', dmn: 'dmn' }
+const extOf = (file) => file.slice(file.lastIndexOf('.') + 1).toLowerCase()
+const kindOf = (file) => (extOf(file) === 'dmn' ? 'dmn' : 'bpmn')
 
 export function diagramsDir() {
   return process.env.DIAGRAMS_DIR || fileURLToPath(new URL('./data/diagrams', import.meta.url))
@@ -54,8 +58,8 @@ export class DiagramStore {
       const known = new Set(Object.values(index).map((item) => item.file))
       let adopted = false
       for (const file of await readdir(this.dir)) {
-        if (known.has(file) || !file.toLowerCase().endsWith(`.${EXT}`) || !(await this.#isFile(file))) continue
-        const name = DiagramStore.cleanName(file.slice(0, -EXT.length - 1))
+        if (known.has(file) || !file.includes('.') || !KINDS[extOf(file)] || !(await this.#isFile(file))) continue
+        const name = DiagramStore.cleanName(file.slice(0, file.lastIndexOf('.')))
         if (!name) continue
         index[randomUUID()] = { file, name }
         adopted = true
@@ -64,7 +68,7 @@ export class DiagramStore {
       const items = []
       for (const [id, item] of Object.entries(index)) {
         const info = await this.#fileInfo(item.file)
-        if (info) items.push({ id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size })
+        if (info) items.push({ id, name: item.name, kind: kindOf(item.file), updatedAt: info.mtime.toISOString(), size: info.size })
       }
       return items.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
     })
@@ -77,10 +81,11 @@ export class DiagramStore {
     // Un fichier trop gros (déposé à la main) n'est pas envoyé à l'éditeur.
     if (!info || info.size > MAX_XML_BYTES) return null
     const xml = await readFile(join(this.dir, item.file), 'utf8')
-    return { id, name: item.name, updatedAt: info.mtime.toISOString(), size: info.size, file: item.file, xml }
+    return { id, name: item.name, kind: kindOf(item.file), updatedAt: info.mtime.toISOString(), size: info.size, file: item.file, xml }
   }
 
-  put(id, name, xml) {
+  // kind : 'bpmn' (par défaut) ou 'dmn'. Un enregistrement garde le genre qu'il a déjà.
+  put(id, name, xml, kind = 'bpmn') {
     return this.#locked(async () => {
       await this.ready
       const index = await this.#readIndex()
@@ -90,11 +95,11 @@ export class DiagramStore {
         file = name === old.name ? old.file : await this.#moveTo(old.file, name)
         await this.#writeAtomic(file, xml)
       } else {
-        file = await createUnique(this.dir, safeBaseName(name), EXT, xml)
+        file = await createUnique(this.dir, safeBaseName(name), KINDS[kind] || EXT, xml)
       }
       index[id] = { file, name, updatedAt: new Date().toISOString(), size: Buffer.byteLength(xml) }
       await this.#writeIndex(index)
-      return { id, ...index[id] }
+      return { id, ...index[id], kind: kindOf(file) }
     })
   }
 
@@ -108,7 +113,7 @@ export class DiagramStore {
       item.name = name
       item.updatedAt = new Date().toISOString()
       await this.#writeIndex(index)
-      return { id, ...item }
+      return { id, ...item, kind: kindOf(item.file) }
     })
   }
 
@@ -137,8 +142,9 @@ export class DiagramStore {
   // Un fichier qui porte déjà ce nom, avec ou sans « (2) », le garde.
   async #moveTo(file, name) {
     const base = safeBaseName(name)
-    if (file === `${base}.${EXT}` || (file.startsWith(`${base} (`) && /^ \(\d+\)$/.test(file.slice(base.length, -EXT.length - 1)))) return file
-    const reserved = await createUnique(this.dir, base, EXT, '', { exclude: file })
+    const ext = extOf(file)
+    if (file === `${base}.${ext}` || (file.startsWith(`${base} (`) && /^ \(\d+\)$/.test(file.slice(base.length, -ext.length - 1)))) return file
+    const reserved = await createUnique(this.dir, base, ext, '', { exclude: file })
     await rename(join(this.dir, file), join(this.dir, reserved))
     return reserved
   }

@@ -25,7 +25,7 @@ import { fontOf, textColorOf } from './label-style.js'
 import { track } from './analytics.js'
 
 // Outils qui modifient le diagramme.
-const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'style_elements', 'remove_elements', 'set_diagram_xml', 'auto_layout']
+const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'style_elements', 'remove_elements', 'set_diagram_xml', 'layout_diagram', 'auto_layout', 'move_elements', 'duplicate_elements', 'undo', 'redo', 'link_decision', 'set_decision_table']
 
 // Au-delà, mode discret : plus de 15 formes changées, ou plus de la moitié
 // des formes du diagramme (à partir de 6), ou un diagramme sans forme avant l'IA.
@@ -281,7 +281,7 @@ function createTracker(modeler) {
     if (!inTool && baseline.size) render()
   })
   // Un import hors outil (nouveau diagramme, fichier ouvert) termine le tour.
-  // Pendant un outil (auto_layout, set_diagram_xml), les marques sont reposées après l'appel.
+  // Pendant un outil (layout_diagram, set_diagram_xml), les marques sont reposées après l'appel.
   // Annuler ou Rétablir qui recharge une copie (src/history.js) : on recalcule aussi.
   eventBus.on('import.done', () => {
     if (inTool || isHistoryReload()) {

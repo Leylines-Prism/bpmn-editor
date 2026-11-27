@@ -14,6 +14,33 @@
       ]
     },
     {
+      "name": "AssignedActivity",
+      "extends": ["bpmn:Activity"],
+      "properties": [
+        { "name": "assignee", "isAttr": true, "type": "String" },
+        { "name": "systems", "isAttr": true, "type": "String" },
+        { "name": "accountable", "isAttr": true, "type": "String" },
+        { "name": "consulted", "isAttr": true, "type": "String" },
+        { "name": "informed", "isAttr": true, "type": "String" },
+        { "name": "aiPotential", "isAttr": true, "type": "String" },
+        { "name": "aiPotentialReason", "isAttr": true, "type": "String" },
+        { "name": "risks", "isAttr": true, "type": "String" },
+        { "name": "controls", "isAttr": true, "type": "String" },
+        { "name": "requirements", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "ProcessIdentity",
+      "extends": ["bpmn:Process", "bpmn:Collaboration"],
+      "properties": [
+        { "name": "owner", "isAttr": true, "type": "String" },
+        { "name": "version", "isAttr": true, "type": "String" },
+        { "name": "status", "isAttr": true, "type": "String" },
+        { "name": "validatedOn", "isAttr": true, "type": "String" },
+        { "name": "scope", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
       "name": "Analysis",
       "superClass": ["Element"],
       "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },
@@ -39,6 +66,21 @@
         { "name": "kind", "isAttr": true, "type": "String" },
         { "name": "elements", "isAttr": true, "type": "String" },
         { "name": "text", "isBody": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "DecisionLink",
+      "extends": ["bpmn:BusinessRuleTask"],
+      "properties": [
+        { "name": "decisionRef", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "DecisionModel",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },
+      "properties": [
+        { "name": "xml", "isBody": true, "type": "String" }
       ]
     }
   ]

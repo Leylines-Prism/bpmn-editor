@@ -1,0 +1,20 @@
+Process Step ID,Process Step Description,Next Step ID,Connector Label,Shape Type,Function,Assigned to,Systems
+1,Contract signed,2,,Start,Project manager,,
+2,Hold the kick-off,3,,User,Project manager,Claire Morel,"ITSM, project management tool"
+3,Provide the site inventory,4,,User,Customer,,"Spreadsheet, customer portal"
+4,Run the site survey,5,,User,Network engineering,Karim Benali,"CMDB, IPAM, survey app"
+5,Sites ready?,"7;6","Yes;No",Decision,Network engineering,,
+6,Clear the survey findings,4,,Manual,Customer,,
+7,Write the HLD and LLD,8,,User,Network engineering,Karim Benali,"SD-WAN orchestrator, IPAM, wiki"
+8,Sign off the HLD,9,,User,Customer,,
+9,Build the ZTP templates,10,,User,Network engineering,Karim Benali,"SD-WAN orchestrator, Git repository, IPAM"
+10,Ship and rack the CPEs,11,,Manual,NOC,On-site technician (subcontractor),"ITSM, logistics tool"
+11,Cut over the wave of sites,12,,User,NOC,Night NOC team,"SD-WAN orchestrator, ITSM"
+12,Run the post-checks,13,,User,NOC,Night NOC team,"SD-WAN orchestrator, monitoring"
+13,Post-checks passed?,"15;14","Yes;No",Decision,NOC,,
+14,Execute the rollback,11,,User,NOC,Night NOC team,"SD-WAN orchestrator, ITSM"
+15,Sign the acceptance,16,,User,Customer,,Customer portal
+16,Open the customer portal (SSO),17,,Service,Network engineering,,"Customer portal, customer's directory (SAML)"
+17,Train the customer's teams,18,,Manual,Project manager,Claire Morel,
+18,Hand over to Run,19,,User,NOC,NOC lead,"ITSM, monitoring, CMDB"
+19,Service live,,,End,NOC,,

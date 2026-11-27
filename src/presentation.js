@@ -28,7 +28,7 @@ export function setupPresentation({ button, modeler, onExit }) {
   bar.id = 'presentation-bar'
   bar.hidden = true
   bar.innerHTML = `
-    <button type="button" class="btn expert-only" data-act="sim" data-icon="play" title="${T('Run tokens through the process', 'Faire circuler des jetons dans le processus')}">Simulation</button>
+    <button type="button" class="btn expert-only mod-simulation-only" data-act="sim" data-icon="play" title="${T('Run tokens through the process', 'Faire circuler des jetons dans le processus')}">Simulation</button>
     <button type="button" class="btn icon-only" data-act="out" title="${T('Zoom out (−)', 'Dézoomer (−)')}" aria-label="${T('Zoom out', 'Dézoomer')}">−</button>
     <button type="button" class="btn icon-only" data-act="in" title="${T('Zoom in (+)', 'Zoomer (+)')}" aria-label="${T('Zoom in', 'Zoomer')}">+</button>
     <button type="button" class="btn" data-act="fit" title="${T('Fit the diagram to the screen (0)', 'Ajuster le diagramme à l\'écran (0)')}">${T('Fit', 'Ajuster')}</button>

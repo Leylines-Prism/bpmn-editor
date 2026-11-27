@@ -21,7 +21,7 @@ import { readFileSync } from 'node:fs'
 
 import { LOCAL_HOSTS, LOCKED_MESSAGE, mcpAccess } from './auth.js'
 import { EditorBridge } from './bridge.js'
-import { DiagramStore, MAX_XML_BYTES } from './diagrams.js'
+import { DiagramStore, KINDS, MAX_XML_BYTES } from './diagrams.js'
 import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
 import { ChatService } from './chat.js'
 import { isForbiddenAddress, relayFetch } from './relay-guard.js'
@@ -358,8 +358,9 @@ app.get('/diagrams/:id', chatCors, checkId, async (req, res) => {
 })
 app.put('/diagrams/:id', chatCors, checkId, xmlBody, async (req, res) => {
   const name = DiagramStore.cleanName(req.query.name)
-  if (!name || typeof req.body !== 'string' || !req.body.includes('<')) return res.status(400).json({ error: 'Invalid diagram' })
-  try { res.json(await diagrams.put(req.params.id, name, req.body)) } catch (err) { failed(req, res, err) }
+  const kind = req.query.kind === undefined ? 'bpmn' : req.query.kind
+  if (!name || !KINDS[kind] || typeof req.body !== 'string' || !req.body.includes('<')) return res.status(400).json({ error: 'Invalid diagram' })
+  try { res.json(await diagrams.put(req.params.id, name, req.body, kind)) } catch (err) { failed(req, res, err) }
 })
 app.patch('/diagrams/:id', chatCors, checkId, async (req, res) => {
   const name = DiagramStore.cleanName(req.body?.name)

@@ -35,25 +35,47 @@
       <nav aria-label="Sommaire">
         <p>Sommaire</p>
         <ol>
-          <li><a href="#premiers-pas">Premiers pas</a></li>
-          <li><a href="#dessiner">Dessiner</a></li>
-          <li><a href="#memo-symboles">Mémo des symboles BPMN</a></li>
-          <li><a href="#proprietes">Panneau Processus</a></li>
-          <li><a href="#documenter">Documenter les éléments</a></li>
-          <li><a href="#couleurs-texte">Couleurs et texte</a></li>
-          <li><a href="#verifier">Vérifier et ranger</a></li>
-          <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
-          <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
-          <li><a href="#assistant">Co-pilote IA</a></li>
-          <li><a href="#exemples-prompts">Exemples de prompts</a></li>
-          <li><a href="#cles">Vos clés API</a></li>
-          <li><a href="#experts-bpmn">Pour les experts BPMN</a></li>
-          <li><a href="#confidentialite">Confidentialité</a></li>
-          <li><a href="#docker">Version Docker et agents MCP</a></li>
-          <li><a href="#installer-app">Installer sur votre poste (PWA)</a></li>
-          <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
-          <li><a href="#faq">Questions fréquentes</a></li>
-          <li><a href="#feedback">Donner votre avis</a></li>
+          <li class="toc-part"><span>Dessiner et partager</span>
+            <ol>
+              <li><a href="#premiers-pas">Premiers pas</a></li>
+              <li><a href="#exemple-suivi">Exemple suivi : un projet SD-WAN</a></li>
+              <li><a href="#dessiner">Dessiner</a></li>
+              <li><a href="#memo-symboles">Mémo des symboles BPMN</a></li>
+              <li><a href="#couleurs-texte">Couleurs et texte</a></li>
+              <li><a href="#verifier">Vérifier et ranger</a></li>
+              <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
+              <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
+              <li><a href="#presenter">Présenter</a></li>
+              <li><a href="#documenter">Documenter les éléments</a></li>
+              <li><a href="#proprietes">Panneau Processus</a></li>
+              <li><a href="#assistant">Co-pilote IA</a></li>
+              <li><a href="#controles-ia">Critique, contrôles et traçabilité</a></li>
+              <li><a href="#exemples-prompts">Exemples de prompts</a></li>
+              <li><a href="#cles">Vos clés API</a></li>
+            </ol>
+          </li>
+          <li class="toc-part"><span>Mode Expert</span>
+            <ol>
+              <li><a href="#experts-bpmn">Activer le mode Expert</a></li>
+              <li><a href="#simulation">Simulation et carte de chaleur</a></li>
+              <li><a href="#rapport-processus">Rapport de processus</a></li>
+              <li><a href="#potentiel-ia">Potentiel d'IA par activité</a></li>
+              <li><a href="#risques-conformite">Risques et conformité</a></li>
+              <li><a href="#export-camunda">Export pour Camunda</a></li>
+              <li><a href="#decisions-dmn">Tables de décision (DMN)</a></li>
+              <li><a href="#experts-mcp">Agents MCP en mode Expert</a></li>
+            </ol>
+          </li>
+          <li class="toc-part"><span>Installer et administrer</span>
+            <ol>
+              <li><a href="#confidentialite">Confidentialité</a></li>
+              <li><a href="#docker">Version Docker et agents MCP</a></li>
+              <li><a href="#installer-app">Installer sur votre poste (PWA)</a></li>
+              <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
+              <li><a href="#faq">Questions fréquentes</a></li>
+              <li><a href="#feedback">Donner votre avis</a></li>
+            </ol>
+          </li>
         </ol>
       </nav>
     </details>
@@ -75,7 +97,16 @@
           <a class="btn primary" href="./">Ouvrir l'éditeur</a>
           <a class="btn" href="#assistant">Faire dessiner par l'IA</a>
         </div>
+        <div class="paths">
+          <a class="path" href="#partie-dessiner"><span class="ico" data-icon="new" aria-hidden="true"></span><span><strong>Dessiner un schéma</strong><span>Poser, relier, nommer : un processus lisible en quelques minutes, à la main ou avec le co-pilote IA.</span></span></a>
+          <a class="path" href="#partie-expert"><span class="ico" data-icon="expert" aria-hidden="true"></span><span><strong>Mode Expert</strong><span>Simuler, mesurer, produire un rapport, relier des tables de décision DMN.</span></span></a>
+        </div>
         <hr />
+      </div>
+
+      <div class="part-banner" id="partie-dessiner">
+        <p class="part-title"><span class="ico" data-icon="new" aria-hidden="true"></span>Dessiner et partager un schéma</p>
+        <p>Tout ce qu'il faut pour dessiner un processus, le mettre en forme, le vérifier, le présenter et le partager, à la main ou avec le co-pilote IA. Aucune connaissance de BPMN n'est nécessaire pour commencer.</p>
       </div>
 
       <section id="premiers-pas">
@@ -108,7 +139,38 @@
         <!-- docker -->
         <div class="note">Il n'y a pas de compte. Vos diagrammes restent dans votre navigateur, ou sur votre serveur si vous les y enregistrez. Si vous utilisez le co-pilote, seul le fournisseur d'IA les reçoit, en passant par votre serveur. Cette version ne mesure pas sa fréquentation.</div>
         <!-- /docker -->
+        <!-- example:1 -->
+        <div class="note example" id="exemple-1"><p class="note-title">Exemple 1 sur 15 : le croquis</p><p>Sept formes posées en deux minutes : un début, cinq étapes (site survey, HLD et LLD, déploiement des CPE, recette, transfert au Run), une fin. C'est déjà un processus lisible, et le point de départ de toute la série.</p><p class="example-files"><a class="example-file" href="examples/fr/01-croquis.bpmn" download>01-croquis.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-sketch.webp" width="1600" height="177" alt="Le croquis : Contrat signé, cinq tâches en ligne, Service en production." loading="lazy" /><figcaption>Le croquis du projet SD-WAN.</figcaption></figure>
+        <!-- /example -->
       </section>
+      <!-- example:intro -->
+      <section id="exemple-suivi">
+        <h2>Exemple suivi : un projet SD-WAN</h2>
+        <p>Néréide Networks, intégrateur réseau fictif, déploie un SD-WAN managé pour un client de 40 agences. Ce même processus sert d'exemple tout au long de l'aide et grandit d'une section à l'autre : un croquis, puis des couloirs, de la documentation, une deuxième version avec le client, un agent IA et la gestion des changements, enfin la simulation, le rapport, la conformité, une table de décision et l'export vers un moteur.</p>
+        <p>Chaque fichier s'ouvre dans l'éditeur avec <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>. Les exemples 9 à 15 demandent le mode Expert.</p>
+        <div class="table-wrap"><table class="examples">
+          <thead><tr><th>N°</th><th>Étape</th><th>Fichiers</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><a href="#premiers-pas">Le croquis</a></td><td><a class="example-file" href="examples/fr/01-croquis.bpmn" download>01-croquis.bpmn</a></td></tr>
+            <tr><td>2</td><td><a href="#dessiner">Les couloirs et les décisions</a></td><td><a class="example-file" href="examples/fr/02-couloirs.bpmn" download>02-couloirs.bpmn</a></td></tr>
+            <tr><td>3</td><td><a href="#couleurs-texte">La mise en forme</a></td><td><a class="example-file" href="examples/fr/03-mise-en-forme.bpmn" download>03-mise-en-forme.bpmn</a></td></tr>
+            <tr><td>4</td><td><a href="#verifier">À corriger</a></td><td><a class="example-file" href="examples/fr/04-a-corriger.bpmn" download>04-a-corriger.bpmn</a></td></tr>
+            <tr><td>5</td><td><a href="#depuis-tableau">Depuis un tableau</a></td><td><a class="example-file" href="examples/fr/05-etapes.csv" download>05-etapes.csv</a> <a class="example-file" href="examples/fr/05-etapes.xlsx" download>05-etapes.xlsx</a></td></tr>
+            <tr><td>6</td><td><a href="#responsabilites">Documenté</a></td><td><a class="example-file" href="examples/fr/06-documente.bpmn" download>06-documente.bpmn</a></td></tr>
+            <tr><td>7</td><td><a href="#assistant">Le cahier des charges</a></td><td><a class="example-file" href="examples/fr/07-cahier-des-charges.md" download>07-cahier-des-charges.md</a></td></tr>
+            <tr><td>8</td><td><a href="#exemples-prompts">La version 2</a></td><td><a class="example-file" href="examples/fr/08-v2-change.bpmn" download>08-v2-change.bpmn</a></td></tr>
+            <tr><td>9</td><td><a href="#carte-chaleur">Simulation et carte de chaleur</a></td><td><a class="example-file" href="examples/fr/09-simulation.bpmn" download>09-simulation.bpmn</a></td></tr>
+            <tr><td>10</td><td><a href="#rapport-processus">Le rapport</a></td><td><a class="example-file" href="examples/fr/10-rapport.pdf" download>10-rapport.pdf</a></td></tr>
+            <tr><td>11</td><td><a href="#potentiel-ia">Le potentiel d'IA</a></td><td><a class="example-file" href="examples/fr/11-potentiel-ia.bpmn" download>11-potentiel-ia.bpmn</a></td></tr>
+            <tr><td>12</td><td><a href="#risques-conformite">Risques et conformité</a></td><td><a class="example-file" href="examples/fr/12-conformite.bpmn" download>12-conformite.bpmn</a></td></tr>
+            <tr><td>13</td><td><a href="#decisions-dmn">Le niveau d'approbation</a></td><td><a class="example-file" href="examples/fr/13-decision.bpmn" download>13-decision.bpmn</a> <a class="example-file" href="examples/fr/13-niveau-approbation.dmn" download>13-niveau-approbation.dmn</a> <a class="example-file" href="examples/fr/13-niveau-approbation.xlsx" download>13-niveau-approbation.xlsx</a></td></tr>
+            <tr><td>14</td><td><a href="#dmn-fichiers">Pour Camunda 8</a></td><td><a class="example-file" href="examples/fr/14-camunda-8.bpmn" download>14-camunda-8.bpmn</a></td></tr>
+            <tr><td>15</td><td><a href="#experts-mcp">Avec un agent MCP</a></td><td><a class="example-file" href="examples/fr/15-prompt-agent-mcp.md" download>15-prompt-agent-mcp.md</a></td></tr>
+          </tbody>
+        </table></div>
+      </section>
+      <!-- /example -->
 
       <section id="dessiner">
         <h2>Dessiner</h2>
@@ -162,28 +224,11 @@
           <li><kbd>Ctrl</kbd>+molette au-dessus de la minicarte zoome sur le canevas.</li>
         </ul>
         <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
-        <h3>Présentation<span class="ico" data-icon="present" aria-hidden="true"></span></h3>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Un clic sur un élément affiche sa <a href="#documenter">fiche de documentation</a>, et <kbd>D</kbd> active ou coupe les fiches. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
-        <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
-            <tbody>
-              <tr><td><kbd>1</kbd></td><td><b class="ui">Pointeur laser</b> : un point rouge orangé suivi d'une courte traînée remplace la flèche sur le schéma</td></tr>
-              <tr><td><kbd>2</kbd></td><td><b class="ui">Surbrillance au survol</b> : l'élément survolé et ses flux s'allument, le reste du schéma pâlit</td></tr>
-              <tr><td><kbd>3</kbd></td><td><b class="ui">Onde au clic</b> : un cercle s'élargit là où l'on clique</td></tr>
-              <tr><td><kbd>4</kbd></td><td><b class="ui">Masquer à l'arrêt</b> : après deux secondes sans bouger, le curseur et la barre s'effacent, et reviennent au premier mouvement</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Les choix sont retenus dans ce navigateur. Sur écran tactile, le laser et l'onde suivent le doigt. La surbrillance, liée au survol, n'y joue pas.</p>
-        <div class="fig-pair">
-          <figure class="fig-anim"><p class="fig-title">Laser, onde et surbrillance</p><img src="/docs/presentation-pointer.fr.gif" width="1280" height="720" alt="Le processus d'achat en présentation : le pointeur laser suit le flux, une onde à chaque clic, puis la surbrillance allume tour à tour une tâche, une passerelle et leurs flux. Le menu Pointeur s'ouvre, puis le curseur et la barre s'effacent à l'arrêt." loading="lazy" /><figcaption>Le laser et l'onde au clic, la touche 2 pour la surbrillance, puis la barre qui s'efface à l'arrêt.</figcaption></figure>
-          <figure><p class="fig-title">Le menu Pointeur</p><img src="/src/help/img/fr-presentation-pointeur.webp" width="800" height="440" alt="Le menu Pointeur ouvert en présentation, quatre interrupteurs actifs. La tâche Valider en comité et ses flux en rouge orangé, le reste pâli, avec la traînée du pointeur laser." loading="lazy" /><figcaption>Le menu Pointeur, avec le laser et la surbrillance sur une tâche.</figcaption></figure>
-        </div>
+        <!-- example:2 -->
+        <div class="note example" id="exemple-2"><p class="note-title">Exemple 2 sur 15 : les couloirs et les décisions</p><p>Le croquis prend un pool et quatre couloirs (client, chef de projet, ingénierie réseau, NOC), deux passerelles exclusives et leurs boucles : réserves du site survey à lever, post-checks en échec et rollback.</p><p class="example-files"><a class="example-file" href="examples/fr/02-couloirs.bpmn" download>02-couloirs.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-lanes.webp" width="1600" height="616" alt="Le processus en quatre couloirs, avec les passerelles Sites prêts ? et Post-checks OK ? et leurs boucles." loading="lazy" /><figcaption>Quatre couloirs, deux décisions, deux boucles.</figcaption></figure>
+        <!-- /example -->
       </section>
-
       <section id="memo-symboles">
         <h2>Mémo des symboles BPMN<span class="ico bpmn-icon-gateway-xor" aria-hidden="true"></span></h2>
         <p>Chaque symbole de la palette a un sens fixé par la norme. Ce mémo les présente par famille, puis croise les événements avec ce qui les déclenche. Les icônes sont celles de l'éditeur.</p>
@@ -241,83 +286,6 @@
           </tbody></table></div>
       </section>
 
-      <section id="proprietes">
-        <h2>Panneau Processus<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
-        <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des « pools ». Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
-        <h3>Afficher et masquer le panneau</h3>
-        <ul>
-          <li>Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
-          <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, atteignez-la avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic dessus rétablit la largeur par défaut.</li>
-        </ul>
-        <h3>Nom, Identifiant et Exécutable</h3>
-        <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
-        <ul>
-          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme.</li>
-          <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Invisible à l'écran, il permet au fichier de relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus) et aux moteurs d'exécution de désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
-          <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un schéma de documentation ou d'analyse, elle peut rester décochée.</li>
-        </ul>
-        <p>Pour un « pool », le groupe Général réunit son nom et son identifiant, puis ceux du processus qu'il contient, avec la case Exécutable. Dès qu'un diagramme a des « pools », c'est donc là que se trouvent les réglages du processus.</p>
-        <h3>Les autres groupes</h3>
-        <p>Les champs sont rangés par groupes. Cliquez sur le titre d'un groupe pour le replier ou le déplier. Un point à droite du titre signale un groupe déjà rempli.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
-            <tbody>
-              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte qui décrit l'élément, en Markdown, enregistré dans le fichier (voir <a href="#documenter">Documenter les éléments</a>). Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
-              <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune à tout le schéma. Deux événements qui partagent la même référence désignent le même message.</td></tr>
-              <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
-              <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
-              <tr><td>Compensation</td><td>Les événements de compensation</td><td>L'activité à compenser, et s'il faut attendre la fin de la compensation.</td></tr>
-              <tr><td>Multi-instance</td><td>Les activités marquées multi-instance</td><td>Le nombre de boucles et la condition d'achèvement.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
-      </section>
-
-      <section id="documenter">
-        <h2>Documenter les éléments (bpmn:documentation)<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
-        <p>Chaque élément a un champ <span class="ui">Documentation</span>, enregistré dans le fichier .bpmn. L'éditeur en fait une vraie fiche : saisie en Markdown, modèles par type d'élément, dictée, rédaction par le co-pilote IA, repérage sur le canevas, recherche, fiche en présentation et export en fiches de procédure.</p>
-        <h3>La fenêtre de documentation</h3>
-        <p>Elle s'ouvre par le bouton <span class="ui">Ouvrir l'éditeur en grand</span> du champ Documentation, dans le <a href="#proprietes">panneau Processus</a>, ou d'un clic sur la pastille bleue de l'élément (voir plus bas). Le texte s'enregistre à mesure que vous écrivez, et <kbd>Ctrl</kbd>+<kbd>Z</kbd> l'annule comme toute modification.</p>
-        <ul>
-          <li>En haut, trois vues : <span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> (la saisie à gauche, l'aperçu mis en forme à droite) et <span class="uib">Aperçu</span>. Le navigateur retient la dernière.</li>
-          <li>La barre de mise en forme ajoute gras, italique, titre, liste à puces, liste numérotée et lien. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> et <kbd>Ctrl</kbd>+<kbd>K</kbd> font de même au clavier.</li>
-          <li><span class="uib">Modèle ▾</span> insère les titres d'un modèle, celui du type de l'élément en premier : objectif, acteurs, entrées, sorties, règles et références pour une activité ; question posée et critère de chaque branche pour une passerelle, avec une ligne par branche à son nom ; déclencheur, délai ou résultat pour un événement ; finalité, périmètre, propriétaire et indicateurs pour le processus.</li>
-          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit votre voix à l'endroit du curseur, avec la reconnaissance vocale sur l'appareil du co-pilote : ni le son ni le texte ne quittent le navigateur. Le bouton n'apparaît que dans les navigateurs qui le permettent.</li>
-          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> demande au co-pilote IA une première version, d'après le diagramme (couloir, éléments voisins, conditions, documentation des autres éléments) et votre conversation. Il écrit « à confirmer » là où il ne sait pas, garde le texte déjà présent, et son texte apparaît aussitôt dans la fenêtre pour relecture. Le bouton reste grisé tant qu'aucun modèle n'est réglé.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-documentation.webp" width="1400" height="880" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
-            <tbody>
-              <tr><td><code>## Règles</code></td><td>Un titre (de <code>#</code> à <code>######</code>)</td></tr>
-              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Gras, italique</td></tr>
-              <tr><td><code>- Assuré</code>, <code>1. Vérifier</code></td><td>Liste à puces, liste numérotée (deux espaces devant pour une sous-liste)</td></tr>
-              <tr><td><code>[Procédure](https://example.com)</code></td><td>Un lien. Seules les adresses https, http et mailto sont gardées</td></tr>
-              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>Une citation, du code</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Le Markdown reste du texte lisible : Camunda, Signavio et les autres outils BPMN le montrent tel quel dans leur champ Documentation, et un texte écrit sans mise en forme garde ses retours à la ligne.</p>
-        <h3>Repérer et retrouver la documentation</h3>
-        <ul>
-          <li>Une pastille bleue, en haut à droite, marque chaque élément documenté. Au survol, elle montre un aperçu de sa documentation ; un clic ouvre la fenêtre.</li>
-          <li>En <a href="#experts-bpmn">mode Expert</a>, une pastille en pointillé marque aussi les activités sans documentation, celles que le rapport de processus signale « à compléter ». Un clic ouvre la fenêtre pour la rédiger.</li>
-          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, en haut à gauche du canevas, ou <kbd>Ctrl</kbd>+<kbd>F</kbd> sur le canevas, cherche dans les libellés, les identifiants et la documentation. Sous chaque résultat, l'extrait de documentation qui correspond. <kbd>Entrée</kbd> centre le diagramme sur l'élément et le sélectionne.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-doc-pastilles.webp" width="1400" height="731" alt="Le processus d'achat avec une pastille bleue sur chaque élément documenté, et l'aperçu de la documentation de Valider en comité au survol de sa pastille." loading="lazy" /><figcaption>Les pastilles, et l'aperçu au survol.</figcaption></figure>
-        <h3>Utiliser la documentation</h3>
-        <ul>
-          <li>En <a href="#dessiner">mode Présentation</a>, un clic sur un élément affiche sa fiche à droite de l'écran. Le bouton <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Fiches</span> de la barre, ou la touche <kbd>D</kbd>, active ou coupe les fiches. <kbd>Échap</kbd> ferme la fiche ouverte.</li>
-          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Fiches de procédure (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Fiches de procédure (Markdown)</span>, produit une fiche par activité dans l'ordre du flux : son type, son couloir, ce qui la précède et ce qui la suit, puis sa documentation mise en forme. Les passerelles et les événements documentés ont aussi leur fiche, et une activité sans documentation est marquée « à compléter ». Le PDF commence par la documentation du processus et un sommaire cliquable.</li>
-          <li>Le <a href="#rapport-processus">rapport de processus</a> reprend la documentation sur une ligne dans sa séquence des éléments, et en entier à la fin du rapport en Markdown.</li>
-          <li>Le co-pilote IA et les agents MCP lisent la documentation de chaque élément avec le diagramme : posez-leur une question sur le processus, ils s'appuient dessus pour répondre.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-doc-presentation.webp" width="1600" height="956" alt="Le processus d'achat en mode Présentation, avec la fiche de la tâche Valider en comité ouverte à droite : objectif, acteurs, entrées, sorties, règles et références." loading="lazy" /><figcaption>La fiche d'une activité, en mode Présentation.</figcaption></figure>
-      </section>
-
       <section id="couleurs-texte">
         <h2>Couleurs et texte</h2>
         <h3>Couleurs<svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg></h3>
@@ -335,6 +303,10 @@
         <p>Chaque réglage s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
         <figure><img src="/src/help/img/fr-panneau-apparence.webp" width="298" height="732" alt="Groupes Style, Forme et Texte du panneau Processus pour une tâche : fond et contour bleus avec leurs codes hexadécimaux, gras activé, pastille rouge sombre pour le texte, la pipette peinte aux couleurs de la tâche, et ce style copié sur le bouton Coller le style et dans Déjà dans le diagramme." loading="lazy" /><figcaption>Les groupes Style, Forme et Texte pour une tâche sélectionnée.</figcaption></figure>
         <p>Couleurs et styles sont enregistrés dans le fichier .bpmn selon la norme, et les autres outils bpmn.io les relisent. Le souligné n'apparaît pas dans l'export PDF, qui remplace aussi les polices par Helvetica ou Times, selon leur famille. Une police absente d'un ordinateur est remplacée par une police voisine.</p>
+        <!-- example:3 -->
+        <div class="note example" id="exemple-3"><p class="note-title">Exemple 3 sur 15 : la mise en forme</p><p>Une couleur par équipe, la même pour le fond et le contour, et une couleur à part pour les étapes manuelles.</p><p class="example-files"><a class="example-file" href="examples/fr/03-mise-en-forme.bpmn" download>03-mise-en-forme.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-styled.webp" width="1600" height="616" alt="Le même processus avec une couleur par couloir." loading="lazy" /><figcaption>Une couleur par équipe.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="verifier">
@@ -396,7 +368,11 @@
         <h3>Ranger (mise en page automatique)<span class="ico" data-icon="layout" aria-hidden="true"></span></h3>
         <p>Le bouton <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</span> (après <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>) recalcule la disposition de tout le schéma, de gauche à droite. Utile après un import ou un dessin de l'IA.</p>
         <div class="note warn">Ranger déplace toutes les formes. L'éditeur vous demande de confirmer, et <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> ramène la disposition d'avant.</div>
-        <p>La <a href="#simulation">simulation de jetons</a>, la carte de chaleur et les probabilités des branches sont décrites dans <a href="#experts-bpmn">Pour les experts BPMN</a>.</p>
+        <p>La <a href="#simulation">simulation de jetons</a>, la carte de chaleur et les probabilités des branches sont décrites dans la partie <a href="#partie-expert">Mode Expert</a>.</p>
+        <!-- example:4 -->
+        <div class="note example" id="exemple-4"><p class="note-title">Exemple 4 sur 15 : à corriger</p><p>Une version abîmée exprès : deux flux qui se rejoignent sur une tâche sans passerelle, et une tâche « Commander les liens DIA » reliée à rien. Ouvrez-la, cliquez sur le compteur de la vérification et corrigez jusqu'à « Aucun problème ».</p><p class="example-files"><a class="example-file" href="examples/fr/04-a-corriger.bpmn" download>04-a-corriger.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-broken.webp" width="1600" height="843" alt="La version à corriger, avec le compteur de la vérification qui signale les erreurs." loading="lazy" /><figcaption>Les erreurs signalées par la vérification.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="enregistrer">
@@ -419,12 +395,39 @@
         <h2>Ouvrir, importer, exporter (XML, SVG, PNG, PDF)</h2>
         <h3>Ouvrir<span class="ico" data-icon="open" aria-hidden="true"></span></h3>
         <ul>
-          <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Fichier .bpmn ou .xml…</span>, ouvre un fichier de votre disque.</li>
+          <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Fichier .bpmn, .xml ou chiffré…</span>, ouvre un fichier de votre disque.</li>
           <li><span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Coller du XML…</span> ouvre un diagramme copié sous forme de code, par exemple depuis un autre outil ou une réponse d'IA.</li>
+          <li><span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Depuis un tableau…</span> construit un processus à partir d'un tableau d'étapes, sans IA (voir ci-dessous).</li>
+          <li><span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Grille rôles × tâches…</span> construit un processus en atelier, une tâche par ligne et un rôle par colonne (voir ci-dessous).</li>
           <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span> montre les différences entre un fichier de votre disque et le diagramme ouvert, sans rien changer (voir ci-dessous).</li>
         </ul>
-        <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture.</p>
+        <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture. Un <a href="#fichier-chiffre">fichier chiffré</a> (.bpmn.enc) s'ouvre de la même façon, après son mot de passe.</p>
+        <h3 id="depuis-tableau">Créer depuis un tableau (sans IA)<span class="ico" data-icon="table" aria-hidden="true"></span></h3>
+        <p>Beaucoup de procédures existent déjà sous forme de liste d'étapes dans Excel. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Depuis un tableau…</span>, les transforme en diagramme : copiez les lignes dans Excel, en-tête compris, et collez-les dans la fenêtre, ou choisissez un fichier .csv, .tsv ou .xlsx. La conversion se fait dans la page, sans IA ni envoi. Un aperçu compte les étapes, les liens, les décisions et les couloirs avant la création, et signale les erreurs (étape suivante introuvable, identifiant en double).</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Colonne</th><th>Contenu</th></tr></thead>
+            <tbody>
+              <tr><td>ID</td><td>Identifiant de l'étape. Sans cette colonne, les lignes s'enchaînent dans l'ordre.</td></tr>
+              <tr><td>Description</td><td>Le libellé de l'étape, seule colonne obligatoire. Un libellé qui finit par « ? » devient une décision.</td></tr>
+              <tr><td>Étape suivante</td><td>Les ID des étapes suivantes, séparés par des virgules. Plusieurs ID après une décision donnent ses branches.</td></tr>
+              <tr><td>Libellé du lien</td><td>Les libellés des flux sortants, dans le même ordre (« Oui,Non »).</td></tr>
+              <tr><td>Type</td><td>Début, Fin, Décision, Parallèle, Utilisateur, Service, Manuelle, Envoi, Réception, Délai, Sous-processus… Vide : une tâche.</td></tr>
+              <tr><td>Fonction</td><td>Le rôle ou le service : un couloir par valeur.</td></tr>
+              <tr><td>Assigné à, Systèmes, Approbateur, Consultés, Informés, Commentaire</td><td>Facultatives : elles remplissent les <a href="#responsabilites">champs du même nom</a> et la documentation de l'activité.</td></tr>
+              <tr><td>Risques, Contrôles, Exigences</td><td>Facultatives, pour le <a href="#risques-conformite">mode Expert</a> : plusieurs valeurs dans une cellule, séparées par des points-virgules ou des retours à la ligne.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Les en-têtes de Microsoft Visio Data Visualizer (Process Step ID, Next Step ID, Connector Label, Shape Type, Function) et les colonnes Quoi / Qui / Comment sont reconnus tels quels, en français comme en anglais. Le bouton <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Modèle (.xlsx)</span> donne un classeur prêt à remplir. L'éditeur ajoute ce qui manque au diagramme : événement de début, événement de fin, et passerelle de fusion devant une étape où plusieurs chemins se rejoignent.</p>
+        <figure><img src="/src/help/img/fr-depuis-tableau.webp" width="720" height="514" alt="Fenêtre Créer un processus depuis un tableau : six lignes collées depuis Excel avec les colonnes ID, Description, Étape suivante, Libellé du lien, Type et Fonction, et l'aperçu : 6 étapes, 6 liens, 1 décision, 4 couloirs." loading="lazy" /><figcaption>Six lignes collées depuis Excel, et l'aperçu avant la création.</figcaption></figure>
+        <!-- example:5 -->
+        <div class="note example" id="exemple-5"><p class="note-title">Exemple 5 sur 15 : depuis un tableau</p><p>Le même processus écrit en lignes, comme on le tiendrait dans Excel. Ouvrez le fichier, copiez les lignes et collez-les dans <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Depuis un tableau…</span> : vous retrouvez l'exemple 2.</p><p class="example-files"><a class="example-file" href="examples/fr/05-etapes.csv" download>05-etapes.csv</a> <a class="example-file" href="examples/fr/05-etapes.xlsx" download>05-etapes.xlsx</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+        <h3 id="grille-roles">Grille rôles × tâches (atelier)<span class="ico" data-icon="grid" aria-hidden="true"></span></h3>
+        <p>En atelier, on liste plus vite qu'on ne dessine. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Grille rôles × tâches…</span>, présente une grille : les rôles en colonnes, les tâches en lignes, dans l'ordre. Un clic sur la case du rôle qui réalise chaque tâche suffit. <kbd>Entrée</kbd> sur la dernière ligne ajoute une tâche dans le même rôle. Une tâche qui finit par « ? » devient une décision : Oui mène à la tâche suivante, Non à une fin que l'on pourra rebrancher. <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Continuer dans le tableau…</span> reprend la grille dans la fenêtre Depuis un tableau, pour ajouter des branches, des libellés ou des types.</p>
+        <figure><img src="/src/help/img/fr-grille-roles.webp" width="920" height="452" alt="Fenêtre Grille rôles × tâches : trois rôles en colonnes (Salarié, Manager, Comptabilité) et quatre tâches, chacune cochée dans la colonne de son rôle, dont la décision Accord ?." loading="lazy" /><figcaption>Quatre tâches réparties entre trois rôles, dont une décision.</figcaption></figure>
         <h3 id="comparer">Comparer deux versions (diff)<span class="ico" data-icon="compare" aria-hidden="true"></span></h3>
         <p>La fenêtre de comparaison montre deux versions côte à côte, en lecture seule : à gauche l'ancienne, à droite le diagramme ouvert. Elle s'ouvre par <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span>, ou par le bouton <span class="uib">Avant / après</span> de la pilule du co-pilote.</p>
         <ul>
@@ -441,31 +444,156 @@
             <tbody>
               <tr><td>Fichier .bpmn</td><td>Garder le diagramme, le rouvrir ici ou dans un autre outil BPMN</td></tr>
               <tr><td>Fichier .xml</td><td>Le même contenu, pour les outils qui attendent l'extension .xml</td></tr>
+              <tr><td>Fichier .bpmn chiffré…</td><td>Envoyer un processus sensible : le fichier est chiffré par un mot de passe (voir ci-dessous)</td></tr>
+              <tr><td>BPMN pour Camunda 8 ou 7</td><td>En mode Expert : un fichier prêt pour le moteur, voir <a href="#export-camunda">Export pour Camunda</a></td></tr>
               <tr><td>Image SVG</td><td>Une image nette à toutes les tailles, pour le web ou un logiciel de dessin</td></tr>
               <tr><td>Image PNG</td><td>Une image à coller dans un document, un e-mail ou une présentation</td></tr>
               <tr><td>Document PDF</td><td>Envoyer le schéma ou l'archiver</td></tr>
-              <tr><td>Fiches de procédure (PDF ou Markdown)</td><td>Une fiche par activité, dans l'ordre du flux, avec sa documentation (voir <a href="#documenter">Documenter les éléments</a>)</td></tr>
+              <tr><td>Fiches de procédure (PDF, Markdown ou Word)</td><td>Une fiche par activité, dans l'ordre du flux, avec sa documentation, la personne assignée, les systèmes et le RACI (voir <a href="#documenter">Documenter les éléments</a>). Le document Word se modifie ensuite comme un autre.</td></tr>
+              <tr><td>Matrice RACI (Excel)</td><td>Un classeur : une ligne par activité, une colonne par rôle, et les lettres R, A, C, I (voir <a href="#responsabilites">Responsabilités</a>)</td></tr>
               <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
               <tr><td>Imprimer…</td><td>Imprimer le schéma seul, sans l'éditeur autour : il tient sur une page, l'orientation suit sa forme</td></tr>
             </tbody>
           </table>
         </div>
         <p>Tous les exports prennent le nom du fichier indiqué dans la barre d'outils.</p>
+        <figure><img src="/src/help/img/fr-menu-exporter.webp" width="295" height="606" alt="Menu Exporter ouvert en mode Expert : Destination, Fichier .bpmn, Fichier .xml, Fichier .bpmn chiffré, BPMN pour Camunda 8 et 7, Image SVG et PNG, Document PDF, Fiches de procédure en PDF, Markdown et Word, Matrice RACI (Excel), Code XML à copier, Imprimer." loading="lazy" /><figcaption>Le menu Exporter, en mode Expert.</figcaption></figure>
         <!-- online -->
         <p>Dans la version Docker, le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /online -->
         <!-- docker -->
         <p>Le menu commence par un choix <span class="ui">Destination</span>, à faire avant de cliquer sur un format : <span class="ui">Téléchargement</span> (par défaut, le navigateur télécharge le fichier), <span class="ui">Serveur</span> (le fichier va dans le dossier du serveur, voir <a href="#docker">Vos fichiers dans la version Docker</a>) ou <span class="ui">Les deux</span>. Le navigateur retient ce choix. Code XML à copier et Imprimer ne créent pas de fichier et ne sont pas concernés.</p>
         <!-- /docker -->
-        <p>Le <a href="#rapport-processus">rapport de processus</a>, en PDF ou en Markdown, s'obtient depuis le menu Expert : voir <a href="#experts-bpmn">Pour les experts BPMN</a>.</p>
+        <p>Le <a href="#rapport-processus">rapport de processus</a>, en PDF ou en Markdown, s'obtient depuis le menu Expert : voir <a href="#experts-bpmn">Mode Expert</a>. En mode Expert, les décisions DMN s'ouvrent et s'exportent aussi en fichiers .dmn : voir <a href="#dmn-fichiers">Tables de décision (DMN)</a>.</p>
         <h3>Exports demandés à l'IA</h3>
         <p>Vous pouvez demander un fichier au co-pilote IA ou à un agent MCP : « exporte le diagramme en PDF ». Il produit le même fichier que le menu Exporter (BPMN, SVG, PNG ou PDF), sous le nom du diagramme ou celui que vous lui donnez. Une bannière apparaît alors en bas du canevas, avec un bouton <span class="uib">Télécharger</span> : le fichier ne se télécharge que si vous cliquez dessus. La croix ferme la bannière, et un nouvel export remplace le précédent.</p>
         <figure><img src="/src/help/img/fr-export-ia.webp" width="418" height="46" alt="Bannière en bas du canevas : L'IA a exporté Demande de congé.pdf, avec un bouton Télécharger et une croix pour fermer." loading="lazy" /><figcaption>La bannière qui suit un export demandé à l'IA.</figcaption></figure>
         <!-- docker -->
         <p>Le fichier est aussi déposé dans le dossier exports du serveur, quel que soit le choix Destination, sans jamais remplacer un fichier existant.</p>
         <!-- /docker -->
+        <h3 id="fichier-chiffre">Fichier chiffré (AES-256)<span class="ico" data-icon="lock" aria-hidden="true"></span></h3>
+        <p>Un processus peut révéler une organisation, des montants ou des failles. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="lock" aria-hidden="true"></span>Fichier .bpmn chiffré…</span>, demande deux fois un mot de passe de 8 caractères au moins, puis télécharge un fichier .bpmn.enc chiffré dans votre navigateur : AES-256-GCM, clé tirée du mot de passe par PBKDF2-SHA-256 (600 000 tours). Le mot de passe n'est ni gardé ni envoyé : perdu, le fichier ne s'ouvre plus. Seul BPMN-Pilot rouvre ce fichier, par <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span> ou par glisser-déposer. Envoyez le mot de passe par un autre canal que le fichier.</p>
+        <p>Un fichier chiffré rouvert n'est pas gardé dans la sauvegarde automatique du navigateur : la mention « Fichier chiffré ouvert, non gardé dans le navigateur » le rappelle, et il faut l'exporter de nouveau avant de fermer l'onglet. Seul le fichier .bpmn.enc est chiffré : les autres exports (.bpmn, PDF, Word, images) sont en clair.</p>
+        <figure><img src="/src/help/img/fr-mot-de-passe.webp" width="460" height="346" alt="Fenêtre Fichier .bpmn chiffré : explication du chiffrement, champs Mot de passe et Confirmer le mot de passe, boutons Annuler et Chiffrer et enregistrer." loading="lazy" /><figcaption>La fenêtre du mot de passe, avant l'enregistrement.</figcaption></figure>
         <h3>Imprimer<span class="ico" data-icon="print" aria-hidden="true"></span></h3>
         <p>Exporter, puis Imprimer…, ouvre la fenêtre d'impression du navigateur sur le diagramme seul, centré avec des marges de 10 mm. L'orientation suit sa forme : paysage s'il est plus large que haut, portrait sinon. Safari, lui, laisse ce choix dans sa fenêtre d'impression. Un grand schéma est réduit pour tenir sur une page, un petit garde sa taille à l'écran. Pour un très long processus, l'export PDF ou SVG permet de zoomer.</p>
+      </section>
+
+      <section id="presenter">
+        <h2>Présenter<span class="ico" data-icon="present" aria-hidden="true"></span></h2>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Un clic sur un élément affiche sa <a href="#documenter">fiche de documentation</a>, et <kbd>D</kbd> active ou coupe les fiches. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
+        <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Pointeur laser</b> : un point rouge orangé suivi d'une courte traînée remplace la flèche sur le schéma</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Surbrillance au survol</b> : l'élément survolé et ses flux s'allument, le reste du schéma pâlit</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Onde au clic</b> : un cercle s'élargit là où l'on clique</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Masquer à l'arrêt</b> : après deux secondes sans bouger, le curseur et la barre s'effacent, et reviennent au premier mouvement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Les choix sont retenus dans ce navigateur. Sur écran tactile, le laser et l'onde suivent le doigt. La surbrillance, liée au survol, n'y joue pas.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, onde et surbrillance</p><img src="/docs/presentation-pointer.fr.gif" width="1280" height="720" alt="Le processus d'achat en présentation : le pointeur laser suit le flux, une onde à chaque clic, puis la surbrillance allume tour à tour une tâche, une passerelle et leurs flux. Le menu Pointeur s'ouvre, puis le curseur et la barre s'effacent à l'arrêt." loading="lazy" /><figcaption>Le laser et l'onde au clic, la touche 2 pour la surbrillance, puis la barre qui s'efface à l'arrêt.</figcaption></figure>
+          <figure><p class="fig-title">Le menu Pointeur</p><img src="/src/help/img/fr-presentation-pointeur.webp" width="800" height="440" alt="Le menu Pointeur ouvert en présentation, quatre interrupteurs actifs. La tâche Valider en comité et ses flux en rouge orangé, le reste pâli, avec la traînée du pointeur laser." loading="lazy" /><figcaption>Le menu Pointeur, avec le laser et la surbrillance sur une tâche.</figcaption></figure>
+        </div>
+      </section>
+
+      <section id="documenter">
+        <h2>Documenter les éléments (bpmn:documentation)<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
+        <p>Chaque élément a un champ <span class="ui">Documentation</span>, enregistré dans le fichier .bpmn. L'éditeur en fait une vraie fiche : saisie en Markdown, modèles par type d'élément, dictée, rédaction par le co-pilote IA, repérage sur le canevas, recherche, fiche en présentation et export en fiches de procédure.</p>
+        <h3>La fenêtre de documentation</h3>
+        <p>Elle s'ouvre par le bouton <span class="ui">Ouvrir l'éditeur en grand</span> du champ Documentation, dans le <a href="#proprietes">panneau Processus</a>, ou d'un clic sur la pastille bleue de l'élément (voir plus bas). Le texte s'enregistre à mesure que vous écrivez, et <kbd>Ctrl</kbd>+<kbd>Z</kbd> l'annule comme toute modification.</p>
+        <ul>
+          <li>En haut, trois vues : <span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> (la saisie à gauche, l'aperçu mis en forme à droite) et <span class="uib">Aperçu</span>. Le navigateur retient la dernière.</li>
+          <li>La barre de mise en forme ajoute gras, italique, titre, liste à puces, liste numérotée et lien. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> et <kbd>Ctrl</kbd>+<kbd>K</kbd> font de même au clavier.</li>
+          <li><span class="uib">Modèle ▾</span> insère les titres d'un modèle, celui du type de l'élément en premier : objectif, acteurs, entrées, sorties, règles et références pour une activité ; question posée et critère de chaque branche pour une passerelle, avec une ligne par branche à son nom ; déclencheur, délai ou résultat pour un événement ; finalité, périmètre, propriétaire et indicateurs pour le processus.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit votre voix à l'endroit du curseur, avec la reconnaissance vocale sur l'appareil du co-pilote : ni le son ni le texte ne quittent le navigateur. Le bouton n'apparaît que dans les navigateurs qui le permettent.</li>
+          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> demande au co-pilote IA une première version, d'après le diagramme (couloir, éléments voisins, conditions, documentation des autres éléments) et votre conversation. Il écrit « à confirmer » là où il ne sait pas, garde le texte déjà présent, et son texte apparaît aussitôt dans la fenêtre pour relecture. Le bouton reste grisé tant qu'aucun modèle n'est réglé.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-documentation.webp" width="1400" height="880" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
+            <tbody>
+              <tr><td><code>## Règles</code></td><td>Un titre (de <code>#</code> à <code>######</code>)</td></tr>
+              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Gras, italique</td></tr>
+              <tr><td><code>- Assuré</code>, <code>1. Vérifier</code></td><td>Liste à puces, liste numérotée (deux espaces devant pour une sous-liste)</td></tr>
+              <tr><td><code>[Procédure](https://example.com)</code></td><td>Un lien. Seules les adresses https, http et mailto sont gardées</td></tr>
+              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>Une citation, du code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Le Markdown reste du texte lisible : Camunda, Signavio et les autres outils BPMN le montrent tel quel dans leur champ Documentation, et un texte écrit sans mise en forme garde ses retours à la ligne.</p>
+        <h3>Repérer et retrouver la documentation</h3>
+        <ul>
+          <li>Une pastille bleue, en haut à droite, marque chaque élément documenté. Au survol, elle montre un aperçu de sa documentation ; un clic ouvre la fenêtre.</li>
+          <li>En <a href="#experts-bpmn">mode Expert</a>, une pastille en pointillé marque aussi les activités sans documentation, celles que le rapport de processus signale « à compléter ». Un clic ouvre la fenêtre pour la rédiger.</li>
+          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, en haut à gauche du canevas, ou <kbd>Ctrl</kbd>+<kbd>F</kbd> sur le canevas, cherche dans les libellés, les identifiants et la documentation. Sous chaque résultat, l'extrait de documentation qui correspond. <kbd>Entrée</kbd> centre le diagramme sur l'élément et le sélectionne.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-pastilles.webp" width="1400" height="731" alt="Le processus d'achat avec une pastille bleue sur chaque élément documenté, et l'aperçu de la documentation de Valider en comité au survol de sa pastille." loading="lazy" /><figcaption>Les pastilles, et l'aperçu au survol.</figcaption></figure>
+        <h3>Utiliser la documentation</h3>
+        <ul>
+          <li>En <a href="#dessiner">mode Présentation</a>, un clic sur un élément affiche sa fiche à droite de l'écran. Le bouton <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Fiches</span> de la barre, ou la touche <kbd>D</kbd>, active ou coupe les fiches. <kbd>Échap</kbd> ferme la fiche ouverte.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Fiches de procédure (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Fiches de procédure (Markdown)</span> ou <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Fiches de procédure (Word)</span>, produit une fiche par activité dans l'ordre du flux : son type, son couloir, la personne assignée, les systèmes et le RACI s'ils sont renseignés, ce qui la précède et ce qui la suit, puis sa documentation mise en forme. Les passerelles et les événements documentés ont aussi leur fiche, et une activité sans documentation est marquée « à compléter ». Le PDF commence par la documentation du processus et un sommaire cliquable.</li>
+          <li>Le <a href="#rapport-processus">rapport de processus</a> reprend la documentation sur une ligne dans sa séquence des éléments, et en entier à la fin du rapport en Markdown.</li>
+          <li>Le co-pilote IA et les agents MCP lisent la documentation de chaque élément avec le diagramme : posez-leur une question sur le processus, ils s'appuient dessus pour répondre.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-presentation.webp" width="1600" height="956" alt="Le processus d'achat en mode Présentation, avec la fiche de la tâche Valider en comité ouverte à droite : objectif, acteurs, entrées, sorties, règles et références." loading="lazy" /><figcaption>La fiche d'une activité, en mode Présentation.</figcaption></figure>
+      </section>
+
+      <section id="proprietes">
+        <h2>Panneau Processus<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
+        <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des « pools ». Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
+        <h3>Afficher et masquer le panneau</h3>
+        <ul>
+          <li>Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
+          <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, atteignez-la avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic dessus rétablit la largeur par défaut.</li>
+        </ul>
+        <h3>Nom, Identifiant et Exécutable</h3>
+        <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
+        <ul>
+          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme.</li>
+          <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Invisible à l'écran, il permet au fichier de relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus) et aux moteurs d'exécution de désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
+          <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un schéma de documentation ou d'analyse, elle peut rester décochée.</li>
+        </ul>
+        <p>Pour un « pool », le groupe Général réunit son nom et son identifiant, puis ceux du processus qu'il contient, avec la case Exécutable. Dès qu'un diagramme a des « pools », c'est donc là que se trouvent les réglages du processus.</p>
+        <h3>Les autres groupes</h3>
+        <p>Les champs sont rangés par groupes. Cliquez sur le titre d'un groupe pour le replier ou le déplier. Un point à droite du titre signale un groupe déjà rempli.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte qui décrit l'élément, en Markdown, enregistré dans le fichier (voir <a href="#documenter">Documenter les éléments</a>). Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
+              <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune à tout le schéma. Deux événements qui partagent la même référence désignent le même message.</td></tr>
+              <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
+              <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
+              <tr><td>Compensation</td><td>Les événements de compensation</td><td>L'activité à compenser, et s'il faut attendre la fin de la compensation.</td></tr>
+              <tr><td>Multi-instance</td><td>Les activités marquées multi-instance</td><td>Le nombre de boucles et la condition d'achèvement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 id="responsabilites">Responsabilités, systèmes et conditions (RACI)</h3>
+        <p>Le couloir dit quel service réalise une activité. Le panneau précise le reste, pour chaque activité :</p>
+        <ul>
+          <li><span class="ui">Assigné à</span>, dans le groupe Général : la personne ou le rôle précis qui la réalise (le R de RACI), en plus du couloir.</li>
+          <li><span class="ui">Systèmes utilisés</span> : les applications ou outils, séparés par des virgules (ERP, messagerie, outil métier…).</li>
+          <li>Le groupe <span class="ui">Responsabilités (RACI)</span> : <span class="ui">Approbateur (A)</span>, qui répond du résultat ; <span class="ui">Consultés (C)</span> et <span class="ui">Informés (I)</span>, séparés par des virgules.</li>
+        </ul>
+        <p>Ces champs nourrissent les fiches de procédure, le rapport de processus (matrice RACI) et l'export <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Matrice RACI (Excel)</span>, où le R vient de Assigné à, ou à défaut du couloir. Le co-pilote IA et les agents MCP les lisent et les remplissent aussi.</p>
+        <p>Sur un flux qui sort d'une passerelle exclusive ou inclusive, le champ <span class="ui">Condition</span> reçoit la règle en clair, par exemple « Montant &lt; 3000 ». Elle est rangée dans l'élément standard <code>conditionExpression</code>, que les autres outils lisent, et l'<a href="#export-camunda">export pour Camunda</a> la traduit dans le langage du moteur. Tant que le flux n'a pas d'autre libellé, la condition s'affiche sur le diagramme. Le flux par défaut n'a pas de condition.</p>
+        <div class="fig-pair">
+          <figure><p class="fig-title">Une activité</p><img src="/src/help/img/fr-panneau-raci.webp" width="300" height="1181" alt="Panneau Processus de la tâche Vérifier la demande : Assigné à Chef d'équipe, Systèmes utilisés ERP, groupe Responsabilités (RACI) avec Approbateur Directeur de service et Consultés RH, puis les groupes du mode Expert : Adoption de l'IA, Potentiel d'IA Assistée par IA, et Risques et conformité replié." loading="lazy" /><figcaption>Assigné à, Systèmes utilisés, RACI et, en mode Expert, l'adoption de l'IA.</figcaption></figure>
+          <figure><p class="fig-title">Un flux de décision</p><img src="/src/help/img/fr-condition-flux.webp" width="300" height="530" alt="Panneau Processus du flux Oui sortant de la décision : le champ Condition contient Montant &lt; 3000." loading="lazy" /><figcaption>La condition en clair d'une branche.</figcaption></figure>
+        </div>
+        <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
+        <!-- example:6 -->
+        <div class="note example" id="exemple-6"><p class="note-title">Exemple 6 sur 15 : documenté</p><p>Chaque activité porte sa documentation en Markdown (checklist du site survey, HLD et LLD, pre-checks, post-checks et critères de rollback, dossier de transfert au Run), son Assigné à, ses systèmes et sa matrice RACI. Les fiches de procédure et la matrice RACI s'exportent depuis ce fichier.</p><p class="example-files"><a class="example-file" href="examples/fr/06-documente.bpmn" download>06-documente.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-documented.webp" width="1600" height="652" alt="Le processus documenté : la pastille de documentation sur les tâches." loading="lazy" /><figcaption>Le processus documenté.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="assistant">
@@ -551,11 +679,48 @@
 
         <h3>Combien ça coûte (tokens d'API)</h3>
         <p>L'éditeur est gratuit. Les appels à l'IA sont facturés par le fournisseur, sur votre compte, selon son tarif. Le coût dépend du modèle et de la taille du diagramme : chaque message le transmet en entier. Avec Ollama, sur votre ordinateur, il n'y a rien à payer. Pour garder la main, réglez une limite de dépense dans la console de votre fournisseur. La critique de la demande et l'autocorrection ajoutent des requêtes : elles se coupent dans <span class="uib">Options</span>.</p>
+        <!-- example:7 -->
+        <div class="note example" id="exemple-7"><p class="note-title">Exemple 7 sur 15 : le cahier des charges</p><p>Le cahier des charges du client, fictif (contexte MPLS, cible technique, attentes sur le processus, planning et indicateurs), avec en fin de fichier un prompt prêt à copier. Joignez-le dans le chat du co-pilote IA et comparez son dessin avec l'exemple 6, puis avec l'exemple 8.</p><p class="example-files"><a class="example-file" href="examples/fr/07-cahier-des-charges.md" download>07-cahier-des-charges.md</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+      </section>
+
+      <section id="controles-ia">
+        <h2>Critique, contrôles et traçabilité</h2>
+        <p>Autour de chaque réponse, le co-pilote montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
+        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1200" alt="Panneau du co-pilote après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <ul>
+          <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
+          <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de messages relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
+          <li><strong>Autocorrection.</strong> Si un contrôle échoue, les problèmes repartent au modèle, qui corrige seul, deux tours au plus. Une correction qui ne réduit pas le nombre de problèmes est annulée. Le rapport en rend compte, par exemple « 1 correction demandée, 1 retenue ».</li>
+          <li><strong>Traçabilité.</strong> Sous chaque réponse : fournisseur, modèle, durée, date et heure, et la source (taille du message, noms des fichiers joints). <span class="uib">Relancer depuis la même source</span>, sur la dernière réponse, remet le diagramme dans l'état d'avant cette réponse et renvoie la même demande au modèle choisi à ce moment, par exemple pour comparer deux modèles.</li>
+          <li><strong>Destination.</strong> Une ligne au-dessus du champ dit où part le message, vers quel fournisseur et quel modèle : depuis votre navigateur dans la version en ligne, par votre serveur dans la version Docker. Un fournisseur sur votre réseau, comme Ollama, est signalé comme tel. Le message, les fichiers joints et le diagramme en cours partent à chaque envoi.</li>
+        </ul>
+        <p>La critique et l'autocorrection envoient des requêtes en plus au modèle : elles prennent du temps et se paient comme les autres. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, les coupe toutes les deux. Le rapport, la traçabilité et la ligne de destination restent.</p>
+        <p>Ce que détecte chacun des six contrôles :</p>
+        <div class="table-wrap"><table class="checks-table">
+          <thead><tr><th>Contrôle</th><th>Signale par exemple</th></tr></thead>
+          <tbody>
+            <tr><td>XML bien formé</td><td>balise non fermée, caractère interdit, document vide</td></tr>
+            <tr><td>Métamodèle BPMN 2.0</td><td>élément ou attribut inconnu dans l'espace de noms BPMN, valeur illisible (les extensions d'autres outils sont acceptées)</td></tr>
+            <tr><td>Références et portées</td><td>identifiant en double ou introuvable, flux de séquence qui sort de son processus ou de son sous-processus, flux de messages à l'intérieur d'un même pool, événement en bordure accroché hors de son conteneur, flux par défaut qui ne part pas de sa passerelle, couloir qui cite un élément d'un autre processus</td></tr>
+            <tr><td>Diagramme (DI)</td><td>élément du modèle jamais dessiné, forme sans dimensions, flux avec moins de deux points, élément dessiné deux fois, dessin qui renvoie à un élément absent</td></tr>
+            <tr><td>Réimport bpmn-js</td><td>avertissement de bpmn-js en relisant le document, en plus de ceux déjà relevés par le métamodèle</td></tr>
+            <tr><td>bpmnlint</td><td>erreur des règles recommandées : élément isolé, début ou fin manquant, élément sans nom, passerelle superflue… (les avertissements sont comptés sans faire échouer le contrôle)</td></tr>
+          </tbody>
+        </table></div>
+        <h3 id="controles-mcp">Avec un agent MCP</h3>
+        <p>En <a href="#docker">version Docker</a>, un agent MCP a accès aux mêmes contrôles :</p>
+        <ul>
+          <li><code>validate_diagram</code> rend le rapport de contrôle : compteurs d'éléments, chaque contrôle avec ses problèmes, nombre d'erreurs et d'avertissements, et les constats bpmnlint avec l'élément, la règle et le message, ainsi que les constats des tables de décision du diagramme ;</li>
+          <li>le prompt <code>critique_description</code> relève ce qui est ambigu ou manquant dans une description, avant de dessiner.</li>
+        </ul>
+        <p>L'agent n'a pas de boucle d'autocorrection : c'est à lui d'appeler <code>validate_diagram</code> et de corriger. Les règles de modélisation que lui donne le serveur le lui demandent en fin de dessin.</p>
       </section>
 
       <section id="exemples-prompts">
         <h2>Exemples de prompts<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Des prompts prêts à l'emploi pour le <a href="#assistant">co-pilote IA</a>, à adapter à votre contexte. Ils fonctionnent avec tous les fournisseurs, en ligne comme en version Docker. Le co-pilote répond, et nomme les éléments, dans la langue du prompt.</p>
+        <figure><p class="fig-title">Un prompt, un diagramme</p><img src="/docs/prompt-example.fr.png" width="1400" height="1233" alt="Diagramme dessiné par le co-pilote depuis le prompt : un pool Entreprise avec les couloirs Salarié, Manager, Achats et Comptabilité, une décision Demande acceptée ?, et des flux de messages vers un pool Fournisseur." loading="lazy" /><figcaption>« Dessine une demande d'achat : le salarié saisit sa demande, son manager l'accepte ou la refuse. Si elle est acceptée, les achats commandent au fournisseur, puis la comptabilité paie la facture. En cas de refus, le salarié est prévenu. » Un seul message, un seul passage.</figcaption></figure>
 
         <details class="faq prompts-list">
           <summary>18 prompts de démonstration, prêts à copier-coller</summary>
@@ -667,6 +832,10 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </details>
 
         <p>Chaque réponse s'annule en une seule opération (voir <a href="#assistant">Voir ce que le co-pilote a changé</a>). En <a href="#docker">version Docker</a>, un agent MCP accepte les mêmes prompts et dispose de cinq prompts intégrés.</p>
+        <!-- example:8 -->
+        <div class="note example" id="exemple-8"><p class="note-title">Exemple 8 sur 15 : la version 2</p><p>La version 2, telle que l'exemple 7 la décrit. Le client devient un pool à part, relié par des flux de messages. Un agent IA génère les templates ZTP, un ingénieur les relit (peer review), et la bascule passe par un sous-processus de gestion des changements. Comparez-la avec l'exemple 6 dans <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span> (voir <a href="#comparer">Comparer deux versions</a>).</p><p class="example-files"><a class="example-file" href="examples/fr/08-v2-change.bpmn" download>08-v2-change.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-v2.webp" width="1600" height="686" alt="La version 2 : pool Client relié par des flux de messages, couloir Automatisation (agent IA) et sous-processus Gérer le change." loading="lazy" /><figcaption>La version 2, deux pools et un sous-processus.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="cles">
@@ -699,12 +868,24 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </div>
       </section>
 
-      <section id="experts-bpmn">
-        <h2>Pour les experts BPMN</h2>
-        <p>Ces fonctions servent à éprouver un modèle et à en rendre compte : rejouer le processus, mesurer la répartition des instances, en tirer un rapport, et contrôler en détail ce que produit l'IA. Aucune n'est nécessaire pour dessiner un diagramme.</p>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils ouvre un menu : <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>, <a href="#probabilites">Proposer les probabilités</a> et <a href="#rapport-processus">Analyse du Co-pilote</a>, grisées tant qu'aucun modèle n'est choisi pour le co-pilote : une petite icône d'aide le rappelle au survol. Choisir une entrée active le mode expert : le bouton passe en bleu, et le champ Probabilité (%) apparaît dans le panneau Processus. Le mode reste actif jusqu'à <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Quitter le mode Expert</span>, en bas du même menu, et le navigateur s'en souvient. Cette entrée n'apparaît pas pendant une simulation. Hors de ce mode, l'éditeur n'affiche aucun de ces outils. Les contrôles du co-pilote et les outils MCP restent disponibles dans les deux cas.</p>
-        <figure><img src="/src/help/img/fr-menu-expert.webp" width="586" height="186" alt="Le bouton Expert en bleu et son menu ouvert : Arrêter la simulation, Rapport de processus en PDF ou en Markdown." loading="lazy" /><figcaption>Le menu Expert, mode actif et simulation en cours.</figcaption></figure>
-        <h3 id="simulation">Simulation de jetons<span class="ico" data-icon="play" aria-hidden="true"></span></h3>
+      <div class="part-banner" id="partie-expert">
+        <p class="part-title"><span class="ico" data-icon="expert" aria-hidden="true"></span>Mode Expert</p>
+        <p>Des outils pour éprouver un modèle et préparer son exécution : simulation de jetons, carte de chaleur, rapport de processus, potentiel d'IA, risques et conformité, export pour Camunda, tables de décision DMN. Rien ici n'est nécessaire pour dessiner. Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils les active, et <span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules…</span> n'allume que ceux dont vous vous servez.</p>
+      </div>
+
+      <section id="experts-bpmn" class="expert-part">
+        <h2>Activer le mode Expert<span class="ico" data-icon="expert" aria-hidden="true"></span></h2>
+        <p>Ces fonctions servent à éprouver un modèle et à en rendre compte : rejouer le processus, mesurer la répartition des instances, en tirer un rapport, et relier les décisions du processus à des tables DMN.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils ouvre un menu, qui propose les commandes des <a href="#modules">modules allumés</a> : <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Rapport de processus (Word)</span>, <a href="#probabilites">Proposer les probabilités</a>, <a href="#rapport-processus">Analyse du Co-pilote</a> et <a href="#potentiel-ia">Potentiel d'IA par activité</a>, ces trois dernières grisées tant qu'aucun modèle n'est choisi pour le co-pilote : une petite icône d'aide le rappelle au survol. Choisir une entrée active le mode expert : le bouton passe en bleu, et le champ Probabilité (%) apparaît dans le panneau Processus. Le mode reste actif jusqu'à <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Quitter le mode Expert</span>, en bas du même menu, et le navigateur s'en souvient. Cette entrée n'apparaît pas pendant une simulation. Hors de ce mode, l'éditeur n'affiche aucun de ces outils. Les <a href="#controles-ia">contrôles du co-pilote</a> et les outils MCP de dessin restent disponibles dans les deux cas.</p>
+        <figure><img src="/src/help/img/fr-menu-expert.webp" width="588" height="204" alt="Le bouton Expert en bleu et son menu ouvert : Arrêter la simulation, Rapport de processus en PDF, en Markdown ou en Word." loading="lazy" /><figcaption>Le menu Expert, mode actif et simulation en cours.</figcaption></figure>
+        <h3 id="modules">Choisir les modules<span class="ico" data-icon="modules" aria-hidden="true"></span></h3>
+        <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules…</span>, en bas du menu, ouvre une fenêtre avec un interrupteur par fonction : <span class="ui">Simulation de jetons</span>, <span class="ui">Carte de chaleur</span>, <span class="ui">Rapport de processus</span>, <span class="ui">Potentiel d'IA</span>, <span class="ui">Risques et conformité</span>, <span class="ui">Export pour Camunda</span> et <span class="ui">Tables de décision (DMN)</span>. N'allumez que ce dont vous vous servez : le menu Expert et le panneau Processus ne montrent que les commandes des modules allumés. La carte de chaleur demande la simulation. Par défaut, la simulation, la carte de chaleur, le rapport, le potentiel d'IA et les risques sont allumés, l'export pour Camunda et les tables de décision éteints. Le navigateur retient vos choix.</p>
+        <figure><img src="/src/help/img/fr-modules-experts.webp" width="1040" height="1716" alt="La fenêtre Modules experts : Simulation de jetons, Carte de chaleur, Rapport de processus, Potentiel d'IA, Risques et conformité, Export pour Camunda et Tables de décision (DMN), chacun avec son interrupteur, sa ligne d'explication et son lien vers l'aide." loading="lazy" /><figcaption>La fenêtre Modules experts : ici, l'export pour Camunda et les tables de décision sont éteints.</figcaption></figure>
+        <p>Éteindre un module ne touche pas au diagramme : les probabilités, les décisions, le potentiel d'IA, les risques et la fiche d'identité déjà saisis restent dans le fichier. Le module <span class="ui">Tables de décision (DMN)</span>, une fois allumé, ajoute les pastilles des tâches de règle métier, le groupe <span class="ui">Décision (DMN)</span> du panneau Processus et l'entrée <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Décisions du diagramme…</span> : voir <a href="#decisions-dmn">Tables de décision (DMN)</a>. Les agents IA, par le co-pilote ou par MCP, gardent tous leurs outils, quels que soient les modules allumés.</p>
+      </section>
+
+      <section id="simulation" class="expert-part">
+        <h2>Simulation et carte de chaleur<span class="ico" data-icon="play" aria-hidden="true"></span></h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, puis <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Une glissière, en bas du canevas, règle la vitesse des jetons de 0,25× à 4×. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Le menu Expert ne propose alors que <span class="uib">Arrêter la simulation</span>, et un point orange signale sur le bouton qu'une simulation tourne. L'arrêt rend la main à l'édition et garde le mode Expert : le canevas est verrouillé pendant la simulation, et c'est après l'arrêt que l'on règle les probabilités des branches.</p>
         <p>La case marquée d'un sapin, au bout du cadre de la vitesse, fait tourner le dégradé Leylines autour du contour de chaque étape où entre un jeton. Elle est décochée par défaut, et le navigateur retient votre choix.</p>
         <div class="fig-pair">
@@ -728,12 +909,20 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><strong>Mesurer la répartition.</strong> Hors simulation, sélectionnez chaque flux qui sort d'une passerelle exclusive, inclusive ou basée sur les événements, et renseignez le champ <span class="ui">Probabilité (%)</span> du groupe <span class="ui">Simulation</span>, dans le panneau Processus. Les flux sans valeur se partagent le reste à parts égales. Lancez ensuite la simulation, saisissez le nombre de jetons et cliquez sur <span class="uib">Lancer</span> (ou appuyez sur <kbd>Entrée</kbd> dans le champ) : le calcul est immédiat, sans animation.</li>
           <li>Lisez la carte. Une pastille donne le nombre de passages sur chaque activité et chaque événement, avec la part des instances (« 31 · 31 % »). Au-delà d'un passage par instance, elle donne le nombre moyen d'exécutions (« 131 · 1,3× ») : c'est une boucle de reprise. L'épaisseur des flux suit le même compte.</li>
         </ol>
+        <p>Avec les <a href="#decisions-dmn">tables de décision</a> allumées, une passerelle exclusive qui suit directement une tâche de règle métier liée à une table répartit les jetons calculés selon cette table : chaque règle compte pour une part égale, et chaque flux sortant reçoit les règles dont la sortie lui correspond, par son nom (« élevé ») ou sa condition (<code>risque = "élevé"</code>). Le flux par défaut reçoit les autres. Dès qu'un flux de la passerelle a une probabilité, c'est elle qui compte.</p>
         <p>La carte compte des passages : elle ne mesure ni durées ni coûts. Ce calcul suit les passerelles selon leurs probabilités, et ne déclenche pas les événements en bordure. La carte disparaît à l'arrêt de la simulation, mais ses comptes restent disponibles tant que le diagramme ne change pas : le <a href="#rapport-processus">rapport de processus</a> en PDF la reprend sur une page à part. Les probabilités sont enregistrées dans le fichier .bpmn, sous un attribut propre à BPMN Pilot que les autres outils ignorent.</p>
         <div class="fig-pair">
           <figure class="fig-anim"><p class="fig-title">Calcul de la carte</p><img src="/docs/heatmap.fr.gif" width="1280" height="720" alt="La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 200 jetons" loading="lazy" /><figcaption>Une probabilité posée sur une branche, puis 200 jetons calculés d'un coup.</figcaption></figure>
           <figure><p class="fig-title">Lecture de la carte</p><img src="/src/help/img/fr-carte-chaleur.webp" width="1060" height="440" alt="Carte de chaleur après 100 jetons : la vérification des pièces en rouge, passée plus d'une fois par instance, les branches moins empruntées en jaune, avec la pastille de chaque activité et la légende." loading="lazy" /><figcaption>La carte après 100 jetons : la vérification des pièces, en rouge, est l'activité la plus sollicitée.</figcaption></figure>
         </div>
-        <h3 id="rapport-processus">Rapport de processus<span class="ico" data-icon="pdf" aria-hidden="true"></span></h3>
+        <!-- example:9 -->
+        <div class="note example" id="exemple-9"><p class="note-title">Exemple 9 sur 15 : simulation et carte de chaleur</p><p>La version 2 avec des probabilités sur les branches : 20 % des sites avec des réserves au premier site survey, 8 % de bascules en rollback. Lancez 1000 jetons et la carte de chaleur montre où le projet repasse.</p><p class="example-files"><a class="example-file" href="examples/fr/09-simulation.bpmn" download>09-simulation.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-simulation.webp" width="1600" height="840" alt="La carte de chaleur après 1000 jetons : Réaliser le site survey en rouge, repassé à cause de la boucle des réserves." loading="lazy" /><figcaption>La carte de chaleur après 1000 jetons.</figcaption></figure>
+        <!-- /example -->
+      </section>
+
+      <section id="rapport-processus" class="expert-part">
+        <h2>Rapport de processus<span class="ico" data-icon="pdf" aria-hidden="true"></span></h2>
         <p>Le rapport de processus transforme le diagramme en document lisible sans outil BPMN : une fiche à remettre à une équipe, à joindre à une procédure qualité ou à présenter au responsable du processus. Il sert aussi de revue de modélisation : il liste les erreurs, les avertissements et les informations manquantes, et en déduit des axes d'amélioration par priorité.</p>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>. Le rapport se construit à partir du diagramme, sans autre saisie :</p>
         <ul>
@@ -743,6 +932,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li>l'analyse du co-pilote IA, si elle a été faite (voir plus bas) ;</li>
           <li>après une simulation, la carte de chaleur et ses chiffres : activités les plus traversées, passages et part observée de chaque branche de passerelle, éléments jamais atteints ;</li>
           <li>les six <a href="#controles-ia">contrôles de qualité</a>, calculés dans l'éditeur, sans IA ;</li>
+          <li>les <a href="#decisions-dmn">tables de décision DMN</a>, avec les tâches qui les appellent et leurs constats ;</li>
           <li>les événements de fin, les activités par couloir, et la séquence des éléments : type, couloir, documentation et flux sortants avec leurs conditions.</li>
         </ul>
         <p>Pour un rapport complet, nommez chaque passerelle par sa question et chaque flux sortant par sa réponse, répartissez les activités dans des couloirs, et remplissez le champ <span class="ui">Documentation</span> des activités. Rien de cela n'est obligatoire : le rapport signale ce qui manque. Après une simulation, il ajoute la <a href="#carte-chaleur">carte de chaleur</a> (en PDF), le nombre d'instances par élément, la part de chaque événement de fin et les reprises.</p>
@@ -751,40 +941,139 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <figure class="fig-anim"><p class="fig-title">Export du rapport</p><img src="/docs/process-report.fr.gif" width="1280" height="720" alt="Le rapport de processus en PDF depuis le menu Expert, puis ses quatre pages" loading="lazy" /><figcaption>Depuis le menu Expert, puis les quatre pages du PDF.</figcaption></figure>
           <figure><p class="fig-title">Première page</p><img src="/src/help/img/fr-rapport-processus.webp" width="1060" height="750" alt="Première page du rapport de processus : chiffres clés, diagramme aux éléments entourés de couleur, et tableau des constats en orange et jaune." loading="lazy" /><figcaption>Première page du rapport : chiffres clés, diagramme annoté et constats.</figcaption></figure>
         </div>
-        <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
-        <p>Autour de chaque réponse, le co-pilote montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
-        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1200" alt="Panneau du co-pilote après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <p>Le rapport existe aussi en document Word, par <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Rapport de processus (Word)</span>, à reprendre et à mettre aux couleurs de votre organisation. Il s'enrichit de ce que vous renseignez : la <a href="#fiche-identite">fiche d'identité</a> en tête, la matrice RACI quand des activités ont un <a href="#responsabilites">RACI</a>, le potentiel d'IA, les risques et contrôles et la matrice de conformité quand ils sont remplis.</p>
+        <!-- example:10 -->
+        <div class="note example" id="exemple-10"><p class="note-title">Exemple 10 sur 15 : le rapport</p><p>Le rapport de processus tiré de l'exemple 9, tel qu'il sort de l'éditeur.</p><p class="example-files"><a class="example-file" href="examples/fr/10-rapport.pdf" download>10-rapport.pdf</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+      </section>
+
+      <section id="potentiel-ia" class="expert-part">
+        <h2>Potentiel d'IA par activité (adoption de l'IA)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
+        <p>Où l'IA rapporte-t-elle dans ce processus, et avec quel garde-fou ? En mode Expert, le panneau Processus d'une activité gagne le groupe <span class="ui">Adoption de l'IA</span> : <span class="ui">Potentiel d'IA</span> (Automatisable, avec un agent IA et une revue humaine ; Assistée par IA ; Humaine) et <span class="ui">Raison et garde-fou</span>. Vous pouvez les remplir à la main, ou demander <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Potentiel d'IA par activité</span> dans le menu Expert : le co-pilote note chaque activité d'après son nom, son couloir, sa documentation, la personne assignée et les systèmes, enregistre sa note et sa raison, puis résume où l'IA rapporte d'abord et les risques à encadrer. Pour chaque activité automatisable ou assistée, il ajoute aussi les risques de la confier à l'IA et les contrôles correspondants, dans les champs <a href="#risques-conformite">Risques et Contrôles</a>, sans effacer ceux déjà écrits. Le rapport de processus reprend ces notes dans un tableau, avec leur raison.</p>
+        <p>Cette fonction demande le module <span class="ui">Potentiel d'IA</span>, à allumer dans <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> puis <a href="#modules">Choisir les modules…</a>.</p>
+        <!-- example:11 -->
+        <div class="note example" id="exemple-11"><p class="note-title">Exemple 11 sur 15 : le potentiel d'IA</p><p>Chaque activité est classée : à automatiser, à assister ou humaine, avec la raison. Le rapport en fait la synthèse.</p><p class="example-files"><a class="example-file" href="examples/fr/11-potentiel-ia.bpmn" download>11-potentiel-ia.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+      </section>
+
+      <section id="risques-conformite" class="expert-part">
+        <h2>Risques, contrôles et exigences (conformité)<span class="ico" data-icon="lock" aria-hidden="true"></span></h2>
+        <p>Pour préparer un audit, ou pour encadrer une étape confiée à l'IA, le panneau Processus d'une activité gagne en mode Expert le groupe <span class="ui">Risques et conformité</span> :</p>
         <ul>
-          <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
-          <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de messages relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
-          <li><strong>Autocorrection.</strong> Si un contrôle échoue, les problèmes repartent au modèle, qui corrige seul, deux tours au plus. Une correction qui ne réduit pas le nombre de problèmes est annulée. Le rapport en rend compte, par exemple « 1 correction demandée, 1 retenue ».</li>
-          <li><strong>Traçabilité.</strong> Sous chaque réponse : fournisseur, modèle, durée, date et heure, et la source (taille du message, noms des fichiers joints). <span class="uib">Relancer depuis la même source</span>, sur la dernière réponse, remet le diagramme dans l'état d'avant cette réponse et renvoie la même demande au modèle choisi à ce moment, par exemple pour comparer deux modèles.</li>
-          <li><strong>Destination.</strong> Une ligne au-dessus du champ dit où part le message, vers quel fournisseur et quel modèle : depuis votre navigateur dans la version en ligne, par votre serveur dans la version Docker. Un fournisseur sur votre réseau, comme Ollama, est signalé comme tel. Le message, les fichiers joints et le diagramme en cours partent à chaque envoi.</li>
+          <li><span class="ui">Risques</span> : ce qui peut mal tourner à cette étape, un par ligne.</li>
+          <li><span class="ui">Contrôles</span> : ce qui prévient ou détecte ces risques, un par ligne.</li>
+          <li><span class="ui">Exigences</span> : les références réglementaires ou normatives que l'étape doit respecter, séparées par des points-virgules (RGPD art. 30 ; ISO 9001 §8.5 ; AI Act art. 14).</li>
         </ul>
-        <p>La critique et l'autocorrection envoient des requêtes en plus au modèle : elles prennent du temps et se paient comme les autres. La case <span class="ui">Critique de la demande et autocorrection</span>, dans <span class="uib">Options</span>, les coupe toutes les deux. Le rapport, la traçabilité et la ligne de destination restent.</p>
-        <p>Ce que détecte chacun des six contrôles :</p>
-        <div class="table-wrap"><table class="checks-table">
-          <thead><tr><th>Contrôle</th><th>Signale par exemple</th></tr></thead>
-          <tbody>
-            <tr><td>XML bien formé</td><td>balise non fermée, caractère interdit, document vide</td></tr>
-            <tr><td>Métamodèle BPMN 2.0</td><td>élément ou attribut inconnu dans l'espace de noms BPMN, valeur illisible (les extensions d'autres outils sont acceptées)</td></tr>
-            <tr><td>Références et portées</td><td>identifiant en double ou introuvable, flux de séquence qui sort de son processus ou de son sous-processus, flux de messages à l'intérieur d'un même pool, événement en bordure accroché hors de son conteneur, flux par défaut qui ne part pas de sa passerelle, couloir qui cite un élément d'un autre processus</td></tr>
-            <tr><td>Diagramme (DI)</td><td>élément du modèle jamais dessiné, forme sans dimensions, flux avec moins de deux points, élément dessiné deux fois, dessin qui renvoie à un élément absent</td></tr>
-            <tr><td>Réimport bpmn-js</td><td>avertissement de bpmn-js en relisant le document, en plus de ceux déjà relevés par le métamodèle</td></tr>
-            <tr><td>bpmnlint</td><td>erreur des règles recommandées : élément isolé, début ou fin manquant, élément sans nom, passerelle superflue… (les avertissements sont comptés sans faire échouer le contrôle)</td></tr>
-          </tbody>
-        </table></div>
-        <h3 id="experts-mcp">Avec un agent MCP</h3>
-        <p>En <a href="#docker">version Docker</a>, un agent MCP a accès aux mêmes contrôles et au même rapport :</p>
+        <p>Le rapport de processus en tire deux tableaux. <strong>Risques et contrôles</strong> liste chaque activité concernée, et marque en jaune celle qui a des risques sans contrôle. Elle apparaît aussi dans les constats, au niveau À compléter. <strong>Matrice de conformité</strong> donne, pour chaque exigence citée, les activités qui la portent. Les fiches de procédure montrent les risques, contrôles et exigences de chaque activité. Le Co-pilote les remplit avec <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Potentiel d'IA par activité</span>, ou sur demande (« note les risques et contrôles de chaque activité »).</p>
+        <figure><img src="/src/help/img/fr-risques-conformite.webp" width="300" height="742" alt="Panneau Processus de la tâche Vérifier la demande en mode Expert : groupe Risques et conformité avec le risque Justificatif falsifié, deux contrôles et l'exigence ISO 9001 §8.5." loading="lazy" /><figcaption>Le groupe Risques et conformité d'une activité.</figcaption></figure>
+        <!-- example:12 -->
+        <div class="note example" id="exemple-12"><p class="note-title">Exemple 12 sur 15 : risques et conformité</p><p>Risques, contrôles et exigences sur les activités sensibles (AI Act art. 14 pour la relecture humaine des configurations, NIS2 art. 21, ISO 27001, RGPD art. 32), et la fiche d'identité du processus.</p><p class="example-files"><a class="example-file" href="examples/fr/12-conformite.bpmn" download>12-conformite.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+        <h3 id="fiche-identite">Fiche d'identité du processus</h3>
+        <p>Qui répond du processus, et dans quelle version le lit-on ? En mode Expert, quand rien n'est sélectionné, le panneau Processus montre le groupe <span class="ui">Fiche d'identité du processus</span> : <span class="ui">Propriétaire du processus</span>, <span class="ui">Version</span>, <span class="ui">Statut</span> (Brouillon, En relecture, Validé, Obsolète), <span class="ui">Validé le</span> et <span class="ui">Périmètre</span>. La fiche ouvre le rapport de processus et les fiches de procédure, en PDF, Markdown et Word. Le Co-pilote et les agents MCP peuvent la remplir à partir de vos documents.</p>
+        <figure><img src="/src/help/img/fr-fiche-identite.webp" width="300" height="675" alt="Panneau Processus de la collaboration en mode Expert : groupe Fiche d'identité du processus avec le propriétaire Directeur financier, la version 1.2, le statut Validé, la date de validation et le périmètre." loading="lazy" /><figcaption>La fiche d'identité, sur le diagramme sans sélection.</figcaption></figure>
+        <p>Cette fonction demande le module <span class="ui">Risques et conformité</span>, à allumer dans <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> puis <a href="#modules">Choisir les modules…</a>.</p>
+      </section>
+
+      <section id="export-camunda" class="expert-part">
+        <h2>Export pour Camunda (8 et 7)<span class="ico" data-icon="engine" aria-hidden="true"></span></h2>
+        <p>En mode Expert, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span> propose <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN pour Camunda 8</span> et <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN pour Camunda 7</span>. Le fichier s'ouvre dans Camunda Modeler sur la bonne plateforme, avec ce que BPMN Pilot sait déjà traduire pour le moteur :</p>
         <ul>
-          <li><code>validate_diagram</code> rend le rapport de contrôle : compteurs d'éléments, chaque contrôle avec ses problèmes, nombre d'erreurs et d'avertissements, et les constats bpmnlint avec l'élément, la règle et le message ;</li>
+          <li>la plateforme et sa version sont indiquées, et chaque processus est marqué exécutable ;</li>
+          <li>les conditions des passerelles sont écrites dans le langage du moteur : FEEL pour Camunda 8 (<code>=montant &lt; 3000</code>), JUEL pour Camunda 7 (<code>${montant &lt; 3000}</code>). Elles viennent du champ Condition, ou à défaut du libellé du flux (« Montant &lt; 3000 », ou la réponse « Oui » à la question de la passerelle) ;</li>
+          <li>une activité qui a un Assigné à devient une tâche utilisateur, assignée à cette personne ou ce rôle ;</li>
+          <li>une règle que le moteur ne saurait pas lire (« Si le client est fidèle ») n'est pas écrite comme condition : elle reste dans le libellé, et le message de fin la compte parmi les conditions à écrire dans Camunda Modeler, avec les branches sans libellé. Formulaires, connecteurs et variables restent à définir dans Camunda.</li>
+        </ul>
+        <p>Le diagramme ouvert n'est pas modifié : seul le fichier exporté porte ces ajouts.</p>
+        <p>Cette fonction demande le module <span class="ui">Export pour Camunda</span>, à allumer dans <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> puis <a href="#modules">Choisir les modules…</a>.</p>
+      </section>
+
+      <section id="decisions-dmn" class="expert-part">
+        <h2>Tables de décision (DMN)<span class="ico" data-icon="table" aria-hidden="true"></span></h2>
+        <p>Une tâche de règle métier applique une décision : accorder un crédit, choisir un tarif, orienter une demande. La norme DMN (Decision Model and Notation, de l'OMG, comme BPMN) décrit cette décision dans une table : des entrées, des sorties, et une règle par ligne. L'éditeur relie chaque tâche de règle métier à sa table, l'ouvre dans dmn-js, l'éditeur DMN de bpmn.io, et range les décisions dans le fichier .bpmn lui-même.</p>
+        <p>Tout ce qui suit demande le module <span class="ui">Tables de décision (DMN)</span>, à allumer dans <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> puis <a href="#modules">Choisir les modules…</a>. Le navigateur se souvient du réglage.</p>
+        <figure><img src="/src/help/img/fr-dmn-tache.webp" width="1250" height="538" alt="Une tâche de règle métier Évaluer le risque avec sa pastille Table, et le groupe Décision (DMN) du panneau Processus : décision liée, résumé de la table, boutons Ouvrir la table et Délier." loading="lazy" /><figcaption>Une tâche liée à sa table : la pastille sur le canevas, le groupe Décision (DMN) dans le panneau.</figcaption></figure>
+        <!-- example:13 -->
+        <div class="note example" id="exemple-13"><p class="note-title">Exemple 13 sur 15 : le niveau d'approbation</p><p>Dans le sous-processus Gérer le change, une tâche de règle métier classe la RFC (Standard, Normal ou CAB) selon l'impact métier et le nombre de sites de la vague. La table est aussi fournie seule, en .dmn et en Excel.</p><p class="example-files"><a class="example-file" href="examples/fr/13-decision.bpmn" download>13-decision.bpmn</a> <a class="example-file" href="examples/fr/13-niveau-approbation.dmn" download>13-niveau-approbation.dmn</a> <a class="example-file" href="examples/fr/13-niveau-approbation.xlsx" download>13-niveau-approbation.xlsx</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <figure><img src="/src/help/img/fr-exemple-change.webp" width="1600" height="643" alt="L'intérieur du sous-processus Gérer le change : RFC créée, Classer le change (tâche de règle métier), passerelle Niveau ? vers Standard, Normal ou CAB, puis planification de la MW." loading="lazy" /><figcaption>Le sous-processus Gérer le change, ouvert.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-exemple-decision.webp" width="1600" height="535" alt="La table de décision Niveau d'approbation du change dans la fenêtre DMN : deux entrées, une sortie, cinq règles." loading="lazy" /><figcaption>La table du niveau d'approbation.</figcaption></figure>
+        <!-- /example -->
+        <h3 id="dmn-lier">Relier une tâche à sa table</h3>
+        <ul>
+          <li>Chaque tâche de règle métier porte une pastille en bas à gauche. Pleine, <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Table</span> ouvre la table liée. En pointillé, <span class="uib">+ Table</span> sélectionne la tâche et ouvre le panneau Processus sur son groupe <span class="ui">Décision (DMN)</span>. En rouge, la décision liée n'est plus dans le diagramme.</li>
+          <li>Sans lien, le groupe propose <span class="uib">+ Créer une table de décision</span> (une entrée, une sortie, au nom de la tâche), la liste <span class="ui">Lier une décision de ce diagramme</span>, <span class="uib">Importer un fichier .dmn…</span>, la liste <span class="ui">Reprendre de Mes diagrammes</span>, et <span class="uib">✦ Rédiger avec le Co-pilote</span> quand un modèle est choisi.</li>
+          <li>Une fois liée, le groupe montre la décision, un résumé de la table (entrées, sorties, règles, politique de résultat) et ses constats, avec <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Ouvrir la table</span> et <span class="uib">Délier</span>. Chaque lien s'annule par <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</li>
+        </ul>
+        <h3 id="dmn-fenetre">La fenêtre de décision</h3>
+        <p>La table s'ouvre en plein écran. L'onglet <span class="ui">Table de décision</span> l'édite comme dans Camunda Modeler : ajouter une règle ou une colonne, typer une entrée, donner ses valeurs prévues, choisir la politique de résultat (<span class="ui">Unique</span>, <span class="ui">Première</span>, <span class="ui">Priorité</span>, <span class="ui">Toutes</span>, <span class="ui">Collecter</span>…). L'onglet <span class="ui">Exigences (DRD)</span> montre le diagramme des exigences : décisions, données d'entrée, sources de connaissance et leurs liens. Les textes s'écrivent en FEEL, le langage d'expression de DMN : <code>"Pro"</code> entre guillemets droits, <code>&lt; 1000</code>, <code>[1000..5000]</code>, <code>-</code> pour « peu importe ».</p>
+        <p><span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Retour au processus</span>, la croix ou <kbd>Échap</kbd> ferme la fenêtre et range les changements dans le diagramme en une seule étape, que <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule dans l'éditeur. <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Enregistrer dans Mes diagrammes</span> en garde une copie, à reprendre dans d'autres processus. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter .dmn</span> télécharge le document DMN 1.3. Le filigrane bpmn.io de dmn-js reste visible, comme le demande sa licence.</p>
+        <figure><img src="/src/help/img/fr-dmn-table.webp" width="1408" height="364" alt="La fenêtre de décision en plein écran : onglets Table de décision et Exigences (DRD), table Évaluer le risque avec ses entrées Montant et Catégorie, sa sortie Risque et trois règles annotées." loading="lazy" /><figcaption>La table de décision dans sa fenêtre, éditée avec dmn-js.</figcaption></figure>
+        <h3 id="dmn-tester">Tester et comparer une table</h3>
+        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Tester</span>, en haut de la fenêtre, ouvre le banc d'essai à droite de la table. Saisissez une valeur par entrée (une liste quand l'entrée a des valeurs prévues), puis <span class="uib">Évaluer</span> : le banc donne les règles qui s'appliquent et le résultat selon la politique de résultat, et les surligne dans la table. Avec <span class="ui">Unique</span>, deux règles retenues ensemble sont signalées. <span class="uib">Un cas par règle</span> construit, pour chaque règle aux entrées simples, des valeurs qui la déclenchent, et vérifie qu'elle s'applique bien : une règle masquée par une autre, ou en conflit, est marquée à vérifier. Rien n'est enregistré.</p>
+        <figure><img src="/src/help/img/fr-dmn-banc.webp" width="1408" height="524" alt="Le banc d'essai à droite de la table Évaluer le risque : Montant 500, Catégorie Particulier, et le résultat de Un cas par règle, trois cas conformes." loading="lazy" /><figcaption>Le banc d'essai : un cas par règle, tous conformes.</figcaption></figure>
+        <p><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer</span> liste ce qui a changé dans les décisions depuis l'ouverture de la fenêtre, ou par rapport à un fichier .dmn (<span class="uib">Avec un fichier .dmn…</span>) : règles ajoutées, retirées, modifiées cellule par cellule ou déplacées, colonnes et politique de résultat. Les règles ajoutées sont surlignées en vert dans la table, les règles modifiées en orange.</p>
+        <figure><img src="/src/help/img/fr-dmn-comparer.webp" width="1408" height="384" alt="La comparaison à droite de la table : une règle modifiée, Risque passé de faible à moyen, surlignée en orange dans la table." loading="lazy" /><figcaption>Une règle modifiée depuis l'ouverture de la fenêtre.</figcaption></figure>
+        <h3 id="dmn-controles">Contrôles des tables</h3>
+        <p>L'éditeur relit chaque table, sans IA, et signale :</p>
+        <ul>
+          <li>une table sans entrée, sans sortie ou sans règle, une décision sans logique ;</li>
+          <li>un texte sans guillemets, que FEEL lirait comme un nom de variable ;</li>
+          <li>une sortie qui donne une valeur hors de ses valeurs prévues ;</li>
+          <li>deux règles qui peuvent s'appliquer ensemble avec la politique <span class="ui">Unique</span>, ou avec des sorties différentes avec <span class="ui">Toutes</span> ;</li>
+          <li>une valeur prévue d'une entrée texte qu'aucune règle ne couvre ;</li>
+          <li>une tâche de règle métier sans décision, ou liée à une décision absente du diagramme.</li>
+        </ul>
+        <p>Les chevauchements se calculent sur les nombres (comparaisons, intervalles), les textes entre guillemets et les booléens. Une expression FEEL plus complexe n'est pas comparée. Les constats apparaissent dans le groupe <span class="ui">Décision (DMN)</span>, dans le <a href="#rapport-processus">rapport de processus</a>, section <span class="ui">Décisions (DMN)</span>, et dans le résultat de <code>validate_diagram</code>.</p>
+        <h3 id="dmn-fichiers">Fichiers, Mes diagrammes et Camunda 8</h3>
+        <ul>
+          <li>Les décisions voyagent avec le .bpmn : sauvegarde automatique, Mes diagrammes, export, Comparer. Le document DMN est rangé dans une extension du processus (<code>bpmnpilot:decisionModel</code>), et chaque tâche liée porte <code>bpmnpilot:decisionRef</code>. Les autres outils BPMN les ignorent sans erreur.</li>
+          <li>Pour Camunda 8, la tâche liée reçoit aussi <code>zeebe:calledDecision</code> (identifiant de la décision, variable résultat au nom de la sortie s'il n'y en a qu'une, sinon <code>result</code>) : le fichier s'ouvre déjà relié dans Camunda Modeler. Un fichier venu de Camunda, relié par <code>zeebe:calledDecision</code> seulement, compte comme lié.</li>
+          <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Fichier .dmn (décisions)…</span>, ajoute les décisions d'un fichier au diagramme ouvert. Les fichiers DMN 1.1 et 1.2 sont convertis en DMN 1.3, et un identifiant déjà pris est renommé, références comprises. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Décisions (fichier .dmn)</span>, enregistre les décisions du diagramme dans un fichier à part, pour Camunda Modeler ou un moteur de décision.</li>
+          <li><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, puis <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Décisions du diagramme…</span>, ouvre toutes les décisions du diagramme sur leur DRD.</li>
+          <li>Dans <a href="#enregistrer">Mes diagrammes</a>, les modèles de décision portent l'étiquette <span class="ui">DMN</span>. Ouvert seul, un modèle se modifie et s'enregistre avec <span class="uib">Enregistrer</span>, et <span class="uib">Ajouter au diagramme ouvert</span> le copie dans le processus en cours. En version Docker, ce sont des fichiers .dmn, à côté des .bpmn, dans le dossier de données du serveur.</li>
+        </ul>
+        <!-- example:14 -->
+        <div class="note example" id="exemple-14"><p class="note-title">Exemple 14 sur 15 : pour Camunda 8</p><p>L'exemple 13 exporté pour Camunda 8 : conditions en FEEL, tâches utilisateur assignées, décision appelée. Il s'ouvre dans Camunda Modeler.</p><p class="example-files"><a class="example-file" href="examples/fr/14-camunda-8.bpmn" download>14-camunda-8.bpmn</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
+        <h3 id="dmn-tableur">Passer par un tableur (Excel, CSV)</h3>
+        <p><span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Tableur</span>, en haut de la fenêtre, agit sur la table affichée :</p>
+        <ul>
+          <li><span class="uib">Exporter vers Excel (.xlsx)</span> ou <span class="uib">Exporter en CSV</span> (séparateur point-virgule en français, virgule en anglais) écrit la table telle qu'elle est, pour la faire relire ou la compléter hors de l'éditeur.</li>
+          <li><span class="uib">Importer un tableau (.xlsx, .csv)…</span> remplace les colonnes et les règles de la table par celles du fichier, après confirmation. La décision garde son identifiant : les tâches liées le restent. <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer</span> montre ensuite ce qui a changé.</li>
+        </ul>
+        <p>Disposition du tableau : la colonne A porte la politique de résultat (case A1, par exemple <code>UNIQUE</code>, <code>FIRST</code> ou <code>COLLECT SUM</code>), puis les titres des lignes. La ligne 1 nomme chaque colonne <span class="ui">Entrée</span>, <span class="ui">Sortie</span> ou <span class="ui">Annotation</span>. Les lignes <span class="ui">Libellé</span>, <span class="ui">Expression / nom</span>, <span class="ui">Type</span> et <span class="ui">Valeurs</span> sont facultatives. Chaque ligne suivante est une règle. Les textes simples s'écrivent sans guillemets (<code>Particulier</code>), l'éditeur les remet en FEEL à l'import, et une case vide vaut <code>-</code> (toute valeur). Le plus simple est de partir d'un export. Les mots anglais (<code>Input</code>, <code>Output</code>, <code>Label</code>…) sont acceptés aussi.</p>
+        <figure><img src="/src/help/img/fr-dmn-tableur.webp" width="1408" height="300" alt="Le menu Tableur ouvert au-dessus de la table Évaluer le risque : Exporter vers Excel (.xlsx), Exporter en CSV, Importer un tableau (.xlsx, .csv)." loading="lazy" /><figcaption>Le menu Tableur de la fenêtre des décisions.</figcaption></figure>
+        <h3 id="dmn-copilote">Avec le co-pilote IA</h3>
+        <p>Le co-pilote lit et écrit les tables. <span class="uib">✦ Rédiger avec le Co-pilote</span>, dans le groupe <span class="ui">Décision (DMN)</span>, lui demande la table d'une tâche d'après son libellé, sa documentation et le reste du processus. On peut aussi le lui demander dans la discussion :</p>
+        <div class="note">« Rédige la table de décision de la tâche Évaluer le risque : montant de la demande et catégorie de client en entrée, niveau de risque faible, moyen ou élevé en sortie, une règle par cas. »</div>
+        <p>Il nomme les entrées et les sorties en termes métier, donne leurs valeurs prévues, choisit la politique de résultat et lie la table à la tâche. Ses changements sont marqués comme les autres, et s'annulent d'un clic.</p>
+        <p>La table peut aussi venir d'un document : joignez la procédure, le barème ou la politique (PDF, Word, Excel) à votre message.</p>
+        <div class="note">« Tire de la procédure jointe la table de décision de la tâche Accorder la remise : une entrée par critère, une sortie pour le taux de remise, et cite en annotation le passage d'où vient chaque règle. »</div>
+        <p>Sur une tâche liée, <span class="uib">✦ Expliquer et tester avec le Co-pilote</span> lui demande de résumer la table en langage courant, de l'essayer (un cas par règle, puis des cas limites) et de signaler trous, chevauchements et résultats surprenants, sans la modifier. Il passe pour cela par l'outil <code>test_decision</code>, qui évalue la table sans la changer.</p>
+      </section>
+
+      <section id="experts-mcp" class="expert-part">
+        <h2>Agents MCP en mode Expert</h2>
+        <p>En <a href="#docker">version Docker</a>, un agent MCP a aussi accès au rapport, aux probabilités et aux tables de décision :</p>
+        <ul>
           <li><code>get_process_report</code> rend le <a href="#rapport-processus">rapport de processus</a> en Markdown. Avec <code>simulate</code>, il calcule d'abord 100 jetons selon les probabilités des branches ;</li>
           <li><code>update_elements</code> règle aussi le champ <span class="ui">Documentation</span> et la probabilité d'une branche, marquée comme proposée par l'IA jusqu'à sa revue ;</li>
           <li><code>set_report_commentary</code> enregistre l'analyse du processus dans le fichier, pour le rapport ;</li>
-          <li>le prompt <code>critique_description</code> relève ce qui est ambigu ou manquant dans une description, avant de dessiner.</li>
+          <li><code>get_decisions</code> rend les décisions du diagramme (entrées, sorties, règles, politique de résultat), les tâches qui les appellent et les constats ;</li>
+          <li><code>set_decision_table</code> crée ou remplace une table de décision, et la lie à une tâche avec <code>linkTo</code> ;</li>
+          <li><code>link_decision</code> lie une tâche de règle métier à une décision, ou la délie ;</li>
+          <li><code>test_decision</code> évalue une table sur des cas d'entrée, ou un cas par règle, sans la modifier.</li>
         </ul>
-        <p>L'agent n'a pas de boucle d'autocorrection : c'est à lui d'appeler <code>validate_diagram</code> et de corriger. Les règles de modélisation que lui donne le serveur le lui demandent en fin de dessin.</p>
+        <p>Ces outils répondent même si le mode Expert est éteint dans l'onglet ouvert : il ne règle que l'affichage de l'éditeur.</p>
+        <!-- example:15 -->
+        <div class="note example" id="exemple-15"><p class="note-title">Exemple 15 sur 15 : avec un agent MCP</p><p>Le prompt à donner à un agent relié à l'éditeur et aux outils de l'entreprise : il lit la procédure et les tickets, dessine le processus réellement suivi et signale les écarts.</p><p class="example-files"><a class="example-file" href="examples/fr/15-prompt-agent-mcp.md" download>15-prompt-agent-mcp.md</a> <a class="example-all" href="#exemple-suivi">Tous les exemples</a></p></div>
+        <!-- /example -->
       </section>
+
+      <div class="part-banner" id="partie-installer">
+        <p class="part-title"><span class="ico" data-icon="install" aria-hidden="true"></span>Installer et administrer</p>
+        <p>Où vont vos données, comment installer l'éditeur sur votre machine ou comme une application, l'usage sur petit écran, et les réponses aux questions fréquentes.</p>
+      </div>
 
       <section id="confidentialite">
         <h2>Confidentialité<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></h2>
@@ -822,7 +1111,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li>tous les fournisseurs, y compris OpenAI, sans blocage du navigateur,</li>
           <li>un choix <span class="ui">Serveur</span> dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, pour retrouver vos enregistrements depuis plusieurs navigateurs,</li>
           <li>des exports déposés, au choix, sur le serveur,</li>
-          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, et ses changements sont marqués comme ceux du co-pilote. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
+          <li>un serveur MCP : un agent comme Claude Code, Claude Desktop ou GitHub Copilot dans VS Code peut dessiner dans l'éditeur ouvert, le mettre en couleur et en forme, ranger le diagramme (<code>layout_diagram</code>), déplacer ou dupliquer des formes précises (<code>move_elements</code>, <code>duplicate_elements</code>) et reprendre un appel raté avec Annuler et Rétablir (<code>undo</code>, <code>redo</code>, comme Ctrl+Z et Ctrl+Y). Ses changements sont marqués comme ceux du co-pilote. Un clic sur le badge MCP de la barre d'outils donne l'adresse et des réglages prêts à coller.</li>
         </ul>
         <p>Avec ses outils, le serveur MCP donne à l'agent des règles de modélisation (nommage, passerelles, chemin nominal) et cinq prompts tout prêts. Selon l'agent, ils apparaissent dans un menu de prompts (le bouton <span class="ui">+</span> de Claude Desktop) ou comme des commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) :</p>
         <ul>
@@ -852,7 +1141,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><strong>iPhone et iPad</strong> : bouton <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong>.</li>
           <li><strong>Firefox</strong> sur ordinateur ne prend pas en charge l'installation des PWA.</li>
         </ul>
-        <figure><img src="/src/help/img/fr-installer.webp" width="386" height="54" alt="Bout droit de la barre d'outils : le bouton Installer, avant Aide, langue, thème et panneau." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois la PWA installée.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-installer.webp" width="321" height="55" alt="Bout droit de la barre d'outils : le bouton Installer, avant Aide, langue, thème et panneau." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois la PWA installée.</figcaption></figure>
         <!-- online -->
         <h3 id="hors-ligne">Hors connexion (service worker)</h3>
         <p>Après une première visite, l'éditeur, cette aide et la page vitrine s'ouvrent sans connexion, installés ou non : un service worker met en cache (Cache API) les fichiers du site. Les GIF de l'aide sont mis en cache une fois affichés. Le Co-pilote IA a besoin du réseau pour joindre l'API de son fournisseur : hors connexion, il le signale.</p>

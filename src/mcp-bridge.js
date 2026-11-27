@@ -7,17 +7,26 @@
 
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isBranchFlow } from './probability-panel.js'
+import { isConditionalFlow } from './rules-panel.js'
+import { IDENTITY_FIELDS, identityHolder } from './compliance.js'
+
+const PILOT_FIELDS = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements', 'probability']
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
-import { reloadWithCopy } from './history.js'
+import { reloadWithCopy, getHistory } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
+import { setDecisionTable, summarize as summarizeDmn, checkDecision } from './dmn/dmn-model.js'
+import { evaluateDecision, casesPerRule } from './dmn/dmn-eval.js'
 import { eventTriggerProblem } from './lint/event-triggers.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
 import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
+
+// Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
+const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
 
 const RETRY_MIN_MS = 1000
 // Dernier client MCP relié : l'analyse qu'il enregistre porte son nom.
@@ -175,11 +184,11 @@ function setBadge(badge, state, client = null) {
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 // options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
 // options.processReport({ simulate }) : le rapport de processus en Markdown, pour get_process_report.
-export function createTools(modeler, { exportDiagram, processReport } = {}) {
-  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport))
+export function createTools(modeler, { exportDiagram, processReport, decisions } = {}) {
+  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport, decisions))
 }
 
-function buildTools(modeler, exportDiagram, processReport) {
+function buildTools(modeler, exportDiagram, processReport, decisions) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
@@ -216,12 +225,36 @@ function buildTools(modeler, exportDiagram, processReport) {
 
   const withPrefix = (type) => (type.startsWith('bpmn:') ? type : 'bpmn:' + type)
 
+  const copyPaste = modeler.get('copyPaste')
+
+  async function stepHistory(direction, steps) {
+    const history = getHistory()
+    const can = () => (history?.modeler === modeler
+      ? (direction === 'undo' ? history.canUndo() : history.canRedo())
+      : (direction === 'undo' ? commandStack.canUndo() : commandStack.canRedo()))
+    let done = 0
+    while (done < steps && can()) {
+      if (history?.modeler === modeler) await history[direction]()
+      else commandStack[direction]()
+      done++
+    }
+    const canUndo = history?.modeler === modeler ? history.canUndo() : commandStack.canUndo()
+    const canRedo = history?.modeler === modeler ? history.canRedo() : commandStack.canRedo()
+    return { [direction === 'undo' ? 'undone' : 'redone']: done, canUndo, canRedo }
+  }
+
   function getElement(id) {
     const element = elementRegistry.get(id)
     if (!element || element.type === 'label' || element === canvas.getRootElement()) {
       throw new Error(`Element not found: ${id}`)
     }
     return element
+  }
+
+  // Fiche d'identité du processus, sur la racine : seulement les champs remplis.
+  function identityFields(root) {
+    const holder = identityHolder(getBusinessObject(root))
+    return Object.fromEntries(IDENTITY_FIELDS.map((k) => [k, holder?.get?.(`bpmnpilot:${k}`)]).filter(([, v]) => v))
   }
 
   function describe(element) {
@@ -240,6 +273,13 @@ function buildTools(modeler, exportDiagram, processReport) {
     // Documentation (Markdown) : le Co-pilote s'appuie dessus pour répondre et rédiger.
     const documentation = (bo.documentation || []).map((d) => d.text || '').join('\n\n').trim()
     if (documentation) out.documentation = documentation.length > 1500 ? documentation.slice(0, 1500) + '…' : documentation
+    // Champs BPMN-Pilot renseignés : l'IA les lit avant de les compléter, sans les écraser.
+    for (const k of PILOT_FIELDS) {
+      const v = bo.get?.(`bpmnpilot:${k}`)
+      if (v !== undefined && v !== null && v !== '') out[k] = v
+    }
+    const condition = bo.conditionExpression?.body?.trim()
+    if (condition) out.condition = condition
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id
@@ -437,12 +477,12 @@ function buildTools(modeler, exportDiagram, processReport) {
     return position
   }
 
-  return {
+  const tools = {
     get_shapes() {
       const root = canvas.getRootElement()
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== root)
       return {
-        root: { id: root.id, type: root.type },
+        root: { id: root.id, type: root.type, ...identityFields(root) },
         shapes: elements.filter((e) => !e.waypoints).map(describe),
         connections: elements.filter((e) => e.waypoints).map(describe),
       }
@@ -594,6 +634,20 @@ function buildTools(modeler, exportDiagram, processReport) {
       return atomic(() => {
         const updated = []
         for (const spec of elements) {
+          // La racine du diagramme ne porte que la fiche d'identité du processus.
+          const root = canvas.getRootElement()
+          if (spec.id === root.id) {
+            const fields = IDENTITY_FIELDS.filter((k) => spec[k] !== undefined)
+            const other = Object.keys(spec).filter((k) => k !== 'id' && !IDENTITY_FIELDS.includes(k) && spec[k] !== undefined)
+            if (other.length || !fields.length) throw new Error(`The diagram root ${spec.id} takes only the process identity: ${IDENTITY_FIELDS.join(', ')}`)
+            const props = {}
+            for (const k of fields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
+            modeling.updateModdleProperties(root, identityHolder(getBusinessObject(root)), props)
+            updated.push({ previousId: spec.id, id: root.id, type: root.type, identity: fields })
+            continue
+          }
+          const misplaced = IDENTITY_FIELDS.filter((k) => spec[k] !== undefined)
+          if (misplaced.length) throw new Error(`${misplaced.join(', ')} apply only to the diagram root (${root.id}): ${spec.id}`)
           let element = getElement(spec.id)
           if (spec.type || spec.eventDefinition) {
             const target = { type: withPrefix(spec.type || element.type) }
@@ -618,6 +672,24 @@ function buildTools(modeler, exportDiagram, processReport) {
               'bpmnpilot:probability': spec.probability === null ? undefined : spec.probability,
               'bpmnpilot:probabilitySource': spec.probability === null ? undefined : AI_SOURCE,
             })
+          }
+          if (spec.condition !== undefined) {
+            if (!isConditionalFlow(element)) throw new Error(`condition applies only to a non-default sequence flow leaving an exclusive or inclusive gateway: ${spec.id}`)
+            const text = (spec.condition || '').trim()
+            const bo = getBusinessObject(element)
+            const previous = (bo.conditionExpression?.body || '').trim()
+            const name = (bo.name || '').trim()
+            const props = { conditionExpression: text ? bpmnFactory.create('bpmn:FormalExpression', { body: text }) : undefined }
+            if (!name || name === previous) props.name = text || undefined
+            modeling.updateProperties(element, props)
+          }
+          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements'].filter((k) => spec[k] !== undefined)
+          if (activityFields.length) {
+            if (!is(element, 'bpmn:Activity')) throw new Error(`${activityFields.join(', ')} apply only to activities: ${spec.id}`)
+            const bo = getBusinessObject(element)
+            const props = {}
+            for (const k of activityFields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
+            modeling.updateModdleProperties(element, bo, props)
           }
           finishElement(element, spec)
           updated.push({ previousId: spec.id, ...describe(element) })
@@ -657,7 +729,7 @@ function buildTools(modeler, exportDiagram, processReport) {
       })
     },
 
-    async auto_layout() {
+    async layout_diagram() {
       try {
         var warnings = await autoLayout(modeler)
       } catch (err) {
@@ -672,9 +744,86 @@ function buildTools(modeler, exportDiagram, processReport) {
       }
     },
 
+    // Ancien nom, gardé pour les agents MCP réglés avant le renommage.
+    auto_layout(args) {
+      return tools.layout_diagram(args)
+    },
+
+    // Place ou décale des formes précises : centre visé (x, y) ou décalage (dx, dy).
+    move_elements({ elements }) {
+      return atomic(() => {
+        const plan = elements.map((spec) => {
+          const element = getElement(spec.id)
+          if (element.waypoints) throw new Error(`A connection follows its shapes and cannot be moved on its own: ${spec.id}`)
+          if (is(element, 'bpmn:Lane')) throw new Error(`A lane moves with its pool: move the pool instead (${spec.id})`)
+          const absolute = spec.x !== undefined || spec.y !== undefined
+          const relative = spec.dx !== undefined || spec.dy !== undefined
+          if (absolute === relative) throw new Error(`Give either x and y, or dx and dy: ${spec.id}`)
+          if (absolute && (spec.x === undefined || spec.y === undefined)) throw new Error(`Give both x and y: ${spec.id}`)
+          const delta = absolute
+            ? { x: Math.round(spec.x - (element.x + element.width / 2)), y: Math.round(spec.y - (element.y + element.height / 2)) }
+            : { x: Math.round(spec.dx || 0), y: Math.round(spec.dy || 0) }
+          return { element, delta }
+        })
+        for (const { element, delta } of plan) {
+          if (delta.x || delta.y) modeling.moveElements([element], delta)
+        }
+        return {
+          moved: plan.map(({ element }) => ({ id: element.id, x: Math.round(element.x + element.width / 2), y: Math.round(element.y + element.height / 2) })),
+        }
+      })
+    },
+
+    // Copier-coller de l'éditeur (copyPaste), sous le groupe copié ou décalé de dx, dy.
+    duplicate_elements({ ids, dx, dy }) {
+      return atomic(() => {
+        const elements = ids.map(getElement)
+        if (elements.some((e) => e.waypoints)) throw new Error('Give shapes only: the connections between them are copied with them')
+        const parent = elements[0].parent
+        if (elements.some((e) => e.parent !== parent)) throw new Error('All the shapes to copy must have the same parent (the same pool, or the process)')
+        const xs = elements.map((e) => e.x)
+        const ys = elements.map((e) => e.y)
+        const box = {
+          x: Math.min(...xs), y: Math.min(...ys),
+          width: Math.max(...elements.map((e) => e.x + e.width)) - Math.min(...xs),
+          height: Math.max(...elements.map((e) => e.y + e.height)) - Math.min(...ys),
+        }
+        const point = {
+          x: Math.round(box.x + box.width / 2 + (dx ?? 0)),
+          y: Math.round(box.y + box.height / 2 + (dy ?? box.height + 60)),
+        }
+        let cache = null
+        const keep = (event) => { cache = event.cache }
+        eventBus.on('copyPaste.pasteElement', keep)
+        let pasted
+        try {
+          pasted = copyPaste.duplicate(elements, { element: parent, point })
+        } finally {
+          eventBus.off('copyPaste.pasteElement', keep)
+        }
+        if (!pasted?.length) throw new Error('These shapes cannot be copied here')
+        const copies = {}
+        for (const [original, copy] of Object.entries(cache || {})) {
+          if (copy && copy.type !== 'label' && elementRegistry.get(copy.id)) copies[original] = copy.id
+        }
+        return { copies, elements: pasted.filter((e) => e.type !== 'label').map(describe) }
+      })
+    },
+
+    // Annuler et Rétablir de l'éditeur (src/history.js) : un appel d'outil ou un geste par pas,
+    // rechargements compris (mise en page, diagramme remplacé).
+    async undo({ steps = 1 } = {}) {
+      return stepHistory('undo', steps)
+    },
+
+    async redo({ steps = 1 } = {}) {
+      return stepHistory('redo', steps)
+    },
+
     // Rapport complet (src/diagram-checks.js) : compteurs, six contrôles, et le détail de bpmnlint.
     async validate_diagram() {
       const report = await checkDiagram(modeler)
+      const decisionFindings = decisions ? (await decisions.check()).map(({ fr, ...f }) => f) : []
       const issues = (report.lint?.issues || []).map((issue) => {
         const element = elementRegistry.get(issue.id)
         const name = element ? getBusinessObject(element).name : undefined
@@ -683,15 +832,89 @@ function buildTools(modeler, exportDiagram, processReport) {
       // Erreurs : celles de bpmnlint, plus chaque problème des autres contrôles.
       const structural = report.checks.filter((c) => c.id !== 'lint' && !c.ok).reduce((n, c) => n + c.problems.length + (c.more || 0), 0)
       return {
-        errors: (report.lint?.errors || 0) + structural,
-        warnings: report.lint?.warnings || 0,
+        errors: (report.lint?.errors || 0) + structural + decisionFindings.filter((f) => f.level === 'error').length,
+        warnings: (report.lint?.warnings || 0) + decisionFindings.filter((f) => f.level === 'warning').length,
         infos: report.lint?.infos || 0,
         counts: report.counts,
         checks: report.checks
           .filter((c) => !c.skipped)
           .map((c) => (c.ok ? { check: c.id, ok: true } : { check: c.id, ok: false, problems: c.problems, ...(c.more ? { more: c.more } : {}) })),
         issues,
+        ...(decisionFindings.length ? { decisions: decisionFindings } : {}),
       }
+    },
+
+    // Décisions DMN rangées dans le .bpmn (src/dmn/).
+    async get_decisions() {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      const summary = await decisions.getSummary()
+      const calledBy = {}
+      for (const el of elementRegistry.filter((e) => e.type === 'bpmn:BusinessRuleTask')) {
+        const ref = decisions.decisionRefOf(el)
+        ;(calledBy[ref || ''] ||= []).push(el.id)
+      }
+      return {
+        model: summary.name || null,
+        decisions: summary.decisions.map((d) => ({ ...d, calledBy: calledBy[d.id] || [] })),
+        inputData: summary.inputData,
+        ...(summary.knowledge.length ? { knowledge: summary.knowledge } : {}),
+        unlinkedTasks: calledBy[''] || [],
+        findings: (await decisions.check()).map(({ fr, ...f }) => f),
+      }
+    },
+
+    async set_decision_table(spec) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      if (spec.linkTo) getElement(spec.linkTo)
+      const { xml, decisionId, created } = await setDecisionTable(decisions.getXml() || null, spec)
+      const summary = await summarizeDmn(xml)
+      atomic(() => {
+        decisions.saveXml(xml)
+        if (spec.linkTo) decisions.linkNow(spec.linkTo, decisionId, summary)
+      })
+      const decision = summary.decisions.find((d) => d.id === decisionId)
+      return {
+        decisionId,
+        created,
+        rules: decision?.rules.length || 0,
+        ...(spec.linkTo ? { linkedTo: spec.linkTo } : {}),
+        findings: checkDecision(decision).map(({ fr, ...f }) => f),
+      }
+    },
+
+    async test_decision({ decisionId, cases }) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      const summary = await decisions.getSummary()
+      const decision = summary.decisions.find((d) => d.id === decisionId)
+      if (!decision) throw new Error(`Unknown decision ${decisionId}. Read the ids with get_decisions.`)
+      if (decision.kind !== 'table') throw new Error(`Decision ${decisionId} is not a decision table.`)
+      const run = (inputs) => {
+        try {
+          const r = evaluateDecision(decision, inputs)
+          return { matched: r.matched, result: plain(r.result), ...(r.error ? { error: r.error } : {}), ...(r.warnings.length ? { warnings: r.warnings } : {}) }
+        } catch (err) {
+          return { error: err.message }
+        }
+      }
+      if (cases?.length) return { decisionId, hitPolicy: decision.hitPolicy, cases: cases.map((inputs) => ({ inputs, ...run(inputs) })) }
+      const perRule = casesPerRule(decision)
+      return {
+        decisionId,
+        hitPolicy: decision.hitPolicy,
+        cases: perRule.map((c) => {
+          const r = run(c.inputs)
+          return { rule: c.rule, inputs: c.inputs, ...r, fires: !r.error && !!r.matched?.includes(c.rule) && (decision.hitPolicy !== 'FIRST' || r.matched[0] === c.rule) }
+        }),
+        ...(perRule.length < decision.rules.length ? { skippedRules: decision.rules.map((_, n) => n + 1).filter((n) => !perRule.some((c) => c.rule === n)) } : {}),
+      }
+    },
+
+    async link_decision({ elementId, decisionId }) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      getElement(elementId)
+      const summary = await decisions.getSummary()
+      const task = atomic(() => decisions.linkNow(elementId, decisionId || '', summary))
+      return decisionId ? { linked: task.id, decisionId } : { unlinked: task.id }
     },
 
     async get_process_report({ simulate } = {}) {
@@ -730,4 +953,5 @@ function buildTools(modeler, exportDiagram, processReport) {
       })
     },
   }
+  return tools
 }

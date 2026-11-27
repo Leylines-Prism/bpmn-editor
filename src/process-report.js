@@ -17,11 +17,14 @@
 //     probabilités qu'il a proposées et que personne n'a encore revues.
 // Le menu Expert et l'outil get_process_report passent par ici.
 
+import { buildRaci, raciRows } from './raci.js'
+import { buildCompliance, identityHolder, identityOf, identityRows, splitLines, splitRefs } from './compliance.js'
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
 import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
 import { markdownToLine, markdownToPlain, shiftHeadings } from './doc/markdown.js'
+import { findingText, describeTable } from './dmn/decision-texts.js'
 
 const LEVELS = ['error', 'warning', 'todo']
 const LEVEL_LABEL = {
@@ -106,6 +109,16 @@ const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim()
 // Documentation d'un élément : Markdown d'origine, et sa version sur une ligne pour les tableaux.
 const docSource = (bo) => (bo?.documentation || []).map((d) => d.text || '').filter((t) => t.trim()).join('\n\n').trim()
 const docOf = (bo) => markdownToLine(docSource(bo))
+// Condition d'un flux écrite en clair (« Avance < 3000 ») et personne ou rôle assigné à une activité.
+export const conditionText = (flow) => clean(flow?.conditionExpression?.body)
+export const assigneeOf = (bo) => clean(bo?.get?.('bpmnpilot:assignee'))
+// Potentiel d'IA d'une activité, noté par le Co-pilote (mode Expert) ou à la main.
+export const AI_POTENTIAL = {
+  automate: () => T('Automatable (AI agent, human review)', 'Automatisable (agent IA, revue humaine)'),
+  assist: () => T('AI-assisted', 'Assistée par IA'),
+  human: () => T('Human', 'Humaine'),
+}
+const laneCell = (s) => [s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${T(': ', ' : ')}${s.assignee}` : '', s.systems ? `${T('Systems', 'Systèmes')}${T(': ', ' : ')}${s.systems}` : ''].filter(Boolean).join(' · ')
 
 export function typeLabel(bo) {
   const base = TYPE_LABELS[short(bo)] ? pick(TYPE_LABELS[short(bo)]) : short(bo)
@@ -152,7 +165,7 @@ function allLanes(laneSets, out = []) {
 
 // options : { name (nom du fichier), simulation (résultat de la carte de chaleur), lint (résultats
 // bpmnlint), checks (rapport de checkDiagram, src/diagram-checks.js) }
-export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null } = {}) {
+export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null, decisions = null } = {}) {
   const definitions = modeler.getDefinitions()
   const translate = modeler.get('translate')
   const { processes, participants } = collectContainers(definitions)
@@ -332,6 +345,17 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     }
   }
 
+  // Risques sans contrôle (mode Expert, groupe Risques et conformité).
+  for (const n of order) {
+    if (isActivity(n) && splitLines(n.get?.('bpmnpilot:risks')).length && !splitLines(n.get?.('bpmnpilot:controls')).length) {
+      add({
+        kind: 'risk-control', level: 'todo', element: n, source: 'check',
+        title: T('Risk without control', 'Risque sans contrôle'),
+        detail: T('Risks are listed for this activity, but no control.', 'Des risques sont notés pour cette activité, mais aucun contrôle.'),
+      })
+    }
+  }
+
   // Probabilités proposées par le Co-pilote IA et pas encore revues : un constat par passerelle.
   for (const n of nodes) {
     if (!isGateway(n)) continue
@@ -373,7 +397,10 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
   const describeNext = (n, depth = 0) => out(n).map((f) => {
     const t = f.targetRef
     if (!t) return ''
-    const label = clean(f.name) ? `${clean(f.name)} : ` : ''
+    const rule = conditionText(f)
+    const name = clean(f.name)
+    const shown = name && rule && name !== rule ? `${name} (${rule})` : name || rule
+    const label = shown ? `${shown} : ` : ''
     if (isGateway(t) && depth < 3 && out(t).length) {
       const inner = describeNext(t, depth + 1)
       if (is(t, 'bpmn:ParallelGateway') && out(t).length > 1) return `${label}${T('in parallel', 'en parallèle')} : ${inner}`
@@ -389,6 +416,17 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     name: displayName(n),
     type: typeLabel(n),
     lane: laneName(n),
+    assignee: assigneeOf(n),
+    activity: isActivity(n),
+    systems: clean(n.get?.('bpmnpilot:systems')),
+    accountable: clean(n.get?.('bpmnpilot:accountable')),
+    consulted: clean(n.get?.('bpmnpilot:consulted')),
+    informed: clean(n.get?.('bpmnpilot:informed')),
+    aiPotential: AI_POTENTIAL[n.get?.('bpmnpilot:aiPotential')] ? n.get('bpmnpilot:aiPotential') : null,
+    aiPotentialReason: clean(n.get?.('bpmnpilot:aiPotentialReason')),
+    risks: isActivity(n) ? splitLines(n.get?.('bpmnpilot:risks')) : [],
+    controls: isActivity(n) ? splitLines(n.get?.('bpmnpilot:controls')) : [],
+    requirements: isActivity(n) ? splitRefs(n.get?.('bpmnpilot:requirements')) : [],
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -521,6 +559,13 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     ends,
     lanes: laneRows,
     sequence,
+    raci: buildRaci(sequence),
+    compliance: buildCompliance(sequence),
+    identity: identityOf([
+      ...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')).map(identityHolder),
+      ...processes,
+      ...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')),
+    ]),
     gatewayDocs,
     // Documentation des réserves et des processus, en tête des fiches et du rapport.
     processDocs: [...participants, ...processes]
@@ -532,7 +577,33 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     heat,
     checks: checkRows,
     analysis,
+    decisions: decisionRows(decisions),
     flagged: Object.fromEntries(worst),
+  }
+}
+
+// Décisions DMN du diagramme (mode Expert), d'après src/dmn/setup.js report() : une entrée par
+// décision avec sa table, les tâches qui l'appellent et ses constats, plus les constats des liens.
+function decisionRows(data) {
+  if (!data) return null
+  const findingsOf = (id) => data.findings.filter((f) => f.decision === id).map((f) => ({ level: f.level, text: findingText(f) }))
+  return {
+    items: data.summary.decisions.map((d) => ({
+      id: d.id,
+      name: clean(d.name) || d.id,
+      line: describeTable(d),
+      calledBy: (data.calls[d.id] || []).map((t) => clean(t.name) || t.id),
+      table: d.kind === 'table'
+        ? {
+            head: [...d.inputs.map((i) => clean(i.label || i.expression)), ...d.outputs.map((o) => clean(o.label || o.name)), T('Annotation', 'Annotation')],
+            inputs: d.inputs.length,
+            rows: d.rules.map((rule) => [...rule.inputs.map((v) => v || '-'), ...rule.outputs, rule.annotation || '']),
+          }
+        : null,
+      expression: d.kind === 'literal' ? d.expression : '',
+      findings: findingsOf(d.id),
+    })),
+    links: data.findings.filter((f) => !f.decision).map((f) => ({ level: f.level, text: findingText(f) })),
   }
 }
 
@@ -604,6 +675,14 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
       effect: T('The simulation and the heatmap rest on reviewed figures.', 'La simulation et la carte de chaleur reposent sur des chiffres revus.'),
     }
   }
+  if (kind === 'risk-control') {
+    return {
+      title: T('Give each risk a control', 'Doter chaque risque d\'un contrôle'),
+      change: T(`Name the control that prevents or detects the risks of ${quoted(elements)}, or accept the risk explicitly.`,
+        `Nommer le contrôle qui prévient ou détecte les risques de ${quoted(elements)}, ou accepter le risque explicitement.`),
+      effect: T('Every listed risk is covered.', 'Chaque risque noté est couvert.'),
+    }
+  }
   if (kind === 'doc') {
     return {
       title: T('Complete the documentation', 'Compléter la documentation'),
@@ -652,6 +731,12 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
 
 // ── Markdown ────────────────────────────────────────────────────────────────
 
+// Fiche d'identité, en tête du rapport et des fiches de procédure : une ligne par champ rempli.
+export function identityMarkdown(identity) {
+  const rows = identityRows(identity)
+  return rows.length ? [...rows.map(([k, v]) => T(`- **${k}**: ${v}`, `- **${k}** : ${v}`)), ''] : []
+}
+
 // Cellule de tableau : barres verticales et barres obliques inverses échappées.
 const mdCell = (s) => clean(s).replace(/[\\|]/g, '\\$&')
 
@@ -662,6 +747,7 @@ export function reportToMarkdown(r) {
     '',
     T(`Process report generated on ${dateText(r.date)} by BPMN Pilot`, `Rapport de processus généré le ${dateText(r.date)} par BPMN Pilot`) + (r.fileName ? ` · ${r.fileName}.bpmn` : '') + '.',
     '',
+    ...identityMarkdown(r.identity),
     T(`${c.activities} activities, ${c.events} events, ${c.gateways} gateways, ${c.lanes} lanes. **${c.error} error(s), ${c.warning} warning(s), ${c.todo} to complete.**`,
       `${c.activities} activités, ${c.events} événements, ${c.gateways} passerelles, ${c.lanes} couloirs. **${c.error} erreur(s), ${c.warning} avertissement(s), ${c.todo} à compléter.**`),
     '',
@@ -710,6 +796,22 @@ export function reportToMarkdown(r) {
     lines.push(`| ${T('Check', 'Contrôle')} | ${T('Result', 'Résultat')} | ${T('First problems', 'Premiers problèmes')} |`, '|---|---|---|')
     for (const c of r.checks) lines.push(`| ${mdCell(c.label)} | ${checkResult(c)} | ${mdCell(c.first.join(' · '))} |`)
   }
+  if (r.decisions) {
+    lines.push('', `## ${T('Decisions (DMN)', 'Décisions (DMN)')}`)
+    for (const d of r.decisions.items) {
+      lines.push('', `### ${d.name}`, '', `*${mdCell(d.line)}* · ${T('called by', 'appelée par')} ${d.calledBy.length ? mdCell(d.calledBy.join(' · ')) : T('no task', 'aucune tâche')} · \`${d.id}\``)
+      if (d.table?.rows.length) {
+        lines.push('', `| N° | ${d.table.head.map((h, i) => (i < d.table.inputs ? `${T('When', 'Quand')} ${mdCell(h)}` : i < d.table.head.length - 1 ? `${T('Then', 'Alors')} ${mdCell(h)}` : mdCell(h))).join(' | ')} |`, `|---|${d.table.head.map(() => '---').join('|')}|`)
+        d.table.rows.forEach((row, i) => lines.push(`| ${i + 1} | ${row.map((v) => mdCell(v)).join(' | ')} |`))
+      }
+      if (d.expression) lines.push('', '```', d.expression, '```')
+      for (const f of d.findings) lines.push('', `- **${DECISION_LEVEL[f.level]()}** : ${f.text}`)
+    }
+    if (r.decisions.links.length) {
+      lines.push('')
+      for (const f of r.decisions.links) lines.push(`- **${DECISION_LEVEL[f.level]()}** : ${f.text}`)
+    }
+  }
   if (r.ends.length) {
     lines.push('', `## ${T('End events', 'Événements de fin')}`, '')
     lines.push(`| ${T('End event', 'Événement de fin')} | ${T('Lane', 'Couloir')} |${r.simulation ? ` ${T('Share of instances', 'Part des instances')} |` : ''}`, `|---|---|${r.simulation ? '---|' : ''}`)
@@ -720,13 +822,38 @@ export function reportToMarkdown(r) {
     lines.push(`| ${T('Lane', 'Couloir')} | ${T('Activities', 'Activités')} |`, '|---|---|')
     for (const l of r.lanes) lines.push(`| ${mdCell(l.name)} | ${mdCell(l.activities.join(' · '))} |`)
   }
+  const potential = r.sequence.filter((s) => s.aiPotential)
+  if (potential.length) {
+    const count = (k) => potential.filter((s) => s.aiPotential === k).length
+    lines.push('', `## ${T('AI potential by activity', 'Potentiel d\'IA par activité')}`, '')
+    lines.push(T(`${count('automate')} automatable, ${count('assist')} AI-assisted, ${count('human')} human, out of ${potential.length} rated activities.`,
+      `${count('automate')} automatisable(s), ${count('assist')} assistée(s) par IA, ${count('human')} humaine(s), sur ${potential.length} activité(s) notée(s).`), '')
+    lines.push(`| N° | ${T('Activity', 'Activité')} | ${T('Potential', 'Potentiel')} | ${T('Why, and safeguard', 'Raison et garde-fou')} |`, '|---|---|---|---|')
+    for (const s of potential) lines.push(`| ${s.number} | ${mdCell(s.name)} | **${AI_POTENTIAL[s.aiPotential]()}** | ${mdCell(s.aiPotentialReason)} |`)
+  }
+  if (r.raci) {
+    const [head, ...body] = raciRows(r.raci, T)
+    lines.push('', `## ${T('RACI matrix', 'Matrice RACI')}`, '', T('R performs, A answers for it, C is consulted, I is informed.', 'R réalise, A en répond, C est consulté, I est informé.'), '')
+    lines.push(`| ${head.map(mdCell).join(' | ')} |`, `|${head.map(() => '---').join('|')}|`)
+    for (const row of body) lines.push(`| ${row.map(mdCell).join(' | ')} |`)
+  }
+  if (r.compliance?.risks.length) {
+    lines.push('', `## ${T('Risks and controls', 'Risques et contrôles')}`, '')
+    lines.push(`| N° | ${T('Activity', 'Activité')} | ${T('Risks', 'Risques')} | ${T('Controls', 'Contrôles')} |`, '|---|---|---|---|')
+    for (const x of r.compliance.risks) lines.push(`| ${x.number} | ${mdCell(x.name)} | ${mdCell(x.risks.join(' · '))} | ${x.controls.length ? mdCell(x.controls.join(' · ')) : `*${T('none', 'aucun')}*`} |`)
+  }
+  if (r.compliance?.requirements.length) {
+    lines.push('', `## ${T('Compliance matrix', 'Matrice de conformité')}`, '')
+    lines.push(`| ${T('Requirement', 'Exigence')} | ${T('Activities concerned', 'Activités concernées')} |`, '|---|---|')
+    for (const q of r.compliance.requirements) lines.push(`| ${mdCell(q.ref)} | ${mdCell(q.activities.join(' · '))} |`)
+  }
   lines.push('', `## ${T('Element sequence', 'Séquence des éléments')}`, '')
   lines.push(`| N° | ${T('Element', 'Élément')} | Type | ${T('Lane', 'Couloir')} | Documentation | ${T('Outgoing flows', 'Flux sortants')} |${r.simulation ? ` ${T('Instances', 'Instances')} |` : ''}`,
     `|---|---|---|---|---|---|${r.simulation ? '---|' : ''}`)
   for (const s of r.sequence) {
     const flag = s.level ? ` (${LEVEL_LABEL[s.level]().toLowerCase()})` : ''
     const doc = s.documentation || (s.needsDoc ? `*${T('to complete', 'à compléter')}*` : '')
-    lines.push(`| ${s.number} | ${mdCell(s.name)}${flag} | ${mdCell(s.type)} | ${mdCell(s.lane)} | ${mdCell(doc)} | ${mdCell(s.next)} |${r.simulation ? ` ${s.count} |` : ''}`)
+    lines.push(`| ${s.number} | ${mdCell(s.name)}${flag} | ${mdCell(s.type)} | ${mdCell(laneCell(s))} | ${mdCell(doc)} | ${mdCell(s.next)} |${r.simulation ? ` ${s.count} |` : ''}`)
   }
   if (r.simulation) lines.push('', T(`Instances: tokens counted at the last simulation (${num(r.simulation.runs)} instances).`, `Instances : jetons comptés lors de la dernière simulation (${num(r.simulation.runs)} instances).`))
   // La documentation entière, mise en forme : le tableau n'en montre qu'une ligne.
@@ -737,6 +864,12 @@ export function reportToMarkdown(r) {
     for (const s of documented) lines.push('', `### ${s.number}. ${s.name}`, '', shiftHeadings(s.docMarkdown, 2))
   }
   return lines.join('\n') + '\n'
+}
+
+const DECISION_LEVEL = {
+  error: () => T('Error', 'Erreur'),
+  warning: () => T('Warning', 'Avertissement'),
+  info: () => T('To complete', 'À compléter'),
 }
 
 const analysisByline = (a) => {
@@ -862,6 +995,20 @@ export async function reportToPdf(modeler, r) {
   doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...muted)
   doc.text(pdfText(T(`Process report · generated on ${dateText(r.date)} by BPMN Pilot`, `Rapport de processus · généré le ${dateText(r.date)} par BPMN Pilot`) + (r.fileName ? ` · ${r.fileName}.bpmn` : '')), M, y)
   y += 4
+  // Fiche d'identité : une ligne pour les champs courts, puis le périmètre.
+  const idRows = identityRows(r.identity)
+  if (idRows.length) {
+    const scope = r.identity.scope
+    const short = idRows.filter(([, v]) => v !== scope).map(([k, v]) => `${k}${T(': ', ' : ')}${v}`).join('   ·   ')
+    doc.setFontSize(8.5).setTextColor(...ink)
+    y += 1
+    if (short) { doc.text(pdfText(short), M, y); y += 4 }
+    if (scope) {
+      const wrapped = doc.splitTextToSize(pdfText(`${T('Scope', 'Périmètre')}${T(': ', ' : ')}${scope}`), W - 2 * M)
+      doc.text(wrapped.slice(0, 3), M, y)
+      y += 3.6 * Math.min(3, wrapped.length) + 0.4
+    }
+  }
 
   // Chiffres clés.
   const c = r.counts
@@ -1087,6 +1234,44 @@ export async function reportToPdf(modeler, r) {
     })
   }
 
+  if (r.decisions) {
+    section(T('Decisions (DMN)', 'Décisions (DMN)'))
+    for (const d of r.decisions.items) {
+      subsection(`${d.name} (${d.id})`)
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...muted)
+      doc.text(pdfText(`${d.line} · ${T('called by', 'appelée par')} ${d.calledBy.join(', ') || T('no task', 'aucune tâche')}`), M, y + 1)
+      y += 4
+      if (d.table?.rows.length) {
+        table({
+          head: [['N°', ...d.table.head.map((h, i) => pdfText(i < d.table.inputs ? `${T('When', 'Quand')} ${h}` : i < d.table.head.length - 1 ? `${T('Then', 'Alors')} ${h}` : h))]],
+          body: d.table.rows.map((row, i) => [String(i + 1), ...row.map(pdfText)]),
+          columnStyles: { 0: { cellWidth: 10 } },
+          styles: { ...baseTable.styles, font: 'courier' },
+        })
+      } else y += 2
+      if (d.expression) {
+        doc.setFont('courier', 'normal').setFontSize(8).setTextColor(...ink)
+        doc.text(doc.splitTextToSize(pdfText(d.expression), W - 2 * M), M, y + 2)
+        y += 8
+      }
+      for (const f of d.findings) {
+        if (y > H - M - 8) { doc.addPage(); y = M + 4 }
+        doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...(f.level === 'error' ? hex(COLORS.error.strong) : f.level === 'warning' ? hex(COLORS.warning.strong) : muted))
+        const lines = doc.splitTextToSize(pdfText(`${DECISION_LEVEL[f.level]()} : ${f.text}`), W - 2 * M)
+        doc.text(lines, M, y + 1)
+        y += lines.length * 3.6 + 1
+      }
+      y += 2
+    }
+    for (const f of r.decisions.links) {
+      if (y > H - M - 8) { doc.addPage(); y = M + 4 }
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...(f.level === 'error' ? hex(COLORS.error.strong) : muted))
+      doc.text(pdfText(`${DECISION_LEVEL[f.level]()} : ${f.text}`), M, y + 1)
+      y += 4.5
+    }
+    y += 2
+  }
+
   if (r.ends.length) {
     section(T('End events', 'Événements de fin'))
     table({
@@ -1105,6 +1290,49 @@ export async function reportToPdf(modeler, r) {
     })
   }
 
+  const potential = r.sequence.filter((s) => s.aiPotential)
+  if (potential.length) {
+    section(T('AI potential by activity', 'Potentiel d\'IA par activité'))
+    const tint = { automate: [219, 234, 254], assist: [254, 243, 199], human: [243, 244, 246] }
+    table({
+      head: [['N°', T('Activity', 'Activité'), T('Potential', 'Potentiel'), T('Why, and safeguard', 'Raison et garde-fou')]],
+      body: potential.map((s) => [String(s.number), pdfText(s.name), pdfText(AI_POTENTIAL[s.aiPotential]()), pdfText(s.aiPotentialReason || '–')]),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' }, 2: { cellWidth: 42 } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index === 2) d.cell.styles.fillColor = tint[potential[d.row.index].aiPotential] },
+    })
+  }
+
+  if (r.raci) {
+    const [head, ...body] = raciRows(r.raci, T)
+    section(T('RACI matrix', 'Matrice RACI'))
+    table({
+      head: [head.map(pdfText)],
+      body: body.map((row) => row.map(pdfText)),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index > 1) { d.cell.styles.halign = 'center'; d.cell.styles.fontStyle = 'bold' } },
+    })
+  }
+
+  if (r.compliance?.risks.length) {
+    const risks = r.compliance.risks
+    section(T('Risks and controls', 'Risques et contrôles'))
+    table({
+      head: [['N°', T('Activity', 'Activité'), T('Risks', 'Risques'), T('Controls', 'Contrôles')]],
+      body: risks.map((x) => [String(x.number), pdfText(x.name), pdfText(x.risks.map((t) => `• ${t}`).join('\n') || '–'), pdfText(x.controls.map((t) => `• ${t}`).join('\n') || T('none', 'aucun'))]),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 50, fontStyle: 'bold' } },
+      didParseCell: (d) => { if (d.section === 'body' && d.column.index === 3 && !risks[d.row.index].controls.length) d.cell.styles.fillColor = hex(COLORS.todo.soft) },
+    })
+  }
+
+  if (r.compliance?.requirements.length) {
+    section(T('Compliance matrix', 'Matrice de conformité'))
+    table({
+      head: [[T('Requirement', 'Exigence'), T('Activities concerned', 'Activités concernées')]],
+      body: r.compliance.requirements.map((q) => [pdfText(q.ref), pdfText(q.activities.join('\n'))]),
+      columnStyles: { 0: { cellWidth: 70, fontStyle: 'bold' } },
+    })
+  }
+
   doc.addPage()
   y = M + 4
   section(T('Element sequence', 'Séquence des éléments'))
@@ -1115,7 +1343,7 @@ export async function reportToPdf(modeler, r) {
       String(s.number),
       pdfText(s.name + (s.tags.length ? '\n' + s.tags.map((t) => t.title).join(', ') : '')),
       pdfText(s.type),
-      pdfText(s.lane),
+      pdfText(laneCell(s)),
       pdfText(s.docMarkdown ? markdownToPlain(s.docMarkdown) : s.needsDoc ? T('to complete', 'à compléter') : '–'),
       pdfText(s.next || '–'),
       ...(r.simulation ? [String(s.count)] : []),

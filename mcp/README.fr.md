@@ -4,7 +4,7 @@
 
 Ce serveur permet à une IA (Claude Code, Claude Desktop, GitHub Copilot dans VS Code ou tout client MCP) de lire et de dessiner
 dans l'éditeur BPMN **ouvert dans le navigateur**. Les modifications apparaissent en direct sur le
-canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z. `set_diagram_xml` et `auto_layout` rechargent tout le diagramme : un Ctrl+Z ramène le diagramme d'avant, mais les étapes plus anciennes ne s'annulent plus une par une.
+canevas, comme si elles étaient faites à la main, et chaque appel d'outil s'annule d'un seul Ctrl+Z. `set_diagram_xml` et `layout_diagram` rechargent tout le diagramme : un Ctrl+Z ramène le diagramme d'avant, mais les étapes plus anciennes ne s'annulent plus une par une.
 
 ## Fonctionnement
 
@@ -179,10 +179,17 @@ onglets de l'éditeur, et son journal part sur la sortie d'erreur. Les contrôle
 | `update_elements` | renomme ou change le type d'éléments (Task vers UserTask, événement minuté…), remplit leur champ Documentation, ou règle la probabilité d'une branche de passerelle, marquée comme proposée par l'IA jusqu'à sa revue |
 | `style_elements` | règle le fond, le contour, la couleur du texte et la police (gras, italique, souligné, taille, famille) d'éléments |
 | `remove_elements` | supprime des formes ou des connexions |
-| `auto_layout` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant |
-| `validate_diagram` | renvoie un rapport de contrôle : compteurs d'éléments et six contrôles (XML bien formé, métamodèle BPMN 2.0, références et portées, DI complet, réimport bpmn-js, bpmnlint), avec erreurs et avertissements élément par élément |
+| `layout_diagram` | range tout le diagramme, comme le bouton « Ranger ». Un Ctrl+Z ramène la disposition d'avant. Son ancien nom, `auto_layout`, fonctionne toujours |
+| `move_elements` | place des formes à un centre donné, ou les décale, sans toucher au reste ; les connexions suivent |
+| `duplicate_elements` | copie des formes avec les connexions entre elles, sous les originaux ou décalées |
+| `undo`, `redo` | reculent ou avancent dans l'historique de l'éditeur, comme Ctrl+Z et Ctrl+Y : un appel d'outil ou un geste par pas |
+| `validate_diagram` | renvoie un rapport de contrôle : compteurs d'éléments et six contrôles (XML bien formé, métamodèle BPMN 2.0, références et portées, DI complet, réimport bpmn-js, bpmnlint), avec erreurs et avertissements élément par élément ; avec des décisions dans le fichier, leurs constats aussi |
 | `get_process_report` | renvoie le rapport de processus en Markdown, comme le menu Exporter : constats par niveau, axes d'amélioration, événements de fin, activités par couloir, séquence des éléments. Avec `simulate`, calcule d'abord 100 jetons selon les probabilités des branches |
 | `set_report_commentary` | enregistre votre analyse du processus (synthèse, goulots, chemins rares, risques, pistes d'amélioration, chacun relié aux éléments) dans le fichier du diagramme ; le rapport de processus la présente comme rédigée par le Co-pilote IA |
+| `get_decisions` | liste les décisions DMN rangées dans le fichier du diagramme : tables de décision (politique de résultat, entrées, sorties, règles), tâches de règle métier qui les appellent, et constats (règles qui se chevauchent, valeurs non couvertes, tâches non liées) |
+| `set_decision_table` | crée une table de décision DMN, ou en remplace une, dans le modèle de décision du diagramme, et peut y lier une tâche (`linkTo`). Le lien est écrit pour BPMN-Pilot et pour Camunda 8 (`zeebe:calledDecision`) |
+| `link_decision` | lie une tâche à une décision du diagramme, ou la délie |
+| `test_decision` | évalue une table de décision sur des cas d'entrée, sans la modifier : règles qui s'appliquent et résultat selon la politique. Sans cas, un cas par règle, pour vérifier que chacune se déclenche |
 
 Un appel qui échoue en cours de route est annulé en entier : le diagramme ne reste jamais à moitié modifié.
 
@@ -290,4 +297,4 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 ## Limites du prototype
 
 - L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
-- `auto_layout` utilise bpmn-auto-layout 2.0.0-alpha.2, qui range pools, lanes, flux de messages et événements de bordure. C'est encore une version alpha : le rendu peut changer avec ses prochaines versions.
+- `layout_diagram` utilise bpmn-auto-layout 2.0.0-alpha.2, qui range pools, lanes, flux de messages et événements de bordure. C'est encore une version alpha : le rendu peut changer avec ses prochaines versions.

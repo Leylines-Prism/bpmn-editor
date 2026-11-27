@@ -23,6 +23,19 @@ graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations 
 l'agent trouve les processus, l'éditeur les dessine et les vérifie, et vous relisez le résultat. Fini
 les heures passées sur la structure BPMN et le dessin à la main.
 
+<table>
+<tr><th width="34%">Votre invite</th><th>Le diagramme dessiné par le co-pilote IA</th></tr>
+<tr>
+<td valign="top">
+
+> Dessine une demande d'achat : le salarié saisit sa demande, son manager l'accepte ou la refuse. Si elle est acceptée, les achats commandent au fournisseur, puis la comptabilité paie la facture. En cas de refus, le salarié est prévenu.
+
+<sub>Un message, un seul passage. Couloirs, décision, flux de messages vers le pool du fournisseur, puis les six contrôles du résultat.</sub>
+</td>
+<td><img src="docs/prompt-example.fr.png" alt="Diagramme BPMN dessiné depuis l'invite : un pool Entreprise avec les couloirs Salarié, Manager, Achats et Comptabilité, une décision d'acceptation et des flux de messages vers un pool Fournisseur"></td>
+</tr>
+</table>
+
 BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
 - **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
@@ -59,18 +72,8 @@ Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos
 </tr>
 </table>
 
-**Pour les experts BPMN**, le bouton **Expert** de la barre ouvre de quoi éprouver un modèle et en
-rendre compte : la simulation de jetons et le rapport de processus. Il passe en bleu tant que le mode
-est actif, et l'éditeur garde une barre sobre pour les autres (voir la
-[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
-
-- **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
-  coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
-- **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
-  d'amélioration, événements de fin, activités par couloir.
-- **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
-  manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
-  bpmnlint), avec autocorrection.
+**Pour dessiner, rien de plus.** La palette, le menu contextuel et le co-pilote IA suffisent pour un
+schéma de processus lisible, sans connaître BPMN. Viennent ensuite :
 
 **Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
 un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
@@ -82,7 +85,32 @@ documentés avec un aperçu au survol, la recherche porte aussi sur la documenta
 fiche de l'élément, et le menu Exporter produit des fiches de procédure (PDF ou Markdown), une par activité dans l'ordre
 du flux (voir l'[aide](https://bpmn.leylines.fr/aide.html#documenter)).
 
-Les outils experts sur un processus d'achat interne à quatre couloirs :
+**Contrôles à chaque réponse du co-pilote** : critique de la demande avant le dessin (ambiguïtés,
+manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
+bpmnlint), avec autocorrection.
+
+**Mode Expert, pour éprouver un modèle.** Rien de ce qui suit n'est nécessaire pour dessiner. Le bouton
+**Expert** de la barre l'active, et **Choisir les modules…** n'allume que les fonctions dont vous vous
+servez : l'éditeur reste sobre pour les autres (voir la
+[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
+
+- **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
+  coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Rapport de processus** en PDF, en Markdown ou en Word : chiffres clés, constats par niveau, axes
+  d'amélioration, événements de fin, activités par couloir, matrice RACI.
+- **Potentiel d'IA par activité** : automatisable, assistée par IA ou humaine, avec la raison et le
+  garde-fou, noté par le co-pilote ou à la main, et repris dans le rapport.
+- **Risques, contrôles et conformité** : risques et contrôles de chaque activité, références
+  réglementaires (RGPD, ISO 9001, AI Act…), et une fiche d'identité du processus (propriétaire, version,
+  statut, périmètre) en tête du rapport et des fiches de procédure. Le rapport ajoute un tableau des
+  risques et contrôles et une matrice de conformité.
+- **BPMN pour Camunda 8 ou 7** : plateforme indiquée, processus exécutable, conditions des passerelles
+  en FEEL ou en JUEL, tâches utilisateur avec leur personne assignée.
+- **Tables de décision DMN** : chaque tâche de règle métier se relie à une
+  table de décision modifiable et à son diagramme d'exigences (dmn-js), rangées dans le .bpmn avec le lien Camunda 8
+  (`zeebe:calledDecision`), contrôlées (chevauchements, valeurs non couvertes), et rédigées par le co-pilote ou un agent MCP à la demande.
+
+Sur un processus d'achat interne à quatre couloirs :
 
 <table>
 <tr>
@@ -395,6 +423,10 @@ utiliser (`http://localhost:8080/mcp`, ou `https://votre-domaine/mcp`), et le r�
 Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor ou un autre client MCP. L'agent dessine dans le dernier onglet de l'éditeur
 utilisé : gardez-le ouvert.
 
+L'agent lit et dessine le diagramme, le range (`layout_diagram`), déplace ou duplique des formes
+précises (`move_elements`, `duplicate_elements`), et reprend un appel raté avec `undo` et `redo`, comme
+Ctrl+Z et Ctrl+Y. La liste complète des outils est dans [mcp/README.fr.md](mcp/README.fr.md).
+
 Un jeton protège cet accès : la même fenêtre en génère un et dit où le mettre. Il est facultatif
 sur `localhost`, et obligatoire dès que l'éditeur est servi sous un autre nom (voir
 [Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). Sans lui, la fenêtre
@@ -444,19 +476,20 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 
 ## Ce que fait l'éditeur
 
+### Pour tous
+
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
-  .xml, SVG, PNG, PDF), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
+  .xml, SVG, PNG, PDF, fichier .bpmn chiffré par mot de passe), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
   cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
+- **Sans IA** : construire un processus depuis un tableau d'étapes (collé depuis Excel, .csv ou .xlsx,
+  colonnes de Visio Data Visualizer lues telles quelles), ou depuis une grille rôles × tâches en atelier.
+- **Responsabilités** : personne assignée, systèmes utilisés et RACI de chaque activité, conditions en
+  clair sur les branches des décisions. Fiches de procédure en PDF, Markdown ou Word, matrice RACI en Excel.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
-- **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
-  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
-  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
-  probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
-  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
@@ -470,6 +503,27 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   annule toute la réponse.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
   Pensé pour un écran d'ordinateur : sur un téléphone, il sert surtout à regarder un diagramme.
+
+### Mode Expert
+
+Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
+
+- **Simulation de jetons, carte de chaleur et rapport de processus** : faire
+  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
+  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
+  probabilités des branches. Exporter un rapport de processus (PDF, Markdown ou Word) : constats en trois
+  niveaux, axes d'amélioration, séquence des éléments, matrice RACI et, après une simulation, carte de chaleur.
+- **Potentiel d'IA, risques et conformité** : pour chaque activité, son potentiel d'IA (automatisable, assistée
+  par IA ou humaine, avec la raison et le garde-fou), ses risques et contrôles, et ses références réglementaires ;
+  une fiche d'identité du processus (propriétaire, version, statut, date de validation, périmètre). Le rapport
+  ajoute un tableau des risques et contrôles, une matrice de conformité et un constat pour chaque risque sans contrôle.
+- **Export pour Camunda 8 et 7** : plateforme indiquée, processus exécutables, conditions des passerelles en FEEL
+  ou en JUEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur.
+- **Tables de décision DMN** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,
+  avec le DRD, l'import et l'export .dmn, l'import et l'export Excel et CSV d'une table, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
+  les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets), un banc d'essai
+  (règles qui s'appliquent, un cas par règle), la comparaison de deux versions, des jetons calculés qui suivent les tables aux passerelles,
+  et les outils MCP `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
 
 ## En quoi il diffère de draw.io ou Lucidchart
 

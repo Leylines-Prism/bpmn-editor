@@ -42,6 +42,7 @@ import '@fontsource/urbanist/600.css'
 import './brand/tokens.css'
 import './theme/leylines.css'
 import './doc/doc.css'
+import './dmn/dmn.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
@@ -49,9 +50,14 @@ import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
+import { RulesPanelModule } from './rules-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
+import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json'
+import { DecisionPanelModule } from './dmn/decision-links.js'
+import { setupDecisions } from './dmn/setup.js'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { setupPwa } from './pwa/register.js'
@@ -67,6 +73,9 @@ import { APP_VERSION, IS_DEV_SITE, OTHER_SITE } from './site-channel.js'
 import { setupDocEditor } from './doc/doc-editor.js'
 import { setupDocBadges } from './doc/doc-badges.js'
 import { setupDocSearch } from './doc/doc-search.js'
+import { setupTableDialog } from './table-dialog.js'
+import { rowsToXlsx } from './sheet-io.js'
+import { setupGridDialog } from './grid-dialog.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -149,7 +158,8 @@ const modeler = new BpmnModeler({
   linting: { bpmnlint: lintConfig, active: true },
   colorPicker: { colors: COLORS },
   // Probabilités des branches pour la carte de chaleur (attribut bpmnpilot:probability).
-  moddleExtensions: { bpmnpilot: bpmnPilotModdle },
+  // Tables de décision : lien bpmnpilot:decisionRef, et zeebe:calledDecision pour Camunda 8.
+  moddleExtensions: { bpmnpilot: bpmnPilotModdle, zeebe: zeebeModdle },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -166,6 +176,8 @@ const modeler = new BpmnModeler({
     GridModule,
     CopyAsImageModule,
     ProbabilityPanelModule,
+    RulesPanelModule,
+    DecisionPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -198,7 +210,17 @@ function setStatus(msg) {
   document.getElementById('autosave-status').textContent = T('Autosave: ', 'Sauvegarde auto : ') + msg
 }
 
+// Diagramme ouvert depuis un fichier chiffré : il n'est pas recopié en clair dans le
+// navigateur. La sauvegarde automatique reprend au prochain Nouveau ou à la prochaine
+// ouverture d'un fichier non chiffré.
+let sensitive = false
+
 async function autosave({ quiet = false } = {}) {
+  if (sensitive) {
+    localStorage.removeItem(LS_KEY)
+    if (!quiet) setStatus(T('off for this encrypted file', 'désactivée pour ce fichier chiffré'))
+    return
+  }
   try {
     const { xml } = await modeler.saveXML({ format: true })
     localStorage.setItem(LS_KEY, xml)
@@ -218,6 +240,7 @@ modeler.on(['commandStack.changed', 'layout.done', 'history.restored'], () => {
 document.getElementById('btn-new').addEventListener('click', async () => {
   if (!confirm(T('Create a new diagram? The current diagram will be lost if it has not been saved.', 'Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.'))) return
   localStorage.removeItem(LS_KEY)
+  sensitive = false
   library.unlink()
   dirty = false
   setBaseName(DEFAULT_NAME)
@@ -233,9 +256,10 @@ document.getElementById('btn-open').addEventListener('click', () => {
 
 // Import commun au bouton Ouvrir, au glisser-déposer et à la fenêtre Importer XML.
 // Renvoie un message d'erreur, ou rien si l'import a réussi.
-async function importAndReport(xml, fileName) {
+async function importAndReport(xml, fileName, { encrypted = false } = {}) {
   try {
     const { warnings, laidOut } = await importDiagram(modeler, xml)
+    sensitive = encrypted
     library.unlink()
     setBaseName(fileName ? fileName.replace(/\.(bpmn|xml)$/i, '') : DEFAULT_NAME)
     // Le diagramme ouvert est sauvegardé tout de suite, avec son nom : un
@@ -243,6 +267,7 @@ async function importAndReport(xml, fileName) {
     clearTimeout(saveTimer)
     await autosave({ quiet: true }) // garde le message d'import dans la barre
     let status = fileName ? T('File opened', 'Fichier ouvert') : T('XML imported', 'XML importé')
+    if (encrypted) status = T('Encrypted file opened, not kept in the browser', 'Fichier chiffré ouvert, non gardé dans le navigateur')
     if (laidOut) status += T(', laid out automatically (no diagram layout in the file)', ', rangé automatiquement (pas de partie graphique)')
     if (warnings.length) {
       status += ', ' + warnings.length + (warnings.length > 1 ? T(' warnings', ' avertissements') : T(' warning', ' avertissement')) + T(' (see the console)', ' (voir la console)')
@@ -255,6 +280,31 @@ async function importAndReport(xml, fileName) {
 }
 
 async function importFile(file) {
+  // Fichier chiffré par mot de passe : déchiffré dans la page, puis ouvert comme un .bpmn.
+  if (/\.enc$/i.test(file.name)) {
+    const { isEncrypted, decryptText, askPassword } = await import('./encrypted-file.js')
+    const content = await file.text()
+    if (!isEncrypted(content)) {
+      alert(T('This file is not an encrypted BPMN Pilot diagram.', 'Ce fichier n\'est pas un diagramme BPMN Pilot chiffré.'))
+      return
+    }
+    for (;;) {
+      const password = await askPassword({ fileName: file.name })
+      if (password === null) return
+      try {
+        const xml = await decryptText(content, password)
+        const failure = await importAndReport(xml, file.name.replace(/\.enc$/i, ''), { encrypted: true })
+        if (failure) alert(T('Import failed: ', 'Import impossible : ') + failure)
+        else track('fichier-ouvert', { source: 'chiffre' })
+        return
+      } catch (err) {
+        if (err.message !== 'wrong password') { alert(T('Import failed: ', 'Import impossible : ') + err.message); return }
+        alert(T('Wrong password.', 'Mot de passe incorrect.'))
+      }
+    }
+  }
+  // Un .dmn déposé sur l'éditeur rejoint les décisions du diagramme ouvert (mode Expert).
+  if (/\.dmn$/i.test(file.name)) return decisions.importDmnFile(file)
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
     track('fichier-invalide', { cause: 'format' })
     alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
@@ -283,6 +333,30 @@ setupXmlDialog({
   },
 })
 setupFileDrop({ onFile: importFile })
+
+// Ouvrir > Depuis un tableau : une ligne par étape, convertie sans IA.
+const tableDialog = setupTableDialog({
+  openButton: document.getElementById('btn-import-table'),
+  download: (content, name, ext, type) => download(content, `${name}.${ext}`, type),
+  onCreate: async (xml, name) => {
+    const failure = await importAndReport(xml, name)
+    if (!failure) setStatus(T('Diagram created from the table', 'Diagramme créé depuis le tableau'))
+    track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'tableau' } : { source: 'tableau' })
+    return failure
+  },
+})
+
+// Ouvrir > Grille rôles × tâches : saisie d'atelier, un clic par tâche dans la colonne du rôle.
+setupGridDialog({
+  openButton: document.getElementById('btn-import-grid'),
+  openTable: (rows) => tableDialog.openWith(rows),
+  onCreate: async (xml, name) => {
+    const failure = await importAndReport(xml, name)
+    if (!failure) setStatus(T('Diagram created from the grid', 'Diagramme créé depuis la grille'))
+    track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'grille' } : { source: 'grille' })
+    return failure
+  },
+})
 
 // Ouvrir > Comparer avec un fichier : le fichier choisi à gauche, le diagramme ouvert à droite.
 document.getElementById('btn-compare-file').addEventListener('click', () => {
@@ -326,6 +400,7 @@ const library = setupDiagramLibrary({
   isDirty: () => dirty,
   markClean: () => { dirty = false },
   serverUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/diagrams') : null,
+  openDecisionModel: (item) => decisions.openDecisionModel(item),
 })
 
 // Version docker : le menu Exporter peut aussi déposer les fichiers dans le dossier du serveur.
@@ -394,6 +469,44 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
+// Exporter > BPMN pour Camunda 8 ou 7 (mode Expert) : même diagramme, préparé pour le moteur.
+async function exportCamunda(target, button) {
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ toCamunda }, { xml }] = await Promise.all([import('./export-camunda.js'), modeler.saveXML({ format: true })])
+    const { xml: out, summary } = await toCamunda(modeler.get('moddle'), xml, target)
+    await deliver(out, `${baseName()} - Camunda ${target}`, 'bpmn', 'application/xml')
+    let msg = T(`Exported for Camunda ${target}: ${summary.conditions} condition(s) written`, `Exporté pour Camunda ${target} : ${summary.conditions} condition(s) écrite(s)`)
+    if (summary.converted) msg += T(`, ${summary.converted} assigned task(s) turned into user tasks`, `, ${summary.converted} tâche(s) assignée(s) passée(s) en tâche utilisateur`)
+    if (summary.left) msg += T(`, ${summary.left} branch condition(s) to write in Camunda Modeler`, `, ${summary.left} condition(s) de branche à écrire dans Camunda Modeler`)
+    setStatus(msg)
+    track('export', { format: `camunda-${target}` })
+  } catch (err) {
+    console.error('Camunda export error:', err)
+    alert(T('Camunda export failed: ', 'Export Camunda impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+}
+// Exporter > Fichier .bpmn chiffré : le XML chiffré dans la page avec un mot de passe.
+document.getElementById('btn-save-encrypted').addEventListener('click', async () => {
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const { encryptText, askPassword, ENCRYPTED_EXT } = await import('./encrypted-file.js')
+    const password = await askPassword({ confirm: true })
+    if (password === null) return
+    const { xml } = await modeler.saveXML({ format: true })
+    await deliver(await encryptText(xml, password), baseName(), ENCRYPTED_EXT, 'application/json')
+    track('export', { format: 'bpmn-chiffre' })
+  } catch (err) {
+    console.error('Encryption error:', err)
+    alert(T('Encrypted export failed: ', 'Export chiffré impossible : ') + err.message)
+  }
+})
+document.getElementById('btn-camunda-8').addEventListener('click', (e) => exportCamunda(8, e.currentTarget))
+document.getElementById('btn-camunda-7').addEventListener('click', (e) => exportCamunda(7, e.currentTarget))
+
 // Rapport de processus (menu Expert et outil get_process_report). Il reprend les comptes
 // de la dernière simulation, s'il y en a une.
 const reportName = () => `${baseName()} - ${T('process report', 'rapport de processus')}`
@@ -402,7 +515,17 @@ async function processReport({ simulate = false } = {}) {
   const simulation = simulate ? heatmap.runBatch() : heatmap.getResult()
   const { checkDiagram } = await import('./diagram-checks.js')
   const checks = await checkDiagram(modeler).catch((err) => { console.warn('Quality checks for the report:', err); return null })
-  return buildReport(modeler, { name: baseName(), simulation, checks })
+  const decisionReport = await decisions.report().catch((err) => { console.warn('Decisions for the report:', err); return null })
+  return buildReport(modeler, { name: baseName(), simulation, checks, decisions: decisionReport })
+}
+
+// Export Word : le texte de l'export Markdown, en styles Word, avec l'image du diagramme.
+const DOCX_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+async function wordFile(markdown, report) {
+  const [{ markdownToDocx }, { content }] = await Promise.all([import('./export-docx.js'), renderExport(modeler, 'png')])
+  const png = new Uint8Array(await content.arrayBuffer())
+  const bytes = await markdownToDocx(markdown, { title: report.title, png, imageName: report.title, lang })
+  return new Blob([bytes], { type: DOCX_TYPE })
 }
 
 async function exportReport(format, button) {
@@ -411,6 +534,7 @@ async function exportReport(format, button) {
     if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
     const report = await processReport()
     if (format === 'md') await deliver(reportToMarkdown(report), reportName(), 'md', 'text/markdown')
+    else if (format === 'docx') await deliver(await wordFile(reportToMarkdown(report), report), reportName(), 'docx', DOCX_TYPE)
     else await deliver(await reportToPdf(modeler, report), reportName(), 'pdf', 'application/pdf')
     track('export', { format: `report-${format}` })
   } catch (err) {
@@ -423,6 +547,7 @@ async function exportReport(format, button) {
 // Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
 document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
 document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
+document.getElementById('btn-report-docx').addEventListener('click', (e) => { setExpert(true); exportReport('docx', e.currentTarget) })
 
 // Exporter > Fiches de procédure : une fiche par activité, avec sa documentation.
 async function exportSheets(format, button) {
@@ -432,6 +557,7 @@ async function exportSheets(format, button) {
     const [{ sheetsToMarkdown, sheetsToPdf }, report] = await Promise.all([import('./doc/procedure-sheets.js'), processReport()])
     const name = `${baseName()} - ${T('procedure sheets', 'fiches de procédure')}`
     if (format === 'md') await deliver(sheetsToMarkdown(report), name, 'md', 'text/markdown')
+    else if (format === 'docx') await deliver(await wordFile(sheetsToMarkdown(report), report), name, 'docx', DOCX_TYPE)
     else await deliver(await sheetsToPdf(report), name, 'pdf', 'application/pdf')
     track('export', { format: `sheets-${format}` })
   } catch (err) {
@@ -443,10 +569,45 @@ async function exportSheets(format, button) {
 }
 document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => exportSheets('pdf', e.currentTarget))
 document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
+document.getElementById('btn-sheets-docx').addEventListener('click', (e) => exportSheets('docx', e.currentTarget))
+
+// Exporter > Matrice RACI (Excel) : une ligne par activité, une colonne par rôle.
+document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => {
+  const button = e.currentTarget
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ raciRows }, report] = await Promise.all([import('./raci.js'), processReport()])
+    // Cas normal d'un diagramme sans RACI : on dit quoi remplir, sans parler d'échec.
+    if (!report.raci) {
+      alert(T('No activity has an Accountable (A), Consulted (C) or Informed (I) role yet. Select an activity and fill in the Responsibilities (RACI) group of the Process panel.',
+        'Aucune activité n\'a encore de rôle Approbateur (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.'))
+      return
+    }
+    const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')
+    const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    await deliver(new Blob([bytes], { type }), `${baseName()} - ${T('RACI matrix', 'matrice RACI')}`, 'xlsx', type)
+    track('export', { format: 'raci-xlsx' })
+  } catch (err) {
+    console.error('RACI export error:', err)
+    alert(T('RACI matrix failed: ', 'Matrice RACI impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+})
 
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
 const askCopilot = (text) => window.dispatchEvent(new CustomEvent('bpmn-pilot-copilot-ask', { detail: { text } }))
+// Tables de décision DMN (mode Expert, interrupteur du menu Expert).
+const decisions = setupDecisions({
+  modeler,
+  library,
+  download,
+  baseName,
+  setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
+  askCopilot,
+})
 document.getElementById('btn-ai-probabilities').addEventListener('click', () => {
   setExpert(true)
   const branches = modeler.get('elementRegistry').filter(isBranchFlow)
@@ -462,6 +623,24 @@ document.getElementById('btn-ai-probabilities').addEventListener('click', () => 
     'Propose des probabilités réalistes pour les branches de chaque passerelle de ce diagramme, d\'après les libellés, les conditions et la documentation. ' +
       'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
       'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.'))
+})
+document.getElementById('btn-ai-potential').addEventListener('click', () => {
+  setExpert(true)
+  if (!modeler.get('elementRegistry').find((el) => el.businessObject?.$instanceOf?.('bpmn:Activity'))) {
+    alert(T('The diagram has no activity to rate.', 'Le diagramme n\'a aucune activité à noter.'))
+    return
+  }
+  askCopilot(T(
+    'Rate the AI potential of each activity of this diagram, from its name, lane, documentation, assignee and systems: ' +
+      'automate (an AI agent or automation performs it, with a human review), assist (a human performs it with AI help) or human (judgment, relationship or accountability). ' +
+      'Save it with update_elements (aiPotential and aiPotentialReason: one or two sentences on why and the safeguard needed), without changing anything else. ' +
+      'For each automate or assist activity, also add to its risks field the risks of handing it to AI (error, personal data, missing review…), one per line, and to its controls field the matching controls, one per line, keeping the risks and controls already written. ' +
+      'Then sum up in three lines where AI pays off first, and the risks to frame.',
+    'Note le potentiel d\'IA de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes : ' +
+      'automate (un agent IA ou une automatisation la réalise, avec une revue humaine), assist (un humain la réalise aidé par l\'IA) ou human (jugement, relation ou responsabilité). ' +
+      'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
+      'Pour chaque activité automate ou assist, ajoute aussi dans son champ risks les risques de la confier à l\'IA (erreur, données personnelles, absence de revue…), un par ligne, et dans son champ controls les contrôles correspondants, un par ligne, en gardant les risques et contrôles déjà écrits. ' +
+      'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.'))
 })
 document.getElementById('btn-ai-analysis').addEventListener('click', () => {
   setExpert(true)
@@ -575,8 +754,10 @@ simButton.addEventListener('click', () => {
 {
   const toggleMode = modeler.get('toggleMode')
   const toggle = toggleMode.toggleMode.bind(toggleMode)
-  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !isExpert() ? undefined : toggle(active))
+  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !(isExpert() && isModuleOn('simulation')) ? undefined : toggle(active))
   window.addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && toggleMode._active) toggle(false) })
+  // Module Simulation éteint (src/expert-modules.js) : une simulation en cours s'arrête.
+  window.addEventListener(MODULES_EVENT, () => { if (!isModuleOn('simulation') && toggleMode._active) toggle(false) })
 }
 
 function download(content, filename, type) {
@@ -590,6 +771,7 @@ function download(content, filename, type) {
 
 setupThemeToggle(document.getElementById('btn-theme'))
 setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
+setupExpertModules(document.getElementById('btn-expert-modules'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.
@@ -605,7 +787,8 @@ setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'
 setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
-const heatmap = setupHeatmap(modeler)
+// Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
+const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
 setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
@@ -678,12 +861,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi }) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi })
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

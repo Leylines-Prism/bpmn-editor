@@ -135,3 +135,21 @@ test('a .bpmn file dropped by hand in the folder is listed and can be opened', (
     await store.rename(dropped.id, 'Renamed')
     assert.ok((await readdir(dir)).includes('Renamed.bpmn'))
   }))
+
+test('decision models are kept as .dmn files, listed with their kind', () =>
+  withStore(async (store, dir) => {
+    const DMN = '<?xml version="1.0" encoding="UTF-8"?><definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="d" name="Risk" namespace="x"/>'
+    await store.put('p1', 'Credit', XML)
+    const meta = await store.put('m1', 'Credit', DMN, 'dmn')
+    assert.equal(meta.kind, 'dmn')
+    assert.deepEqual((await readdir(dir)).filter((f) => !f.startsWith('.')).sort(), ['Credit.bpmn', 'Credit.dmn'])
+    const kinds = Object.fromEntries((await store.list()).map((d) => [d.id, d.kind]))
+    assert.deepEqual(kinds, { p1: 'bpmn', m1: 'dmn' })
+    assert.equal((await store.get('m1')).xml, DMN)
+    // Renommer garde l'extension ; un .dmn déposé à la main entre dans la liste.
+    await store.rename('m1', 'Risk rules')
+    assert.ok((await readdir(dir)).includes('Risk rules.dmn'))
+    await writeFile(join(dir, 'Pricing.dmn'), DMN)
+    const adopted = (await store.list()).find((d) => d.name === 'Pricing')
+    assert.equal(adopted.kind, 'dmn')
+  }))

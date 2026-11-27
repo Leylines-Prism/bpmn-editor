@@ -166,6 +166,24 @@ th { font-weight: 600; background: var(--surface-sunken); }
 .note-title { font-weight: 600; color: var(--warm); }
 .note-title + p { margin-top: var(--space-1); }
 
+/* Exemple suivi : encart d'un exemple, avec ses fichiers à télécharger. */
+.note.example { border-left-color: var(--accent); }
+.note.example .note-title { color: var(--accent); }
+.note.example + figure { margin-top: var(--space-3); }
+.example-files { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; }
+.example-file {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px;
+}
+.example-file::before {
+  content: ""; width: 14px; height: 14px; flex: none; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 10l5 5 5-5M5 20h14'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v11M7 10l5 5 5-5M5 20h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.example-all { margin-left: auto; font-size: 14px; }
+table.examples td:first-child { width: 2.5em; color: var(--ink-muted, inherit); }
+table.examples td:last-child .example-file { margin-right: var(--space-3); }
+
 /* Sections dépliables : un bandeau cliquable, avec « Afficher » ou « Masquer »
    et un chevron à droite, pour qu'on comprenne qu'il s'ouvre. */
 details.faq { margin: var(--space-3) 0 var(--space-4); }
@@ -324,6 +342,40 @@ figure.fig-anim img { width: 100%; }
 .kofi-btn:hover { filter: brightness(1.06); }
 .kofi-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .kofi-cup { width: 18px; height: 18px; }
+
+/* Trois parties (Dessiner et partager, Mode Expert, Installer et administrer) : un bandeau
+   ouvre chacune, et le sommaire les regroupe. */
+.part-banner {
+  margin-top: var(--space-12); padding: var(--space-4) 20px;
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  background: var(--accent-soft); position: relative; overflow: hidden;
+}
+.part-banner::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--leyline); }
+.part-banner .part-title { font-size: 20px; line-height: 28px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+.part-banner .part-title .ico { width: 22px; height: 22px; margin: 0; color: var(--accent); }
+.part-banner p + p { margin-top: var(--space-2); }
+.toc .toc-part { margin-top: var(--space-3); }
+.toc .toc-part > span {
+  display: block; padding: 4px var(--space-3); border-left: 2px solid var(--accent);
+  font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--accent);
+}
+.toc .toc-part ol { padding-left: var(--space-3); padding-bottom: var(--space-3); }
+
+/* Deux portes d'entrée sous l'introduction : l'usage simple, puis le mode Expert. */
+.hero .paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-3); margin-top: var(--space-6); }
+.hero .path {
+  display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4);
+  border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised);
+  color: var(--ink); text-decoration: none; transition: border-color 0.15s, transform 0.15s;
+}
+.hero .path:hover { border-color: var(--accent); transform: translateY(-1px); }
+.hero .path:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hero .path .ico { flex: none; width: 22px; height: 22px; margin: 2px 0 0; color: var(--accent); }
+.hero .path > span { display: flex; flex-direction: column; gap: 4px; }
+.hero .path strong { font-size: 16px; line-height: 22px; }
+.hero .path > span > span { color: var(--ink-muted); font-size: 14px; line-height: 20px; }
+.hero + .part-banner { margin-top: var(--space-6); }
+@media (prefers-reduced-motion: reduce) { .hero .path { transition: none; } }
 
 /* Mémo des symboles BPMN */
 .symbols-table td:first-child { width: 44px; text-align: center; }

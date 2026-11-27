@@ -37,8 +37,17 @@ const TOOL_LABELS = {
   update_elements: T('changes', 'modification'),
   style_elements: T('colors and text', 'couleurs et texte'),
   remove_elements: T('removal', 'suppression'),
+  layout_diagram: T('layout', 'mise en page'),
   auto_layout: T('layout', 'mise en page'),
+  move_elements: T('moving shapes', 'déplacement de formes'),
+  duplicate_elements: T('copying shapes', 'copie de formes'),
+  undo: T('undo', 'annulation'),
+  redo: T('redo', 'rétablissement'),
   validate_diagram: 'validation',
+  get_decisions: T('reading the decisions', 'lecture des décisions'),
+  set_decision_table: T('decision table', 'table de décision'),
+  link_decision: T('decision link', 'lien de décision'),
+  test_decision: T('testing the table', 'essai de la table'),
 }
 
 const CSS = `

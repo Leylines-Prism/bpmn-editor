@@ -4,6 +4,9 @@
 //
 // Le diagramme ouvert peut être lié à un diagramme enregistré : « Enregistrer »
 // (ou Ctrl+S) met alors ce dernier à jour. Le lien est retenu par le navigateur.
+//
+// En mode Expert, avec les tables de décision allumées, la liste montre aussi les modèles de
+// décision (.dmn, kind 'dmn') : ils s'ouvrent dans la fenêtre DMN (src/dmn/decision-editor.js).
 
 import { lang, T } from './i18n/lang.js'
 import { addDialogClose } from './dialog-close.js'
@@ -42,11 +45,11 @@ function browserStore() {
     place: 'browser',
     async list() {
       const all = (await run('readonly', (s) => s.getAll())) || []
-      return all.map(({ id, name, updatedAt, size }) => ({ id, name, updatedAt, size }))
+      return all.map(({ id, name, kind, updatedAt, size }) => ({ id, name, kind: kind || 'bpmn', updatedAt, size }))
     },
     get: (id) => run('readonly', (s) => s.get(id)),
-    async put(id, name, xml) {
-      const item = { id, name, xml, updatedAt: new Date().toISOString(), size: new Blob([xml]).size }
+    async put(id, name, xml, kind = 'bpmn') {
+      const item = { id, name, kind, xml, updatedAt: new Date().toISOString(), size: new Blob([xml]).size }
       await run('readwrite', (s) => s.put(item))
       return item
     },
@@ -83,8 +86,8 @@ function serverStore(baseUrl) {
       return data?.diagrams || []
     },
     get: (id) => call('/' + id),
-    put: (id, name, xml) =>
-      call(`/${id}?name=${encodeURIComponent(name)}`, { method: 'PUT', headers: { 'Content-Type': 'application/xml' }, body: xml }),
+    put: (id, name, xml, kind = 'bpmn') =>
+      call(`/${id}?name=${encodeURIComponent(name)}${kind === 'dmn' ? '&kind=dmn' : ''}`, { method: 'PUT', headers: { 'Content-Type': 'application/xml' }, body: xml }),
     rename: (id, name) =>
       call('/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) }),
     remove: (id) => call('/' + id, { method: 'DELETE' }),
@@ -125,7 +128,8 @@ function writeLink(link) {
 // ouvre un diagramme (renvoie un message d'erreur ou rien), setStatus(msg) écrit dans
 // la barre d'outils, isDirty()/markClean() suivent les modifications non enregistrées.
 // serverUrl : adresse de la route /diagrams du serveur, ou rien.
-export function setupDiagramLibrary({ button, getXml, getName, setName, openXml, setStatus, isDirty, markClean, serverUrl }) {
+// openDecisionModel(item) : ouvre un modèle de décision enregistré ({ id, place, name, xml }).
+export function setupDiagramLibrary({ button, getXml, getName, setName, openXml, setStatus, isDirty, markClean, serverUrl, openDecisionModel }) {
   const stores = { browser: browserStore() }
   if (serverUrl) stores.server = serverStore(serverUrl)
   let serverOk = false
@@ -254,9 +258,17 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     for (const row of rows) {
       const tr = document.createElement('tr')
       if (link && row.place === link.place && row.id === link.id) tr.className = 'current'
+      if (row.kind === 'dmn') tr.className = 'dmn-only expert-only'
       const nameCell = document.createElement('td')
       nameCell.className = 'name'
       nameCell.textContent = row.name
+      if (row.kind === 'dmn') {
+        const tag = document.createElement('span')
+        tag.className = 'library-kind'
+        tag.textContent = 'DMN'
+        tag.title = T('Decision model', 'Modèle de décision')
+        nameCell.append(' ', tag)
+      }
       tr.append(nameCell)
       if (stores.server) {
         const where = document.createElement('td')
@@ -322,6 +334,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
   }
 
   async function openRow(row) {
+    if (row.kind === 'dmn') return openDecisionRow(row)
     if (isDirty() && !confirm(T('The current diagram has changes that are not saved in My diagrams. Open the other one anyway?', 'Le diagramme actuel a des modifications non enregistrées dans Mes diagrammes. Ouvrir l\'autre quand même ?'))) return
     say('')
     try {
@@ -337,6 +350,22 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
       markClean()
       setStatus(T(`Opened: “${item.name}”`, `Ouvert : « ${item.name} »`))
       dialog.close()
+    } catch (err) {
+      say(T(`Cannot open it: ${err?.message || err}`, `Ouverture impossible : ${err?.message || err}`), true)
+    }
+  }
+
+  // Modèle de décision : il s'ouvre dans sa propre fenêtre, le diagramme ouvert ne change pas.
+  async function openDecisionRow(row) {
+    say('')
+    try {
+      const item = await stores[row.place].get(row.id)
+      if (!item) {
+        say(T('This decision model no longer exists.', 'Ce modèle de décision n\'existe plus.'), true)
+        return refresh()
+      }
+      dialog.close()
+      openDecisionModel?.({ ...item, id: row.id, place: row.place })
     } catch (err) {
       say(T(`Cannot open it: ${err?.message || err}`, `Ouverture impossible : ${err?.message || err}`), true)
     }
@@ -359,7 +388,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
       if (!keep || !name || name === row.name) return refresh()
       try {
         await stores[row.place].rename(row.id, name)
-        if (link && link.place === row.place && link.id === row.id) setName(name)
+        if (row.kind !== 'dmn' && link && link.place === row.place && link.id === row.id) setName(name)
         say(T(`Renamed: “${name}”`, `Renommé : « ${name} »`))
       } catch (err) {
         say(T(`Rename failed: ${err?.message || err}`, `Échec du renommage : ${err?.message || err}`), true)
@@ -421,6 +450,32 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     unlink() {
       link = null
       writeLink(null)
+    },
+    // Modèles de décision enregistrés : [{ key, place, id, name }].
+    async listDecisionModels() {
+      const found = []
+      for (const store of Object.values(stores)) {
+        try {
+          for (const item of await store.list()) if (item.kind === 'dmn') found.push({ key: `${store.place}:${item.id}`, place: store.place, id: item.id, name: item.name })
+        } catch { /* lieu injoignable : ses modèles ne sont pas proposés */ }
+      }
+      return found.sort((a, b) => a.name.localeCompare(b.name))
+    },
+    getItem: (row) => stores[row.place].get(row.id),
+    // Enregistre un modèle de décision : met à jour `ref` ({ place, id }) s'il est donné, sinon en
+    // crée un, sur le serveur s'il répond, sinon dans le navigateur. Renvoie { place, id, message }.
+    async saveDecisionModel({ ref, name, xml }) {
+      let target = ref && stores[ref.place] ? ref : null
+      if (!target) {
+        let place = 'browser'
+        if (stores.server) {
+          try { await stores.server.list(); place = 'server' } catch { /* serveur injoignable */ }
+        }
+        target = { place, id: newId() }
+      }
+      const clean = cleanName(name || '') || T('Decisions', 'Décisions')
+      await stores[target.place].put(target.id, clean, xml, 'dmn')
+      return { ...target, message: T(`Saved in My diagrams: “${clean}” (${PLACES[target.place]()})`, `Enregistré dans Mes diagrammes : « ${clean} » (${PLACES[target.place]()})`) }
     },
   }
 }

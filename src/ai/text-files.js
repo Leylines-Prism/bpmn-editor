@@ -236,7 +236,8 @@ async function pptxText(zip) {
 const columnIndex = (ref) => [...(/^[A-Z]+/.exec(ref || '')?.[0] || '')].reduce((n, c) => n * 26 + c.charCodeAt(0) - 64, 0) - 1
 
 
-async function xlsxText(zip) {
+// Feuilles d'un classeur Excel : [{ name, rows: [[cellule, …], …] }].
+export async function xlsxSheets(zip) {
   const workbook = await zip.read('xl/workbook.xml')
   if (workbook === null) throw new Error('not an Excel workbook')
   const shared = []
@@ -272,11 +273,17 @@ async function xlsxText(zip) {
         cells[col >= 0 ? col : cells.length] = value
       }
       while (cells.length && !cells[cells.length - 1]) cells.pop()
-      if (cells.length) rows.push(Array.from(cells, (c) => c ?? '').join(' | '))
+      if (cells.length) rows.push(Array.from(cells, (c) => c ?? ''))
     }
-    parts.push(`## Sheet: ${attr(a, 'name') || ''}\n${rows.join('\n')}`)
+    parts.push({ name: attr(a, 'name') || '', rows })
   }
-  return parts.join('\n\n')
+  return parts
+}
+
+async function xlsxText(zip) {
+  return (await xlsxSheets(zip))
+    .map((s) => `## Sheet: ${s.name}\n${s.rows.map((r) => r.join(' | ')).join('\n')}`)
+    .join('\n\n')
 }
 
 async function odfText(zip, ext) {

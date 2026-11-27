@@ -22,6 +22,19 @@ Connected to an agent and everything it knows (mail, wiki, document base, RAG, k
 processes, the editor draws and checks them, and you review the result. No more hours spent on the
 BPMN structure and on drawing by hand.
 
+<table>
+<tr><th width="34%">Your prompt</th><th>The diagram drawn by the AI co-pilot</th></tr>
+<tr>
+<td valign="top">
+
+> Draw a purchase request: the employee enters the request, their manager accepts or rejects it. If accepted, purchasing orders from the supplier, then accounting pays the invoice. If rejected, the employee is told.
+
+<sub>One message, one pass. Lanes, decision, message flows to the supplier pool, then the six checks of the result.</sub>
+</td>
+<td><img src="docs/prompt-example.png" alt="BPMN diagram drawn from the prompt: a Company pool with Employee, Manager, Purchasing and Accounting lanes, an approval decision and message flows to a Supplier pool"></td>
+</tr>
+</table>
+
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), in English and French:
 
 - **Connect an agent through MCP** (Docker version), such as Claude Code, Claude Desktop or GitHub Copilot in
@@ -57,18 +70,8 @@ At home, on your machine or your server, with the MCP server that connects your 
 </tr>
 </table>
 
-**For BPMN experts**, the **Expert** button of the toolbar opens what you need to test a model and
-report on it: the token simulation and the process report. It turns blue while expert mode is on,
-and the toolbar stays uncluttered for everyone else (see the
-[dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts)):
-
-- **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
-  which paths are taken, never reached, or looped through.
-- **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
-  activities by lane.
-- **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
-  points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
-  reimport, bpmnlint), with automatic correction.
+**To draw, nothing more.** The palette, the context pad and the AI co-pilot are enough for a readable
+process diagram, with no knowledge of BPMN. Then come:
 
 **Presentation** (toolbar button): the diagram alone, full screen and read-only, to walk a meeting
 through a process. A pointer menu combines a laser pointer, a highlight of the hovered element and its flows,
@@ -80,7 +83,31 @@ on hover, search covers the documentation, a click in presentation mode shows th
 produces procedure sheets (PDF or Markdown), one per activity in the order of the flow
 (see the [help](https://bpmn.leylines.fr/help.html#documenting)).
 
-The expert tools on an internal purchase process with four lanes:
+**Checks on every co-pilot answer**: a review of the request before drawing (ambiguities, missing
+points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
+reimport, bpmnlint), with automatic correction.
+
+**Expert mode, to test a model.** None of what follows is needed to draw. The **Expert** button of the
+toolbar turns it on, and **Choose modules…** turns on only the functions you use: the editor stays
+uncluttered for everyone else (see the
+[dedicated help section](https://bpmn.leylines.fr/help.html#bpmn-experts)):
+
+- **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
+  which paths are taken, never reached, or looped through.
+- **Process report** as PDF, Markdown or Word: key figures, findings by level, improvement areas, end events,
+  activities by lane, RACI matrix.
+- **AI potential by activity**: automatable, AI-assisted or human, with the reason and the safeguard,
+  rated by the co-pilot or by hand, and listed in the report.
+- **Risks, controls and compliance**: risks and controls for each activity, regulatory references
+  (GDPR, ISO 9001, AI Act…), and a process identity (owner, version, status, scope) at the top of the
+  report and the procedure sheets. The report adds a risk and control table and a compliance matrix.
+- **BPMN for Camunda 8 or 7**: platform set, executable process, gateway conditions in FEEL or JUEL,
+  user tasks with their assignee.
+- **DMN decision tables**: each business rule task links to an editable decision
+  table and its requirements diagram (dmn-js), stored in the .bpmn with the Camunda 8 link (`zeebe:calledDecision`),
+  checked for overlaps and gaps, and written by the co-pilot or an MCP agent on request.
+
+On an internal purchase process with four lanes:
 
 <table>
 <tr>
@@ -370,6 +397,10 @@ Click the **MCP** badge in the toolbar. The "Connect an agent" window gives the 
 (`http://localhost:8080/mcp`, or `https://your-domain/mcp`), and the setting to paste for Claude
 Code, Claude Desktop, GitHub Copilot in VS Code, Cursor or another MCP client. The agent draws in the editor tab used last, so keep it open.
 
+The agent reads and draws the diagram, tidies it up (`layout_diagram`), moves or duplicates specific
+shapes (`move_elements`, `duplicate_elements`), and backs out of a wrong call with `undo` and `redo`, like
+Ctrl+Z and Ctrl+Y. The full list of tools is in [mcp/README.md](mcp/README.md).
+
 A token protects this access: the same window generates one and tells you where to put it. It is
 optional on `localhost`, and required as soon as the editor is served under another name (see
 [Reach it from other machines](#reach-it-from-other-machines)). Without it, the window says that
@@ -416,17 +447,20 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 ## What the editor does
 
-- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF), copy
+### For everyone
+
+- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF, password-encrypted
+  .bpmn file), copy
   as an image, print the diagram alone fitted to one page. The current diagram is restored when you
   come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
+- **Without AI**: build a process from a table of steps (pasted from Excel, .csv or .xlsx, Visio Data
+  Visualizer columns read as they are), or from a roles × tasks grid in a workshop.
+- **Responsibilities**: assignee, systems used and RACI for each activity, plain-words conditions on
+  decision branches. Procedure sheets in PDF, Markdown or Word, RACI matrix in Excel.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
   checking, grid, minimap, and the Process panel for the properties of each
   element.
-- **Expert mode: token simulation, heatmap and process report**: run tokens through the
-  process, with a speed slider. During the simulation, color the diagram by the number of tokens
-  through each element, played by hand or computed from branch probabilities. Export a process report
-  (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
@@ -440,6 +474,25 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   answer.
 - **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer
   screen: on a phone, it is mostly for viewing a diagram.
+
+### Expert mode
+
+Each function is turned on separately in **Expert** > **Choose modules…**.
+
+- **Token simulation, heatmap and process report**: run tokens through the
+  process, with a speed slider. During the simulation, color the diagram by the number of tokens
+  through each element, played by hand or computed from branch probabilities. Export a process report
+  (PDF, Markdown or Word) with the findings in three levels, improvement areas, the element sequence, the RACI matrix and, after a simulation, the heatmap.
+- **AI potential, risks and compliance**: for each activity, its AI potential (automatable, AI-assisted or human,
+  with the reason and the safeguard), its risks and controls, and its regulatory references; a process identity
+  (owner, version, status, validation date, scope). The report adds a risk and control table, a compliance
+  matrix and a finding for each risk without a control.
+- **Camunda 8 and 7 export**: platform set, executable processes, gateway conditions in FEEL or JUEL from the
+  Condition field or the flow label, tasks with an assignee as user tasks.
+- **DMN decision tables**: link business rule tasks to decision tables edited with dmn-js, with the DRD,
+  .dmn import and export, Excel and CSV import and export of a table, decision models in My diagrams, `zeebe:calledDecision` for Camunda 8, table checks
+  (overlaps under Unique, uncovered values, unquoted text), a test bench (rules that apply, one case per rule), a comparison of two versions,
+  computed tokens that follow the tables at gateways, and the MCP tools `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
 
 ## How it differs from draw.io or Lucidchart
 

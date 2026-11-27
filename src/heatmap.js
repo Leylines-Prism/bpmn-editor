@@ -13,6 +13,7 @@
 // que le diagramme ne change pas, et le rapport en tire une page Carte de chaleur.
 
 import { EXPERT_EVENT } from './expert-mode.js'
+import { isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { T, num } from './i18n/lang.js'
 import { runBatch } from './simulation-stats.js'
 import { structureFingerprint } from './copilot-analysis.js'
@@ -61,7 +62,7 @@ export function heatBadge(n, result) {
 const isFlowNode = (el) => el.businessObject?.$instanceOf?.('bpmn:FlowNode') && el.type !== 'label'
 const isSequenceFlow = (el) => el.type === 'bpmn:SequenceFlow'
 
-export function setupHeatmap(modeler) {
+export function setupHeatmap(modeler, { branchHint = () => null } = {}) {
   const canvas = modeler.get('canvas')
   const eventBus = modeler.get('eventBus')
   const elementRegistry = modeler.get('elementRegistry')
@@ -107,10 +108,12 @@ export function setupHeatmap(modeler) {
   toggleButton.addEventListener('click', () => setShown(!shown))
   // Sortie du mode expert : la carte s'efface avec ses boutons.
   addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && shown) setShown(false) })
+  // Module Carte de chaleur éteint (src/expert-modules.js) : la carte s'efface aussi.
+  addEventListener(MODULES_EVENT, () => { if (!isModuleOn('heatmap') && shown) setShown(false) })
   function runTokens() {
     const runs = clampRuns(runsInput.value)
     runsInput.value = runs
-    batch = runBatch(modeler.getDefinitions(), runs)
+    batch = runBatch(modeler.getDefinitions(), runs, Math.random, { branchHint: branchHint() })
     setShown(true)
   }
   runButton.addEventListener('click', runTokens)
@@ -163,6 +166,9 @@ export function setupHeatmap(modeler) {
     render()
   })
 
+  // Changement de plan (entrée dans un sous-processus replié) : on redessine.
+  eventBus.on('root.set', () => { if (simulating) scheduleRender() })
+
   // ── Dessin ──
   function layer() {
     return canvas.getLayer('bpmn-pilot-heatmap', 1)
@@ -204,10 +210,14 @@ export function setupHeatmap(modeler) {
     const max = Math.max(1, ...Object.values(result.nodes))
     const flowMax = Math.max(1, ...Object.values(result.flows))
 
-    for (const el of elementRegistry.getAll()) {
+    // Seulement le plan affiché : l'intérieur d'un sous-processus replié a son propre plan.
+    const root = canvas.getRootElement()
+    const onPlane = (el) => { let p = el; while (p.parent) p = p.parent; return p === root }
+    const onRoot = elementRegistry.getAll().filter(onPlane)
+    for (const el of onRoot) {
       if (isSequenceFlow(el)) drawFlow(g, el, result.flows[el.id] || 0, flowMax)
     }
-    for (const el of elementRegistry.getAll()) {
+    for (const el of onRoot) {
       if (!isFlowNode(el) || !el.width) continue
       const n = result.nodes[el.id] || 0
       drawShape(g, el, n, max)
@@ -276,7 +286,7 @@ export function setupHeatmap(modeler) {
     // Dernier résultat (série calculée, sinon jetons joués), pour le rapport de processus.
     getResult: () => (lastResult && lastResult.runs ? structuredClone(lastResult) : null),
     runBatch: (runs = BATCH_RUNS) => {
-      lastResult = runBatch(modeler.getDefinitions(), runs)
+      lastResult = runBatch(modeler.getDefinitions(), runs, Math.random, { branchHint: branchHint() })
       counted = structureFingerprint(modeler.getDefinitions())
       return structuredClone(lastResult)
     },

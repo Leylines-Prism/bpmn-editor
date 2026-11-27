@@ -74,7 +74,8 @@ each tool you call changes their diagram before their eyes.
 
 // Prépare les outils pour les deux formats d'API, avec le zod fourni.
 export function createToolSet(z) {
-  const tools = buildTools(z)
+  // Les anciens noms gardés pour les agents MCP (mcpOnly) ne sont pas proposés au co-pilote.
+  const tools = buildTools(z).filter((t) => !t.mcpOnly)
   // Schémas zod pour valider les arguments, schémas JSON pour l'API.
   const validators = Object.fromEntries(tools.map((t) => [t.name, z.object(t.inputSchema)]))
   const jsonSchemas = Object.fromEntries(

@@ -6,7 +6,7 @@
 
 import { lang, T } from '../i18n/lang.js'
 import { parseBlocks, parseInline, shiftHeadings } from './markdown.js'
-import { pdfText } from '../process-report.js'
+import { pdfText, identityMarkdown } from '../process-report.js'
 
 // Fiches dans l'ordre : chaque passerelle documentée après l'élément qui la précède.
 export function sheetsOf(report) {
@@ -20,6 +20,15 @@ export function sheetsOf(report) {
   return sheets
 }
 
+// Risques, contrôles et exigences de l'activité (mode Expert), quand ils sont renseignés.
+function complianceFacts(s) {
+  return [
+    [T('Risks', 'Risques'), (s.risks || []).join(' ; ')],
+    [T('Controls', 'Contrôles'), (s.controls || []).join(' ; ')],
+    [T('Requirements', 'Exigences'), (s.requirements || []).join(' ; ')],
+  ].filter(([, v]) => v)
+}
+
 const heading = (s) => (s.number ? `${s.number}. ${s.name}` : s.name)
 const dateText = (date) => date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 const colon = () => T(': ', ' : ')
@@ -31,15 +40,22 @@ export function sheetsToMarkdown(report) {
     '',
     `*${T(`Generated on ${dateText(report.date)} by BPMN Pilot`, `Générées le ${dateText(report.date)} par BPMN Pilot`)}*`,
   ]
+  const identity = identityMarkdown(report.identity)
+  if (identity.length) lines.push('', ...identity.slice(0, -1))
   for (const d of report.processDocs || []) lines.push('', `## ${d.name}`, '', shiftHeadings(d.markdown, 1))
   if (!sheets.length) lines.push('', T('No activity in this diagram.', 'Aucune activité dans ce diagramme.'))
   for (const s of sheets) {
     lines.push('', '---', '', `## ${heading(s)}`, '')
     const facts = [`**Type**${colon()}${s.type}`]
     if (s.lane) facts.push(`**${T('Lane', 'Couloir')}**${colon()}${s.lane}`)
+    if (s.assignee) facts.push(`**${T('Assigned to', 'Assigné à')}**${colon()}${s.assignee}`)
+    if (s.systems) facts.push(`**${T('Systems', 'Systèmes')}**${colon()}${s.systems}`)
+    const raci = [['A', s.accountable], ['C', s.consulted], ['I', s.informed]].filter(([, v]) => v).map(([k, v]) => `${k}${colon()}${v}`)
+    if (raci.length) facts.push(`**RACI**${colon()}${raci.join(', ')}`)
     lines.push(facts.join(' · '))
     if (s.previous?.length) lines.push('', `**${T('Before', 'Avant')}**${colon()}${s.previous.join(' ; ')}`)
     if (s.next) lines.push('', `**${T('Next', 'Ensuite')}**${colon()}${s.next}`)
+    for (const [k, v] of complianceFacts(s)) lines.push('', `**${k}**${colon()}${v}`)
     lines.push('', s.docMarkdown ? shiftHeadings(s.docMarkdown, 1) : `*${T('Documentation to complete.', 'Documentation à compléter.')}*`)
   }
   return lines.join('\n') + '\n'
@@ -164,6 +180,8 @@ export async function sheetsToPdf(report) {
   y += 9
   doc.setDrawColor(...ACCENT).setLineWidth(0.6).line(M, y, M + 40, y)
   y += 8
+  const identity = identityMarkdown(report.identity)
+  if (identity.length) { markdown(identity.join('\n')); y += 3 }
   for (const d of report.processDocs || []) {
     doc.setFont('helvetica', 'bold').setFontSize(13).setTextColor(...INK)
     ensure(10)
@@ -198,12 +216,16 @@ export async function sheetsToPdf(report) {
     doc.setFont('helvetica', 'bold').setFontSize(16).setTextColor(...INK)
     for (const l of doc.splitTextToSize(pdfText(heading(s)), maxW)) { doc.text(l, M, y + 5); y += 7 }
     doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(...MUTED)
-    doc.text(pdfText([s.type, s.lane].filter(Boolean).join(' · ')), M, y + 3)
+    doc.text(pdfText([s.type, s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${colon()}${s.assignee}` : ''].filter(Boolean).join(' · ')), M, y + 3)
     y += 8
     // Avant / Ensuite, dans un encadré.
     const facts = []
     if (s.previous?.length) facts.push([T('Before', 'Avant'), s.previous.join(' ; ')])
     if (s.next) facts.push([T('Next', 'Ensuite'), s.next])
+    if (s.systems) facts.push([T('Systems', 'Systèmes'), s.systems])
+    const raci = [['A', s.accountable], ['C', s.consulted], ['I', s.informed]].filter(([, v]) => v).map(([k, v]) => `${k}${colon()}${v}`)
+    if (raci.length) facts.push(['RACI', raci.join(', ')])
+    facts.push(...complianceFacts(s))
     if (facts.length) {
       const top = y
       y += 5.5
