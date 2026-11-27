@@ -22,6 +22,7 @@ import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
 import { isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { PROCESS_STATUS, identityHolder } from './compliance.js'
 
 const LOW_PRIORITY = 450
@@ -160,8 +161,10 @@ function ConditionEntry(props) {
 
 function RulesPropertiesProvider(propertiesPanel, eventBus) {
   propertiesPanel.registerProvider(LOW_PRIORITY, this)
-  // Les groupes du mode Expert apparaissent ou disparaissent dès qu'on change de mode.
-  window.addEventListener(EXPERT_EVENT, () => eventBus.fire('propertiesPanel.providersChanged'))
+  // Les groupes du mode Expert apparaissent ou disparaissent dès qu'on change de mode ou de modules.
+  const refresh = () => eventBus.fire('propertiesPanel.providersChanged')
+  window.addEventListener(EXPERT_EVENT, refresh)
+  window.addEventListener(MODULES_EVENT, refresh)
 }
 RulesPropertiesProvider.$inject = ['propertiesPanel', 'eventBus']
 
@@ -184,7 +187,7 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
           { id: 'bpmn-pilot-informed', component: InformedEntry, isEdited: isTextFieldEntryEdited },
         ],
       })
-      if (isExpert()) {
+      if (isExpert() && isModuleOn('ai-potential')) {
         groups.push({
           id: 'bpmn-pilot-ai-adoption',
           label: T('AI adoption', 'Adoption de l\'IA'),
@@ -193,6 +196,8 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
             { id: 'bpmn-pilot-ai-reason', component: AiReasonEntry, isEdited: isTextFieldEntryEdited },
           ],
         })
+      }
+      if (isExpert() && isModuleOn('compliance')) {
         groups.push({
           id: 'bpmn-pilot-compliance',
           label: T('Risks and compliance', 'Risques et conformité'),
@@ -204,7 +209,7 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
         })
       }
     }
-    if (isExpert() && isDiagramRoot(element)) {
+    if (isExpert() && isModuleOn('compliance') && isDiagramRoot(element)) {
       groups.splice(1, 0, {
         id: 'bpmn-pilot-identity',
         label: T('Process identity', 'Fiche d\'identité du processus'),

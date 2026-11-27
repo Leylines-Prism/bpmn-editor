@@ -35,6 +35,21 @@ const modules = [
     detail: () => T('Findings, improvement areas and element sequence, as a PDF or Markdown.', 'Constats, axes d\'amélioration et séquence des éléments, en PDF ou en Markdown.'),
   },
   {
+    id: 'ai-potential', icon: 'assistant', default: true, help: ['potentiel-ia', 'ai-potential'],
+    name: () => T('AI potential', 'Potentiel d\'IA'),
+    detail: () => T('Rate each activity: automatable, AI-assisted or human, with the reason and the safeguard.', 'Noter chaque activité : automatisable, assistée par IA ou humaine, avec la raison et le garde-fou.'),
+  },
+  {
+    id: 'compliance', icon: 'lock', default: true, help: ['risques-conformite', 'risks-compliance'],
+    name: () => T('Risks and compliance', 'Risques et conformité'),
+    detail: () => T('Risks, controls and requirements of each activity, and the process identity, with the compliance matrix of the report.', 'Risques, contrôles et exigences de chaque activité, et fiche d\'identité du processus, avec la matrice de conformité du rapport.'),
+  },
+  {
+    id: 'camunda-export', icon: 'engine', default: false, help: ['export-camunda', 'camunda-export'],
+    name: () => T('Camunda export', 'Export pour Camunda'),
+    detail: () => T('BPMN files prepared for Camunda 8 or 7, in the Export menu.', 'Fichiers BPMN préparés pour Camunda 8 ou 7, dans le menu Exporter.'),
+  },
+  {
     id: 'dmn', icon: 'table', default: false, legacyKey: 'bpmn-editor-dmn', help: ['decisions-dmn', 'dmn-decisions'],
     name: () => T('Decision tables (DMN)', 'Tables de décision (DMN)'),
     detail: () => T('Link business rule tasks to DMN decision tables, edited in the app.', 'Relier les tâches de règle métier à des tables de décision DMN, modifiables dans l\'application.'),
