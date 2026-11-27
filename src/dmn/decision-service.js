@@ -55,8 +55,13 @@ export function createDecisionService(modeler) {
   })
 
   modeler.on(['commandStack.changed', 'import.done'], () => {
-    if (getXml() !== cache.xml) eventBus.fire(DECISIONS_CHANGED)
+    if (getXml() !== cache.xml) {
+      eventBus.fire(DECISIONS_CHANGED)
+      getSummary() // garde un résumé à jour pour les lectures synchrones (simulation)
+    }
   })
+  // Résumé déjà lu, s'il correspond au modèle actuel ; null sinon.
+  const cachedSummary = () => (cache.summary && cache.xml === getXml() ? cache.summary : null)
 
   function ruleTaskOf(elementOrId) {
     const element = typeof elementOrId === 'string' ? elementRegistry.get(elementOrId) : elementOrId
@@ -134,6 +139,7 @@ export function createDecisionService(modeler) {
     importDmn,
     createFor,
     setTable,
+    cachedSummary,
     check,
     decisionRefOf: (element) => decisionRefOf(getBusinessObject(element)),
     validate: parseDmn,

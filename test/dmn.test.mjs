@@ -9,6 +9,8 @@ import bpmnpilot from '../src/bpmn-pilot-moddle.json' with { type: 'json' }
 import { setDecisionTable, mergeDmn, summarize, checkDecision, parseEntry, quoteStrings, parseDmn } from '../src/dmn/dmn-model.js'
 import { evaluateDecision, casesPerRule, inputValue } from '../src/dmn/dmn-eval.js'
 import { diffModels } from '../src/dmn/dmn-diff.js'
+import { routingHint, flowValue } from '../src/dmn/decision-routing.js'
+import { runBatch } from '../src/simulation-stats.js'
 import { readDecisionXml, decisionModelUpdates, linkProperties, checkLinks, resultVariable } from '../src/dmn/decision-store.js'
 import { createToolSet, runTool } from '../src/ai/chat-loop.js'
 
@@ -181,6 +183,40 @@ test('comparing two versions lists added, removed, changed and moved rules', asy
   assert.deepEqual(diffModels(before, before).changes, [])
   const { changes: gone } = diffModels(before, { ...after, decisions: [] })
   assert.deepEqual(gone.map((c) => c.change), ['removed'])
+})
+
+const ROUTED = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P">
+    <bpmn:startEvent id="S" /><bpmn:businessRuleTask id="T" /><bpmn:exclusiveGateway id="G" default="fOther" />
+    <bpmn:endEvent id="E1" /><bpmn:endEvent id="E2" /><bpmn:endEvent id="E3" />
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="T" /><bpmn:sequenceFlow id="f2" sourceRef="T" targetRef="G" />
+    <bpmn:sequenceFlow id="fLow" name="Faible" sourceRef="G" targetRef="E1" />
+    <bpmn:sequenceFlow id="fHigh" sourceRef="G" targetRef="E2"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">risque = "élevé"</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="fOther" name="autre" sourceRef="G" targetRef="E3" />
+  </bpmn:process>
+</bpmn:definitions>`
+
+test('computed tokens follow the decision table after a linked business rule task', async () => {
+  const moddle = new BpmnModdle({ bpmnpilot, zeebe })
+  const { rootElement: defs } = await moddle.fromXML(ROUTED)
+  const summary = await summarize((await setDecisionTable('', { ...RISK, rules: [...RISK.rules, { inputs: ['-', 'Pro'], outputs: ['moyen'] }, { inputs: ['< 0', 'Pro'], outputs: ['faible'] }] })).xml)
+  const task = defs.rootElements[0].flowElements.find((e) => e.id === 'T')
+  const hint = routingHint(summary, (bo) => (bo === task ? 'Decision_evaluerLeRisque' : ''))
+  const flows = Object.fromEntries(defs.rootElements[0].flowElements.map((e) => [e.id, e]))
+  assert.equal(flowValue(flows.fHigh, 'risque'), 'élevé')
+  assert.equal(flowValue(flows.fLow, 'risque'), 'faible')
+  // 4 règles : faible ×2, élevé ×1, moyen ×1 (aucun flux ne le nomme : flux par défaut).
+  assert.deepEqual(hint(flows.G, [flows.fLow, flows.fHigh, flows.fOther], [flows.f2]), [0.5, 0.25, 0.25])
+  let n = 0
+  const random = () => ((n = (n * 9301 + 49297) % 233280) / 233280)
+  const result = runBatch(defs, 400, random, { branchHint: hint })
+  assert.ok(result.flows.fLow > result.flows.fHigh && result.flows.fHigh > 50)
+  // Une probabilité posée sur un flux garde la main.
+  flows.fLow.set('bpmnpilot:probability', 90)
+  assert.equal(hint(flows.G, [flows.fLow, flows.fHigh, flows.fOther], [flows.f2]), null)
+  // Sans lien, rien ne change.
+  assert.equal(routingHint(summary, () => '')(flows.G, [flows.fLow, flows.fHigh], [flows.f2]), null)
 })
 
 const toolSet = createToolSet(z)

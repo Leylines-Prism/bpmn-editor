@@ -61,7 +61,7 @@ export function heatBadge(n, result) {
 const isFlowNode = (el) => el.businessObject?.$instanceOf?.('bpmn:FlowNode') && el.type !== 'label'
 const isSequenceFlow = (el) => el.type === 'bpmn:SequenceFlow'
 
-export function setupHeatmap(modeler) {
+export function setupHeatmap(modeler, { branchHint = () => null } = {}) {
   const canvas = modeler.get('canvas')
   const eventBus = modeler.get('eventBus')
   const elementRegistry = modeler.get('elementRegistry')
@@ -110,7 +110,7 @@ export function setupHeatmap(modeler) {
   function runTokens() {
     const runs = clampRuns(runsInput.value)
     runsInput.value = runs
-    batch = runBatch(modeler.getDefinitions(), runs)
+    batch = runBatch(modeler.getDefinitions(), runs, Math.random, { branchHint: branchHint() })
     setShown(true)
   }
   runButton.addEventListener('click', runTokens)
@@ -276,7 +276,7 @@ export function setupHeatmap(modeler) {
     // Dernier résultat (série calculée, sinon jetons joués), pour le rapport de processus.
     getResult: () => (lastResult && lastResult.runs ? structuredClone(lastResult) : null),
     runBatch: (runs = BATCH_RUNS) => {
-      lastResult = runBatch(modeler.getDefinitions(), runs)
+      lastResult = runBatch(modeler.getDefinitions(), runs, Math.random, { branchHint: branchHint() })
       counted = structureFingerprint(modeler.getDefinitions())
       return structuredClone(lastResult)
     },

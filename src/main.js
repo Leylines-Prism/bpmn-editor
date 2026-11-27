@@ -624,7 +624,8 @@ setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'
 setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
-const heatmap = setupHeatmap(modeler)
+// Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
+const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
 setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.

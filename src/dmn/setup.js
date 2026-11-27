@@ -5,7 +5,9 @@ import { T } from '../i18n/lang.js'
 import { createDecisionService } from './decision-service.js'
 import { setupDecisionLinks } from './decision-links.js'
 import { openDecisionEditor } from './decision-editor.js'
-import { setupDmnSwitch, setDmn } from './dmn-switch.js'
+import { setupDmnSwitch, setDmn, isDmnShown } from './dmn-switch.js'
+import { routingHint } from './decision-routing.js'
+import { ruleTasks } from './decision-store.js'
 
 export function setupDecisions({ modeler, library, download, baseName, setStatus, askCopilot }) {
   const service = createDecisionService(modeler)
@@ -165,5 +167,15 @@ export function setupDecisions({ modeler, library, download, baseName, setStatus
     return { summary, findings, calls }
   }
 
-  return { service, open, openDecisionModel, importDmnFile, report, links }
+  // Simulation : poids des passerelles qui suivent une tâche liée à une table (interrupteur DMN allumé).
+  function routing() {
+    if (!isDmnShown()) return null
+    const summary = service.cachedSummary()
+    if (!summary) return null
+    const links = new Map(ruleTasks(modeler.getDefinitions()).map(({ bo, decisionRef }) => [bo, decisionRef]))
+    const variable = (bo) => (bo.extensionElements?.values || []).find((v) => v.$instanceOf?.('zeebe:CalledDecision'))?.resultVariable || ''
+    return routingHint(summary, (bo) => links.get(bo) || '', variable)
+  }
+
+  return { service, open, openDecisionModel, importDmnFile, report, links, routing }
 }
