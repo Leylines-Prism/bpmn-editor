@@ -1,0 +1,43 @@
+# Analyse CodeQL du JavaScript (éditeur, serveur MCP, scripts) : les alertes partent dans
+# Security > Code scanning. Repris du modèle officiel de github/codeql-action.
+# Tourne sur chaque PR, après chaque fusion sur main, et chaque lundi pour les nouvelles requêtes.
+
+name: CodeQL
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '27 5 * * 1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Actions épinglées par empreinte de commit, comme dans les autres workflows.
+
+jobs:
+  analyze:
+    name: Analyze JavaScript
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # envoi des résultats dans Code scanning
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: github/codeql-action/init@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
+        with:
+          languages: javascript-typescript
+          # Rien à compiler : le JavaScript est analysé tel quel.
+          build-mode: none
+
+      - uses: github/codeql-action/analyze@915412ff23e8b7659517e607487dbeae018f2934 # v4.39.5
+        with:
+          category: /language:javascript-typescript

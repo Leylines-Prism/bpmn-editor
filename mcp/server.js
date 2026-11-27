@@ -80,7 +80,7 @@ function buildMcpServer() {
   for (const tool of TOOLS) {
     server.registerTool(
       tool.name,
-      { title: tool.title, description: tool.description, inputSchema: tool.inputSchema },
+      { title: tool.title, description: tool.description, inputSchema: tool.inputSchema, annotations: tool.annotations },
       async (args) => {
         try {
           bridge.noteMcpCall()
