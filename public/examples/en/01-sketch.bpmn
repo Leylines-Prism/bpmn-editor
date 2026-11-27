@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_sketch" name="SD-WAN onboarding" isExecutable="false">
+    <bpmn:startEvent id="start" name="Contract signed">
+      <bpmn:outgoing>Flow_start_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="audit" name="Site survey">
+      <bpmn:incoming>Flow_start_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_audit_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="design" name="HLD and LLD">
+      <bpmn:incoming>Flow_audit_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_design_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="deploy" name="Deploy the CPEs">
+      <bpmn:incoming>Flow_design_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_deploy_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="acceptance" name="Acceptance">
+      <bpmn:incoming>Flow_deploy_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_acceptance_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="run" name="Handover to Run">
+      <bpmn:incoming>Flow_acceptance_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_run_1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="end" name="Service live">
+      <bpmn:incoming>Flow_run_1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_start_1" sourceRef="start" targetRef="audit" />
+    <bpmn:sequenceFlow id="Flow_audit_1" sourceRef="audit" targetRef="design" />
+    <bpmn:sequenceFlow id="Flow_design_1" sourceRef="design" targetRef="deploy" />
+    <bpmn:sequenceFlow id="Flow_deploy_1" sourceRef="deploy" targetRef="acceptance" />
+    <bpmn:sequenceFlow id="Flow_acceptance_1" sourceRef="acceptance" targetRef="run" />
+    <bpmn:sequenceFlow id="Flow_run_1" sourceRef="run" targetRef="end" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_sketch">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_sketch" bpmnElement="Process_sketch">
+      <bpmndi:BPMNShape id="BPMNShape_start" bpmnElement="start">
+        <dc:Bounds x="80" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="67" y="143" width="62" height="28" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_audit" bpmnElement="audit">
+        <dc:Bounds x="216" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_design" bpmnElement="design">
+        <dc:Bounds x="416" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_deploy" bpmnElement="deploy">
+        <dc:Bounds x="616" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_acceptance" bpmnElement="acceptance">
+        <dc:Bounds x="816" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_run" bpmnElement="run">
+        <dc:Bounds x="1016" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_end" bpmnElement="end">
+        <dc:Bounds x="1216" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1191" y="143" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_start_1" bpmnElement="Flow_start_1">
+        <di:waypoint x="116" y="120" />
+        <di:waypoint x="216" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_audit_1" bpmnElement="Flow_audit_1">
+        <di:waypoint x="316" y="120" />
+        <di:waypoint x="416" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_design_1" bpmnElement="Flow_design_1">
+        <di:waypoint x="516" y="120" />
+        <di:waypoint x="616" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_deploy_1" bpmnElement="Flow_deploy_1">
+        <di:waypoint x="716" y="120" />
+        <di:waypoint x="816" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_acceptance_1" bpmnElement="Flow_acceptance_1">
+        <di:waypoint x="916" y="120" />
+        <di:waypoint x="1016" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_Flow_run_1" bpmnElement="Flow_run_1">
+        <di:waypoint x="1116" y="120" />
+        <di:waypoint x="1216" y="120" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -38,6 +38,7 @@
           <li class="toc-part"><span>Draw and share</span>
             <ol>
               <li><a href="#getting-started">Getting started</a></li>
+              <li><a href="#worked-example">Worked example: an SD-WAN project</a></li>
               <li><a href="#drawing">Drawing</a></li>
               <li><a href="#bpmn-symbols">BPMN symbol memo</a></li>
               <li><a href="#colors-text">Colors and text</a></li>
@@ -138,7 +139,38 @@
         <!-- docker -->
         <div class="note">There is no account. Your diagrams stay in your browser, or on your server if you save them there. If you use the co-pilot, only the AI provider receives them, through your server. This version does not measure its audience.</div>
         <!-- /docker -->
+        <!-- example:1 -->
+        <div class="note example" id="example-1"><p class="note-title">Example 1 of 15: the sketch</p><p>Seven shapes placed in two minutes: a start, five steps (site survey, HLD and LLD, CPE deployment, acceptance, handover to Run), an end. It is already a readable process, and the starting point of the whole series.</p><p class="example-files"><a class="example-file" href="examples/en/01-sketch.bpmn" download>01-sketch.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-sketch.webp" width="1600" height="176" alt="The sketch: Contract signed, five tasks in a row, Service live." loading="lazy" /><figcaption>The sketch of the SD-WAN project.</figcaption></figure>
+        <!-- /example -->
       </section>
+      <!-- example:intro -->
+      <section id="worked-example">
+        <h2>Worked example: an SD-WAN project</h2>
+        <p>Néréide Networks, a fictitious network integrator, deploys a managed SD-WAN for a customer with 40 branches. This same process is the example throughout the help and grows from one section to the next: a sketch, then lanes, documentation, a second version with the customer, an AI agent and change management, and finally simulation, the report, compliance, a decision table and the export to an engine.</p>
+        <p>Each file opens in the editor with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>. Examples 9 to 15 need Expert mode.</p>
+        <div class="table-wrap"><table class="examples">
+          <thead><tr><th>#</th><th>Step</th><th>Files</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><a href="#getting-started">The sketch</a></td><td><a class="example-file" href="examples/en/01-sketch.bpmn" download>01-sketch.bpmn</a></td></tr>
+            <tr><td>2</td><td><a href="#drawing">Lanes and decisions</a></td><td><a class="example-file" href="examples/en/02-lanes.bpmn" download>02-lanes.bpmn</a></td></tr>
+            <tr><td>3</td><td><a href="#colors-text">Styling</a></td><td><a class="example-file" href="examples/en/03-styled.bpmn" download>03-styled.bpmn</a></td></tr>
+            <tr><td>4</td><td><a href="#checking">To fix</a></td><td><a class="example-file" href="examples/en/04-to-fix.bpmn" download>04-to-fix.bpmn</a></td></tr>
+            <tr><td>5</td><td><a href="#from-table">From a table</a></td><td><a class="example-file" href="examples/en/05-steps.csv" download>05-steps.csv</a> <a class="example-file" href="examples/en/05-steps.xlsx" download>05-steps.xlsx</a></td></tr>
+            <tr><td>6</td><td><a href="#responsibilities">Documented</a></td><td><a class="example-file" href="examples/en/06-documented.bpmn" download>06-documented.bpmn</a></td></tr>
+            <tr><td>7</td><td><a href="#assistant">The requirements</a></td><td><a class="example-file" href="examples/en/07-requirements.md" download>07-requirements.md</a></td></tr>
+            <tr><td>8</td><td><a href="#prompt-examples">Version 2</a></td><td><a class="example-file" href="examples/en/08-v2-change.bpmn" download>08-v2-change.bpmn</a></td></tr>
+            <tr><td>9</td><td><a href="#heatmap">Simulation and heatmap</a></td><td><a class="example-file" href="examples/en/09-simulation.bpmn" download>09-simulation.bpmn</a></td></tr>
+            <tr><td>10</td><td><a href="#process-report">The report</a></td><td><a class="example-file" href="examples/en/10-report.pdf" download>10-report.pdf</a></td></tr>
+            <tr><td>11</td><td><a href="#ai-potential">AI potential</a></td><td><a class="example-file" href="examples/en/11-ai-potential.bpmn" download>11-ai-potential.bpmn</a></td></tr>
+            <tr><td>12</td><td><a href="#risks-compliance">Risks and compliance</a></td><td><a class="example-file" href="examples/en/12-compliance.bpmn" download>12-compliance.bpmn</a></td></tr>
+            <tr><td>13</td><td><a href="#dmn-decisions">The approval level</a></td><td><a class="example-file" href="examples/en/13-decision.bpmn" download>13-decision.bpmn</a> <a class="example-file" href="examples/en/13-approval-level.dmn" download>13-approval-level.dmn</a> <a class="example-file" href="examples/en/13-approval-level.xlsx" download>13-approval-level.xlsx</a></td></tr>
+            <tr><td>14</td><td><a href="#dmn-files">For Camunda 8</a></td><td><a class="example-file" href="examples/en/14-camunda-8.bpmn" download>14-camunda-8.bpmn</a></td></tr>
+            <tr><td>15</td><td><a href="#experts-mcp">With an MCP agent</a></td><td><a class="example-file" href="examples/en/15-mcp-agent-prompt.md" download>15-mcp-agent-prompt.md</a></td></tr>
+          </tbody>
+        </table></div>
+      </section>
+      <!-- /example -->
 
       <section id="drawing">
         <h2>Drawing</h2>
@@ -192,6 +224,10 @@
           <li><kbd>Ctrl</kbd>+wheel over the minimap zooms the canvas.</li>
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
+        <!-- example:2 -->
+        <div class="note example" id="example-2"><p class="note-title">Example 2 of 15: lanes and decisions</p><p>The sketch gets a pool and four lanes (customer, project manager, network engineering, NOC), two exclusive gateways and their loops: site survey findings to clear, failed post-checks and rollback.</p><p class="example-files"><a class="example-file" href="examples/en/02-lanes.bpmn" download>02-lanes.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-lanes.webp" width="1600" height="616" alt="The process in four lanes, with the Sites ready? and Post-checks passed? gateways and their loops." loading="lazy" /><figcaption>Four lanes, two decisions, two loops.</figcaption></figure>
+        <!-- /example -->
       </section>
       <section id="bpmn-symbols">
         <h2>BPMN symbol memo<span class="ico bpmn-icon-gateway-xor" aria-hidden="true"></span></h2>
@@ -267,6 +303,10 @@
         <p>Each change is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
         <figure><img src="/src/help/img/en-panneau-apparence.webp" width="298" height="732" alt="Style, Shape and Text groups of the Process panel for a task: blue fill and stroke with their hexadecimal codes, bold on, a dark red text dot, the eyedropper painted in the task colors, and that style copied on the Paste style button and in Used in this diagram." loading="lazy" /><figcaption>The Style, Shape and Text groups for a selected task.</figcaption></figure>
         <p>Colors and styles are saved in the .bpmn file following the standard, and other bpmn.io tools read them back. Underline does not show in the PDF export, which also replaces fonts with Helvetica or Times, depending on their family. A font missing from a computer is replaced by a similar one.</p>
+        <!-- example:3 -->
+        <div class="note example" id="example-3"><p class="note-title">Example 3 of 15: styling</p><p>One color per team, the same for fill and outline, and a separate color for the manual steps.</p><p class="example-files"><a class="example-file" href="examples/en/03-styled.bpmn" download>03-styled.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-styled.webp" width="1600" height="616" alt="The same process with one color per lane." loading="lazy" /><figcaption>One color per team.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="checking">
@@ -328,6 +368,10 @@
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
         <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in the <a href="#expert-part">Expert mode</a> part.</p>
+        <!-- example:4 -->
+        <div class="note example" id="example-4"><p class="note-title">Example 4 of 15: to fix</p><p>A version broken on purpose: two flows joining on a task without a gateway, and an "Order the DIA circuits" task connected to nothing. Open it, click the checking counter and fix it until "No issues".</p><p class="example-files"><a class="example-file" href="examples/en/04-to-fix.bpmn" download>04-to-fix.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-broken.webp" width="1600" height="843" alt="The version to fix, with the checking counter showing the errors." loading="lazy" /><figcaption>Errors reported by the checks.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="saving">
@@ -377,6 +421,9 @@
         </div>
         <p>The headers of Microsoft Visio Data Visualizer (Process Step ID, Next Step ID, Connector Label, Shape Type, Function) and the What / Who / How columns are read as they are, in English and in French. The <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Template (.xlsx)</span> button gives a workbook ready to fill in. The editor adds what the diagram lacks: start event, end event, and a merge gateway before a step where several paths join.</p>
         <figure><img src="/src/help/img/en-depuis-tableau.webp" width="720" height="514" alt="Create a process from a table window: six rows pasted from Excel with the columns ID, Description, Next step ID, Connector label, Shape type and Function, and the preview: 6 steps, 6 links, 1 decision, 4 lanes." loading="lazy" /><figcaption>Six rows pasted from Excel, and the preview before creation.</figcaption></figure>
+        <!-- example:5 -->
+        <div class="note example" id="example-5"><p class="note-title">Example 5 of 15: from a table</p><p>The same process written as rows, as you would keep it in Excel. Open the file, copy the rows and paste them into <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>From a table…</span>: you get example 2 back.</p><p class="example-files"><a class="example-file" href="examples/en/05-steps.csv" download>05-steps.csv</a> <a class="example-file" href="examples/en/05-steps.xlsx" download>05-steps.xlsx</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
         <h3 id="roles-grid">Roles × tasks grid (workshop)<span class="ico" data-icon="grid" aria-hidden="true"></span></h3>
         <p>In a workshop, listing is faster than drawing. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid…</span>, shows a grid: roles in columns, tasks in rows, in order. One click in the cell of the role that performs each task is enough. <kbd>Enter</kbd> on the last row adds a task in the same role. A task ending with "?" becomes a decision: Yes leads to the next task, No to an end you can reconnect. <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Continue in the table…</span> carries the grid over to the From a table window, to add branches, labels or types.</p>
         <figure><img src="/src/help/img/en-grille-roles.webp" width="920" height="452" alt="Roles × tasks grid window: three roles in columns (Employee, Manager, Accounting) and four tasks, each checked in the column of its role, including the decision Approve?." loading="lazy" /><figcaption>Four tasks shared between three roles, including a decision.</figcaption></figure>
@@ -542,6 +589,10 @@
           <figure><p class="fig-title">A decision flow</p><img src="/src/help/img/en-condition-flux.webp" width="300" height="530" alt="Process panel of the Yes flow leaving the decision: the Condition field holds Amount &lt; 3000." loading="lazy" /><figcaption>The plain-words condition of a branch.</figcaption></figure>
         </div>
         <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
+        <!-- example:6 -->
+        <div class="note example" id="example-6"><p class="note-title">Example 6 of 15: documented</p><p>Each activity carries its documentation in Markdown (site survey checklist, HLD and LLD, pre-checks, post-checks and rollback criteria, handover pack), its Assignee, its systems and its RACI matrix. Procedure sheets and the RACI matrix export from this file.</p><p class="example-files"><a class="example-file" href="examples/en/06-documented.bpmn" download>06-documented.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-documented.webp" width="1600" height="652" alt="The documented process: the documentation badge on the tasks." loading="lazy" /><figcaption>The documented process.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="assistant">
@@ -627,6 +678,9 @@
 
         <h3>What it costs (API tokens)</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
+        <!-- example:7 -->
+        <div class="note example" id="example-7"><p class="note-title">Example 7 of 15: the requirements</p><p>The customer requirements, fictitious (MPLS context, target design, process expectations, schedule and KPIs), with a ready-to-copy prompt at the end of the file. Attach it in the AI co-pilot chat and compare its drawing with example 6, then with example 8.</p><p class="example-files"><a class="example-file" href="examples/en/07-requirements.md" download>07-requirements.md</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
       </section>
 
       <section id="ai-checks">
@@ -777,6 +831,10 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         </details>
 
         <p>Each answer can be undone in a single step (see <a href="#assistant">See what the co-pilot changed</a>). In the <a href="#docker">Docker version</a>, an MCP agent accepts the same prompts and also provides five built-in prompts.</p>
+        <!-- example:8 -->
+        <div class="note example" id="example-8"><p class="note-title">Example 8 of 15: version 2</p><p>Version 2, as example 7 describes it. The customer becomes a separate pool, linked by message flows. An AI agent generates the ZTP templates, an engineer peer-reviews them, and the cutover goes through a change management subprocess. Compare it with example 6 in <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> (see <a href="#compare">Compare two versions</a>).</p><p class="example-files"><a class="example-file" href="examples/en/08-v2-change.bpmn" download>08-v2-change.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-v2.webp" width="1600" height="686" alt="Version 2: Customer pool linked by message flows, Automation (AI agent) lane and Manage the change subprocess." loading="lazy" /><figcaption>Version 2, two pools and a subprocess.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="keys">
@@ -856,6 +914,10 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <figure class="fig-anim"><p class="fig-title">Computing the map</p><img src="/docs/heatmap.gif" width="1280" height="720" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" loading="lazy" /><figcaption>A probability set on a branch, then 200 tokens computed at once.</figcaption></figure>
           <figure><p class="fig-title">Reading the map</p><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
         </div>
+        <!-- example:9 -->
+        <div class="note example" id="example-9"><p class="note-title">Example 9 of 15: simulation and heatmap</p><p>Version 2 with probabilities on the branches: 20 % of sites with findings at the first site survey, 8 % of cutovers rolled back. Run 1000 tokens and the heatmap shows where the project loops.</p><p class="example-files"><a class="example-file" href="examples/en/09-simulation.bpmn" download>09-simulation.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-simulation.webp" width="1600" height="840" alt="The heatmap after 1000 tokens: Run the site survey in red, reached again through the findings loop." loading="lazy" /><figcaption>The heatmap after 1000 tokens.</figcaption></figure>
+        <!-- /example -->
       </section>
 
       <section id="process-report" class="expert-part">
@@ -879,12 +941,18 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <figure><p class="fig-title">First page</p><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
         </div>
         <p>The report also comes as a Word document, with <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, to rework and put in your organization's style. It grows with what you fill in: the <a href="#process-identity">process identity</a> at the top, the RACI matrix when activities have a <a href="#responsibilities">RACI</a>, the AI potential, the risks and controls and the compliance matrix when they are filled in.</p>
+        <!-- example:10 -->
+        <div class="note example" id="example-10"><p class="note-title">Example 10 of 15: the report</p><p>The process report produced from example 9, as it comes out of the editor.</p><p class="example-files"><a class="example-file" href="examples/en/10-report.pdf" download>10-report.pdf</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
       </section>
 
       <section id="ai-potential" class="expert-part">
         <h2>AI potential by activity (AI adoption)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Where does AI pay off in this process, and with what safeguard? In Expert mode, the Process panel of an activity gains the <span class="ui">AI adoption</span> group: <span class="ui">AI potential</span> (Automatable, by an AI agent with human review; AI-assisted; Human) and <span class="ui">Why, and safeguard</span>. You can fill them by hand, or choose <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span> in the Expert menu: the co-pilot rates each activity from its name, lane, documentation, assignee and systems, saves its rating and reason, then sums up where AI pays off first and the risks to frame. For each automatable or AI-assisted activity, it also adds the risks of handing it to AI and the matching controls, in the <a href="#risks-compliance">Risks and Controls</a> fields, without erasing those already written. The process report lists these ratings in a table, with their reasons.</p>
         <p>This function needs the <span class="ui">AI potential</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
+        <!-- example:11 -->
+        <div class="note example" id="example-11"><p class="note-title">Example 11 of 15: AI potential</p><p>Each activity is rated: automate, assist or human, with the reason. The report sums it up.</p><p class="example-files"><a class="example-file" href="examples/en/11-ai-potential.bpmn" download>11-ai-potential.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
       </section>
 
       <section id="risks-compliance" class="expert-part">
@@ -897,6 +965,9 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         </ul>
         <p>The process report draws two tables from them. <strong>Risks and controls</strong> lists each activity concerned, and marks in yellow the one with risks but no control. It also shows in the findings, at the To complete level. <strong>Compliance matrix</strong> gives, for each requirement cited, the activities that carry it. The procedure sheets show the risks, controls and requirements of each activity. The co-pilot fills them with <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span>, or on request ("list the risks and controls of each activity").</p>
         <figure><img src="/src/help/img/en-risques-conformite.webp" width="300" height="706" alt="Process panel of the Check the request task in Expert mode: Risks and compliance group with the risk Forged receipt, two controls and the requirement ISO 9001 §8.5." loading="lazy" /><figcaption>The Risks and compliance group of an activity.</figcaption></figure>
+        <!-- example:12 -->
+        <div class="note example" id="example-12"><p class="note-title">Example 12 of 15: risks and compliance</p><p>Risks, controls and requirements on the sensitive activities (AI Act art. 14 for the human review of configurations, NIS2 art. 21, ISO 27001, GDPR art. 32), and the process identity card.</p><p class="example-files"><a class="example-file" href="examples/en/12-compliance.bpmn" download>12-compliance.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
         <h3 id="process-identity">Process identity</h3>
         <p>Who answers for the process, and which version is this? In Expert mode, when nothing is selected, the Process panel shows the <span class="ui">Process identity</span> group: <span class="ui">Process owner</span>, <span class="ui">Version</span>, <span class="ui">Status</span> (Draft, In review, Approved, Retired), <span class="ui">Approved on</span> and <span class="ui">Scope</span>. The identity opens the process report and the procedure sheets, in PDF, Markdown and Word. The co-pilot and MCP agents can fill it from your documents.</p>
         <figure><img src="/src/help/img/en-fiche-identite.webp" width="300" height="675" alt="Process panel of the collaboration in Expert mode: Process identity group with the owner Finance director, version 1.2, status Approved, the approval date and the scope." loading="lazy" /><figcaption>The process identity, on the diagram with no selection.</figcaption></figure>
@@ -921,6 +992,11 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <p>A business rule task applies a decision: grant a loan, pick a price, route a request. The DMN standard (Decision Model and Notation, from the OMG, like BPMN) describes that decision as a table: inputs, outputs, and one rule per row. The editor links each business rule task to its table, opens it in dmn-js, the DMN editor from bpmn.io, and stores the decisions in the .bpmn file itself.</p>
         <p>Everything below needs the <span class="ui">Decision tables (DMN)</span> module, turned on from <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>. The browser remembers the setting.</p>
         <figure><img src="/src/help/img/en-dmn-task.webp" width="1250" height="538" alt="An Assess the risk business rule task with its Table marker, and the Decision (DMN) group of the Process panel: linked decision, table summary, Open the table and Unlink buttons." loading="lazy" /><figcaption>A task linked to its table: the marker on the canvas, the Decision (DMN) group in the panel.</figcaption></figure>
+        <!-- example:13 -->
+        <div class="note example" id="example-13"><p class="note-title">Example 13 of 15: the approval level</p><p>In the Manage the change subprocess, a business rule task classifies the RFC (Standard, Normal or CAB) from the business impact and the number of sites in the wave. The table is also provided alone, as .dmn and Excel.</p><p class="example-files"><a class="example-file" href="examples/en/13-decision.bpmn" download>13-decision.bpmn</a> <a class="example-file" href="examples/en/13-approval-level.dmn" download>13-approval-level.dmn</a> <a class="example-file" href="examples/en/13-approval-level.xlsx" download>13-approval-level.xlsx</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <figure><img src="/src/help/img/en-exemple-change.webp" width="1600" height="642" alt="Inside the Manage the change subprocess: RFC raised, Classify the change (business rule task), Level? gateway to Standard, Normal or CAB, then MW scheduling." loading="lazy" /><figcaption>The Manage the change subprocess, opened.</figcaption></figure>
+        <figure><img src="/src/help/img/en-exemple-decision.webp" width="1600" height="535" alt="The Change approval level decision table in the DMN window: two inputs, one output, five rules." loading="lazy" /><figcaption>The approval level table.</figcaption></figure>
+        <!-- /example -->
         <h3 id="dmn-link">Link a task to its table</h3>
         <ul>
           <li>Each business rule task has a marker at its bottom left. Filled, <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Table</span> opens the linked table. Dashed, <span class="uib">+ Table</span> selects the task and opens the Process panel on its <span class="ui">Decision (DMN)</span> group. Red, the linked decision is no longer in the diagram.</li>
@@ -955,6 +1031,9 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span>, opens all the decisions of the diagram on their DRD.</li>
           <li>In <a href="#saving">My diagrams</a>, decision models carry the <span class="ui">DMN</span> tag. Opened on its own, a model is edited and saved with <span class="uib">Save</span>, and <span class="uib">Add to the open diagram</span> copies it into the current process. In the Docker version, they are .dmn files, next to the .bpmn files, in the data folder of the server.</li>
         </ul>
+        <!-- example:14 -->
+        <div class="note example" id="example-14"><p class="note-title">Example 14 of 15: for Camunda 8</p><p>Example 13 exported for Camunda 8: conditions in FEEL, assigned user tasks, called decision. It opens in Camunda Modeler.</p><p class="example-files"><a class="example-file" href="examples/en/14-camunda-8.bpmn" download>14-camunda-8.bpmn</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
         <h3 id="dmn-sheet">Go through a spreadsheet (Excel, CSV)</h3>
         <p><span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Sheet</span>, at the top of the window, acts on the table on screen:</p>
         <ul>
@@ -985,6 +1064,9 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><code>test_decision</code> evaluates a table on input cases, or one case per rule, without changing it.</li>
         </ul>
         <p>These tools answer even when Expert mode is off in the open tab: the mode only sets what the editor shows.</p>
+        <!-- example:15 -->
+        <div class="note example" id="example-15"><p class="note-title">Example 15 of 15: with an MCP agent</p><p>The prompt to give an agent connected to the editor and to the company tools: it reads the procedure and the tickets, draws the process actually followed and reports the gaps.</p><p class="example-files"><a class="example-file" href="examples/en/15-mcp-agent-prompt.md" download>15-mcp-agent-prompt.md</a> <a class="example-all" href="#worked-example">All examples</a></p></div>
+        <!-- /example -->
       </section>
 
       <div class="part-banner" id="setup-part">

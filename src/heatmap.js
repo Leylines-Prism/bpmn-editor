@@ -166,6 +166,9 @@ export function setupHeatmap(modeler, { branchHint = () => null } = {}) {
     render()
   })
 
+  // Changement de plan (entrée dans un sous-processus replié) : on redessine.
+  eventBus.on('root.set', () => { if (simulating) scheduleRender() })
+
   // ── Dessin ──
   function layer() {
     return canvas.getLayer('bpmn-pilot-heatmap', 1)
@@ -207,10 +210,14 @@ export function setupHeatmap(modeler, { branchHint = () => null } = {}) {
     const max = Math.max(1, ...Object.values(result.nodes))
     const flowMax = Math.max(1, ...Object.values(result.flows))
 
-    for (const el of elementRegistry.getAll()) {
+    // Seulement le plan affiché : l'intérieur d'un sous-processus replié a son propre plan.
+    const root = canvas.getRootElement()
+    const onPlane = (el) => { let p = el; while (p.parent) p = p.parent; return p === root }
+    const onRoot = elementRegistry.getAll().filter(onPlane)
+    for (const el of onRoot) {
       if (isSequenceFlow(el)) drawFlow(g, el, result.flows[el.id] || 0, flowMax)
     }
-    for (const el of elementRegistry.getAll()) {
+    for (const el of onRoot) {
       if (!isFlowNode(el) || !el.width) continue
       const n = result.nodes[el.id] || 0
       drawShape(g, el, n, max)

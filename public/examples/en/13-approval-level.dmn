@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_qals6md" name="Change approval level" namespace="http://example.com/dmn">
+  <dmn:decision id="Decision_approvalLevel" name="Change approval level">
+    <dmn:informationRequirement id="InformationRequirement_qidxo08">
+      <dmn:requiredInput href="#InputData_2agv7zy" />
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="InformationRequirement_pxqinsj">
+      <dmn:requiredInput href="#InputData_xzxrc53" />
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="DecisionTable_f1z0rd5">
+      <dmn:input id="Input_ud6dhy0" label="Business impact">
+        <dmn:inputExpression id="InputExpression_j77setc" typeRef="string">
+          <dmn:text>impact</dmn:text>
+        </dmn:inputExpression>
+        <dmn:inputValues id="UnaryTests_c4x2gol">
+          <dmn:text>"low","medium","high"</dmn:text>
+        </dmn:inputValues>
+      </dmn:input>
+      <dmn:input id="Input_hgwf0bo" label="Sites in the wave">
+        <dmn:inputExpression id="InputExpression_lwwoi9z" typeRef="number">
+          <dmn:text>sites</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="Output_v19tzv5" label="Level" name="level" typeRef="string">
+        <dmn:outputValues id="UnaryTests_x8m3uwo">
+          <dmn:text>"Standard","Normal","CAB"</dmn:text>
+        </dmn:outputValues>
+      </dmn:output>
+      <dmn:rule id="Rule_69kj57k">
+        <dmn:description>Pre-approved change model from the catalog</dmn:description>
+        <dmn:inputEntry id="UnaryTests_c35kztl">
+          <dmn:text>"low"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="UnaryTests_c2jlmcn">
+          <dmn:text>&lt;= 5</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="LiteralExpression_qswcd9i">
+          <dmn:text>"Standard"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="Rule_wdc47s3">
+        <dmn:description>Change manager approval</dmn:description>
+        <dmn:inputEntry id="UnaryTests_rlonf40">
+          <dmn:text>"low"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="UnaryTests_dsxh0yj">
+          <dmn:text>&gt; 5</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="LiteralExpression_p9er4ks">
+          <dmn:text>"Normal"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="Rule_ig2xrrw">
+        <dmn:description>Change manager approval</dmn:description>
+        <dmn:inputEntry id="UnaryTests_8l25ddz">
+          <dmn:text>"medium"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="UnaryTests_covrez4">
+          <dmn:text>&lt;= 10</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="LiteralExpression_qifdvva">
+          <dmn:text>"Normal"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="Rule_3y7997p">
+        <dmn:description>Weekly CAB</dmn:description>
+        <dmn:inputEntry id="UnaryTests_s6hnzpi">
+          <dmn:text>"medium"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="UnaryTests_17ymtzr">
+          <dmn:text>&gt; 10</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="LiteralExpression_jlhbhb2">
+          <dmn:text>"CAB"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+      <dmn:rule id="Rule_i778j09">
+        <dmn:description>Always to the CAB, ECAB if urgent</dmn:description>
+        <dmn:inputEntry id="UnaryTests_1juo8oy">
+          <dmn:text>"high"</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="UnaryTests_fn7mubc">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="LiteralExpression_ykkxr58">
+          <dmn:text>"CAB"</dmn:text>
+        </dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="InputData_2agv7zy" name="Business impact" />
+  <dmn:inputData id="InputData_xzxrc53" name="Sites in the wave" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_egppdzf">
+      <dmndi:DMNShape id="DMNShape_Decision_approvalLevel" dmnElementRef="Decision_approvalLevel">
+        <dc:Bounds height="80" width="180" x="120" y="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_InputData_2agv7zy" dmnElementRef="InputData_2agv7zy">
+        <dc:Bounds height="45" width="125" x="67" y="250" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_InformationRequirement_qidxo08" dmnElementRef="InformationRequirement_qidxo08">
+        <di:waypoint x="129" y="250" />
+        <di:waypoint x="210" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DMNShape_InputData_xzxrc53" dmnElementRef="InputData_xzxrc53">
+        <dc:Bounds height="45" width="125" x="227" y="250" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_InformationRequirement_pxqinsj" dmnElementRef="InformationRequirement_pxqinsj">
+        <di:waypoint x="289" y="250" />
+        <di:waypoint x="210" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>
