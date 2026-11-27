@@ -43,7 +43,7 @@ const FR = {
   '#btn-expert': { text: 'Expert', title: 'Mode Expert : simulation de jetons et rapport de processus' },
   '#btn-expert-off': { text: 'Quitter le mode Expert', title: 'Masquer la simulation, la carte de chaleur et les probabilités des branches' },
   '#autosave-status': { text: 'Sauvegarde auto : —' },
-  '#btn-install': { title: 'Installer BPMN-Pilot comme une application', 'aria-label': 'Installer comme une application' },
+  '#btn-install': { title: 'Installer BPMN-Pilot en PWA', 'aria-label': 'Installer la PWA' },
   '#btn-help': { href: 'aide.html', title: "Aide : comment utiliser l'éditeur", 'aria-label': 'Aide' },
   '#btn-properties': { title: 'Masquer le panneau Processus', 'aria-label': 'Masquer le panneau Processus' },
 }

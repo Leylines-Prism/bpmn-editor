@@ -139,11 +139,11 @@ svg.ico { overflow: visible; }
 .uib .ico[class*="bpmn-icon-"] { font-size: 15px; line-height: 15px; }
 .uib svg.ico { width: 15px; height: 15px; }
 td .uib { white-space: normal; height: auto; }
-/* Devant un titre de section qui correspond à un bouton : un peu plus grand, et décollé du texte. */
+/* Après le titre d'une section qui correspond à un bouton : un peu plus grande, et décollée du texte. */
 /* Le titre d'une section repliable passe dans son bouton .sec-toggle (src/help/sections.js) :
    « h2 .ico » vise l'icône dans les deux cas. */
-h3 > .ico { margin: 0 10px 0 0; }
-h2 .ico, h2 .ico[data-icon] { width: 26px; height: 26px; margin: 0 12px 0 0; vertical-align: -4px; }
+h3 > .ico { margin: 0 0 0 10px; }
+h2 .ico, h2 .ico[data-icon] { width: 26px; height: 26px; margin: 0 0 0 12px; vertical-align: -4px; }
 h2 .ico[class*="bpmn-icon-"] { font-size: 26px; line-height: 26px; }
 h3 > .ico { vertical-align: -3px; }
 
@@ -358,3 +358,20 @@ figure.fig-anim img { width: 100%; }
 .hero .path > span > span { color: var(--ink-muted); font-size: 14px; line-height: 20px; }
 .hero + .part-banner { margin-top: var(--space-6); }
 @media (prefers-reduced-motion: reduce) { .hero .path { transition: none; } }
+
+/* Mémo des symboles BPMN */
+.symbols-table td:first-child { width: 44px; text-align: center; }
+.symbols-table td:nth-child(2) { white-space: nowrap; font-weight: 500; }
+.symbols-table tr.fam th { background: transparent; color: var(--accent); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; padding-top: var(--space-4); }
+.symbols-table .ico, .symbol-list .ico, .event-matrix td .ico { font-size: 28px; line-height: 28px; width: 28px; height: 28px; }
+.event-matrix td .ico { font-size: 24px; line-height: 24px; width: 24px; height: 24px; }
+.symbol-list { list-style: none; padding-left: 0; }
+.symbol-list li { margin: 6px 0; }
+.symbol-list li .ico { margin-right: 10px; vertical-align: -8px; }
+.event-matrix { font-size: 13px; line-height: 18px; }
+.event-matrix th, .event-matrix td { text-align: center; vertical-align: middle; padding: 4px; border: 1px solid var(--line); }
+.event-matrix thead th { font-size: 12px; line-height: 15px; }
+.event-matrix tbody th { text-align: left; font-weight: 600; background: var(--surface-sunken); min-width: 120px; }
+.event-matrix tbody th small { display: block; font-weight: 400; color: var(--ink-soft, inherit); opacity: .8; }
+.event-matrix td:empty { background: repeating-linear-gradient(135deg, transparent 0 6px, var(--line) 6px 7px); }
+@media (max-width: 560px) { .symbols-table td:nth-child(2) { white-space: normal; } }

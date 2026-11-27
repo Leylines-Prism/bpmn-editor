@@ -922,7 +922,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     ['gateways', T('gateway', 'passerelle'), T('gateways', 'passerelles')],
     ['events', T('event', 'événement'), T('events', 'événements')],
     ['sequenceFlows', T('sequence flow', 'flux de séquence'), T('sequence flows', 'flux de séquence')],
-    ['messageFlows', T('message flow', 'flux de message'), T('message flows', 'flux de message')],
+    ['messageFlows', T('message flow', 'flux de messages'), T('message flows', 'flux de messages')],
     ['dataObjects', T('data object', 'donnée'), T('data objects', 'données')],
     ['annotations', T('annotation', 'annotation'), T('annotations', 'annotations')],
   ]

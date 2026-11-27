@@ -4,7 +4,7 @@
 //   metamodel   chaque élément et attribut existe dans le métamodèle BPMN 2.0 (bpmn-moddle)
 //   references  les références se résolvent, les identifiants sont uniques, et chaque
 //               liaison reste dans sa portée (flux de séquence dans son processus,
-//               flux de message entre deux pools, événement de bordure à côté de sa tâche)
+//               flux de messages entre deux pools, événement de bordure à côté de sa tâche)
 //   di          chaque élément est dessiné (BPMNShape avec Bounds, BPMNEdge avec 2 points au moins)
 //   reimport    bpmn-js réimporte le document sans avertissement
 //   lint        aucune erreur des règles bpmnlint
