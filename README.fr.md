@@ -464,8 +464,9 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
 - **Tables de décision DMN (mode Expert)** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,
   avec le DRD, l'import et l'export .dmn, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
-  les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets) et les outils MCP
-  `get_decisions`, `set_decision_table`, `link_decision`.
+  les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets), un banc d'essai
+  (règles qui s'appliquent, un cas par règle), la comparaison de deux versions, des jetons calculés qui suivent les tables aux passerelles,
+  et les outils MCP `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
