@@ -21,6 +21,7 @@ import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
 import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
+import { markdownToLine, markdownToPlain, shiftHeadings } from './doc/markdown.js'
 
 const LEVELS = ['error', 'warning', 'todo']
 const LEVEL_LABEL = {
@@ -102,7 +103,9 @@ const isEvent = (bo) => is(bo, 'bpmn:Event')
 const short = (bo) => bo.$type.replace(/^bpmn:/, '')
 const pick = ([en, fr]) => T(en, fr)
 const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim()
-const docOf = (bo) => clean((bo.documentation || []).map((d) => d.text).join(' '))
+// Documentation d'un élément : Markdown d'origine, et sa version sur une ligne pour les tableaux.
+const docSource = (bo) => (bo?.documentation || []).map((d) => d.text || '').filter((t) => t.trim()).join('\n\n').trim()
+const docOf = (bo) => markdownToLine(docSource(bo))
 
 export function typeLabel(bo) {
   const base = TYPE_LABELS[short(bo)] ? pick(TYPE_LABELS[short(bo)]) : short(bo)
@@ -163,6 +166,8 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
   }
   const byId = new Map(nodes.map((n) => [n.id, n]))
   const out = flowIndex(processes).outgoing
+  // Flux entrants, d'après les flux eux-mêmes (un fichier peut omettre <incoming>).
+  const incomingOf = (n) => flows.filter((f) => f.targetRef === n)
 
   // Couloirs : le plus profond qui référence l'élément.
   const laneOf = new Map()
@@ -385,12 +390,39 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     type: typeLabel(n),
     lane: laneName(n),
     documentation: docOf(n),
+    docMarkdown: docSource(n),
+    previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
     needsDoc: isActivity(n) && !is(n, 'bpmn:SubProcess'),
     next: describeNext(n),
     count: simulation?.runs ? simulation.nodes[n.id] || 0 : null,
     level: worst.get(n.id) || null,
     tags: [...new Set(findings.filter((f) => (f.elements || [f.element]).some((e) => e?.id === n.id)).map((f) => `${f.level}|${f.title}`))]
       .map((s) => { const [level, title] = s.split('|'); return { level, title } }),
+  }))
+
+  // Passerelles documentées (elles ne sont pas numérotées) : chacune suit l'élément
+  // numéroté qui la précède, pour les fiches de procédure.
+  const numberedBefore = (g, seen = new Set()) => {
+    for (const f of incomingOf(g)) {
+      const src = f.sourceRef
+      if (!src || seen.has(src.id)) continue
+      seen.add(src.id)
+      if (number.has(src.id)) return number.get(src.id)
+      if (isGateway(src)) {
+        const n = numberedBefore(src, seen)
+        if (n) return n
+      }
+    }
+    return 0
+  }
+  const gatewayDocs = nodes.filter((n) => isGateway(n) && docSource(n)).map((g) => ({
+    id: g.id,
+    name: clean(g.name) || typeLabel(g),
+    type: typeLabel(g),
+    lane: laneName(g),
+    docMarkdown: docSource(g),
+    next: describeNext(g),
+    after: numberedBefore(g),
   }))
 
   const ends = nodes.filter((n) => is(n, 'bpmn:EndEvent') && processes.includes(n.$parent)).map((n) => ({
@@ -489,6 +521,11 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     ends,
     lanes: laneRows,
     sequence,
+    gatewayDocs,
+    // Documentation des réserves et des processus, en tête des fiches et du rapport.
+    processDocs: [...participants, ...processes]
+      .map((bo) => ({ name: clean(bo.name) || typeLabel(bo), markdown: docSource(bo) }))
+      .filter((d) => d.markdown),
     simulation: simulation?.runs
       ? { runs: simulation.runs, source: simulation.source, truncated: simulation.truncated || 0, nodes: { ...simulation.nodes }, flows: { ...simulation.flows } }
       : null,
@@ -692,6 +729,13 @@ export function reportToMarkdown(r) {
     lines.push(`| ${s.number} | ${mdCell(s.name)}${flag} | ${mdCell(s.type)} | ${mdCell(s.lane)} | ${mdCell(doc)} | ${mdCell(s.next)} |${r.simulation ? ` ${s.count} |` : ''}`)
   }
   if (r.simulation) lines.push('', T(`Instances: tokens counted at the last simulation (${num(r.simulation.runs)} instances).`, `Instances : jetons comptés lors de la dernière simulation (${num(r.simulation.runs)} instances).`))
+  // La documentation entière, mise en forme : le tableau n'en montre qu'une ligne.
+  const documented = r.sequence.filter((s) => s.docMarkdown)
+  if (r.processDocs.length || documented.length) {
+    lines.push('', `## ${T('Documentation of the elements', 'Documentation des éléments')}`)
+    for (const d of r.processDocs) lines.push('', `### ${d.name}`, '', shiftHeadings(d.markdown, 2))
+    for (const s of documented) lines.push('', `### ${s.number}. ${s.name}`, '', shiftHeadings(s.docMarkdown, 2))
+  }
   return lines.join('\n') + '\n'
 }
 
@@ -718,7 +762,7 @@ function dateText(date) {
 // ── PDF ─────────────────────────────────────────────────────────────────────
 
 // Les polices standard de jsPDF (WinAnsi) n'ont ni les espaces fines insécables ni la flèche.
-const pdfText = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/\u2192/g, '>')
+export const pdfText = (s) => String(s ?? '').replace(/[\u202f\u00a0\u2009]/g, ' ').replace(/\u2192/g, '>')
 
 function hex(c) {
   const v = parseInt(c.slice(1), 16)
@@ -1072,7 +1116,7 @@ export async function reportToPdf(modeler, r) {
       pdfText(s.name + (s.tags.length ? '\n' + s.tags.map((t) => t.title).join(', ') : '')),
       pdfText(s.type),
       pdfText(s.lane),
-      pdfText(s.documentation || (s.needsDoc ? T('to complete', 'à compléter') : '–')),
+      pdfText(s.docMarkdown ? markdownToPlain(s.docMarkdown) : s.needsDoc ? T('to complete', 'à compléter') : '–'),
       pdfText(s.next || '–'),
       ...(r.simulation ? [String(s.count)] : []),
     ]),

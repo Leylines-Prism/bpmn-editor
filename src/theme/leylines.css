@@ -1427,7 +1427,7 @@ dialog .dlg-head h2 { flex: 1; min-width: 0; margin-bottom: 0; }
 dialog .dlg-close { flex: none; font-size: 20px; }
 
 /* ── Mode présentation (src/presentation.js) : le schéma seul, en plein écran ── */
-body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(#presentation-fx):not(dialog) { display: none !important; }
+body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(#presentation-fx):not(#presentation-doc):not(dialog) { display: none !important; }
 body.presenting #main { padding: 0; gap: 0; }
 body.presenting #main > :not(#canvas) { display: none !important; }
 body.presenting #canvas { border: 0; border-radius: 0; box-shadow: none; }

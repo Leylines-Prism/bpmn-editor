@@ -92,9 +92,10 @@ export function buildTools(z) {
       name: 'get_shapes',
       title: 'Read the diagram elements',
       description:
-        'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows) and connections (id, type, name, source, target). ' +
+        'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows, documentation) and connections (id, type, name, source, target). ' +
+        'Documentation is the Markdown text the user wrote about the element (shortened past 1,500 characters): use it to answer questions about the process. ' +
         'Call it before changing an existing diagram: the other tools take these ids. Read-only. ' +
-        'For the full BPMN content (conditions, documentation, extensions) use get_diagram_xml; to see the layout, get_diagram_image.',
+        'For the full BPMN content (conditions, full documentation, extensions) use get_diagram_xml; to see the layout, get_diagram_image.',
       inputSchema: {},
       annotations: READ,
     },
@@ -236,7 +237,7 @@ export function buildTools(z) {
               name: z.string().optional().describe('New label. Empty string to clear it'),
               type: bpmnType.optional(),
               eventDefinition: eventDefinition.optional(),
-              documentation: z.string().max(4000).optional().describe('Text of the Documentation field. Empty string to clear it'),
+              documentation: z.string().max(4000).optional().describe('Text of the Documentation field, in Markdown (## headings, - lists, **bold**, [links](https://…)). It replaces the whole field: to complete a documentation, send the existing text with your additions. Empty string to clear it'),
               probability: z
                 .number()
                 .min(0)

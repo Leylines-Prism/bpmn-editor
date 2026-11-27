@@ -76,6 +76,12 @@ and the toolbar stays uncluttered for everyone else (see the
 through a process. A pointer menu combines a laser pointer, a highlight of the hovered element and its flows,
 a ripple on click and a cursor that hides when still (keys 1 to 4). In Expert mode, the token simulation runs there too.
 
+**Element documentation**: write it in Markdown with a live preview, start from a template per element type,
+dictate it on the device, or let the AI co-pilot draft it from the diagram. Markers show documented elements with a preview
+on hover, search covers the documentation, a click in presentation mode shows the element's sheet, and the Export menu
+produces procedure sheets (PDF or Markdown), one per activity in the order of the flow
+(see the [help](https://bpmn.leylines.fr/help.html#documenting)).
+
 The expert tools on an internal purchase process with four lanes:
 
 <table>
