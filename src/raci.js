@@ -11,12 +11,20 @@ const list = (s) => String(s ?? '').split(/[,;]/).map((x) => x.replace(/\s+/g, '
 export function buildRaci(sequence) {
   const rows = sequence.filter((s) => s.activity)
   if (!rows.some((s) => s.accountable || s.consulted || s.informed)) return null
+  // Un même rôle écrit avec une autre casse (« Ventes », « ventes ») : une seule colonne,
+  // sous la première écriture rencontrée.
   const roles = []
-  const add = (role) => { if (role && !roles.includes(role)) roles.push(role) }
+  const byKey = new Map()
+  const add = (role) => {
+    const key = role.toLowerCase()
+    if (!byKey.has(key)) { byKey.set(key, role); roles.push(role) }
+    return byKey.get(key)
+  }
   const out = rows.map((s) => {
     const cells = new Map()
-    const put = (role, letter) => {
-      add(role)
+    const put = (name, letter) => {
+      if (!name) return
+      const role = add(name)
       const now = cells.get(role) || ''
       if (!now.includes(letter)) cells.set(role, now ? `${now}/${letter}` : letter)
     }

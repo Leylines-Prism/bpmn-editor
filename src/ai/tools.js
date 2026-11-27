@@ -94,6 +94,7 @@ export function buildTools(z) {
       description:
         'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows, documentation) and connections (id, type, name, source, target). ' +
         'Documentation is the Markdown text the user wrote about the element (shortened past 1,500 characters): use it to answer questions about the process. ' +
+        'Filled-in fields are included too (assignee, systems, RACI roles, AI potential, risks, controls, requirements, branch condition and probability), and the root carries the process identity: read them before completing them with update_elements, which replaces a field as a whole. ' +
         'Call it before changing an existing diagram: the other tools take these ids. Read-only. ' +
         'For the full BPMN content (conditions, full documentation, extensions) use get_diagram_xml; to see the layout, get_diagram_image.',
       inputSchema: {},
@@ -227,7 +228,7 @@ export function buildTools(z) {
       description:
         'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
         'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls and regulatory requirements of an activity. ' +
-        'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_diagram), it fills in the process identity: owner, version, status, approval date, scope. ' +
+        'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_shapes), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
         'For colors and fonts use style_elements; to move shapes, auto_layout. The user can undo the call with Ctrl+Z.',
       annotations: edit(false, false),

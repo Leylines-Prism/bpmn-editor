@@ -8,7 +8,9 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { isBranchFlow } from './probability-panel.js'
 import { isConditionalFlow } from './rules-panel.js'
-import { IDENTITY_FIELDS } from './compliance.js'
+import { IDENTITY_FIELDS, identityHolder } from './compliance.js'
+
+const PILOT_FIELDS = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements', 'probability']
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
@@ -225,6 +227,12 @@ function buildTools(modeler, exportDiagram, processReport) {
     return element
   }
 
+  // Fiche d'identité du processus, sur la racine : seulement les champs remplis.
+  function identityFields(root) {
+    const holder = identityHolder(getBusinessObject(root))
+    return Object.fromEntries(IDENTITY_FIELDS.map((k) => [k, holder?.get?.(`bpmnpilot:${k}`)]).filter(([, v]) => v))
+  }
+
   function describe(element) {
     const bo = getBusinessObject(element)
     const out = { id: element.id, type: element.type }
@@ -238,6 +246,13 @@ function buildTools(modeler, exportDiagram, processReport) {
     // Documentation (Markdown) : le Co-pilote s'appuie dessus pour répondre et rédiger.
     const documentation = (bo.documentation || []).map((d) => d.text || '').join('\n\n').trim()
     if (documentation) out.documentation = documentation.length > 1500 ? documentation.slice(0, 1500) + '…' : documentation
+    // Champs BPMN-Pilot renseignés : l'IA les lit avant de les compléter, sans les écraser.
+    for (const k of PILOT_FIELDS) {
+      const v = bo.get?.(`bpmnpilot:${k}`)
+      if (v !== undefined && v !== null && v !== '') out[k] = v
+    }
+    const condition = bo.conditionExpression?.body?.trim()
+    if (condition) out.condition = condition
     if (element.waypoints) {
       out.source = element.source?.id
       out.target = element.target?.id
@@ -394,7 +409,7 @@ function buildTools(modeler, exportDiagram, processReport) {
       const root = canvas.getRootElement()
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== root)
       return {
-        root: { id: root.id, type: root.type },
+        root: { id: root.id, type: root.type, ...identityFields(root) },
         shapes: elements.filter((e) => !e.waypoints).map(describe),
         connections: elements.filter((e) => e.waypoints).map(describe),
       }
@@ -553,7 +568,7 @@ function buildTools(modeler, exportDiagram, processReport) {
             if (other.length || !fields.length) throw new Error(`The diagram root ${spec.id} takes only the process identity: ${IDENTITY_FIELDS.join(', ')}`)
             const props = {}
             for (const k of fields) props[`bpmnpilot:${k}`] = typeof spec[k] === 'string' ? spec[k].trim() || undefined : spec[k] ?? undefined
-            modeling.updateModdleProperties(root, getBusinessObject(root), props)
+            modeling.updateModdleProperties(root, identityHolder(getBusinessObject(root)), props)
             updated.push({ previousId: spec.id, id: root.id, type: root.type, identity: fields })
             continue
           }

@@ -20,7 +20,8 @@ export function gridToRows(roles, tasks) {
   const extra = []
   list.forEach((t, i) => {
     const label = t.label.trim()
-    const role = roles[t.role]?.trim() || ''
+    // Un rôle laissé sans nom garde le nom affiché dans sa colonne (« Rôle 3 »).
+    const role = roles[t.role]?.trim() || T(`Role ${t.role + 1}`, `Rôle ${t.role + 1}`)
     const next = i + 1 < list.length ? String(i + 2) : ''
     if (/\?\s*$/.test(label)) {
       const no = `N${i + 1}`

@@ -121,7 +121,7 @@ const GATEWAY = `<?xml version="1.0" encoding="UTF-8"?>
 
 test('Camunda 8 export: platform, executable, FEEL conditions from labels, Camunda user task', async () => {
   const { xml, summary } = await toCamunda(new BpmnModdle({ bpmnpilot: pilot }), GATEWAY, 8)
-  assert.deepEqual(summary, { processes: 1, conditions: 1, userTasks: 1, assignees: 1, left: 1 })
+  assert.deepEqual(summary, { processes: 1, conditions: 1, userTasks: 1, assignees: 1, converted: 0, left: 1 })
   assert.match(xml, /modeler:executionPlatform="Camunda Cloud"/)
   assert.match(xml, /modeler:executionPlatformVersion="8\.\d+\.\d+"/)
   assert.match(xml, /isExecutable="true"/)
@@ -160,6 +160,33 @@ test('plain-language conditions are translated to FEEL and JUEL, or left to comp
     '<bpmn:sequenceFlow id="F2" name="Advance &lt; 3000" sourceRef="G" targetRef="E"><bpmn:conditionExpression>Advance &lt; 3000</bpmn:conditionExpression></bpmn:sequenceFlow>')
   const { xml: out } = await toCamunda(new BpmnModdle({ bpmnpilot: pilot }), xml, 8)
   assert.match(out, /=advance &lt; 3000/)
+  // Amounts with spaces, units and thousand separators.
+  assert.equal(translateCondition(8, 'Montant < 3 000 €'), '=montant < 3000')
+  assert.equal(translateCondition(8, 'Amount > 1,000'), '=amount > 1000')
+  assert.equal(translateCondition(8, 'Taux >= 12,5 %'), '=taux >= 12.5')
+})
+
+test('Camunda export: rules in labels are translated, unreadable rules are not written, assigned tasks become user tasks', async () => {
+  const table = readTable([['ID', 'Description', 'Next step ID', 'Connector label', 'Shape type', 'Function', 'Assigned to'],
+    ['1', 'Check', '2', '', '', 'Managers', 'Jane'], ['2', 'Amount?', '3,4', 'Amount < 3000;Amount >= 3000', 'Decision', 'Managers', ''],
+    ['3', 'Pay', '5', '', '', 'Accounting', ''], ['4', 'CFO approval', '5', '', '', 'Finance', ''], ['5', 'Done', '', '', 'End', 'Accounting', '']])
+  const { xml, summary } = await toCamunda(new BpmnModdle({ bpmnpilot: pilot }), tableToXml(table), 7)
+  assert.equal(summary.conditions, 2)
+  assert.equal(summary.converted, 1)
+  assert.match(xml, /\$\{amount &lt; 3000\}/)
+  assert.match(xml, /\$\{amount &gt;= 3000\}/)
+  const { rootElement, warnings } = await new BpmnModdle({ camunda }).fromXML(xml)
+  assert.deepEqual(warnings, [])
+  const check = rootElement.rootElements.find((e) => e.$type === 'bpmn:Process').flowElements.find((e) => e.name === 'Check')
+  assert.equal(check.$type, 'bpmn:UserTask')
+  assert.equal(check.assignee, 'Jane')
+  // A plain-language condition the engine could not read stays in the label only.
+  const vague = GATEWAY.replace('<bpmn:sequenceFlow id="F5" sourceRef="G" targetRef="E" />',
+    '<bpmn:sequenceFlow id="F5" sourceRef="G" targetRef="E"><bpmn:conditionExpression>if the customer asks</bpmn:conditionExpression></bpmn:sequenceFlow>')
+  const r = await toCamunda(new BpmnModdle({ bpmnpilot: pilot }), vague, 8)
+  assert.equal(r.summary.left, 1)
+  assert.doesNotMatch(r.xml, />if the customer asks</)
+  assert.match(r.xml, /id="F5" name="if the customer asks"/)
 })
 
 test('the Assigned to column of a table lands on the tasks', async () => {
@@ -198,4 +225,17 @@ test('an encrypted .bpmn file opens only with its password', async () => {
   await assert.rejects(decryptText(box, 'wrong horse!'), /wrong password/)
   await assert.rejects(encryptText('x', 'short'), /too short/)
   assert.equal(isEncrypted('<?xml version="1.0"?>'), false)
+})
+
+test('connector labels keep numbers with commas and slashes, and split on semicolons', () => {
+  const table = readTable([['ID', 'Description', 'Next step ID', 'Connector label', 'Shape type'],
+    ['1', 'Start', '2', '', 'Start'],
+    ['2', 'Amount?', '3,4', '< 1,000; >= 1,000', 'Decision'],
+    ['3', 'Answer?', '5,6', 'Yes/No, Other', 'Decision'],
+    ['4', 'Pay', '5', '', 'Process'],
+    ['5', 'End A', '', '', 'End'],
+    ['6', 'End B', '', '', 'End'],
+  ])
+  assert.deepEqual(table.steps.find((s) => s.key === '2').flowLabels, ['< 1,000', '>= 1,000'])
+  assert.deepEqual(table.steps.find((s) => s.key === '3').flowLabels, ['Yes/No', 'Other'])
 })

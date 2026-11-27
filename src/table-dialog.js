@@ -50,9 +50,10 @@ export function setupTableDialog({ openButton, onCreate, download }) {
     error.textContent = ''
     if (!rows || !rows.length) { preview.innerHTML = ''; create.disabled = true; return null }
     const table = readTable(rows, T)
-    const gateways = table.steps.filter((s) => /Gateway$/.test(s.type)).length
+    const gateways = table.steps.filter((s) => /(Exclusive|Inclusive)Gateway$/.test(s.type)).length
+    const parallel = table.steps.filter((s) => /ParallelGateway$/.test(s.type)).length
     const summary = table.steps.length
-      ? `<strong>${T(`${num(table.steps.length)} step(s)`, `${num(table.steps.length)} étape(s)`)}</strong>, ${T(`${num(table.flows.length)} link(s)`, `${num(table.flows.length)} lien(s)`)}, ${T(`${num(gateways)} decision(s)`, `${num(gateways)} décision(s)`)}${table.lanes.length ? `, ${T(`${num(table.lanes.length)} lane(s)`, `${num(table.lanes.length)} couloir(s)`)}${T(': ', ' : ')}${table.lanes.map(esc).join(', ')}` : ''}`
+      ? `<strong>${T(`${num(table.steps.length)} step(s)`, `${num(table.steps.length)} étape(s)`)}</strong>, ${T(`${num(table.flows.length)} link(s)`, `${num(table.flows.length)} lien(s)`)}, ${T(`${num(gateways)} decision(s)`, `${num(gateways)} décision(s)`)}${parallel ? `, ${T(`${num(parallel)} parallel split(s)`, `${num(parallel)} branchement(s) parallèle(s)`)}` : ''}${table.lanes.length ? `, ${T(`${num(table.lanes.length)} lane(s)`, `${num(table.lanes.length)} couloir(s)`)}${T(': ', ' : ')}${table.lanes.map(esc).join(', ')}` : ''}`
       : ''
     const items = [
       ...table.errors.map((e) => `<li class="err">${esc(e)}</li>`),

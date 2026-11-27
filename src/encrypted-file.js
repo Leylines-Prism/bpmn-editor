@@ -46,7 +46,10 @@ export async function decryptText(content, password) {
   let box
   try { box = JSON.parse(content) } catch { throw new Error('not an encrypted BPMN Pilot file') }
   if (box?.format !== FORMAT || box.version !== 1) throw new Error('not an encrypted BPMN Pilot file')
-  const key = await deriveKey(password, unb64(box.salt), Number(box.iterations) || ITERATIONS)
+  // Nombre de tours lu dans le fichier : borné, pour qu'un fichier forgé ne bloque pas l'onglet.
+  const iterations = Number(box.iterations)
+  if (!Number.isInteger(iterations) || iterations < 100000 || iterations > 10000000) throw new Error('not an encrypted BPMN Pilot file')
+  const key = await deriveKey(password, unb64(box.salt), iterations)
   try {
     const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(box.iv) }, key, unb64(box.data))
     return new TextDecoder().decode(plain)
@@ -76,7 +79,7 @@ export function askPassword({ confirm = false, fileName = '' } = {}) {
     dialog.querySelector('.hint').textContent = confirm
       ? T(`Encrypted in your browser (AES-256). The password is neither kept nor sent: if it is lost, the file can no longer be opened. At least ${MIN_LENGTH} characters. Only BPMN Pilot opens this file.`,
         `Chiffré dans votre navigateur (AES-256). Le mot de passe n'est ni gardé ni envoyé : perdu, le fichier ne s'ouvre plus. ${MIN_LENGTH} caractères au moins. Seul BPMN Pilot ouvre ce fichier.`)
-      : T(`${fileName} is encrypted. Enter its password; it is used in your browser only.`, `${fileName} est chiffré. Saisissez son mot de passe : il ne sert que dans votre navigateur.`)
+      : T(`${fileName} is encrypted. Enter its password; it is used in your browser only. Once opened, the diagram is not kept in the browser's automatic save.`, `${fileName} est chiffré. Saisissez son mot de passe : il ne sert que dans votre navigateur. Une fois ouvert, le diagramme n'est pas gardé dans la sauvegarde automatique du navigateur.`)
     addDialogClose(dialog)
     document.body.appendChild(dialog)
     const error = dialog.querySelector('.error')

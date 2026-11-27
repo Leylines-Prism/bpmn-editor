@@ -4,7 +4,7 @@
 //   l'activité, en plus du couloir. Attribut bpmnpilot:assignee, repris par le rapport,
 //   les fiches de procédure, le tableau d'import et l'export pour Camunda.
 // - « Systèmes utilisés » (bpmnpilot:systems) et le groupe « Responsabilités (RACI) » :
-//   Valide (A), Consultés (C), Informés (I), qui donnent la matrice RACI du rapport.
+//   Approbateur (A), Consultés (C), Informés (I), qui donnent la matrice RACI du rapport.
 // - « Condition », sur les flux qui sortent d'une passerelle exclusive ou inclusive :
 //   la règle en clair (« Avance < 3000 »), rangée dans bpmn:conditionExpression, l'élément
 //   standard que les autres outils lisent. Tant que le flux n'a pas de libellé (ou que son
@@ -21,8 +21,8 @@ import { TextFieldEntry, TextAreaEntry, SelectEntry, isTextFieldEntryEdited, isT
 import { useService } from 'bpmn-js-properties-panel'
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T } from './i18n/lang.js'
-import { isExpert } from './expert-mode.js'
-import { PROCESS_STATUS } from './compliance.js'
+import { isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { PROCESS_STATUS, identityHolder } from './compliance.js'
 
 const LOW_PRIORITY = 450
 const CONDITIONAL_SOURCES = ['bpmn:ExclusiveGateway', 'bpmn:InclusiveGateway']
@@ -38,12 +38,13 @@ const isAssignable = (element) => is(element, 'bpmn:Activity') && !is(element, '
 
 // Champ texte rangé dans un attribut bpmnpilot: de l'élément. multiline : zone de texte,
 // une valeur par ligne (les lignes vides sont retirées).
-function attrEntry(attr, label, description, { multiline = false } = {}) {
+// holder : l'objet qui porte l'attribut, s'il n'est pas celui de l'élément.
+function attrEntry(attr, label, description, { multiline = false, holder = getBusinessObject } = {}) {
   return function AttrEntry(props) {
     const { element, id } = props
     const modeling = useService('modeling')
     const debounce = useService('debounceInput')
-    const bo = getBusinessObject(element)
+    const bo = holder(element)
     const tidy = (value) => (multiline
       ? String(value || '').split(/\r?\n/).map((l) => l.trim()).filter(Boolean).join('\n')
       : String(value || '').trim())
@@ -64,7 +65,7 @@ const AssigneeEntry = attrEntry('assignee', () => T('Assigned to', 'Assigné à'
   () => T('Person or precise role who performs it (R), in addition to the lane.', 'Personne ou rôle précis qui la réalise (R), en plus du couloir.'))
 const SystemsEntry = attrEntry('systems', () => T('Systems used', 'Systèmes utilisés'),
   () => T('Applications or tools, comma-separated: ERP, email, business tool…', 'Applications ou outils, séparés par des virgules : ERP, messagerie, outil métier…'))
-const AccountableEntry = attrEntry('accountable', () => T('Accountable (A)', 'Valide (A)'),
+const AccountableEntry = attrEntry('accountable', () => T('Accountable (A)', 'Approbateur (A)'),
   () => T('Who answers for the result.', 'Qui répond du résultat.'))
 const ConsultedEntry = attrEntry('consulted', () => T('Consulted (C)', 'Consultés (C)'),
   () => T('Roles asked for their opinion, comma-separated.', 'Rôles dont on demande l\'avis, séparés par des virgules.'))
@@ -101,19 +102,21 @@ const ControlsEntry = attrEntry('controls', () => T('Controls', 'Contrôles'),
 const RequirementsEntry = attrEntry('requirements', () => T('Requirements', 'Exigences'),
   () => T('References separated by semicolons: GDPR art. 30; ISO 9001 §8.5; AI Act art. 14.', 'Références séparées par des points-virgules : RGPD art. 30 ; ISO 9001 §8.5 ; AI Act art. 14.'))
 
-// Fiche d'identité du processus (mode Expert), sur la racine du diagramme.
+// Fiche d'identité du processus (mode Expert), montrée sur la racine du diagramme et
+// rangée sur le processus principal (voir src/compliance.js).
+const identityBo = (element) => identityHolder(getBusinessObject(element))
 const OwnerEntry = attrEntry('owner', () => T('Process owner', 'Propriétaire du processus'),
-  () => T('Person or role who answers for the process and approves its changes.', 'Personne ou rôle qui répond du processus et valide ses changements.'))
+  () => T('Person or role who answers for the process and approves its changes.', 'Personne ou rôle qui répond du processus et valide ses changements.'), { holder: identityBo })
 const VersionEntry = attrEntry('version', () => T('Version', 'Version'),
-  () => T('Version of the process, e.g. 2.1.', 'Version du processus, par exemple 2.1.'))
+  () => T('Version of the process, e.g. 2.1.', 'Version du processus, par exemple 2.1.'), { holder: identityBo })
 const ValidatedOnEntry = attrEntry('validatedOn', () => T('Approved on', 'Validé le'),
-  () => T('Date of approval, e.g. 2026-11-27.', 'Date de validation, par exemple 27/11/2026.'))
+  () => T('Date of approval, e.g. 2026-11-27.', 'Date de validation, par exemple 27/11/2026.'), { holder: identityBo })
 const ScopeEntry = attrEntry('scope', () => T('Scope', 'Périmètre'),
-  () => T('Where the process applies, where it starts and ends, what it leaves out.', 'Où le processus s\'applique, où il commence et finit, ce qu\'il exclut.'), { multiline: true })
+  () => T('Where the process applies, where it starts and ends, what it leaves out.', 'Où le processus s\'applique, où il commence et finit, ce qu\'il exclut.'), { multiline: true, holder: identityBo })
 function StatusEntry(props) {
   const { element, id } = props
   const modeling = useService('modeling')
-  const bo = getBusinessObject(element)
+  const bo = identityBo(element)
   return SelectEntry({
     element,
     id,
@@ -155,10 +158,12 @@ function ConditionEntry(props) {
   })
 }
 
-function RulesPropertiesProvider(propertiesPanel) {
+function RulesPropertiesProvider(propertiesPanel, eventBus) {
   propertiesPanel.registerProvider(LOW_PRIORITY, this)
+  // Les groupes du mode Expert apparaissent ou disparaissent dès qu'on change de mode.
+  window.addEventListener(EXPERT_EVENT, () => eventBus.fire('propertiesPanel.providersChanged'))
 }
-RulesPropertiesProvider.$inject = ['propertiesPanel']
+RulesPropertiesProvider.$inject = ['propertiesPanel', 'eventBus']
 
 RulesPropertiesProvider.prototype.getGroups = function (element) {
   return (groups) => {

@@ -69,6 +69,15 @@ function findColumns(header) {
 
 const splitList = (s) => String(s ?? '').split(/[,;|/]/).map((x) => x.trim()).filter(Boolean)
 
+// Libellés de branche : « ; », « | » ou retour à la ligne les séparent toujours.
+// Une virgule ne sépare que si elle n'est pas dans un nombre (« 1,000 », « 3,5 »),
+// et « / » reste dans le libellé (« Oui/Non », « A/B »).
+const splitLabels = (s) => {
+  const text = String(s ?? '')
+  const parts = /[;|\n]/.test(text) ? text.split(/[;|\n]/) : text.split(/(?<!\d),|,(?!\d)/)
+  return parts.map((x) => x.trim()).filter(Boolean)
+}
+
 function typeOf(raw, label) {
   const key = fold(raw)
   if (key) for (const [re, type] of TYPES) if (re.test(key)) return type
@@ -104,7 +113,7 @@ export function readTable(rows, T = (en) => en) {
       key, line, label,
       type: typeOf(cols.type !== undefined ? r[cols.type] : '', label),
       next: cols.next !== undefined ? splitList(r[cols.next]) : null,
-      flowLabels: cols.flowLabel !== undefined ? splitList(r[cols.flowLabel]) : [],
+      flowLabels: cols.flowLabel !== undefined ? splitLabels(r[cols.flowLabel]) : [],
       lane: cols.lane !== undefined ? (r[cols.lane] || '').trim() : '',
       doc: cols.doc !== undefined ? (r[cols.doc] || '').trim() : '',
       assignee: cols.assignee !== undefined ? (r[cols.assignee] || '').trim() : '',

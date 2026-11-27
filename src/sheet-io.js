@@ -54,7 +54,8 @@ export function rowsToCsv(rows, delimiter = ',') {
 
 // Classeur .xlsx d'une seule feuille, en chaînes en ligne (pas de table partagée).
 export async function rowsToXlsx(rows, sheetName = 'Process') {
-  const col = (i) => String.fromCharCode(65 + i)
+  // A…Z, puis AA, AB… (au-delà de 26 colonnes).
+  const col = (i) => (i >= 26 ? col(Math.floor(i / 26) - 1) : '') + String.fromCharCode(65 + (i % 26))
   const sheetRows = rows.map((r, ri) => `<row r="${ri + 1}">${r.map((c, ci) =>
     `<c r="${col(ci)}${ri + 1}" t="inlineStr"${ri === 0 ? ' s="1"' : ''}><is><t xml:space="preserve">${escapeXml(c)}</t></is></c>`).join('')}</row>`).join('')
   const widths = rows[0].map((_, i) => Math.min(60, Math.max(10, ...rows.map((r) => String(r[i] ?? '').length + 2))))

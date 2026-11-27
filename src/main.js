@@ -203,7 +203,17 @@ function setStatus(msg) {
   document.getElementById('autosave-status').textContent = T('Autosave: ', 'Sauvegarde auto : ') + msg
 }
 
+// Diagramme ouvert depuis un fichier chiffré : il n'est pas recopié en clair dans le
+// navigateur. La sauvegarde automatique reprend au prochain Nouveau ou à la prochaine
+// ouverture d'un fichier non chiffré.
+let sensitive = false
+
 async function autosave({ quiet = false } = {}) {
+  if (sensitive) {
+    localStorage.removeItem(LS_KEY)
+    if (!quiet) setStatus(T('off for this encrypted file', 'désactivée pour ce fichier chiffré'))
+    return
+  }
   try {
     const { xml } = await modeler.saveXML({ format: true })
     localStorage.setItem(LS_KEY, xml)
@@ -223,6 +233,7 @@ modeler.on(['commandStack.changed', 'layout.done', 'history.restored'], () => {
 document.getElementById('btn-new').addEventListener('click', async () => {
   if (!confirm(T('Create a new diagram? The current diagram will be lost if it has not been saved.', 'Créer un nouveau diagramme ? Le diagramme actuel sera perdu si non sauvegardé.'))) return
   localStorage.removeItem(LS_KEY)
+  sensitive = false
   library.unlink()
   dirty = false
   setBaseName(DEFAULT_NAME)
@@ -238,9 +249,10 @@ document.getElementById('btn-open').addEventListener('click', () => {
 
 // Import commun au bouton Ouvrir, au glisser-déposer et à la fenêtre Importer XML.
 // Renvoie un message d'erreur, ou rien si l'import a réussi.
-async function importAndReport(xml, fileName) {
+async function importAndReport(xml, fileName, { encrypted = false } = {}) {
   try {
     const { warnings, laidOut } = await importDiagram(modeler, xml)
+    sensitive = encrypted
     library.unlink()
     setBaseName(fileName ? fileName.replace(/\.(bpmn|xml)$/i, '') : DEFAULT_NAME)
     // Le diagramme ouvert est sauvegardé tout de suite, avec son nom : un
@@ -248,6 +260,7 @@ async function importAndReport(xml, fileName) {
     clearTimeout(saveTimer)
     await autosave({ quiet: true }) // garde le message d'import dans la barre
     let status = fileName ? T('File opened', 'Fichier ouvert') : T('XML imported', 'XML importé')
+    if (encrypted) status = T('Encrypted file opened, not kept in the browser', 'Fichier chiffré ouvert, non gardé dans le navigateur')
     if (laidOut) status += T(', laid out automatically (no diagram layout in the file)', ', rangé automatiquement (pas de partie graphique)')
     if (warnings.length) {
       status += ', ' + warnings.length + (warnings.length > 1 ? T(' warnings', ' avertissements') : T(' warning', ' avertissement')) + T(' (see the console)', ' (voir la console)')
@@ -273,7 +286,7 @@ async function importFile(file) {
       if (password === null) return
       try {
         const xml = await decryptText(content, password)
-        const failure = await importAndReport(xml, file.name.replace(/\.enc$/i, ''))
+        const failure = await importAndReport(xml, file.name.replace(/\.enc$/i, ''), { encrypted: true })
         if (failure) alert(T('Import failed: ', 'Import impossible : ') + failure)
         else track('fichier-ouvert', { source: 'chiffre' })
         return
@@ -455,7 +468,8 @@ async function exportCamunda(target, button) {
     const { xml: out, summary } = await toCamunda(modeler.get('moddle'), xml, target)
     await deliver(out, `${baseName()} - Camunda ${target}`, 'bpmn', 'application/xml')
     let msg = T(`Exported for Camunda ${target}: ${summary.conditions} condition(s) written`, `Exporté pour Camunda ${target} : ${summary.conditions} condition(s) écrite(s)`)
-    if (summary.left) msg += T(`, ${summary.left} unlabelled branch(es) to complete in Camunda Modeler`, `, ${summary.left} branche(s) sans libellé à compléter dans Camunda Modeler`)
+    if (summary.converted) msg += T(`, ${summary.converted} assigned task(s) turned into user tasks`, `, ${summary.converted} tâche(s) assignée(s) passée(s) en tâche utilisateur`)
+    if (summary.left) msg += T(`, ${summary.left} branch condition(s) to write in Camunda Modeler`, `, ${summary.left} condition(s) de branche à écrire dans Camunda Modeler`)
     setStatus(msg)
     track('export', { format: `camunda-${target}` })
   } catch (err) {
@@ -556,7 +570,7 @@ document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => 
     // Cas normal d'un diagramme sans RACI : on dit quoi remplir, sans parler d'échec.
     if (!report.raci) {
       alert(T('No activity has an Accountable (A), Consulted (C) or Informed (I) role yet. Select an activity and fill in the Responsibilities (RACI) group of the Process panel.',
-        'Aucune activité n\'a encore de rôle Valide (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.'))
+        'Aucune activité n\'a encore de rôle Approbateur (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.'))
       return
     }
     const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')

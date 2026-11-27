@@ -18,7 +18,7 @@
 // Le menu Expert et l'outil get_process_report passent par ici.
 
 import { buildRaci, raciRows } from './raci.js'
-import { buildCompliance, identityOf, identityRows, splitLines, splitRefs } from './compliance.js'
+import { buildCompliance, identityHolder, identityOf, identityRows, splitLines, splitRefs } from './compliance.js'
 import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
@@ -560,7 +560,11 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     sequence,
     raci: buildRaci(sequence),
     compliance: buildCompliance(sequence),
-    identity: identityOf([...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')), ...processes]),
+    identity: identityOf([
+      ...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')).map(identityHolder),
+      ...processes,
+      ...(definitions.rootElements || []).filter((e) => is(e, 'bpmn:Collaboration')),
+    ]),
     gatewayDocs,
     // Documentation des réserves et des processus, en tête des fiches et du rapport.
     processDocs: [...participants, ...processes]

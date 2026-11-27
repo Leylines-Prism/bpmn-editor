@@ -10,7 +10,10 @@
 //   le nom de la passerelle, la valeur celui du flux. Une condition écrite en clair
 //   (« Avance < 3000 ») est traduite, une expression déjà au format du moteur est
 //   gardée, le flux par défaut aussi ;
-// - le champ Assigné à devient l'affectation des tâches utilisateur ;
+// - le champ Assigné à devient l'affectation des tâches utilisateur (une tâche simple qui a
+//   une personne assignée devient une tâche utilisateur) ;
+// - une règle que le moteur ne saurait pas lire n'est pas écrite : elle reste dans le
+//   libellé du flux et le compte rendu la signale ;
 // - Camunda 8 : les tâches utilisateur sont marquées zeebe:userTask (tâche gérée par
 //   Camunda). Camunda 7 : durée de conservation de l'historique (camunda:historyTimeToLive),
 //   exigée par les versions récentes, à 180 jours comme dans Camunda Modeler.
@@ -59,8 +62,8 @@ export function translateCondition(target, text) {
     if (!left.trim() || !right) return null
     const variable = variableName(left, '')
     if (!variable) return null
-    const number = right.replace(/\s/g, '').replace(',', '.')
-    const value = /^-?\d+(\.\d+)?$/.test(number) ? number
+    const number = numberOf(right)
+    const value = number !== null ? number
       : /^(true|vrai|oui|yes)$/i.test(right) && op[1] === '=' ? 'true'
       : /^(false|faux|non|no)$/i.test(right) && op[1] === '=' ? 'false'
       : target === 8 ? quoteFeel(right) : quoteJuel(right)
@@ -69,6 +72,15 @@ export function translateCondition(target, text) {
   }
   return target === 8 ? `=${out.join(' ')}` : `\${${out.join(' ')}}`
 }
+
+// « 3 000 € », « 1,000 », « 12,5 % » : le nombre seul, sinon null.
+function numberOf(text) {
+  let t = String(text).replace(/[\s\u00a0\u202f]/g, '').replace(/[€$£%]|eur(os?)?$|k€$/gi, '')
+  if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(t)) t = t.replace(/,/g, '')
+  else t = t.replace(',', '.')
+  return /^-?\d+(\.\d+)?$/.test(t) ? t : null
+}
+const HAS_OPERATOR = /<=|>=|≤|≥|!=|≠|<>|==|=|<|>/
 
 const isEngineExpression = (target, body) => (target === 8 ? /^\s*=/.test(body) : /[$#]\{/.test(body))
 
@@ -80,10 +92,19 @@ function* walk(container) {
 }
 
 // moddle : instance de bpmn-moddle (celle du modeleur). xml : XML du diagramme.
-// Renvoie { xml, summary: { processes, conditions, userTasks, left } }.
+// Renvoie { xml, summary: { processes, conditions, userTasks, assignees, converted, left } },
+// left : branches dont la condition reste à écrire dans Camunda Modeler.
 export async function toCamunda(moddle, xml, target) {
   const conf = CAMUNDA_TARGETS[target]
   if (!conf) throw new Error(`Unknown Camunda version: ${target}`)
+  // Une tâche simple qui a une personne assignée devient une tâche utilisateur : c'est le
+  // seul type de tâche qu'un moteur affecte à quelqu'un.
+  let converted = 0
+  xml = String(xml).replace(/<((?:\w+:)?)task(\s[^>]*\bbpmnpilot:assignee="[^"]+"[^>]*?)(\/?)>([\s\S]*?)/g, (m, prefix, attrs, selfClosing) => {
+    converted++
+    return `<${prefix}userTask${attrs}${selfClosing}>` + (selfClosing ? '' : '\u0000')
+  })
+  xml = xml.replace(/\u0000([\s\S]*?)<\/((?:\w+:)?)task>/g, (m, inner, prefix) => `${inner}</${prefix}userTask>`)
   const { rootElement: defs } = await moddle.fromXML(xml, 'bpmn:Definitions')
   defs.$attrs['xmlns:modeler'] = MODELER_NS
   defs.$attrs['modeler:executionPlatform'] = conf.platform
@@ -93,7 +114,7 @@ export async function toCamunda(moddle, xml, target) {
   // Une version déjà marquée pour l'autre moteur est remplacée.
   delete defs.$attrs[target === 8 ? 'xmlns:camunda' : 'xmlns:zeebe']
 
-  const summary = { processes: 0, conditions: 0, userTasks: 0, assignees: 0, left: 0 }
+  const summary = { processes: 0, conditions: 0, userTasks: 0, assignees: 0, converted, left: 0 }
   const processes = defs.rootElements.filter((e) => e.$type === 'bpmn:Process')
   for (const process of processes) {
     process.isExecutable = true
@@ -134,16 +155,23 @@ export async function toCamunda(moddle, xml, target) {
       for (const flow of outgoing) {
         if (flow === el.default) continue
         const written = (flow.conditionExpression?.body || '').trim()
-        if (written) {
-          if (isEngineExpression(target, written)) continue
-          const translated = translateCondition(target, written)
-          if (translated) { flow.conditionExpression.body = translated; summary.conditions++ } else summary.left++
-          continue
+        if (written && isEngineExpression(target, written)) continue
+        // La règle en clair (champ Condition), sinon le libellé du flux.
+        const rule = written || (flow.name || '').trim()
+        if (!rule) { summary.left++; continue }
+        let body = null
+        if (HAS_OPERATOR.test(rule)) body = translateCondition(target, rule)
+        else if (!written) body = conditionFor(target, variable, rule)
+        if (body) {
+          flow.conditionExpression = moddle.create('bpmn:FormalExpression', { body })
+          summary.conditions++
+        } else {
+          // Règle que le moteur ne saurait pas lire : on ne la laisse pas dans la condition,
+          // elle reste lisible dans le libellé du flux, à écrire dans Camunda Modeler.
+          if (written && !(flow.name || '').trim()) flow.name = written
+          flow.conditionExpression = undefined
+          summary.left++
         }
-        const value = (flow.name || '').trim()
-        if (!value) { summary.left++; continue }
-        flow.conditionExpression = moddle.create('bpmn:FormalExpression', { body: conditionFor(target, variable, value) })
-        summary.conditions++
       }
     }
   }
