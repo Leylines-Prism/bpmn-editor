@@ -22,6 +22,7 @@ import { newAiRound, undoAiRound } from './ai-changes.js'
 import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
 import { setChatModel } from './copilot-analysis.js'
+import { MIC_ICON, setupVoiceInput, voiceSupported } from './voice-input.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -141,12 +142,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <div id="chat-destination" hidden></div>
+    <div id="chat-voice-interim" aria-live="polite" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
         <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change… Documents, images and PDFs accepted.', 'Décrivez le processus à dessiner ou à modifier… Documents, images et PDF acceptés.')}"></textarea>
         <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
         <button type="button" id="chat-attach" title="${T('Attach a file: image, PDF, Word, Excel, PowerPoint, text, CSV, JSON… (you can also paste or drop it)', 'Joindre un fichier : image, PDF, Word, Excel, PowerPoint, texte, CSV, JSON… (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach a file', 'Joindre un fichier')}">${ATTACH_ICON}</button>
         <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,${TEXT_FILE_ACCEPT}" multiple hidden>
+        ${voiceSupported() ? `<button type="button" id="chat-mic">${MIC_ICON}</button>` : ''}
       </div>
       <button class="btn primary" type="submit" id="chat-send" title="${T('Send (Enter; Shift+Enter for a new line)', 'Envoyer (Entrée ; Maj+Entrée pour aller à la ligne)')}">${T('Send', 'Envoyer')}</button>
     </form>
@@ -650,6 +653,16 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
   })
 
+  const micButton = panel.querySelector('#chat-mic')
+  const voice = micButton && setupVoiceInput({
+    button: micButton,
+    input,
+    interim: panel.querySelector('#chat-voice-interim'),
+    notify: add,
+    onText: fitInput,
+  })
+  if (micButton) panel.classList.add('has-mic')
+
   form.addEventListener('submit', (e) => {
     e.preventDefault()
     if (controller) {
@@ -685,6 +698,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         `${model.providerLabel || model.label} ne lit que les images PNG et JPEG. Convertissez l'image, ou faites-en une capture d'écran.`))
       return
     }
+    voice?.stop()
     input.value = ''
     fitInput()
     pending = []

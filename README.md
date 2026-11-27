@@ -407,7 +407,7 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   diagram in one click.
 - **AI co-pilot**: describe a process and it draws it, in your language. You can paste or drop
   images, PDF files, office documents (Word, Excel, PowerPoint, OpenDocument) and text files (CSV,
-  JSON, XML, Markdown…), whose text is read in the browser. The model is chosen in Options. What it adds or changes is outlined on the
+  JSON, XML, Markdown…), whose text is read in the browser. You can also dictate: speech is recognized on the device (Chrome, Edge 139+ or Firefox 160+), and no audio leaves the browser. The model is chosen in Options. What it adds or changes is outlined on the
   canvas, a pill sums up the changes, and one click shows the before and after or undoes the whole
   answer.
 - **Interface**: light or dark theme, English or French, resizable side panels. Made for a computer

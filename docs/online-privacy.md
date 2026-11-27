@@ -31,6 +31,7 @@ this editor, one that expires on its own and has a spending cap (see [Good pract
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
 | Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
+| Voice dictation | recognized on the device by the browser (Web Speech API with `processLocally`), the text goes into the input box | nowhere: the microphone button only appears when the browser can recognize speech on the device, so no audio goes to a speech service |
 
 ## Every request the page makes
 
