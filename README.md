@@ -64,7 +64,9 @@ and the toolbar stays uncluttered for everyone else (see the
 
 - **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
   which paths are taken, never reached, or looped through.
-- **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
+- **Process goals** on end events and activities (at least 80 % of requests accepted, at most 15 reworks per 100), checked
+  against the token simulation in the report.
+- **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, goals reached or not, end events,
   activities by lane.
 - **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
@@ -423,10 +425,13 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
   checking, grid, minimap, and the Process panel for the properties of each
   element.
+- **AI agent steps**: an ad-hoc sub-process marked as an AI agent, with its tools inside, a human review after it
+  and an exit if the agent fails. The checks flag a missing review or exit, and one click completes the pattern.
 - **Expert mode: token simulation, heatmap and process report**: run tokens through the
   process, with a speed slider. During the simulation, color the diagram by the number of tokens
   through each element, played by hand or computed from branch probabilities. Export a process report
-  (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
+  (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap
+  and the process goals set on end events and activities, reached or not.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color

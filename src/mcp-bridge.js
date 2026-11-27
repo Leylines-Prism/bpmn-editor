@@ -14,6 +14,7 @@ import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
 import { eventTriggerProblem } from './lint/event-triggers.js'
+import { isAgentStep } from './lint/agent-steps.js'
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -235,6 +236,7 @@ function buildTools(modeler, exportDiagram, processReport) {
     const marker = markerOf(bo)
     if (marker) out.marker = marker
     if (bo.triggeredByEvent) out.eventSubProcess = true
+    if (isAgentStep(bo)) out.agent = true
     const style = styleOf(element)
     if (style) out.style = style
     // Documentation (Markdown) : le Co-pilote s'appuie dessus pour répondre et rédiger.
@@ -374,6 +376,10 @@ function buildTools(modeler, exportDiagram, processReport) {
       else throw new Error(`interrupting applies only to a boundary event or to the start event of an event subprocess: ${element.id}`)
     }
     if (spec.marker) setMarker(element, spec.marker)
+    if (spec.agent !== undefined) {
+      if (!is(element, 'bpmn:AdHocSubProcess')) throw new Error(`agent applies only to an AdHocSubProcess: ${element.id}. Give type AdHocSubProcess.`)
+      modeling.updateProperties(element, { 'bpmnpilot:agent': spec.agent ? true : undefined })
+    }
     // Un événement de lien se repère à son nom : la définition prend celui de l'événement.
     const link = (bo.eventDefinitions || []).find((d) => d.$type === 'bpmn:LinkEventDefinition')
     if (link && bo.name && link.name !== bo.name) modeling.updateModdleProperties(element, link, { name: bo.name })

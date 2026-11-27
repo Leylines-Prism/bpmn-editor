@@ -51,6 +51,8 @@ import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
+import { AgentStepModule } from './agent-step.js'
+import { GoalPanelModule } from './goal-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
@@ -166,6 +168,8 @@ const modeler = new BpmnModeler({
     GridModule,
     CopyAsImageModule,
     ProbabilityPanelModule,
+    AgentStepModule,
+    GoalPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })

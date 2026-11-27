@@ -66,8 +66,10 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
 
 - **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
   coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Objectifs du processus** posés sur les fins et les activités (au moins 80 % de demandes acceptées, au plus
+  15 reprises pour 100), confrontés à la simulation de jetons dans le rapport.
 - **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
-  d'amélioration, événements de fin, activités par couloir.
+  d'amélioration, objectifs atteints ou non, événements de fin, activités par couloir.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
@@ -452,11 +454,14 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
+- **Étapes d'agent IA** : un sous-processus ad hoc marqué comme agent IA, avec ses outils à l'intérieur, une revue
+  humaine après lui et une sortie si l'agent échoue. La vérification signale une revue ou une sortie absente, et un clic complète le motif.
 - **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
   circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
   le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
   probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
-  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
+  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur et
+  objectifs du processus posés sur les fins et les activités, atteints ou non.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes

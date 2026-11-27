@@ -93,6 +93,32 @@ Reply in the language of the diagram's names.`,
 - Finally, list what you changed. I can undo everything with Ctrl+Z.`,
     },
     {
+      name: 'add_agent_step',
+      title: 'Add an AI agent step',
+      description:
+        'Draws a step where an AI agent picks its own actions, as an ad-hoc sub-process with its tools, a human review and an exit if the agent fails.',
+      argsSchema: {
+        goal: z.string().min(1).describe('What the agent must achieve, in plain words'),
+        tools: z
+          .string()
+          .optional()
+          .describe('The actions or systems the agent can use, separated by commas. Left empty, they are taken from the goal'),
+        after: z.string().optional().describe('Name or id of the element the step follows. Left empty, I ask where it goes'),
+      },
+      text: ({ goal, tools, after }) =>
+        `Add an AI agent step to the BPMN diagram open in the editor.
+
+Goal of the agent: ${goal}
+${tools ? `Tools: ${tools}\n` : ''}${after ? `Place it after: ${after}\n` : ''}
+- Read the diagram with get_shapes first.${after ? '' : ' Ask me where the step goes if it is not obvious.'}
+- Draw an expanded AdHocSubProcess with agent: true, named after the goal (verb + object).
+- Put one ServiceTask per tool inside it (parent: its id), named verb + object, with no sequence flow between them and no start or end event: the agent picks which to run and in which order.
+- After it, a UserTask where a person reviews the agent's result before it is used.
+- On it, a timer or error boundary event leading to manual handling, then to an end event or back to the main path through a gateway.
+- Write in the Documentation field of the step what the agent decides alone and what it must not do.
+- Name the elements in the language of the diagram. Finish with auto_layout, then validate_diagram, and fix what it reports.`,
+    },
+    {
       name: 'critique_description',
       title: 'Review a description before modeling it',
       description:

@@ -13,6 +13,8 @@
 //   - après une simulation, les éléments les plus traversés, le passage par branche de
 //     passerelle et ce qui n'est jamais atteint ;
 //   - les six contrôles de qualité (src/diagram-checks.js), calculés dans la page ;
+//   - les objectifs chiffrés posés sur les fins et les activités (src/goals.js), atteints
+//     ou non d'après la dernière série de jetons ;
 //   - l'analyse du Co-pilote IA, si elle a été enregistrée (src/copilot-analysis.js), et les
 //     probabilités qu'il a proposées et que personne n'a encore revues.
 // Le menu Expert et l'outil get_process_report passent par ici.
@@ -21,6 +23,8 @@ import { lang, T, num } from './i18n/lang.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
 import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
+import { goalOf, measureGoal, goalMet } from './goals.js'
+import { isAgentStep } from './lint/agent-steps.js'
 import { markdownToLine, markdownToPlain, shiftHeadings } from './doc/markdown.js'
 
 const LEVELS = ['error', 'warning', 'todo']
@@ -38,6 +42,7 @@ const SOURCE_LABEL = {
   bpmnlint: () => 'bpmnlint',
   check: () => T('Check', 'Contrôle'),
   simulation: () => 'Simulation',
+  goal: () => T('Goal', 'Objectif'),
   copilot: () => T('AI co-pilot', 'Co-pilote IA'),
 }
 const POINT_LABEL = {
@@ -78,6 +83,7 @@ const TYPE_LABELS = {
   CallActivity: ['Call activity', 'Activité d\'appel'],
   SubProcess: ['Sub-process', 'Sous-processus'],
   Transaction: ['Transaction', 'Transaction'],
+  AdHocSubProcess: ['Ad-hoc sub-process', 'Sous-processus ad hoc'],
   ExclusiveGateway: ['Exclusive gateway', 'Passerelle exclusive'],
   ParallelGateway: ['Parallel gateway', 'Passerelle parallèle'],
   InclusiveGateway: ['Inclusive gateway', 'Passerelle inclusive'],
@@ -108,6 +114,7 @@ const docSource = (bo) => (bo?.documentation || []).map((d) => d.text || '').fil
 const docOf = (bo) => markdownToLine(docSource(bo))
 
 export function typeLabel(bo) {
+  if (isAgentStep(bo)) return T('AI agent step (ad-hoc sub-process)', "Étape d'agent IA (sous-processus ad hoc)")
   const base = TYPE_LABELS[short(bo)] ? pick(TYPE_LABELS[short(bo)]) : short(bo)
   const def = (bo.eventDefinitions || [])[0]
   const kind = def && EVENT_DEFINITIONS[short(def)]
@@ -299,6 +306,21 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     }
   }
 
+  // Objectifs chiffrés, mesurés par la dernière série de jetons.
+  const goals = nodes.filter((n) => goalOf(n)).map((n) => {
+    const goal = goalOf(n)
+    const measured = measureGoal(n, simulation)
+    return { bo: n, goal, measured, status: measured === null ? 'unmeasured' : goalMet(goal, measured) ? 'met' : 'missed' }
+  })
+  for (const g of goals.filter((x) => x.status === 'missed')) {
+    add({
+      kind: 'goal', level: 'warning', element: g.bo, source: 'goal',
+      title: T('Goal not reached', 'Objectif non atteint'),
+      detail: T(`Goal: ${goalText(g.bo, g.goal)}. Simulation: ${measuredText(g.bo, g.measured)} (${num(simulation.runs)} instances).`,
+        `Objectif : ${goalText(g.bo, g.goal)}. Simulation : ${measuredText(g.bo, g.measured)} (${num(simulation.runs)} instances).`),
+    })
+  }
+
   // Informations manquantes.
   for (const n of order) {
     if (isActivity(n) && !is(n, 'bpmn:SubProcess') && !docOf(n)) {
@@ -365,7 +387,7 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     const level = list[0].level
     const elements = [...new Map(list.flatMap((f) => f.elements || (f.element ? [f.element] : [])).map((e) => [e.id, e])).values()]
     const axis = axisFor(kind, list, elements, { quoted, simulation })
-    if (axis) axes.push({ ...axis, level, source: kind === 'rework' ? 'simulation' : kind === 'ai-probability' ? 'copilot' : 'check' })
+    if (axis) axes.push({ ...axis, level, source: kind === 'rework' ? 'simulation' : kind === 'goal' ? 'goal' : kind === 'ai-probability' ? 'copilot' : 'check' })
   }
   axes.sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level))
 
@@ -530,6 +552,13 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
       ? { runs: simulation.runs, source: simulation.source, truncated: simulation.truncated || 0, nodes: { ...simulation.nodes }, flows: { ...simulation.flows } }
       : null,
     heat,
+    goals: goals.map((g) => ({
+      elementId: g.bo.id,
+      element: ref(g.bo),
+      target: goalText(g.bo, g.goal),
+      measured: g.measured === null ? null : measuredText(g.bo, g.measured),
+      status: g.status,
+    })),
     checks: checkRows,
     analysis,
     flagged: Object.fromEntries(worst),
@@ -546,6 +575,19 @@ function findAny(definitions, id) {
 }
 
 const fmt = (x) => num(Math.round(x * 10) / 10)
+// « au moins 80 % des instances », « au plus 15 passages pour 100 instances ».
+function goalText(bo, goal) {
+  const bound = goal.op === 'max' ? T('at most', 'au plus') : T('at least', 'au moins')
+  return is(bo, 'bpmn:EndEvent')
+    ? T(`${bound} ${fmt(goal.share)} % of instances`, `${bound} ${fmt(goal.share)} % des instances`)
+    : T(`${bound} ${fmt(goal.share)} passes per 100 instances`, `${bound} ${fmt(goal.share)} passages pour 100 instances`)
+}
+const measuredText = (bo, value) => (is(bo, 'bpmn:EndEvent') ? `${fmt(value)} %` : T(`${fmt(value)} passes per 100`, `${fmt(value)} passages pour 100`))
+const GOAL_STATUS = {
+  met: () => T('Reached', 'Atteint'),
+  missed: () => T('Not reached', 'Non atteint'),
+  unmeasured: () => T('Not measured: run N tokens', 'Non mesuré : lancez N jetons'),
+}
 const quote = (text) => (lang === 'fr' ? `« ${text} »` : `"${text}"`)
 // « A », « B » et « C »
 function joinList(items) {
@@ -565,6 +607,8 @@ function lintDetail(rule) {
     'no-gateway-join-fork': T('A gateway both merges and splits: two gateways are clearer.', 'Une passerelle converge et diverge à la fois : deux passerelles sont plus claires.'),
     'start-event-required': T('Every process and sub-process needs a start event.', 'Chaque processus et sous-processus a besoin d\'un événement de début.'),
     'end-event-required': T('Every process and sub-process needs an end event.', 'Chaque processus et sous-processus a besoin d\'un événement de fin.'),
+    'bpmnpilot/agent-review': T('The result of the AI agent reaches an end without a person seeing it.', 'Le résultat de l\'agent IA atteint une fin sans qu\'une personne le voie.'),
+    'bpmnpilot/agent-escalation': T('Nothing in the diagram says what happens if the AI agent fails or takes too long.', 'Rien dans le diagramme ne dit ce qui se passe si l\'agent IA échoue ou tarde.'),
   }
   return details[rule] || T(`bpmnlint rule ${rule}.`, `Règle bpmnlint ${rule}.`)
 }
@@ -594,6 +638,14 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
         'Traiter la cause des retours : informations demandées plus tôt, contrôle en amont.'),
       effect: T(`Up to ${num(top.count - simulation.runs)} executions avoided for ${num(simulation.runs)} instances.`,
         `Jusqu'à ${num(top.count - simulation.runs)} exécutions évitées pour ${num(simulation.runs)} instances.`),
+    }
+  }
+  if (kind === 'goal') {
+    return {
+      title: n === 1 ? T(`Reach the goal on ${quoted(elements)}`, `Atteindre l'objectif sur ${quoted(elements)}`) : T('Reach the process goals', 'Atteindre les objectifs du processus'),
+      change: T(`Review the paths leading to ${quoted(elements)}: checks upstream, branch probabilities, or the goal itself.`,
+        `Revoir les chemins qui mènent à ${quoted(elements)} : contrôles en amont, probabilités des branches, ou l'objectif lui-même.`),
+      effect: T(`${n} goal(s) reached at the next run of tokens.`, `${n} objectif(s) atteint(s) à la prochaine série de jetons.`),
     }
   }
   if (kind === 'ai-probability') {
@@ -628,6 +680,22 @@ function axisFor(kind, list, elements, { quoted, simulation }) {
         ? T(`The lane ${names} holds a single activity: merge it with another lane, or detail its work.`, `Le couloir ${names} ne porte qu'une activité : le fusionner avec un autre, ou détailler son travail.`)
         : T(`The lanes ${names} hold a single activity each: merge them, or detail their work.`, `Les couloirs ${names} ne portent chacun qu'une activité : les fusionner, ou détailler leur travail.`),
       effect: T('Clearer split of roles.', 'Répartition des rôles plus claire.'),
+    }
+  }
+  if (kind === 'lint:bpmnpilot/agent-review') {
+    return {
+      title: T('Have a person review the AI agent', 'Faire relire l\'agent IA par une personne'),
+      change: T(`After ${quoted(elements)}, add a user task that reviews the agent's result before it is used.`,
+        `Après ${quoted(elements)}, ajouter une tâche utilisateur qui revoit le résultat de l'agent avant son usage.`),
+      effect: T('No result of the agent leaves the process unchecked.', 'Aucun résultat de l\'agent ne sort du processus sans contrôle.'),
+    }
+  }
+  if (kind === 'lint:bpmnpilot/agent-escalation') {
+    return {
+      title: T('Give the AI agent an exit', 'Prévoir une sortie à l\'agent IA'),
+      change: T(`Attach a timer, error or escalation boundary event to ${quoted(elements)}, leading to a person.`,
+        `Accrocher à ${quoted(elements)} un événement en bordure (minuterie, erreur ou escalade) qui mène à une personne.`),
+      effect: T('A failed or stalled agent does not block the instance.', 'Un agent en échec ou bloqué n\'arrête pas l\'instance.'),
     }
   }
   if (kind === 'lint:fake-join') {
@@ -677,6 +745,11 @@ export function reportToMarkdown(r) {
     lines.push(`| ${T('Priority', 'Priorité')} | ${T('Area', 'Axe')} | ${T('Proposed change', 'Modification proposée')} | ${T('Expected effect', 'Effet attendu')} |`, '|---|---|---|---|')
     r.axes.forEach((a, i) => lines.push(`| **${PRIORITY_LABEL[a.level]().toUpperCase()}** | ${i + 1}. ${mdCell(a.title)} | ${mdCell(a.change)} | ${mdCell(a.effect)} |`))
   } else lines.push(T('Nothing to improve from the checks.', 'Rien à améliorer d\'après les contrôles.'))
+  if (r.goals.length) {
+    lines.push('', `## ${T('Process goals', 'Objectifs du processus')}`, '')
+    lines.push(`| ${T('Element', 'Élément')} | ${T('Goal', 'Objectif')} | Simulation | ${T('Result', 'Résultat')} |`, '|---|---|---|---|')
+    for (const g of r.goals) lines.push(`| ${mdCell(g.element)} | ${mdCell(g.target)} | ${g.measured ? mdCell(g.measured) : '–'} | **${GOAL_STATUS[g.status]()}** |`)
+  }
   if (r.analysis) {
     const a = r.analysis
     lines.push('', `## ${T('AI co-pilot analysis', 'Analyse du Co-pilote IA')}`, '')
@@ -1044,6 +1117,21 @@ export async function reportToPdf(modeler, r) {
       ...levelHooks(r.axes.map((a) => a.level), r.axes.map((a) => PRIORITY_LABEL[a.level]())),
     })
   } else note(T('Nothing to improve from the checks.', 'Rien à améliorer d\'après les contrôles.'))
+
+  if (r.goals.length) {
+    section(T('Process goals', 'Objectifs du processus'))
+    table({
+      head: [[T('Element', 'Élément'), T('Goal', 'Objectif'), 'Simulation', T('Result', 'Résultat')]],
+      body: r.goals.map((g) => [pdfText(g.element), pdfText(g.target), pdfText(g.measured || '–'), pdfText(GOAL_STATUS[g.status]())]),
+      columnStyles: { 0: { cellWidth: 56, fontStyle: 'bold' }, 3: { cellWidth: 40 } },
+      didParseCell: (d) => {
+        if (d.section !== 'body' || d.column.index !== 3) return
+        const status = r.goals[d.row.index].status
+        d.cell.styles.fontStyle = 'bold'
+        d.cell.styles.textColor = status === 'met' ? [21, 128, 61] : status === 'missed' ? hex(COLORS.warning.strong) : muted
+      },
+    })
+  }
 
   if (r.analysis) {
     const a = r.analysis

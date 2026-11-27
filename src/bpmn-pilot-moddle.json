@@ -14,6 +14,21 @@
       ]
     },
     {
+      "name": "AgentStep",
+      "extends": ["bpmn:AdHocSubProcess"],
+      "properties": [
+        { "name": "agent", "isAttr": true, "type": "Boolean" }
+      ]
+    },
+    {
+      "name": "Goal",
+      "extends": ["bpmn:FlowNode"],
+      "properties": [
+        { "name": "goalShare", "isAttr": true, "type": "Real" },
+        { "name": "goalOp", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
       "name": "Analysis",
       "superClass": ["Element"],
       "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },
