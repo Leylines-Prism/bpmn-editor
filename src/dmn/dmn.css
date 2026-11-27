@@ -140,3 +140,18 @@ body.presenting .dmn-badge:not(:has(svg)), body.presenting .dmn-badge.broken,
 /* Les onglets de la fenêtre remplacent le bouton « Voir le DRD » de dmn-js. */
 #dmn-dialog .dmn-body .view-drd { display: none; }
 #dmn-dialog .dmn-head .btn[hidden] { display: none; }
+
+/* Tableur : menu d'export et d'import de la table affichée */
+.dmn-sheet-wrap { position: relative; }
+.dmn-sheet-menu {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 20; min-width: 15rem;
+  display: flex; flex-direction: column; padding: 4px;
+  background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-md);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.15);
+}
+.dmn-sheet-menu[hidden] { display: none; }
+.dmn-sheet-menu button {
+  text-align: left; padding: 7px 10px; border: 0; border-radius: var(--radius-sm); background: none;
+  color: inherit; font: inherit; cursor: pointer;
+}
+.dmn-sheet-menu button:hover, .dmn-sheet-menu button:focus-visible { background: var(--surface-sunken); }

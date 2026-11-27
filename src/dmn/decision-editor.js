@@ -12,6 +12,11 @@ import { lang, T } from '../i18n/lang.js'
 import { createBench, decisionFromXml } from './decision-bench.js'
 import { createCompare } from './decision-compare.js'
 import frBpmn from '../i18n/fr.js'
+import { setDecisionTable } from './dmn-model.js'
+import { tableToRows, rowsToSpec } from './decision-sheet.js'
+import { readSheetFile, rowsToXlsx, rowsToCsv } from '../sheet-io.js'
+
+const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 let dialog = null
 let current = null // { modeler, baseline, mode, onSave, onClose, ... }
@@ -53,6 +58,15 @@ function build() {
       <button type="button" class="btn" id="dmn-compare" data-icon="compare" aria-pressed="false" title="${T('See what changed in the decisions since the window opened, or compared with a .dmn file', 'Voir ce qui a changé dans les décisions depuis l\'ouverture de la fenêtre, ou par rapport à un fichier .dmn')}">${T('Compare', 'Comparer')}</button>
       <button type="button" class="btn" id="dmn-add" data-icon="new" hidden></button>
       <button type="button" class="btn" id="dmn-library" data-icon="library"></button>
+      <div class="dmn-sheet-wrap">
+        <button type="button" class="btn" id="dmn-sheet" data-icon="table" aria-haspopup="menu" aria-expanded="false" title="${T('Export this table to Excel or CSV, or replace its rules with a sheet', 'Exporter cette table vers Excel ou CSV, ou remplacer ses règles par un tableau')}">${T('Sheet', 'Tableur')}</button>
+        <div class="dmn-sheet-menu" role="menu" hidden>
+          <button type="button" role="menuitem" data-sheet="xlsx">${T('Export to Excel (.xlsx)', 'Exporter vers Excel (.xlsx)')}</button>
+          <button type="button" role="menuitem" data-sheet="csv">${T('Export to CSV', 'Exporter en CSV')}</button>
+          <button type="button" role="menuitem" data-sheet="import">${T('Import a sheet (.xlsx, .csv)…', 'Importer un tableau (.xlsx, .csv)…')}</button>
+        </div>
+        <input type="file" id="dmn-sheet-file" accept=".xlsx,.csv,.tsv,.txt" hidden />
+      </div>
       <button type="button" class="btn" id="dmn-export" data-icon="save">${T('Export .dmn', 'Exporter .dmn')}</button>
       <button type="button" class="btn icon-only dmn-close" aria-label="${T('Close', 'Fermer')}" title="${T('Close (Esc)', 'Fermer (Échap)')}">×</button>
     </div>
@@ -94,6 +108,7 @@ function build() {
     const xml = await currentXml()
     current.download(xml, `${current.fileName()}.dmn`, 'application/xml')
   })
+  setupSheet()
   dialog.querySelector('#dmn-library').addEventListener('click', async () => {
     if (!current?.saveToLibrary) return
     say('')
@@ -111,6 +126,54 @@ function build() {
       say(await current.addToDiagram(await currentXml()))
     } catch (err) {
       say(T(`Cannot add it: ${err.message}`, `Ajout impossible : ${err.message}`), true)
+    }
+  })
+}
+
+// Tableur : export de la table affichée, ou remplacement de ses colonnes et règles par un tableau.
+function setupSheet() {
+  const button = dialog.querySelector('#dmn-sheet')
+  const menu = dialog.querySelector('.dmn-sheet-menu')
+  const file = dialog.querySelector('#dmn-sheet-file')
+  const toggle = (open) => { menu.hidden = !open; button.setAttribute('aria-expanded', String(open)) }
+  button.addEventListener('click', () => toggle(menu.hidden))
+  dialog.addEventListener('click', (e) => { if (!menu.hidden && !e.target.closest('.dmn-sheet-wrap')) toggle(false) })
+  const shownTable = async () => {
+    const view = current?.modeler.getActiveView()
+    if (!view || view.type !== 'decisionTable') return null
+    return decisionFromXml(await currentXml(), view.element.id)
+  }
+  menu.addEventListener('click', async (e) => {
+    const act = e.target.closest('[data-sheet]')?.dataset.sheet
+    if (!act) return
+    toggle(false)
+    if (act === 'import') { file.click(); return }
+    const d = await shownTable()
+    if (!d) return
+    const rows = tableToRows(d, lang === 'fr')
+    const name = `${current.fileName()} - ${d.name || d.id}`
+    if (act === 'csv') current.download(`\uFEFF${rowsToCsv(rows, lang === 'fr' ? ';' : ',')}`, `${name}.csv`, 'text/csv')
+    else current.download(new Blob([await rowsToXlsx(rows, (d.name || d.id).replace(/[[\]*?/\\:]/g, ' '))], { type: XLSX_TYPE }), `${name}.xlsx`, XLSX_TYPE)
+  })
+  file.addEventListener('change', async () => {
+    const f = file.files[0]
+    file.value = ''
+    if (!f || !current) return
+    const d = await shownTable()
+    if (!d) return
+    try {
+      const spec = rowsToSpec(await readSheetFile(f))
+      if (!spec.hitPolicy) { spec.hitPolicy = d.hitPolicy; if (d.aggregation) spec.aggregation = d.aggregation }
+      if (d.rules.length && !confirm(T(`Replace the columns and the ${d.rules.length} rule(s) of this table with the ${spec.rules.length} rule(s) of "${f.name}"? Compare shows the differences afterwards.`,
+        `Remplacer les colonnes et les ${d.rules.length} règle(s) de cette table par les ${spec.rules.length} règle(s) de « ${f.name} » ? Comparer montre ensuite les différences.`))) return
+      const { xml } = await setDecisionTable(await currentXml(), { ...spec, decisionId: d.id })
+      await current.modeler.importXML(xml)
+      current.decisionId = d.id
+      await showView('table')
+      syncTabs()
+      say(T(`${spec.rules.length} rule(s) imported from "${f.name}".`, `${spec.rules.length} règle(s) importée(s) depuis « ${f.name} ».`))
+    } catch (err) {
+      say(T(`Cannot import "${f.name}": ${err.message}`, `Import de « ${f.name} » impossible : ${err.message}`), true)
     }
   })
 }
@@ -181,6 +244,7 @@ function syncTabs() {
   }
   const onTable = view.type === 'decisionTable'
   dialog.querySelector('#dmn-test').hidden = !onTable
+  dialog.querySelector('#dmn-sheet').hidden = !onTable
   if (side === 'bench') setSide(onTable ? 'bench' : null)
   else if (side === 'compare') setSide('compare')
   // Pas de table à montrer : l'onglet Table de décision ne mène nulle part.

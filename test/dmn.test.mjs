@@ -9,6 +9,9 @@ import bpmnpilot from '../src/bpmn-pilot-moddle.json' with { type: 'json' }
 import { setDecisionTable, mergeDmn, summarize, checkDecision, parseEntry, quoteStrings, parseDmn } from '../src/dmn/dmn-model.js'
 import { evaluateDecision, casesPerRule, inputValue } from '../src/dmn/dmn-eval.js'
 import { diffModels } from '../src/dmn/dmn-diff.js'
+import { tableToRows, rowsToSpec } from '../src/dmn/decision-sheet.js'
+import { parseDelimited, rowsToXlsx, rowsToCsv } from '../src/sheet-io.js'
+import { openZip, xlsxSheets } from '../src/ai/text-files.js'
 import { routingHint, flowValue } from '../src/dmn/decision-routing.js'
 import { runBatch } from '../src/simulation-stats.js'
 import { readDecisionXml, decisionModelUpdates, linkProperties, checkLinks, resultVariable } from '../src/dmn/decision-store.js'
@@ -232,4 +235,41 @@ test('decision tools are offered and check their arguments', async () => {
   assert.equal((await run('test_decision', { decisionId: 'D' })).isError, false)
   assert.equal((await run('test_decision', { decisionId: 'D', cases: [[500, 'Pro'], { Montant: 2000, Catégorie: null }] })).isError, false)
   assert.equal((await run('test_decision', { cases: [] })).isError, true)
+})
+
+test('a decision table goes to a sheet and back (xlsx and CSV) without losing anything', async () => {
+  const { xml, decisionId } = await setDecisionTable('', { ...RISK, hitPolicy: 'FIRST', rules: [...RISK.rules.map((r) => ({ ...r })), { inputs: ['-', '-'], outputs: ['faible'], annotation: 'Par défaut; "sinon"' }] })
+  const before = (await summarize(xml)).decisions[0]
+  const rows = tableToRows(before, true)
+  assert.deepEqual(rows[0], ['FIRST', 'Entrée', 'Entrée', 'Sortie', 'Annotation'])
+  assert.equal(rows.length, 5 + 3)
+  for (const read of [
+    async () => parseDelimited(rowsToCsv(rows, ';')),
+    async () => { const sheets = await xlsxSheets(await openZip(await rowsToXlsx(rows, 'Risque'))); return sheets[0].rows },
+  ]) {
+    const spec = rowsToSpec(await read())
+    const after = (await summarize((await setDecisionTable(xml, { ...spec, decisionId })).xml)).decisions[0]
+    assert.equal(after.id, decisionId)
+    assert.equal(after.hitPolicy, 'FIRST')
+    const strip = (d) => ({ inputs: d.inputs.map(({ id, ...c }) => c), outputs: d.outputs.map(({ id, ...c }) => c), rules: d.rules.map(({ id, ...r }) => r) })
+    assert.deepEqual(strip(after), strip(before))
+    assert.deepEqual(diffModels({ decisions: [before] }, { decisions: [after] }).changes, [])
+  }
+})
+
+test('a plain sheet without the optional rows is read, with English or French words', () => {
+  const spec = rowsToSpec([
+    ['collect sum', 'Input', 'Entrée', 'Output', 'Commentaire'],
+    ['1', '< 10', 'Pro', '5', 'petit'],
+    ['2', '', '', '1', ''],
+  ])
+  assert.equal(spec.hitPolicy, 'COLLECT')
+  assert.equal(spec.aggregation, 'SUM')
+  assert.deepEqual(spec.inputs.map((i) => i.label), ['Input 1', 'Input 2'])
+  assert.deepEqual(spec.rules, [
+    { inputs: ['< 10', 'Pro'], outputs: ['5'], annotation: 'petit' },
+    { inputs: ['-', '-'], outputs: ['1'], annotation: '' },
+  ])
+  assert.throws(() => rowsToSpec([['', 'Montant', 'Risque'], ['1', '< 5', 'x']]), /Row 1/)
+  assert.throws(() => rowsToSpec([['', 'Input', 'Output'], ['Type', 'nombre', 'string']]), /Unknown type "nombre" in column B/)
 })

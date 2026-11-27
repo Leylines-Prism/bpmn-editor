@@ -9,19 +9,25 @@ const colName = (c) => c.label || c.name || c.expression || c.id
 
 function diffColumns(kind, before, after, out, decision) {
   const fr = kind === 'input' ? 'entrée' : 'sortie'
-  const byId = new Map(before.map((c) => [c.id, c]))
-  const seen = new Set()
+  // Appariement par identifiant, puis par nom pour les colonnes recréées (import d'un tableau).
+  const pair = new Map()
+  for (const c of after) { const o = before.find((b) => b.id === c.id); if (o) pair.set(c, o) }
+  const used = new Set(pair.values())
   for (const c of after) {
-    const old = byId.get(c.id)
+    if (pair.has(c)) continue
+    const o = before.find((b) => !used.has(b) && colName(b) === colName(c))
+    if (o) { pair.set(c, o); used.add(o) }
+  }
+  for (const c of after) {
+    const old = pair.get(c)
     if (!old) { out.push({ change: 'added', decision, text: `${kind === 'input' ? 'Input' : 'Output'} "${colName(c)}" added.`, fr: `${fr[0].toUpperCase() + fr.slice(1)} « ${colName(c)} » ajoutée.` }); continue }
-    seen.add(c.id)
     for (const key of ['label', 'name', 'expression', 'type', 'values']) {
       if ((old[key] || '') !== (c[key] || '')) {
         out.push({ change: 'changed', decision, text: `${kind === 'input' ? 'Input' : 'Output'} "${colName(c)}": ${key} ${JSON.stringify(old[key] || '')} → ${JSON.stringify(c[key] || '')}.`, fr: `${fr[0].toUpperCase() + fr.slice(1)} « ${colName(c)} » : ${key} ${JSON.stringify(old[key] || '')} → ${JSON.stringify(c[key] || '')}.` })
       }
     }
   }
-  for (const c of before) if (!seen.has(c.id) && !after.some((a) => a.id === c.id)) out.push({ change: 'removed', decision, text: `${kind === 'input' ? 'Input' : 'Output'} "${colName(c)}" removed.`, fr: `${fr[0].toUpperCase() + fr.slice(1)} « ${colName(c)} » retirée.` })
+  for (const c of before) if (!used.has(c)) out.push({ change: 'removed', decision, text: `${kind === 'input' ? 'Input' : 'Output'} "${colName(c)}" removed.`, fr: `${fr[0].toUpperCase() + fr.slice(1)} « ${colName(c)} » retirée.` })
 }
 
 function diffRules(od, nd, out, decision) {
