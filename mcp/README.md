@@ -160,6 +160,10 @@ Then open http://localhost:5173. The badge switches to "MCP: ready" (the tab is 
 For Claude Code, the `.mcp.json` file at the root already declares the server
 (`http://127.0.0.1:3333/mcp`).
 
+The server also speaks MCP over stdio, for clients that launch it themselves:
+`node mcp/server.js --stdio` (or `MCP_TRANSPORT=stdio`). It still opens its HTTP port for the
+editor tabs, and its log goes to the error output. Directory checks use this mode.
+
 ## Tools
 
 | Tool | Purpose |
@@ -255,6 +259,7 @@ They can also be placed in `mcp/.env`.
 | Variable | Default | Purpose |
 |---|---|---|
 | `MCP_PORT` | `3333` | server port |
+| `MCP_TRANSPORT` | none | `stdio` adds the stdio transport, like the `--stdio` option. The HTTP port stays open for the editor tabs |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` in the docker image) | listening address |
 | `MCP_TOKEN` | none | token MCP clients must send (`Authorization: Bearer <token>`). Without it, `/mcp` asks for nothing on localhost, and is closed (401) when `MCP_ALLOWED_HOSTS` holds a name other than localhost |
 | `MCP_AUTH` | none | `off` opens `/mcp` without a token even under a name other than localhost (trusted network, or a proxy that authenticates `/mcp`). The server warns at startup |
