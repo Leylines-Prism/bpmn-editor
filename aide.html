@@ -35,18 +35,23 @@
       <nav aria-label="Sommaire">
         <p>Sommaire</p>
         <ol>
-          <li><a href="#premiers-pas">Premiers pas</a></li>
-          <li><a href="#dessiner">Dessiner</a></li>
-          <li><a href="#proprietes">Panneau Processus</a></li>
-          <li><a href="#documenter">Documenter les éléments</a></li>
-          <li><a href="#couleurs-texte">Couleurs et texte</a></li>
-          <li><a href="#verifier">Vérifier et ranger</a></li>
-          <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
-          <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
-          <li><a href="#assistant">Co-pilote IA</a></li>
-          <li><a href="#controles-ia">Critique, contrôles et traçabilité</a></li>
-          <li><a href="#exemples-prompts">Exemples de prompts</a></li>
-          <li><a href="#cles">Vos clés API</a></li>
+          <li class="toc-part"><span>Dessiner et partager</span>
+            <ol>
+              <li><a href="#premiers-pas">Premiers pas</a></li>
+              <li><a href="#dessiner">Dessiner</a></li>
+              <li><a href="#couleurs-texte">Couleurs et texte</a></li>
+              <li><a href="#verifier">Vérifier et ranger</a></li>
+              <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
+              <li><a href="#ouvrir-exporter">Ouvrir, importer, exporter</a></li>
+              <li><a href="#presenter">Présenter</a></li>
+              <li><a href="#documenter">Documenter les éléments</a></li>
+              <li><a href="#proprietes">Panneau Processus</a></li>
+              <li><a href="#assistant">Co-pilote IA</a></li>
+              <li><a href="#controles-ia">Critique, contrôles et traçabilité</a></li>
+              <li><a href="#exemples-prompts">Exemples de prompts</a></li>
+              <li><a href="#cles">Vos clés API</a></li>
+            </ol>
+          </li>
           <li class="toc-part"><span>Mode Expert</span>
             <ol>
               <li><a href="#experts-bpmn">Activer le mode Expert</a></li>
@@ -56,12 +61,16 @@
               <li><a href="#experts-mcp">Agents MCP en mode Expert</a></li>
             </ol>
           </li>
-          <li><a href="#confidentialite">Confidentialité</a></li>
-          <li><a href="#docker">Version Docker et agents MCP</a></li>
-          <li><a href="#installer-app">Installer comme une application</a></li>
-          <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
-          <li><a href="#faq">Questions fréquentes</a></li>
-          <li><a href="#feedback">Donner votre avis</a></li>
+          <li class="toc-part"><span>Installer et administrer</span>
+            <ol>
+              <li><a href="#confidentialite">Confidentialité</a></li>
+              <li><a href="#docker">Version Docker et agents MCP</a></li>
+              <li><a href="#installer-app">Installer comme une application</a></li>
+              <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
+              <li><a href="#faq">Questions fréquentes</a></li>
+              <li><a href="#feedback">Donner votre avis</a></li>
+            </ol>
+          </li>
         </ol>
       </nav>
     </details>
@@ -83,7 +92,16 @@
           <a class="btn primary" href="./">Ouvrir l'éditeur</a>
           <a class="btn" href="#assistant">Faire dessiner par l'IA</a>
         </div>
+        <div class="paths">
+          <a class="path" href="#partie-dessiner"><span class="ico" data-icon="new" aria-hidden="true"></span><span><strong>Dessiner un schéma</strong><span>Poser, relier, nommer : un processus lisible en quelques minutes, à la main ou avec le co-pilote IA.</span></span></a>
+          <a class="path" href="#partie-expert"><span class="ico" data-icon="expert" aria-hidden="true"></span><span><strong>Mode Expert</strong><span>Simuler, mesurer, produire un rapport, relier des tables de décision DMN.</span></span></a>
+        </div>
         <hr />
+      </div>
+
+      <div class="part-banner" id="partie-dessiner">
+        <p class="part-title"><span class="ico" data-icon="new" aria-hidden="true"></span>Dessiner et partager un schéma</p>
+        <p>Tout ce qu'il faut pour dessiner un processus, le mettre en forme, le vérifier, le présenter et le partager, à la main ou avec le co-pilote IA. Aucune connaissance de BPMN n'est nécessaire pour commencer.</p>
       </div>
 
       <section id="premiers-pas">
@@ -170,103 +188,6 @@
           <li><kbd>Ctrl</kbd>+molette au-dessus de la minicarte zoome sur le canevas.</li>
         </ul>
         <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
-        <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</h3>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Un clic sur un élément affiche sa <a href="#documenter">fiche de documentation</a>, et <kbd>D</kbd> active ou coupe les fiches. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
-        <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
-            <tbody>
-              <tr><td><kbd>1</kbd></td><td><b class="ui">Pointeur laser</b> : un point rouge orangé suivi d'une courte traînée remplace la flèche sur le schéma</td></tr>
-              <tr><td><kbd>2</kbd></td><td><b class="ui">Surbrillance au survol</b> : l'élément survolé et ses flux s'allument, le reste du schéma pâlit</td></tr>
-              <tr><td><kbd>3</kbd></td><td><b class="ui">Onde au clic</b> : un cercle s'élargit là où l'on clique</td></tr>
-              <tr><td><kbd>4</kbd></td><td><b class="ui">Masquer à l'arrêt</b> : après deux secondes sans bouger, le curseur et la barre s'effacent, et reviennent au premier mouvement</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Les choix sont retenus dans ce navigateur. Sur écran tactile, le laser et l'onde suivent le doigt. La surbrillance, liée au survol, n'y joue pas.</p>
-        <div class="fig-pair">
-          <figure class="fig-anim"><p class="fig-title">Laser, onde et surbrillance</p><img src="/docs/presentation-pointer.fr.gif" width="1280" height="720" alt="Le processus d'achat en présentation : le pointeur laser suit le flux, une onde à chaque clic, puis la surbrillance allume tour à tour une tâche, une passerelle et leurs flux. Le menu Pointeur s'ouvre, puis le curseur et la barre s'effacent à l'arrêt." loading="lazy" /><figcaption>Le laser et l'onde au clic, la touche 2 pour la surbrillance, puis la barre qui s'efface à l'arrêt.</figcaption></figure>
-          <figure><p class="fig-title">Le menu Pointeur</p><img src="/src/help/img/fr-presentation-pointeur.webp" width="800" height="440" alt="Le menu Pointeur ouvert en présentation, quatre interrupteurs actifs. La tâche Valider en comité et ses flux en rouge orangé, le reste pâli, avec la traînée du pointeur laser." loading="lazy" /><figcaption>Le menu Pointeur, avec le laser et la surbrillance sur une tâche.</figcaption></figure>
-        </div>
-      </section>
-
-      <section id="proprietes">
-        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Panneau Processus</h2>
-        <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des « pools ». Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
-        <h3>Afficher et masquer le panneau</h3>
-        <ul>
-          <li>Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
-          <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, atteignez-la avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic dessus rétablit la largeur par défaut.</li>
-        </ul>
-        <h3>Nom, Identifiant et Exécutable</h3>
-        <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
-        <ul>
-          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme.</li>
-          <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Invisible à l'écran, il permet au fichier de relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus) et aux moteurs d'exécution de désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
-          <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un schéma de documentation ou d'analyse, elle peut rester décochée.</li>
-        </ul>
-        <p>Pour un « pool », le groupe Général réunit son nom et son identifiant, puis ceux du processus qu'il contient, avec la case Exécutable. Dès qu'un diagramme a des « pools », c'est donc là que se trouvent les réglages du processus.</p>
-        <h3>Les autres groupes</h3>
-        <p>Les champs sont rangés par groupes. Cliquez sur le titre d'un groupe pour le replier ou le déplier. Un point à droite du titre signale un groupe déjà rempli.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
-            <tbody>
-              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte qui décrit l'élément, en Markdown, enregistré dans le fichier (voir <a href="#documenter">Documenter les éléments</a>). Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
-              <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune à tout le schéma. Deux événements qui partagent la même référence désignent le même message.</td></tr>
-              <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
-              <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
-              <tr><td>Compensation</td><td>Les événements de compensation</td><td>L'activité à compenser, et s'il faut attendre la fin de la compensation.</td></tr>
-              <tr><td>Multi-instance</td><td>Les activités marquées multi-instance</td><td>Le nombre de boucles et la condition d'achèvement.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
-      </section>
-
-      <section id="documenter">
-        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenter les éléments</h2>
-        <p>Chaque élément a un champ <span class="ui">Documentation</span>, enregistré dans le fichier .bpmn. L'éditeur en fait une vraie fiche : saisie en Markdown, modèles par type d'élément, dictée, rédaction par le co-pilote IA, repérage sur le canevas, recherche, fiche en présentation et export en fiches de procédure.</p>
-        <h3>La fenêtre de documentation</h3>
-        <p>Elle s'ouvre par le bouton <span class="ui">Ouvrir l'éditeur en grand</span> du champ Documentation, dans le <a href="#proprietes">panneau Processus</a>, ou d'un clic sur la pastille bleue de l'élément (voir plus bas). Le texte s'enregistre à mesure que vous écrivez, et <kbd>Ctrl</kbd>+<kbd>Z</kbd> l'annule comme toute modification.</p>
-        <ul>
-          <li>En haut, trois vues : <span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> (la saisie à gauche, l'aperçu mis en forme à droite) et <span class="uib">Aperçu</span>. Le navigateur retient la dernière.</li>
-          <li>La barre de mise en forme ajoute gras, italique, titre, liste à puces, liste numérotée et lien. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> et <kbd>Ctrl</kbd>+<kbd>K</kbd> font de même au clavier.</li>
-          <li><span class="uib">Modèle ▾</span> insère les titres d'un modèle, celui du type de l'élément en premier : objectif, acteurs, entrées, sorties, règles et références pour une activité ; question posée et critère de chaque branche pour une passerelle, avec une ligne par branche à son nom ; déclencheur, délai ou résultat pour un événement ; finalité, périmètre, propriétaire et indicateurs pour le processus.</li>
-          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit votre voix à l'endroit du curseur, avec la reconnaissance vocale sur l'appareil du co-pilote : ni le son ni le texte ne quittent le navigateur. Le bouton n'apparaît que dans les navigateurs qui le permettent.</li>
-          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> demande au co-pilote IA une première version, d'après le diagramme (couloir, éléments voisins, conditions, documentation des autres éléments) et votre conversation. Il écrit « à confirmer » là où il ne sait pas, garde le texte déjà présent, et son texte apparaît aussitôt dans la fenêtre pour relecture. Le bouton reste grisé tant qu'aucun modèle n'est réglé.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-documentation.webp" width="1400" height="880" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
-            <tbody>
-              <tr><td><code>## Règles</code></td><td>Un titre (de <code>#</code> à <code>######</code>)</td></tr>
-              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Gras, italique</td></tr>
-              <tr><td><code>- Assuré</code>, <code>1. Vérifier</code></td><td>Liste à puces, liste numérotée (deux espaces devant pour une sous-liste)</td></tr>
-              <tr><td><code>[Procédure](https://example.com)</code></td><td>Un lien. Seules les adresses https, http et mailto sont gardées</td></tr>
-              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>Une citation, du code</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Le Markdown reste du texte lisible : Camunda, Signavio et les autres outils BPMN le montrent tel quel dans leur champ Documentation, et un texte écrit sans mise en forme garde ses retours à la ligne.</p>
-        <h3>Repérer et retrouver la documentation</h3>
-        <ul>
-          <li>Une pastille bleue, en haut à droite, marque chaque élément documenté. Au survol, elle montre un aperçu de sa documentation ; un clic ouvre la fenêtre.</li>
-          <li>En <a href="#experts-bpmn">mode Expert</a>, une pastille en pointillé marque aussi les activités sans documentation, celles que le rapport de processus signale « à compléter ». Un clic ouvre la fenêtre pour la rédiger.</li>
-          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, en haut à gauche du canevas, ou <kbd>Ctrl</kbd>+<kbd>F</kbd> sur le canevas, cherche dans les libellés, les identifiants et la documentation. Sous chaque résultat, l'extrait de documentation qui correspond. <kbd>Entrée</kbd> centre le diagramme sur l'élément et le sélectionne.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-doc-pastilles.webp" width="1400" height="731" alt="Le processus d'achat avec une pastille bleue sur chaque élément documenté, et l'aperçu de la documentation de Valider en comité au survol de sa pastille." loading="lazy" /><figcaption>Les pastilles, et l'aperçu au survol.</figcaption></figure>
-        <h3>Utiliser la documentation</h3>
-        <ul>
-          <li>En <a href="#dessiner">mode Présentation</a>, un clic sur un élément affiche sa fiche à droite de l'écran. Le bouton <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Fiches</span> de la barre, ou la touche <kbd>D</kbd>, active ou coupe les fiches. <kbd>Échap</kbd> ferme la fiche ouverte.</li>
-          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Fiches de procédure (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Fiches de procédure (Markdown)</span>, produit une fiche par activité dans l'ordre du flux : son type, son couloir, ce qui la précède et ce qui la suit, puis sa documentation mise en forme. Les passerelles et les événements documentés ont aussi leur fiche, et une activité sans documentation est marquée « à compléter ». Le PDF commence par la documentation du processus et un sommaire cliquable.</li>
-          <li>Le <a href="#rapport-processus">rapport de processus</a> reprend la documentation sur une ligne dans sa séquence des éléments, et en entier à la fin du rapport en Markdown.</li>
-          <li>Le co-pilote IA et les agents MCP lisent la documentation de chaque élément avec le diagramme : posez-leur une question sur le processus, ils s'appuient dessus pour répondre.</li>
-        </ul>
-        <figure><img src="/src/help/img/fr-doc-presentation.webp" width="1600" height="956" alt="Le processus d'achat en mode Présentation, avec la fiche de la tâche Valider en comité ouverte à droite : objectif, acteurs, entrées, sorties, règles et références." loading="lazy" /><figcaption>La fiche d'une activité, en mode Présentation.</figcaption></figure>
       </section>
 
       <section id="couleurs-texte">
@@ -415,6 +336,106 @@
         <!-- /docker -->
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Imprimer</h3>
         <p>Exporter, puis Imprimer…, ouvre la fenêtre d'impression du navigateur sur le diagramme seul, centré avec des marges de 10 mm. L'orientation suit sa forme : paysage s'il est plus large que haut, portrait sinon. Safari, lui, laisse ce choix dans sa fenêtre d'impression. Un grand schéma est réduit pour tenir sur une page, un petit garde sa taille à l'écran. Pour un très long processus, l'export PDF ou SVG permet de zoomer.</p>
+      </section>
+
+      <section id="presenter">
+        <h2><span class="ico" data-icon="present" aria-hidden="true"></span>Présenter</h2>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Un clic sur un élément affiche sa <a href="#documenter">fiche de documentation</a>, et <kbd>D</kbd> active ou coupe les fiches. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
+        <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Pointeur laser</b> : un point rouge orangé suivi d'une courte traînée remplace la flèche sur le schéma</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Surbrillance au survol</b> : l'élément survolé et ses flux s'allument, le reste du schéma pâlit</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Onde au clic</b> : un cercle s'élargit là où l'on clique</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Masquer à l'arrêt</b> : après deux secondes sans bouger, le curseur et la barre s'effacent, et reviennent au premier mouvement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Les choix sont retenus dans ce navigateur. Sur écran tactile, le laser et l'onde suivent le doigt. La surbrillance, liée au survol, n'y joue pas.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, onde et surbrillance</p><img src="/docs/presentation-pointer.fr.gif" width="1280" height="720" alt="Le processus d'achat en présentation : le pointeur laser suit le flux, une onde à chaque clic, puis la surbrillance allume tour à tour une tâche, une passerelle et leurs flux. Le menu Pointeur s'ouvre, puis le curseur et la barre s'effacent à l'arrêt." loading="lazy" /><figcaption>Le laser et l'onde au clic, la touche 2 pour la surbrillance, puis la barre qui s'efface à l'arrêt.</figcaption></figure>
+          <figure><p class="fig-title">Le menu Pointeur</p><img src="/src/help/img/fr-presentation-pointeur.webp" width="800" height="440" alt="Le menu Pointeur ouvert en présentation, quatre interrupteurs actifs. La tâche Valider en comité et ses flux en rouge orangé, le reste pâli, avec la traînée du pointeur laser." loading="lazy" /><figcaption>Le menu Pointeur, avec le laser et la surbrillance sur une tâche.</figcaption></figure>
+        </div>
+      </section>
+
+      <section id="documenter">
+        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenter les éléments</h2>
+        <p>Chaque élément a un champ <span class="ui">Documentation</span>, enregistré dans le fichier .bpmn. L'éditeur en fait une vraie fiche : saisie en Markdown, modèles par type d'élément, dictée, rédaction par le co-pilote IA, repérage sur le canevas, recherche, fiche en présentation et export en fiches de procédure.</p>
+        <h3>La fenêtre de documentation</h3>
+        <p>Elle s'ouvre par le bouton <span class="ui">Ouvrir l'éditeur en grand</span> du champ Documentation, dans le <a href="#proprietes">panneau Processus</a>, ou d'un clic sur la pastille bleue de l'élément (voir plus bas). Le texte s'enregistre à mesure que vous écrivez, et <kbd>Ctrl</kbd>+<kbd>Z</kbd> l'annule comme toute modification.</p>
+        <ul>
+          <li>En haut, trois vues : <span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> (la saisie à gauche, l'aperçu mis en forme à droite) et <span class="uib">Aperçu</span>. Le navigateur retient la dernière.</li>
+          <li>La barre de mise en forme ajoute gras, italique, titre, liste à puces, liste numérotée et lien. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> et <kbd>Ctrl</kbd>+<kbd>K</kbd> font de même au clavier.</li>
+          <li><span class="uib">Modèle ▾</span> insère les titres d'un modèle, celui du type de l'élément en premier : objectif, acteurs, entrées, sorties, règles et références pour une activité ; question posée et critère de chaque branche pour une passerelle, avec une ligne par branche à son nom ; déclencheur, délai ou résultat pour un événement ; finalité, périmètre, propriétaire et indicateurs pour le processus.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit votre voix à l'endroit du curseur, avec la reconnaissance vocale sur l'appareil du co-pilote : ni le son ni le texte ne quittent le navigateur. Le bouton n'apparaît que dans les navigateurs qui le permettent.</li>
+          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> demande au co-pilote IA une première version, d'après le diagramme (couloir, éléments voisins, conditions, documentation des autres éléments) et votre conversation. Il écrit « à confirmer » là où il ne sait pas, garde le texte déjà présent, et son texte apparaît aussitôt dans la fenêtre pour relecture. Le bouton reste grisé tant qu'aucun modèle n'est réglé.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-documentation.webp" width="1400" height="880" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
+            <tbody>
+              <tr><td><code>## Règles</code></td><td>Un titre (de <code>#</code> à <code>######</code>)</td></tr>
+              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Gras, italique</td></tr>
+              <tr><td><code>- Assuré</code>, <code>1. Vérifier</code></td><td>Liste à puces, liste numérotée (deux espaces devant pour une sous-liste)</td></tr>
+              <tr><td><code>[Procédure](https://example.com)</code></td><td>Un lien. Seules les adresses https, http et mailto sont gardées</td></tr>
+              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>Une citation, du code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Le Markdown reste du texte lisible : Camunda, Signavio et les autres outils BPMN le montrent tel quel dans leur champ Documentation, et un texte écrit sans mise en forme garde ses retours à la ligne.</p>
+        <h3>Repérer et retrouver la documentation</h3>
+        <ul>
+          <li>Une pastille bleue, en haut à droite, marque chaque élément documenté. Au survol, elle montre un aperçu de sa documentation ; un clic ouvre la fenêtre.</li>
+          <li>En <a href="#experts-bpmn">mode Expert</a>, une pastille en pointillé marque aussi les activités sans documentation, celles que le rapport de processus signale « à compléter ». Un clic ouvre la fenêtre pour la rédiger.</li>
+          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, en haut à gauche du canevas, ou <kbd>Ctrl</kbd>+<kbd>F</kbd> sur le canevas, cherche dans les libellés, les identifiants et la documentation. Sous chaque résultat, l'extrait de documentation qui correspond. <kbd>Entrée</kbd> centre le diagramme sur l'élément et le sélectionne.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-pastilles.webp" width="1400" height="731" alt="Le processus d'achat avec une pastille bleue sur chaque élément documenté, et l'aperçu de la documentation de Valider en comité au survol de sa pastille." loading="lazy" /><figcaption>Les pastilles, et l'aperçu au survol.</figcaption></figure>
+        <h3>Utiliser la documentation</h3>
+        <ul>
+          <li>En <a href="#dessiner">mode Présentation</a>, un clic sur un élément affiche sa fiche à droite de l'écran. Le bouton <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Fiches</span> de la barre, ou la touche <kbd>D</kbd>, active ou coupe les fiches. <kbd>Échap</kbd> ferme la fiche ouverte.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Fiches de procédure (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Fiches de procédure (Markdown)</span>, produit une fiche par activité dans l'ordre du flux : son type, son couloir, ce qui la précède et ce qui la suit, puis sa documentation mise en forme. Les passerelles et les événements documentés ont aussi leur fiche, et une activité sans documentation est marquée « à compléter ». Le PDF commence par la documentation du processus et un sommaire cliquable.</li>
+          <li>Le <a href="#rapport-processus">rapport de processus</a> reprend la documentation sur une ligne dans sa séquence des éléments, et en entier à la fin du rapport en Markdown.</li>
+          <li>Le co-pilote IA et les agents MCP lisent la documentation de chaque élément avec le diagramme : posez-leur une question sur le processus, ils s'appuient dessus pour répondre.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-presentation.webp" width="1600" height="956" alt="Le processus d'achat en mode Présentation, avec la fiche de la tâche Valider en comité ouverte à droite : objectif, acteurs, entrées, sorties, règles et références." loading="lazy" /><figcaption>La fiche d'une activité, en mode Présentation.</figcaption></figure>
+      </section>
+
+      <section id="proprietes">
+        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Panneau Processus</h2>
+        <p>Le panneau de droite affiche les propriétés de l'élément sélectionné. Quand rien n'est sélectionné, il montre celles du processus, ou de la collaboration si le diagramme contient des « pools ». Son en-tête indique le type de l'élément (Tâche utilisateur, Événement de début de message…) et son libellé.</p>
+        <h3>Afficher et masquer le panneau</h3>
+        <ul>
+          <li>Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span> tout à droite de la barre d'outils masque le panneau. Un second clic le fait réapparaître. Le canevas occupe la place libérée, et le navigateur retient votre choix pour la prochaine ouverture. Aucun raccourci clavier n'est associé à ce bouton.</li>
+          <li>Pour changer la largeur, tirez la poignée située sur le bord gauche du panneau. Au clavier, atteignez-la avec <kbd>Tab</kbd> puis utilisez les flèches gauche et droite. Un double-clic dessus rétablit la largeur par défaut.</li>
+        </ul>
+        <h3>Nom, Identifiant et Exécutable</h3>
+        <p>Le groupe <span class="ui">Général</span> est présent pour tous les éléments.</p>
+        <ul>
+          <li><span class="ui">Nom</span> est le libellé affiché sur le canevas. Le modifier ici revient à double-cliquer sur la forme.</li>
+          <li><span class="ui">Identifiant</span> est la référence technique de l'élément dans le fichier XML. Invisible à l'écran, il permet au fichier de relier les éléments entre eux (un flux vers sa tâche, un « pool » vers son processus) et aux moteurs d'exécution de désigner une étape. Il doit être unique dans le diagramme et ne pas contenir d'espace. Le panneau signale une valeur refusée sous le champ. L'éditeur en attribue un automatiquement : vous n'avez à le changer que si un outil externe attend une valeur précise.</li>
+          <li><span class="ui">Exécutable</span> ne concerne que le processus. Cochée, la case indique (attribut <code>isExecutable</code>) qu'un moteur de workflow comme Camunda ou Flowable peut déployer et exécuter ce processus. Pour un schéma de documentation ou d'analyse, elle peut rester décochée.</li>
+        </ul>
+        <p>Pour un « pool », le groupe Général réunit son nom et son identifiant, puis ceux du processus qu'il contient, avec la case Exécutable. Dès qu'un diagramme a des « pools », c'est donc là que se trouvent les réglages du processus.</p>
+        <h3>Les autres groupes</h3>
+        <p>Les champs sont rangés par groupes. Cliquez sur le titre d'un groupe pour le replier ou le déplier. Un point à droite du titre signale un groupe déjà rempli.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte qui décrit l'élément, en Markdown, enregistré dans le fichier (voir <a href="#documenter">Documenter les éléments</a>). Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
+              <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune à tout le schéma. Deux événements qui partagent la même référence désignent le même message.</td></tr>
+              <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
+              <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
+              <tr><td>Compensation</td><td>Les événements de compensation</td><td>L'activité à compenser, et s'il faut attendre la fin de la compensation.</td></tr>
+              <tr><td>Multi-instance</td><td>Les activités marquées multi-instance</td><td>Le nombre de boucles et la condition d'achèvement.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
       </section>
 
       <section id="assistant">
@@ -683,18 +704,21 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
 
       <div class="part-banner" id="partie-expert">
         <p class="part-title"><span class="ico" data-icon="expert" aria-hidden="true"></span>Mode Expert</p>
-        <p>Les cinq sections qui suivent décrivent des outils qui n'apparaissent qu'en mode Expert : simulation de jetons, carte de chaleur, rapport de processus, tables de décision DMN, et les outils MCP qui vont avec. Le reste de l'aide, avant comme après, vaut dans les deux modes.</p>
+        <p>Des outils pour éprouver un modèle et préparer son exécution : simulation de jetons, carte de chaleur, rapport de processus, tables de décision DMN. Rien ici n'est nécessaire pour dessiner. Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils les active, et <span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules…</span> n'allume que ceux dont vous vous servez.</p>
       </div>
 
-      <section id="experts-bpmn" class="expert-part" data-part="Mode Expert">
+      <section id="experts-bpmn" class="expert-part">
         <h2><span class="ico" data-icon="expert" aria-hidden="true"></span>Activer le mode Expert</h2>
-        <p>Ces fonctions servent à éprouver un modèle et à en rendre compte : rejouer le processus, mesurer la répartition des instances, en tirer un rapport, et relier les décisions du processus à des tables DMN. Aucune n'est nécessaire pour dessiner un diagramme.</p>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils ouvre un menu : <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>, <a href="#probabilites">Proposer les probabilités</a> et <a href="#rapport-processus">Analyse du Co-pilote</a>, grisées tant qu'aucun modèle n'est choisi pour le co-pilote : une petite icône d'aide le rappelle au survol. Choisir une entrée active le mode expert : le bouton passe en bleu, et le champ Probabilité (%) apparaît dans le panneau Processus. Le mode reste actif jusqu'à <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Quitter le mode Expert</span>, en bas du même menu, et le navigateur s'en souvient. Cette entrée n'apparaît pas pendant une simulation. Hors de ce mode, l'éditeur n'affiche aucun de ces outils. Les <a href="#controles-ia">contrôles du co-pilote</a> et les outils MCP de dessin restent disponibles dans les deux cas.</p>
+        <p>Ces fonctions servent à éprouver un modèle et à en rendre compte : rejouer le processus, mesurer la répartition des instances, en tirer un rapport, et relier les décisions du processus à des tables DMN.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> de la barre d'outils ouvre un menu, qui propose les commandes des <a href="#modules">modules allumés</a> : <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>, <a href="#probabilites">Proposer les probabilités</a> et <a href="#rapport-processus">Analyse du Co-pilote</a>, grisées tant qu'aucun modèle n'est choisi pour le co-pilote : une petite icône d'aide le rappelle au survol. Choisir une entrée active le mode expert : le bouton passe en bleu, et le champ Probabilité (%) apparaît dans le panneau Processus. Le mode reste actif jusqu'à <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Quitter le mode Expert</span>, en bas du même menu, et le navigateur s'en souvient. Cette entrée n'apparaît pas pendant une simulation. Hors de ce mode, l'éditeur n'affiche aucun de ces outils. Les <a href="#controles-ia">contrôles du co-pilote</a> et les outils MCP de dessin restent disponibles dans les deux cas.</p>
         <figure><img src="/src/help/img/fr-menu-expert.webp" width="586" height="186" alt="Le bouton Expert en bleu et son menu ouvert : Arrêter la simulation, Rapport de processus en PDF ou en Markdown." loading="lazy" /><figcaption>Le menu Expert, mode actif et simulation en cours.</figcaption></figure>
-        <p>Le même menu porte l'interrupteur <span class="uib">Tables de décision (DMN)</span>. Allumé, il ajoute les pastilles des tâches de règle métier, le groupe <span class="ui">Décision (DMN)</span> du panneau Processus et l'entrée <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Décisions du diagramme…</span> : voir <a href="#decisions-dmn">Tables de décision (DMN)</a>. Éteint, l'éditeur n'en montre rien, mais garde les décisions déjà rangées dans le fichier.</p>
+        <h3 id="modules"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules</h3>
+        <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules…</span>, en bas du menu, ouvre une fenêtre avec un interrupteur par fonction : <span class="ui">Simulation de jetons</span>, <span class="ui">Carte de chaleur</span>, <span class="ui">Rapport de processus</span> et <span class="ui">Tables de décision (DMN)</span>. N'allumez que ce dont vous vous servez : le menu Expert et le panneau Processus ne montrent que les commandes des modules allumés. La carte de chaleur demande la simulation. Par défaut, la simulation, la carte de chaleur et le rapport sont allumés, les tables de décision éteintes. Le navigateur retient vos choix.</p>
+        <figure><img src="/src/help/img/fr-modules-experts.webp" width="1040" height="1128" alt="La fenêtre Modules experts : Simulation de jetons, Carte de chaleur, Rapport de processus et Tables de décision (DMN), chacun avec son interrupteur, sa ligne d'explication et son lien vers l'aide." loading="lazy" /><figcaption>La fenêtre Modules experts : ici, les tables de décision sont éteintes.</figcaption></figure>
+        <p>Éteindre un module ne touche pas au diagramme : les probabilités et les décisions déjà saisies restent dans le fichier. Le module <span class="ui">Tables de décision (DMN)</span>, une fois allumé, ajoute les pastilles des tâches de règle métier, le groupe <span class="ui">Décision (DMN)</span> du panneau Processus et l'entrée <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Décisions du diagramme…</span> : voir <a href="#decisions-dmn">Tables de décision (DMN)</a>. Les agents IA, par le co-pilote ou par MCP, gardent tous leurs outils, quels que soient les modules allumés.</p>
       </section>
 
-      <section id="simulation" class="expert-part" data-part="Mode Expert">
+      <section id="simulation" class="expert-part">
         <h2><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation et carte de chaleur</h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, puis <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, lance le mode simulation : un bouton de lecture apparaît sur chaque événement de début. Cliquez dessus pour faire partir un jeton, et regardez-le suivre les flux. Aux passerelles exclusives, vous choisissez le chemin. Une glissière, en bas du canevas, règle la vitesse des jetons de 0,25× à 4×. Un journal montre les étapes parcourues. Vous vérifiez ainsi que le processus se termine dans tous les cas. Le menu Expert ne propose alors que <span class="uib">Arrêter la simulation</span>, et un point orange signale sur le bouton qu'une simulation tourne. L'arrêt rend la main à l'édition et garde le mode Expert : le canevas est verrouillé pendant la simulation, et c'est après l'arrêt que l'on règle les probabilités des branches.</p>
         <p>La case marquée d'un sapin, au bout du cadre de la vitesse, fait tourner le dégradé Leylines autour du contour de chaque étape où entre un jeton. Elle est décochée par défaut, et le navigateur retient votre choix.</p>
@@ -727,7 +751,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </div>
       </section>
 
-      <section id="rapport-processus" class="expert-part" data-part="Mode Expert">
+      <section id="rapport-processus" class="expert-part">
         <h2><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus</h2>
         <p>Le rapport de processus transforme le diagramme en document lisible sans outil BPMN : une fiche à remettre à une équipe, à joindre à une procédure qualité ou à présenter au responsable du processus. Il sert aussi de revue de modélisation : il liste les erreurs, les avertissements et les informations manquantes, et en déduit des axes d'amélioration par priorité.</p>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Rapport de processus (Markdown)</span>. Le rapport se construit à partir du diagramme, sans autre saisie :</p>
@@ -749,10 +773,10 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </div>
       </section>
 
-      <section id="decisions-dmn" class="expert-part" data-part="Mode Expert">
+      <section id="decisions-dmn" class="expert-part">
         <h2><span class="ico" data-icon="table" aria-hidden="true"></span>Tables de décision (DMN)</h2>
         <p>Une tâche de règle métier applique une décision : accorder un crédit, choisir un tarif, orienter une demande. La norme DMN (Decision Model and Notation, de l'OMG, comme BPMN) décrit cette décision dans une table : des entrées, des sorties, et une règle par ligne. L'éditeur relie chaque tâche de règle métier à sa table, l'ouvre dans dmn-js, l'éditeur DMN de bpmn.io, et range les décisions dans le fichier .bpmn lui-même.</p>
-        <p>Tout ce qui suit demande l'interrupteur <span class="uib">Tables de décision (DMN)</span> du menu <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>. Le navigateur se souvient du réglage.</p>
+        <p>Tout ce qui suit demande le module <span class="ui">Tables de décision (DMN)</span>, à allumer dans <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> puis <a href="#modules">Choisir les modules…</a>. Le navigateur se souvient du réglage.</p>
         <figure><img src="/src/help/img/fr-dmn-tache.webp" width="1250" height="538" alt="Une tâche de règle métier Évaluer le risque avec sa pastille Table, et le groupe Décision (DMN) du panneau Processus : décision liée, résumé de la table, boutons Ouvrir la table et Délier." loading="lazy" /><figcaption>Une tâche liée à sa table : la pastille sur le canevas, le groupe Décision (DMN) dans le panneau.</figcaption></figure>
         <h3 id="dmn-lier">Relier une tâche à sa table</h3>
         <ul>
@@ -797,7 +821,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         <p>Sur une tâche liée, <span class="uib">✦ Expliquer et tester avec le Co-pilote</span> lui demande de résumer la table en langage courant, de l'essayer (un cas par règle, puis des cas limites) et de signaler trous, chevauchements et résultats surprenants, sans la modifier. Il passe pour cela par l'outil <code>test_decision</code>, qui évalue la table sans la changer.</p>
       </section>
 
-      <section id="experts-mcp" class="expert-part" data-part="Mode Expert">
+      <section id="experts-mcp" class="expert-part">
         <h2>Agents MCP en mode Expert</h2>
         <p>En <a href="#docker">version Docker</a>, un agent MCP a aussi accès au rapport, aux probabilités et aux tables de décision :</p>
         <ul>
@@ -811,6 +835,11 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </ul>
         <p>Ces outils répondent même si le mode Expert est éteint dans l'onglet ouvert : il ne règle que l'affichage de l'éditeur.</p>
       </section>
+
+      <div class="part-banner" id="partie-installer">
+        <p class="part-title"><span class="ico" data-icon="install" aria-hidden="true"></span>Installer et administrer</p>
+        <p>Où vont vos données, comment installer l'éditeur sur votre machine ou comme une application, l'usage sur petit écran, et les réponses aux questions fréquentes.</p>
+      </div>
 
       <section id="confidentialite">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Confidentialité</h2>
