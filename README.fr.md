@@ -192,7 +192,7 @@ indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image
 n'envoient quoi que ce soit. Le réglage suit les [recommandations de la CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) pour les mesures d'audience
 exemptées de consentement.
 
-### L'installer en PWA
+### L'installer sur votre poste (PWA)
 
 La version en ligne est une PWA (Progressive Web App), avec un manifeste d'application web. Chrome
 et Edge (ordinateur et Android) proposent de l'installer : bouton Installer de la barre d'outils, ou icône à droite de la barre d'adresse. Sur iPhone et iPad :
@@ -268,7 +268,7 @@ Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autr
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
 
-### L'installer en PWA
+### L'installer sur votre poste (PWA)
 
 Sur `http://localhost:8080`, Chrome et Edge proposent d'installer l'éditeur en PWA
 (icône dans la barre d'adresse, ou menu > Installer). Il s'ouvre dans sa propre fenêtre, que l'on

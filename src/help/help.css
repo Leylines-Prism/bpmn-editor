@@ -139,11 +139,11 @@ svg.ico { overflow: visible; }
 .uib .ico[class*="bpmn-icon-"] { font-size: 15px; line-height: 15px; }
 .uib svg.ico { width: 15px; height: 15px; }
 td .uib { white-space: normal; height: auto; }
-/* Devant un titre de section qui correspond à un bouton : un peu plus grand, et décollé du texte. */
+/* Après le titre d'une section qui correspond à un bouton : un peu plus grande, et décollée du texte. */
 /* Le titre d'une section repliable passe dans son bouton .sec-toggle (src/help/sections.js) :
    « h2 .ico » vise l'icône dans les deux cas. */
-h3 > .ico { margin: 0 10px 0 0; }
-h2 .ico, h2 .ico[data-icon] { width: 26px; height: 26px; margin: 0 12px 0 0; vertical-align: -4px; }
+h3 > .ico { margin: 0 0 0 10px; }
+h2 .ico, h2 .ico[data-icon] { width: 26px; height: 26px; margin: 0 0 0 12px; vertical-align: -4px; }
 h2 .ico[class*="bpmn-icon-"] { font-size: 26px; line-height: 26px; }
 h3 > .ico { vertical-align: -3px; }
 

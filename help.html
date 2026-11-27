@@ -50,7 +50,7 @@
           <li><a href="#bpmn-experts">For BPMN experts</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#docker">Docker version and MCP agents</a></li>
-          <li><a href="#install-app">Install as a PWA</a></li>
+          <li><a href="#install-app">Install on your device (PWA)</a></li>
           <li><a href="#small-screens">On a phone or tablet</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#feedback">Send feedback</a></li>
@@ -127,10 +127,10 @@
           <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2.5 21.5 1-1h2.8l8.6-8.6"/><path d="M3.5 20.5v-2.8l8.6-8.6"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>Copy style</span> (the eyedropper) remembers the element's fill, stroke, font and text color. <span class="uib"><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="13" height="5" rx="1.2"/><path d="M16 5.5h2.5v5H10v3"/><rect x="8.6" y="13.5" width="2.8" height="6" rx="1"/></svg>Paste style</span> (the roller), shown once a style has been copied, applies them to the selected element, or to several at once.</li>
         </ul>
         <figure><img src="/src/help/img/en-menu-contextuel.webp" width="460" height="300" alt="Context menu of a selected task: elements to append, connect, change type, color, text, copy style and delete." loading="lazy" /><figcaption>The context menu of a selected task.</figcaption></figure>
-        <h3><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Change element</h3>
+        <h3>Change element<span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span></h3>
         <p>The wrench opens the <span class="uib">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
         <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, sequential multi-instance <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> and loop <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
-        <h3><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo and redo</h3>
+        <h3>Undo and redo<span class="ico" data-icon="undo" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> and <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Redo</span> buttons, at the top left of the canvas, step through your edits and the co-pilot's one at a time, like <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd>. They are greyed out when there is nothing to undo or redo.</p>
         <p>Tidy up, and a layout or a diagram replaced by the co-pilot, reload the whole diagram. Just before, the editor keeps a copy: Undo goes back to it in one step, but older edits can no longer be undone one by one. Opening a file or creating a diagram starts with an empty history.</p>
         <h3>Keyboard shortcuts</h3>
@@ -162,7 +162,7 @@
           <li><kbd>Ctrl</kbd>+wheel over the minimap zooms the canvas.</li>
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
-        <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
+        <h3>Presentation<span class="ico" data-icon="present" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. A click on an element shows its <a href="#documenting">documentation sheet</a>, and <kbd>D</kbd> turns the sheets on or off. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
         <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
         <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
@@ -185,7 +185,7 @@
       </section>
 
       <section id="bpmn-symbols">
-        <h2><span class="ico bpmn-icon-gateway-xor" aria-hidden="true"></span>BPMN symbol memo</h2>
+        <h2>BPMN symbol memo<span class="ico bpmn-icon-gateway-xor" aria-hidden="true"></span></h2>
         <p>Each palette symbol has a meaning set by the standard. This memo groups them by family, then crosses events with what triggers them. The icons are the editor's own.</p>
         <h3>The families</h3>
         <div class="table-wrap"><table class="symbols-table">
@@ -242,7 +242,7 @@
       </section>
 
       <section id="properties">
-        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Process panel</h2>
+        <h2>Process panel<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
         <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
         <h3>Show and hide the panel</h3>
         <ul>
@@ -276,7 +276,7 @@
       </section>
 
       <section id="documenting">
-        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenting elements</h2>
+        <h2>Documenting elements (bpmn:documentation)<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
         <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
         <h3>The documentation window</h3>
         <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
@@ -320,9 +320,9 @@
 
       <section id="colors-text">
         <h2>Colors and text</h2>
-        <h3><svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg>Colors</h3>
+        <h3>Colors<svg class="ico" viewBox="0 0 22 22" fill="currentColor" aria-hidden="true"><path d="m12.5 5.5.3-.4 3.6-3.6c.5-.5 1.3-.5 1.7 0l1 1c.5.4.5 1.2 0 1.7l-3.6 3.6-.4.2v.2c0 1.4.6 2 1 2.7v.6l-1.7 1.6c-.2.2-.4.2-.6 0L7.3 6.6a.4.4 0 0 1 0-.6l.3-.3.5-.5.8-.8c.2-.2.4-.1.6 0 .9.5 1.5 1.1 3 1.1zm-9.9 6 4.2-4.2 6.3 6.3-4.2 4.2c-.3.3-.9.3-1.2 0l-.8-.8-.9-.8-2.3-2.9"/></svg></h3>
         <p>With several elements selected, the brush in the context menu offers 17 ready-made colors, each with a pale fill and a readable dark stroke. <span class="ui">Custom color…</span> accepts any shade. The stroke is then computed to keep good contrast, and a dark fill gets light text.</p>
-        <h3><svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg>Text formatting</h3>
+        <h3>Text formatting<svg class="ico" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18 9.5 4h1L16 18M6.3 12.5h7.4"/><path d="M14.5 18h4"/></svg></h3>
         <p>With several elements selected, the <span class="uib">A</span> button in the context menu formats their labels: bold, italic, underline, size (10 to 24), font (sans serif, serif, monospace, Verdana, Tahoma, Trebuchet, Georgia, Palatino, Comic) and color. The <span class="ui">Auto</span> color picks black or white, whichever reads better on the element's fill. <span class="ui">Default text</span> removes all formatting.</p>
         <h3>In the Process panel</h3>
         <p>For a single selected element, the brush and the <span class="uib">A</span> button of the context menu open a small menu: five shape or text colors, then, under <span class="ui">Used in this diagram</span>, up to three colors used elsewhere, the most recent first. <span class="ui">Default</span> removes the color, and <span class="uib">More…</span> opens the <a href="#properties">Process panel</a> on its <span class="ui">Shape</span> or <span class="ui">Text</span> group, with more room. For several selected elements, they open the full menus described above.</p>
@@ -339,7 +339,7 @@
 
       <section id="checking">
         <h2>Check and tidy up</h2>
-        <h3>BPMN checks</h3>
+        <h3>BPMN checks (bpmnlint)</h3>
         <p>The editor has a built-in BPMN checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules and one rule of BPMN Pilot's own: disconnected element, process with no start or end, badly connected gateway, element without a label, trigger not allowed on an event… A few rules apply the standard, most are modeling best practices: a diagram that breaks them is still valid BPMN, but it reads or runs less well. The Nature column of the table tells them apart. They are advice and never block saving.</p>
         <ul>
           <li>A badge on the element flags an issue: red for an error, orange for a warning.</li>
@@ -392,7 +392,7 @@
           <li>Video lessons: the YouTube channel <a href="https://www.youtube.com/@mooccartopros4603" target="_blank" rel="noopener">@mooccartopros4603</a> (in French).</li>
           <li><a href="https://github.com/bpmn-io/bpmnlint/tree/main/docs/rules" target="_blank" rel="noopener">Rule documentation<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>: the details of each check.</li>
         </ul>
-        <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
+        <h3>Tidy up (auto layout)<span class="ico" data-icon="layout" aria-hidden="true"></span></h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
         <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
@@ -400,9 +400,9 @@
 
       <section id="saving">
         <h2>Saving and My diagrams</h2>
-        <h3>Autosave</h3>
+        <h3>Autosave (localStorage)</h3>
         <p>The editor keeps your work in the browser one second after each change, and shows the time of the last save next to "Autosave". This autosave has a single slot: clicking <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>New</span> or opening a file replaces its content.</p>
-        <h3><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</h3>
+        <h3>My diagrams<span class="ico" data-icon="library" aria-hidden="true"></span></h3>
         <p>To keep several processes, open <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>. Give your work a name and click <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Save</span>. The list then lets you reopen, rename or delete each entry. <kbd>Ctrl</kbd>+<kbd>S</kbd> updates the one that is open, and <span class="uib">Save as new</span> makes a copy.</p>
         <figure><img src="/src/help/img/en-mes-diagrammes.webp" width="760" height="452" alt="My diagrams window with two diagrams saved in the browser." loading="lazy" /><figcaption>The window, with two diagrams saved in the browser.</figcaption></figure>
         <!-- online -->
@@ -415,8 +415,8 @@
       </section>
 
       <section id="open-export">
-        <h2>Open, import, export</h2>
-        <h3><span class="ico" data-icon="open" aria-hidden="true"></span>Open</h3>
+        <h2>Open, import, export (XML, SVG, PNG, PDF)</h2>
+        <h3>Open<span class="ico" data-icon="open" aria-hidden="true"></span></h3>
         <ul>
           <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>.bpmn or .xml file…</span>, opens a file from your disk.</li>
           <li><span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
@@ -424,7 +424,7 @@
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening.</p>
-        <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
+        <h3 id="compare">Compare two versions (diff)<span class="ico" data-icon="compare" aria-hidden="true"></span></h3>
         <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the co-pilot's pill.</p>
         <ul>
           <li>In green, what was added (on the right). In red, what was removed (on the left). In orange, what was changed, on both sides.</li>
@@ -433,7 +433,7 @@
           <li>Both views scroll and zoom together. <kbd>Esc</kbd> closes the window.</li>
         </ul>
         <figure><img src="/src/help/img/en-avant-apres.webp" width="1440" height="720" alt="Before and after window: the diagram before the co-pilot on the left, the current diagram on the right, with an added element in green, a removed one in red, a changed one in orange, and the list of differences." loading="lazy" /><figcaption>The Before and after window, opened from the co-pilot's pill.</figcaption></figure>
-        <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Export</h3>
+        <h3>Export<span class="ico" data-icon="save" aria-hidden="true"></span></h3>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Format</th><th>Use it to</th></tr></thead>
@@ -463,16 +463,16 @@
         <!-- docker -->
         <p>The file is also saved in the exports folder of the server, whatever the Destination choice, never replacing an existing file.</p>
         <!-- /docker -->
-        <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
+        <h3>Print<span class="ico" data-icon="print" aria-hidden="true"></span></h3>
         <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
 
       <section id="assistant">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</h2>
+        <h2>AI co-pilot<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
         <figure class="fig-anim"><p class="fig-title">The co-pilot draws a process</p><img src="/docs/demo.gif" width="1200" height="675" alt="The AI co-pilot draws an online order process with two pools and four lanes" loading="lazy" /><figcaption>A request in plain language, and the diagram builds up in the editor.</figcaption></figure>
 
-        <h3>1. Choose a provider</h3>
+        <h3>1. Choose an LLM provider</h3>
         <!-- online -->
         <p>The co-pilot uses an AI model from the provider of your choice, with your own API key. Open <span class="uib">Options</span> in the co-pilot panel:</p>
         <!-- /online -->
@@ -548,12 +548,12 @@
         <h3>Review and checks</h3>
         <p>Around each answer, the co-pilot points out what the request leaves open, checks the diagram it produced, fixes on its own what fails, and shows where the result comes from. The details are in <a href="#ai-checks">Review, checks and traceability</a>. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns off the extra requests.</p>
 
-        <h3>What it costs</h3>
+        <h3>What it costs (API tokens)</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
       </section>
 
       <section id="prompt-examples">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Prompt examples</h2>
+        <h2>Prompt examples<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Ready-to-use prompts for the <a href="#assistant">AI co-pilot</a>, to adapt to your context. They work with every provider, online and in the Docker version. The co-pilot replies, and names the elements, in the language of the prompt.</p>
 
         <details class="faq prompts-list">
@@ -703,7 +703,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
         <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <a href="#probabilities">Propose probabilities</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
-        <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
+        <h3 id="simulation">Token simulation<span class="ico" data-icon="play" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
         <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
         <div class="fig-pair">
@@ -732,7 +732,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <figure class="fig-anim"><p class="fig-title">Computing the map</p><img src="/docs/heatmap.gif" width="1280" height="720" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" loading="lazy" /><figcaption>A probability set on a branch, then 200 tokens computed at once.</figcaption></figure>
           <figure><p class="fig-title">Reading the map</p><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
         </div>
-        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
+        <h3 id="process-report">Process report<span class="ico" data-icon="pdf" aria-hidden="true"></span></h3>
         <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
         <ul>
@@ -786,7 +786,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="privacy">
-        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>
+        <h2>Privacy<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg></h2>
         <ul>
           <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
@@ -843,7 +843,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="install-app">
-        <h2>Install as a PWA</h2>
+        <h2>Install on your device (PWA)</h2>
         <p>BPMN-Pilot is a PWA (Progressive Web App): thanks to its web app manifest, the browser installs it in its own window, without the address bar, launched from the Start menu, the Dock or the home screen.</p>
         <ul>
           <li><strong>Chrome and Edge</strong> (computer and Android): the <span class="uib"><span class="ico" data-icon="install" aria-hidden="true"></span>Install</span> button in the toolbar, which appears only when the browser offers installation, or the install icon at the right of the address bar.</li>
@@ -935,7 +935,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="feedback">
-        <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
+        <h2>Send feedback<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg></h2>
         <p>A bug, an idea, a question? The <span class="uib">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
         <h3 id="support">Support development</h3>
         <p>BPMN-Pilot is free, with no subscription. My buddy Claude runs on caffeine. If the editor is useful to you, a coffee on Ko-fi keeps the project going.</p>
