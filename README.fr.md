@@ -116,7 +116,7 @@ Les outils de dessin généralistes comme draw.io, Lucidchart ou Visio tracent d
 Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente ses conventions. BPMN donne
 à chaque symbole un sens défini :
 
-- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de message
+- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de messages
   pour ce qu'ils échangent.
 - **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
   événements accrochés à une tâche pour les délais et les exceptions.
