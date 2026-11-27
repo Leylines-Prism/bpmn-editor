@@ -397,6 +397,10 @@ Click the **MCP** badge in the toolbar. The "Connect an agent" window gives the 
 (`http://localhost:8080/mcp`, or `https://your-domain/mcp`), and the setting to paste for Claude
 Code, Claude Desktop, GitHub Copilot in VS Code, Cursor or another MCP client. The agent draws in the editor tab used last, so keep it open.
 
+The agent reads and draws the diagram, tidies it up (`layout_diagram`), moves or duplicates specific
+shapes (`move_elements`, `duplicate_elements`), and backs out of a wrong call with `undo` and `redo`, like
+Ctrl+Z and Ctrl+Y. The full list of tools is in [mcp/README.md](mcp/README.md).
+
 A token protects this access: the same window generates one and tells you where to put it. It is
 optional on `localhost`, and required as soon as the editor is served under another name (see
 [Reach it from other machines](#reach-it-from-other-machines)). Without it, the window says that

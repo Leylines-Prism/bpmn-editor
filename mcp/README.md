@@ -4,7 +4,7 @@
 
 This server lets an AI (Claude Code, Claude Desktop, GitHub Copilot in VS Code or any MCP client) read and draw in the BPMN
 editor **open in the browser**. Changes show up live on the canvas, as if made by hand, and each tool
-call can be undone with a single Ctrl+Z. `set_diagram_xml` and `auto_layout` reload the whole diagram: one
+call can be undone with a single Ctrl+Z. `set_diagram_xml` and `layout_diagram` reload the whole diagram: one
 Ctrl+Z brings back the diagram from before them, but earlier steps can no longer be undone one by one.
 
 ## How it works
@@ -178,7 +178,10 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, sets the assignee, systems used and RACI of an activity, the plain-words condition of a gateway branch, its AI potential with the reason, its risks, controls and regulatory requirements, the process identity on the diagram root (owner, version, status, scope), or the probability of a gateway branch, marked as proposed by the AI until the user reviews it |
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
-| `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
+| `layout_diagram` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout. Its former name, `auto_layout`, still works |
+| `move_elements` | places shapes at a given centre, or shifts them, without touching the rest; connections follow |
+| `duplicate_elements` | copies shapes with the connections between them, below the originals or shifted |
+| `undo`, `redo` | step back or forward through the editor's history, like Ctrl+Z and Ctrl+Y: one tool call or one gesture per step |
 | `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element; with decisions in the file, their findings too |
 | `get_process_report` | returns the process report in Markdown, like the Export menu: findings by level, improvement areas, end events, activities by lane, element sequence. With `simulate`, first computes 100 tokens following the branch probabilities |
 | `set_report_commentary` | saves your analysis of the process (summary, bottlenecks, rare paths, risks, improvements, each tied to elements) in the diagram file; the process report shows it as written by the AI co-pilot |
@@ -289,5 +292,5 @@ They can also be placed in `mcp/.env`.
 ## Prototype limits
 
 - The editor tab must be open for the AI to draw.
-- `auto_layout` uses bpmn-auto-layout 2.0.0-alpha.2, which lays out pools, lanes, message flows
+- `layout_diagram` uses bpmn-auto-layout 2.0.0-alpha.2, which lays out pools, lanes, message flows
   and boundary events. It is still an alpha version: the result can change with its next releases.

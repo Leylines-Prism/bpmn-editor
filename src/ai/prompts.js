@@ -36,7 +36,7 @@ ${description}
 - Read the current diagram with get_shapes first. If it is not empty, ask me whether to add to it or replace it.
 - Follow the modeling rules of this server: start and end events, verb + object for tasks, object + state for events, a question on each exclusive gateway with answers on its flows, the happy path from left to right.
 - Name the elements in the language of the description.
-- Finish with auto_layout, then validate_diagram, and fix what it reports.
+- Finish with layout_diagram, then validate_diagram, and fix what it reports.
 - Then summarize the process in a few lines and list the assumptions you made.`,
     },
     {
@@ -61,7 +61,7 @@ ${participants ? `\nParticipants: ${participants}\n` : ''}
 - Model each participant's own process inside its pool, with its own start and end events.
 - Connect the pools only with message flows (connect_shapes between shapes of two pools), never with sequence flows.
 - Follow the modeling rules of this server, and name the elements in the language of the description.
-- Finish with auto_layout, then validate_diagram, and fix what it reports.`,
+- Finish with layout_diagram, then validate_diagram, and fix what it reports.`,
     },
     {
       name: 'review_diagram',
@@ -89,7 +89,8 @@ Reply in the language of the diagram's names.`,
 - Read it with get_shapes and run validate_diagram.
 - Rename elements that break the naming rules of this server, in the language of the existing names.
 - Fix the validation errors. Do not add or remove steps of the process: if a fix would change what the process does, list it and ask me instead.
-- Then call auto_layout and validate_diagram again.
+- Then call layout_diagram and validate_diagram again. If a few shapes still sit badly, adjust them with move_elements rather than laying out again.
+- If a call gives a wrong result, back out of it with undo before trying again.
 - Finally, list what you changed. I can undo everything with Ctrl+Z.`,
     },
     {

@@ -423,6 +423,10 @@ utiliser (`http://localhost:8080/mcp`, ou `https://votre-domaine/mcp`), et le r�
 Claude Code, Claude Desktop, GitHub Copilot dans VS Code, Cursor ou un autre client MCP. L'agent dessine dans le dernier onglet de l'éditeur
 utilisé : gardez-le ouvert.
 
+L'agent lit et dessine le diagramme, le range (`layout_diagram`), déplace ou duplique des formes
+précises (`move_elements`, `duplicate_elements`), et reprend un appel raté avec `undo` et `redo`, comme
+Ctrl+Z et Ctrl+Y. La liste complète des outils est dans [mcp/README.fr.md](mcp/README.fr.md).
+
 Un jeton protège cet accès : la même fenêtre en génère un et dit où le mettre. Il est facultatif
 sur `localhost`, et obligatoire dès que l'éditeur est servi sous un autre nom (voir
 [Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). Sans lui, la fenêtre

@@ -14,7 +14,7 @@ const PILOT_FIELDS = ['assignee', 'systems', 'accountable', 'consulted', 'inform
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
-import { reloadWithCopy } from './history.js'
+import { reloadWithCopy, getHistory } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
 import { setDecisionTable, summarize as summarizeDmn, checkDecision } from './dmn/dmn-model.js'
@@ -224,6 +224,24 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
   const bpmnReplace = modeler.get('bpmnReplace')
 
   const withPrefix = (type) => (type.startsWith('bpmn:') ? type : 'bpmn:' + type)
+
+  const copyPaste = modeler.get('copyPaste')
+
+  async function stepHistory(direction, steps) {
+    const history = getHistory()
+    const can = () => (history?.modeler === modeler
+      ? (direction === 'undo' ? history.canUndo() : history.canRedo())
+      : (direction === 'undo' ? commandStack.canUndo() : commandStack.canRedo()))
+    let done = 0
+    while (done < steps && can()) {
+      if (history?.modeler === modeler) await history[direction]()
+      else commandStack[direction]()
+      done++
+    }
+    const canUndo = history?.modeler === modeler ? history.canUndo() : commandStack.canUndo()
+    const canRedo = history?.modeler === modeler ? history.canRedo() : commandStack.canRedo()
+    return { [direction === 'undo' ? 'undone' : 'redone']: done, canUndo, canRedo }
+  }
 
   function getElement(id) {
     const element = elementRegistry.get(id)
@@ -459,7 +477,7 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
     return position
   }
 
-  return {
+  const tools = {
     get_shapes() {
       const root = canvas.getRootElement()
       const elements = elementRegistry.filter((e) => e.type !== 'label' && e !== root)
@@ -711,7 +729,7 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
       })
     },
 
-    async auto_layout() {
+    async layout_diagram() {
       try {
         var warnings = await autoLayout(modeler)
       } catch (err) {
@@ -724,6 +742,82 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
         shapes: elements.filter((e) => !e.waypoints).length,
         connections: elements.filter((e) => e.waypoints).length,
       }
+    },
+
+    // Ancien nom, gardé pour les agents MCP réglés avant le renommage.
+    auto_layout(args) {
+      return tools.layout_diagram(args)
+    },
+
+    // Place ou décale des formes précises : centre visé (x, y) ou décalage (dx, dy).
+    move_elements({ elements }) {
+      return atomic(() => {
+        const plan = elements.map((spec) => {
+          const element = getElement(spec.id)
+          if (element.waypoints) throw new Error(`A connection follows its shapes and cannot be moved on its own: ${spec.id}`)
+          if (is(element, 'bpmn:Lane')) throw new Error(`A lane moves with its pool: move the pool instead (${spec.id})`)
+          const absolute = spec.x !== undefined || spec.y !== undefined
+          const relative = spec.dx !== undefined || spec.dy !== undefined
+          if (absolute === relative) throw new Error(`Give either x and y, or dx and dy: ${spec.id}`)
+          if (absolute && (spec.x === undefined || spec.y === undefined)) throw new Error(`Give both x and y: ${spec.id}`)
+          const delta = absolute
+            ? { x: Math.round(spec.x - (element.x + element.width / 2)), y: Math.round(spec.y - (element.y + element.height / 2)) }
+            : { x: Math.round(spec.dx || 0), y: Math.round(spec.dy || 0) }
+          return { element, delta }
+        })
+        for (const { element, delta } of plan) {
+          if (delta.x || delta.y) modeling.moveElements([element], delta)
+        }
+        return {
+          moved: plan.map(({ element }) => ({ id: element.id, x: Math.round(element.x + element.width / 2), y: Math.round(element.y + element.height / 2) })),
+        }
+      })
+    },
+
+    // Copier-coller de l'éditeur (copyPaste), sous le groupe copié ou décalé de dx, dy.
+    duplicate_elements({ ids, dx, dy }) {
+      return atomic(() => {
+        const elements = ids.map(getElement)
+        if (elements.some((e) => e.waypoints)) throw new Error('Give shapes only: the connections between them are copied with them')
+        const parent = elements[0].parent
+        if (elements.some((e) => e.parent !== parent)) throw new Error('All the shapes to copy must have the same parent (the same pool, or the process)')
+        const xs = elements.map((e) => e.x)
+        const ys = elements.map((e) => e.y)
+        const box = {
+          x: Math.min(...xs), y: Math.min(...ys),
+          width: Math.max(...elements.map((e) => e.x + e.width)) - Math.min(...xs),
+          height: Math.max(...elements.map((e) => e.y + e.height)) - Math.min(...ys),
+        }
+        const point = {
+          x: Math.round(box.x + box.width / 2 + (dx ?? 0)),
+          y: Math.round(box.y + box.height / 2 + (dy ?? box.height + 60)),
+        }
+        let cache = null
+        const keep = (event) => { cache = event.cache }
+        eventBus.on('copyPaste.pasteElement', keep)
+        let pasted
+        try {
+          pasted = copyPaste.duplicate(elements, { element: parent, point })
+        } finally {
+          eventBus.off('copyPaste.pasteElement', keep)
+        }
+        if (!pasted?.length) throw new Error('These shapes cannot be copied here')
+        const copies = {}
+        for (const [original, copy] of Object.entries(cache || {})) {
+          if (copy && copy.type !== 'label' && elementRegistry.get(copy.id)) copies[original] = copy.id
+        }
+        return { copies, elements: pasted.filter((e) => e.type !== 'label').map(describe) }
+      })
+    },
+
+    // Annuler et Rétablir de l'éditeur (src/history.js) : un appel d'outil ou un geste par pas,
+    // rechargements compris (mise en page, diagramme remplacé).
+    async undo({ steps = 1 } = {}) {
+      return stepHistory('undo', steps)
+    },
+
+    async redo({ steps = 1 } = {}) {
+      return stepHistory('redo', steps)
     },
 
     // Rapport complet (src/diagram-checks.js) : compteurs, six contrôles, et le détail de bpmnlint.
@@ -859,4 +953,5 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
       })
     },
   }
+  return tools
 }

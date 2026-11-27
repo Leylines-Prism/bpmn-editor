@@ -1,5 +1,5 @@
 // Mise en page automatique du diagramme ouvert, partagée par le bouton
-// « Ranger » et l'outil MCP auto_layout.
+// « Ranger » et l'outil MCP layout_diagram (ancien nom : auto_layout).
 
 import { layoutProcess } from 'bpmn-auto-layout'
 import { fitView } from './fit-view.js'

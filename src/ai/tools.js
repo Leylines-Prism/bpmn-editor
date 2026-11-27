@@ -13,13 +13,15 @@ Recommended method:
 2. For a linear sequence, add_shapes with "after": the shape is placed to the right of the previous one and connected automatically.
 3. For branches and loops back, add_shapes then connect_shapes.
 4. Read the diagram again with get_shapes to check. get_diagram_image shows how it actually looks.
-5. When the drawing is complete, call auto_layout: it places every shape and connection cleanly, pools and lanes included.
+5. When the drawing is complete, call layout_diagram: it places every shape and connection cleanly, pools and lanes included.
 6. Finish with validate_diagram and fix the reported errors.
 
 Pools and lanes: create each Participant first (add_shapes with x and y, one under the other),
 then its lanes, from top to bottom (type Lane, parent: the participant id), then the shapes with parent: the lane id.
 Connect shapes of two different participants with connect_shapes: it creates a message flow.
-Do not worry about exact positions: auto_layout tidies everything at the end.
+Do not worry about exact positions: layout_diagram tidies everything at the end.
+To adjust a few shapes afterwards, move_elements places or shifts them; duplicate_elements copies a fragment;
+undo and redo step through the editor's history, one tool call per step.
 
 Deadlines and exceptions on a task: add a boundary event with attachTo (for example a timer "3 days"),
 then draw the exception path from it with "after".
@@ -263,7 +265,7 @@ export function buildTools(z) {
         'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls and regulatory requirements of an activity. ' +
         'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_shapes), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
-        'For colors and fonts use style_elements; to move shapes, auto_layout. The user can undo the call with Ctrl+Z.',
+        'For colors and fonts use style_elements; to move shapes, move_elements or layout_diagram. The user can undo the call with Ctrl+Z.',
       annotations: edit(false, false),
       inputSchema: {
         elements: z
@@ -340,16 +342,92 @@ export function buildTools(z) {
       },
     },
     {
-      name: 'auto_layout',
+      name: 'layout_diagram',
       title: 'Tidy up the diagram',
       description:
         'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
         'Handles pools, lanes, message flows, boundary events, expanded subprocesses, annotations and groups. ' +
-        'Colors, names and connections are kept: only positions and routes change. Returns the layout warnings, if any. ' +
-        'Call it once the drawing is complete, then check the result with get_diagram_image. ' +
-        'The user can undo it in one step.',
+        'Colors, names and connections are kept: only positions and routes change. Returns the layout warnings, if any, and the number of shapes and connections. ' +
+        'Call it once the drawing is complete, then check the result with get_diagram_image. To place or shift a few shapes without touching the rest, use move_elements. ' +
+        'The user can undo it in one step (Ctrl+Z, or the undo tool).',
       inputSchema: {},
       annotations: edit(false, true),
+    },
+    {
+      // Ancien nom de layout_diagram, gardé pour les agents réglés avant le renommage.
+      // Le serveur MCP le publie ; le co-pilote intégré ne le voit pas (mcpOnly).
+      name: 'auto_layout',
+      mcpOnly: true,
+      title: 'Tidy up the diagram (former name)',
+      description:
+        'Former name of layout_diagram, kept so that agents set up before the rename keep working: same behavior, same result. ' +
+        'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
+        'New agents should call layout_diagram.',
+      inputSchema: {},
+      annotations: edit(false, true),
+    },
+    {
+      name: 'move_elements',
+      title: 'Move shapes',
+      description:
+        'Moves specific shapes, without touching the rest of the diagram: give either the new centre (x and y) or a shift (dx and dy, in pixels). ' +
+        'Connections follow their shapes and are rerouted; boundary events, labels and the content of a pool or an expanded subprocess move with it. ' +
+        'Connections and lanes cannot be moved on their own: move their shapes, or the pool. Read the ids and the current positions with get_shapes first. ' +
+        'Returns the new centre of each shape. If one id is unknown, nothing moves. To tidy up the whole diagram, use layout_diagram. ' +
+        'The user can undo the call with Ctrl+Z.',
+      annotations: edit(false, false),
+      inputSchema: {
+        elements: z
+          .array(
+            z.object({
+              id: elementId,
+              x: z.number().optional().describe('New x of the shape centre. Give x and y together, or dx and dy'),
+              y: z.number().optional().describe('New y of the shape centre'),
+              dx: z.number().optional().describe('Horizontal shift in pixels, positive to the right'),
+              dy: z.number().optional().describe('Vertical shift in pixels, positive downwards'),
+            }),
+          )
+          .min(1)
+          .describe('Shapes to move, each with x and y, or dx and dy'),
+      },
+    },
+    {
+      name: 'duplicate_elements',
+      title: 'Duplicate shapes',
+      description:
+        'Copies shapes, with their names, types, documentation, colors and the connections between them, like copy and paste in the editor. ' +
+        'All the shapes must have the same parent (the same pool, or the process). The copy is placed below the originals, or shifted by dx and dy. ' +
+        'Copying a pool or an expanded subprocess copies what it contains. Connections to shapes that are not copied are left out: draw them with connect_shapes. ' +
+        'Returns the new id of each copied element, by original id. The user can undo the call with Ctrl+Z.',
+      annotations: edit(false, false),
+      inputSchema: {
+        ids: z.array(elementId).min(1).describe('Ids of the shapes to copy, as returned by get_shapes'),
+        dx: z.number().optional().describe('Horizontal shift of the copy in pixels. Default: 0'),
+        dy: z.number().optional().describe('Vertical shift of the copy in pixels. Default: the height of the copied group plus 60'),
+      },
+    },
+    {
+      name: 'undo',
+      title: 'Undo',
+      description:
+        'Undoes the last changes on the diagram, like the editor\'s Undo button (Ctrl+Z): a whole tool call, or a user gesture, per step, ' +
+        'including a layout or a replaced diagram. Use it to back out of your own last call when its result is wrong, after checking with get_shapes or get_diagram_image. ' +
+        'It also undoes the user\'s own edits if they come last: read the diagram first. Returns how many steps were undone and whether more can be undone or redone.',
+      annotations: edit(true, false),
+      inputSchema: {
+        steps: z.number().int().min(1).max(20).optional().describe('Number of steps to undo. Default: 1'),
+      },
+    },
+    {
+      name: 'redo',
+      title: 'Redo',
+      description:
+        'Redoes the changes just undone, like the editor\'s Redo button (Ctrl+Y). Only possible right after undo: a new change clears what can be redone. ' +
+        'Returns how many steps were redone and whether more can be undone or redone.',
+      annotations: edit(false, false),
+      inputSchema: {
+        steps: z.number().int().min(1).max(20).optional().describe('Number of steps to redo. Default: 1'),
+      },
     },
     {
       name: 'validate_diagram',
