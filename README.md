@@ -71,7 +71,8 @@ and the toolbar stays uncluttered for everyone else (see the
   reimport, bpmnlint), with automatic correction.
 
 **Presentation** (toolbar button): the diagram alone, full screen and read-only, to walk a meeting
-through a process. In Expert mode, the token simulation runs there too.
+through a process. A pointer menu combines a laser pointer, a highlight of the hovered element and its flows,
+a ripple on click and a cursor that hides when still (keys 1 to 4). In Expert mode, the token simulation runs there too.
 
 The expert tools on an internal purchase process with four lanes:
 
