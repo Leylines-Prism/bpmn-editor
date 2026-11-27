@@ -1,5 +1,6 @@
 // Pages d'aide : bouton « Copier » sur chaque exemple de prompt (.prompt-text).
-// Le texte copié est celui affiché, espaces regroupés, prêt à coller dans l'assistant.
+// Le texte copié est celui affiché, espaces regroupés, prêt à coller dans le co-pilote.
+// Un prompt structuré garde ses retours à la ligne.
 const fr = document.documentElement.lang === 'fr'
 const LABEL = fr ? 'Copier' : 'Copy'
 const DONE = fr ? 'Copié' : 'Copied'
@@ -37,7 +38,11 @@ for (const text of document.querySelectorAll('.prompt-text')) {
   const label = button.querySelector('span')
   let timer
   button.addEventListener('click', async () => {
-    const ok = await copy(text.textContent.replace(/\s+/g, ' ').trim(), text)
+    // Un prompt structuré (.structured) garde ses lignes, chacune débarrassée de ses espaces en trop.
+    const value = text.classList.contains('structured')
+      ? text.textContent.split('\n').map((line) => line.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n')
+      : text.textContent.replace(/\s+/g, ' ').trim()
+    const ok = await copy(value, text)
     label.textContent = ok ? DONE : FAILED
     button.classList.toggle('done', ok)
     clearTimeout(timer)

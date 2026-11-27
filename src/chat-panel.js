@@ -18,13 +18,17 @@ import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL
 import { fileToText, textFileKind, TEXT_FILE_ACCEPT, withTextFiles } from './ai/text-files.js'
 import { makeResizable } from './panel-resize.js'
 import { trackOnce } from './analytics.js'
-import { newAiRound } from './ai-changes.js'
+import { newAiRound, undoAiRound } from './ai-changes.js'
+import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
+import { setChatModel } from './copilot-analysis.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
   get_diagram_xml: T('reading the XML', 'lecture du XML'),
   get_diagram_image: T('looking at the diagram', 'coup d\'œil au diagramme'),
+  get_process_report: T('process report', 'rapport de processus'),
+  set_report_commentary: T('analysis for the report', 'analyse pour le rapport'),
   set_diagram_xml: T('replacing the diagram', 'remplacement du diagramme'),
   export_diagram: 'export',
   add_shapes: T('adding shapes', 'ajout de formes'),
@@ -122,6 +126,9 @@ async function prepareImage(file) {
   return blob && blob.size > MAX_IMAGE_BYTES && type === 'image/png' ? encode('image/jpeg', 0.85) : blob
 }
 
+// Événement window { detail: { text } } : une demande toute prête pour le Co-pilote.
+export const COPILOT_ASK_EVENT = 'bpmn-pilot-copilot-ask'
+
 export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const style = document.createElement('style')
   style.textContent = CSS
@@ -130,9 +137,10 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const panel = document.createElement('aside')
   panel.id = 'chat-panel'
   panel.innerHTML = `
-    <header><span class="chat-title"><span class="chat-title-name">${T('AI assistant', 'Assistant IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
+    <header><span class="chat-title-icon" data-icon="assistant" aria-hidden="true"></span><span class="chat-title"><span class="chat-title-name">${T('AI co-pilot', 'Co-pilote IA')}</span><span class="chat-title-model" hidden></span></span><button class="btn" type="button" id="chat-settings" title="${T('Providers, API keys and models', 'Fournisseurs, clés API et modèles')}">Options</button><button class="btn" type="button" id="chat-reset" title="${T('Start a new conversation; the diagram is kept', 'Commencer une nouvelle discussion ; le diagramme est conservé')}">${T('New chat', 'Nouvelle discussion')}</button></header>
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
+    <div id="chat-destination" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
         <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change… Documents, images and PDFs accepted.', 'Décrivez le processus à dessiner ou à modifier… Documents, images et PDF acceptés.')}"></textarea>
@@ -144,7 +152,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     </form>
     <dialog id="chat-editor">
       <form method="dialog">
-        <h2>${T('Message to the assistant', "Message à l'assistant")}</h2>
+        <h2>${T('Message to the co-pilot', "Message au co-pilote")}</h2>
         <textarea id="chat-editor-text" placeholder="${T('Paste or write a long message. Ctrl+Enter to send.', 'Collez ou écrivez un long message. Ctrl+Entrée pour envoyer.')}"></textarea>
         <div class="chat-editor-actions">
           <button class="btn" type="button" id="chat-editor-file" title="${T('Insert the text of a file, to trim it before sending', 'Insérer le texte d\'un fichier, pour l\'élaguer avant l\'envoi')}">${T('Open a file…', 'Ouvrir un fichier…')}</button>
@@ -156,23 +164,23 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       </form>
     </dialog>`
   document.getElementById('properties-panel').after(panel)
-  makeResizable(panel, { name: 'chat', label: T('AI assistant width', "Largeur de l'assistant IA"), min: 300, max: 900, fallback: 360 })
+  makeResizable(panel, { name: 'chat', label: T('AI co-pilot width', "Largeur du co-pilote IA"), min: 300, max: 900, fallback: 360 })
 
   const toggle = document.createElement('button')
   toggle.className = 'btn'
   toggle.id = 'btn-chat'
   toggle.type = 'button'
-  toggle.title = T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
-  // « Assistant IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
+  toggle.title = T('Open or close the AI co-pilot', "Ouvrir ou fermer le co-pilote IA")
+  // « Co-pilote IA » en entier, ou « IA » seul quand le modèle s'affiche à côté.
   const toggleFull = document.createElement('span')
   toggleFull.className = 'chat-btn-full'
-  toggleFull.textContent = T('AI assistant', 'Assistant IA')
+  toggleFull.textContent = T('AI co-pilot', 'Co-pilote IA')
   const toggleShort = document.createElement('span')
   toggleShort.className = 'chat-btn-short'
   toggleShort.textContent = T('AI', 'IA')
   toggleShort.setAttribute('aria-hidden', 'true')
   toggle.append(toggleFull, toggleShort)
-  toggle.setAttribute('aria-label', T('AI assistant', 'Assistant IA'))
+  toggle.setAttribute('aria-label', T('AI co-pilot', 'Co-pilote IA'))
   // Le modèle choisi, en petit à côté du nom (masqué sur écran étroit).
   const toggleModel = document.createElement('span')
   toggleModel.className = 'chat-btn-model'
@@ -187,7 +195,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     autosave.before(toggle)
     toggle.classList.add('push-right')
     autosave.style.marginLeft = '8px'
-  } else document.getElementById('btn-simulation').after(toggle)
+  } else document.getElementById('btn-expert').after(toggle)
 
   const log = panel.querySelector('#chat-log')
   const form = panel.querySelector('#chat-form')
@@ -195,13 +203,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   const sendButton = panel.querySelector('#chat-send')
   const titleName = panel.querySelector('.chat-title-name')
   const titleModel = panel.querySelector('.chat-title-model')
+  const destination = panel.querySelector('#chat-destination')
 
   let controller = null // requête en cours, pour le bouton « Arrêter »
   let checked = false
   let settings = loadSettings()
   let serverModels = [] // { id, label, provider, providerLabel }, envoyés par le serveur
   let models = [] // modèles du fournisseur actif : serverModels ou ceux de la fenêtre Options
-  let currentId = '' // modèle de l'assistant, choisi dans la fenêtre Options
+  let currentId = '' // modèle du co-pilote, choisi dans la fenêtre Options
   // Discussion en cours : sur le serveur ({ id }) ou dans la page ({ messages }).
   // kind « server:anthropic », « local:openai »… : l'historique ne passe pas d'un format à l'autre.
   let conversation = null
@@ -261,7 +270,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   // Modèles du fournisseur actif choisi dans Options : ceux du serveur, ou ceux du
-  // fournisseur testé. Sans choix, ceux du serveur s'il en a. Le modèle de l'assistant
+  // fournisseur testé. Sans choix, ceux du serveur s'il en a. Le modèle du co-pilote
   // se choisit dans Options ; le panneau l'affiche.
   function fillModels() {
     const useServer = settings.active === 'server' || (!settings.active && serverModels.length > 0)
@@ -272,12 +281,44 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     toggleModel.textContent = model ? model.label : ''
     toggleModel.hidden = !model
     toggle.classList.toggle('has-model', !!model)
-    // En-tête du panneau : « Assistant » et le modèle dessous, ou « Assistant IA » sans modèle.
-    titleName.textContent = model ? T('Assistant', 'Assistant') : T('AI assistant', 'Assistant IA')
+    // Entrées du menu Expert qui passent par le Co-pilote (.copilot-only) : grisées sans modèle.
+    document.documentElement.classList.toggle('copilot-ready', !!model)
+    // L'icône d'aide à côté de chacune dit pourquoi (index.html, .copilot-help).
+    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model
+    // En-tête du panneau : « Co-pilote » et le modèle dessous, ou « Co-pilote IA » sans modèle.
+    titleName.textContent = model ? T('Co-pilot', 'Co-pilote') : T('AI co-pilot', 'Co-pilote IA')
     titleModel.textContent = model ? model.label : ''
     titleModel.hidden = !model
     titleModel.title = toggle.title
-    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : T('Open or close the AI assistant', "Ouvrir ou fermer l'assistant IA")
+    toggle.title = model ? T('Model: ', 'Modèle : ') + model.label + (model.providerLabel ? ` (${model.providerLabel})` : '') : T('Open or close the AI co-pilot', "Ouvrir ou fermer le co-pilote IA")
+    showDestination(model)
+  }
+
+  // Bandeau au-dessus du champ : à qui partent le message, les pièces jointes et le diagramme.
+  function showDestination(model) {
+    destination.hidden = !model
+    if (!model) return
+    const provider = model.providerLabel || model.label
+    const conn = model.source === 'user' ? connectionFor(model, settings) : null
+    const local = conn ? isLocalAddress(conn.baseUrl) : !!model.local
+    let text
+    if (local) {
+      text = mode === 'online' || !conn
+        ? T(`Stays on your network: ${provider}, model ${model.label}`, `Reste sur votre réseau : ${provider}, modèle ${model.label}`)
+        : T(`Relayed by your server to ${provider} on your network, model ${model.label}`, `Relayé par votre serveur vers ${provider} sur votre réseau, modèle ${model.label}`)
+    } else if (mode === 'online') {
+      text = T(`Sent from your browser to ${provider}, model ${model.label}`, `Envoyé depuis votre navigateur à ${provider}, modèle ${model.label}`)
+    } else if (conn) {
+      text = T(`Relayed by your server to ${provider}, model ${model.label}`, `Relayé par votre serveur vers ${provider}, modèle ${model.label}`)
+    } else {
+      text = T(`Sent by your server to ${provider}, model ${model.label}`, `Envoyé par votre serveur à ${provider}, modèle ${model.label}`)
+    }
+    destination.textContent = text
+    destination.classList.toggle('local', local)
+    destination.title = T(
+      'With each message: your text, the attached files and the current diagram. The review and the automatic correction, when on in Options, send more requests to the same model.',
+      'À chaque message : votre texte, les fichiers joints et le diagramme en cours. La critique et l\'autocorrection, si elles sont actives dans Options, envoient des requêtes en plus au même modèle.',
+    )
   }
   let serverDefault = null
 
@@ -348,6 +389,18 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     fillModels()
   }
   showModelEarly()
+
+  // Demande toute prête venue d'ailleurs (menu Expert) : le panneau s'ouvre et elle part,
+  // sans critique préalable, puisque ce n'est pas une description de processus.
+  window.addEventListener(COPILOT_ASK_EVENT, ({ detail }) => {
+    if (!panel.classList.contains('open')) toggle.click()
+    if (controller) {
+      add('notice', T('The co-pilot is still answering: wait for the end of the reply, or stop it.', 'Le Co-pilote répond encore : attendez la fin de la réponse, ou arrêtez-la.'))
+      return
+    }
+    if (!currentModel()) return
+    send(String(detail?.text || ''), [], { critique: false })
+  })
 
   toggle.addEventListener('click', () => {
     const open = panel.classList.toggle('open')
@@ -639,10 +692,13 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     send(text, attachments)
   })
 
-  async function send(text, attachments = []) {
+  // rewind : relance de la dernière demande, qui remplace son échange dans l'historique.
+  async function send(text, attachments = [], { rewind = false, critique = true } = {}) {
     trackOnce('assistant-utilise')
     // Chaque réponse ne marque que ce qu'elle a changé.
     newAiRound()
+    // Seule la dernière réponse se relance.
+    for (const button of log.querySelectorAll('.chat-retry')) button.remove()
     const userMsg = add('user', text)
     if (attachments.length) {
       const strip = document.createElement('div')
@@ -657,10 +713,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     let toolSinceText = false
     let failed = false
     let errorText = ''
+    let report = null
+    const assist = settings.assist !== false ? { critique, autocorrect: true } : {}
     controller = new AbortController()
     setBusy(true)
 
-    // Ligne d'état sous la réponse : ce que fait l'assistant et depuis combien de temps.
+    // Ligne d'état sous la réponse : ce que fait le co-pilote et depuis combien de temps.
     const status = document.createElement('div')
     status.className = 'chat-status'
     let statusText = T('sending', 'envoi')
@@ -673,6 +731,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const timer = setInterval(renderStatus, 1000)
 
     const model = currentModel()
+    setChatModel(model?.label)
     const handle = (event) => {
       if (event.type === 'text') statusText = T('writing', 'rédige')
       if (event.type === 'conversation') {
@@ -680,7 +739,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       } else if (event.type === 'text') {
         reply.hidden = false
         // Un paragraphe par étape : le texte qui suit des appels d'outils repart à la ligne.
-        const chunk = (toolSinceText && reply.firstChild !== tools ? '\n\n' : '') + event.text
+        const hasText = [...reply.childNodes].some((n) => n.nodeType === Node.TEXT_NODE)
+        const chunk = (toolSinceText && hasText ? '\n\n' : '') + event.text
         gotText = true
         toolSinceText = false
         // Le texte s'ajoute avant la ligne des outils.
@@ -700,9 +760,17 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         chip.title = event.error || event.name
         if (!event.ok) chip.classList.add('failed')
         tools.append(chip)
+      } else if (event.type === 'critique') {
+        reply.hidden = false
+        gotText = true
+        reply.prepend(critiqueBox(event))
+      } else if (event.type === 'report') {
+        report = event
       } else if (event.type === 'status') {
         const label = TOOL_LABELS[event.tool] || event.tool
-        if (event.phase === 'thinking') statusText = T('thinking', 'réflexion')
+        if (event.phase === 'critique') statusText = T('reviewing the request', 'relecture de la demande')
+        else if (event.phase === 'correcting') statusText = T(`automatic correction, round ${event.round}`, `autocorrection, tour ${event.round}`)
+        else if (event.phase === 'thinking') statusText = T('thinking', 'réflexion')
         else if (event.phase === 'preparing')
           statusText = T(`preparing: ${label}`, `prépare : ${label}`) + (event.size ? ` (${(event.size / 1024).toFixed(1)} ${T('KB', 'Ko')})` : '')
         else if (event.phase === 'running') statusText = T(`running: ${label}`, `exécute : ${label}`)
@@ -721,8 +789,9 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       // Les fichiers lus comme du texte partent dans le message, les autres en pièces jointes.
       const fullText = withTextFiles(text, attachments.filter((a) => a.kind === 'text'))
       const payload = files.map(({ kind, mediaType, name, data }) => ({ kind, mediaType, name, data }))
-      if (mode === 'online') await sendLocal({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
-      else await sendServer({ conn, model, text: fullText, attachments: payload, handle, signal: controller.signal })
+      const request = { conn, model, text: fullText, attachments: payload, handle, signal: controller.signal, assist, rewind }
+      if (mode === 'online') await sendLocal(request)
+      else await sendServer(request)
     } catch (err) {
       failed = true
       errorText = err?.message || ''
@@ -733,20 +802,186 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       clearInterval(timer)
       status.remove()
       if (!gotText) reply.remove()
+      else {
+        if (report) reply.append(reportBox(report))
+        reply.append(traceLine({ model, started, text, attachments }))
+        if (!controller.signal.aborted) reply.append(retryButton({ userMsg, text, attachments }))
+      }
       // Conseil général, sauf chez Claude (lit images et PDF) et quand l'erreur dit déjà la cause.
       const explained = /cannot read|ne sait pas lire|limits|limites|file format|format de fichier/i.test(errorText)
       if (failed && files.length && !controller.signal.aborted && !kindOf(model).endsWith(':anthropic') && !explained)
         add('notice', T('If the error is about the attached files, this model may not read images or PDF files: try another model.', "Si l'erreur porte sur les fichiers joints, ce modèle ne sait peut-être pas lire les images ou les PDF : essayez un autre modèle."))
       if (!gotText && !failed) add('notice', T('The model gave no answer. Check that it supports tool calls, or try another model.', "Le modèle n'a rien répondu. Vérifiez qu'il sait appeler des outils, ou essayez un autre modèle."))
       controller = null
+      setChatModel('')
       setBusy(false)
       input.focus()
     }
   }
 
+  // ── Sous chaque réponse : critique, rapport de contrôle, traçabilité, relance ──
+
+  const SEVERITY = {
+    blocking: T('Blocking', 'Bloquant'),
+    major: T('Important', 'Important'),
+    minor: T('Minor', 'Mineur'),
+  }
+
+  function critiqueBox({ issues, failed: unreadable }) {
+    if (!issues.length) {
+      const line = document.createElement('div')
+      line.className = 'chat-critique none'
+      line.textContent =
+        unreadable === 'error'
+          ? T('Review of the request unavailable: the call to the model failed.', "Critique de la demande indisponible : l'appel au modèle a échoué.")
+          : unreadable
+            ? T('Review of the request unavailable: the model gave no readable list.', "Critique de la demande indisponible : le modèle n'a pas rendu de liste lisible.")
+            : T('Request reviewed: nothing to clarify.', 'Demande relue : rien à clarifier.')
+      return line
+    }
+    const box = document.createElement('details')
+    box.className = 'chat-critique'
+    box.open = true
+    const summary = document.createElement('summary')
+    const blocking = issues.filter((i) => i.severity === 'blocking').length
+    summary.textContent = T(`Points to clarify (${issues.length})`, `Points à clarifier (${issues.length})`) + (blocking ? T(`, ${blocking} blocking`, `, dont ${blocking} bloquant${blocking > 1 ? 's' : ''}`) : '')
+    const list = document.createElement('ul')
+    for (const issue of issues) {
+      const li = document.createElement('li')
+      const badge = document.createElement('span')
+      badge.className = `chat-sev ${issue.severity}`
+      badge.textContent = SEVERITY[issue.severity]
+      li.append(badge, document.createTextNode(issue.question))
+      if (issue.quote) {
+        const quote = document.createElement('q')
+        quote.textContent = issue.quote
+        li.append(quote)
+      }
+      list.append(li)
+    }
+    const hint = document.createElement('p')
+    hint.className = 'chat-critique-hint'
+    hint.textContent = T('The diagram is drawn with assumptions, listed at the end of the reply. Answer in your next message to refine it.', 'Le diagramme est dessiné avec des hypothèses, données en fin de réponse. Répondez dans le message suivant pour l\'affiner.')
+    box.append(summary, list, hint)
+    return box
+  }
+
+  const CHECK_LABELS = {
+    xml: T('Well-formed XML', 'XML bien formé'),
+    metamodel: T('Conforms to the BPMN 2.0 metamodel', 'Conforme au métamodèle BPMN 2.0'),
+    references: T('References and scopes', 'Références et portées'),
+    di: T('Every element drawn (DI)', 'Chaque élément dessiné (DI)'),
+    reimport: T('Reimported by bpmn-js', 'Réimport par bpmn-js'),
+    lint: T('bpmnlint rules', 'Règles bpmnlint'),
+  }
+  const COUNT_LABELS = [
+    ['pools', T('pool', 'pool'), T('pools', 'pools')],
+    ['lanes', T('lane', 'couloir'), T('lanes', 'couloirs')],
+    ['activities', T('activity', 'activité'), T('activities', 'activités')],
+    ['gateways', T('gateway', 'passerelle'), T('gateways', 'passerelles')],
+    ['events', T('event', 'événement'), T('events', 'événements')],
+    ['sequenceFlows', T('sequence flow', 'flux de séquence'), T('sequence flows', 'flux de séquence')],
+    ['messageFlows', T('message flow', 'flux de message'), T('message flows', 'flux de message')],
+    ['dataObjects', T('data object', 'donnée'), T('data objects', 'données')],
+    ['annotations', T('annotation', 'annotation'), T('annotations', 'annotations')],
+  ]
+
+  function reportBox({ report: r, corrections }) {
+    const checks = r.checks || []
+    const passed = checks.filter((c) => c.ok).length
+    const box = document.createElement('details')
+    box.className = 'chat-report' + (passed < checks.length ? ' fail' : '')
+    const summary = document.createElement('summary')
+    const parts = [
+      passed === checks.length
+        ? T(`${passed}/${checks.length} checks passed`, `${passed}/${checks.length} contrôles réussis`)
+        : T(`${checks.length - passed} of ${checks.length} checks failed`, `${checks.length - passed} contrôle${checks.length - passed > 1 ? 's' : ''} sur ${checks.length} en échec`),
+    ]
+    if (corrections?.asked) {
+      parts.push(T(
+        `${corrections.asked} correction${corrections.asked > 1 ? 's' : ''} requested, ${corrections.kept} kept`,
+        `${corrections.asked} correction${corrections.asked > 1 ? 's' : ''} demandée${corrections.asked > 1 ? 's' : ''}, ${corrections.kept} retenue${corrections.kept > 1 ? 's' : ''}`,
+      ))
+      // Une correction non retenue a été défaite : le texte de la réponse peut encore en parler.
+      if (corrections.kept < corrections.asked) parts.push(T('the last one did not reduce the problems and was undone', "la dernière ne réduisait pas les problèmes et a été annulée"))
+    }
+    summary.textContent = `${passed === checks.length ? '✓' : '✗'} ${parts.join(' · ')}`
+    box.append(summary)
+
+    const counts = COUNT_LABELS.filter(([key]) => r.counts?.[key]).map(([key, one, many]) => `${num(r.counts[key])} ${r.counts[key] > 1 ? many : one}`)
+    if (r.warnings) counts.push(T(`${num(r.warnings)} bpmnlint warning${r.warnings > 1 ? 's' : ''}`, `${num(r.warnings)} avertissement${r.warnings > 1 ? 's' : ''} bpmnlint`))
+    if (counts.length) {
+      const line = document.createElement('p')
+      line.className = 'chat-report-counts'
+      line.textContent = counts.join(' · ')
+      box.append(line)
+    }
+    const names = new Map((r.issues || []).filter((i) => i.name).map((i) => [i.id, i.name]))
+    const list = document.createElement('ul')
+    for (const c of checks) {
+      const li = document.createElement('li')
+      li.className = c.ok ? 'ok' : 'fail'
+      li.textContent = `${c.ok ? '✓' : '✗'} ${CHECK_LABELS[c.check] || c.check}`
+      if (!c.ok) {
+        const problems = document.createElement('ul')
+        for (const p of (c.problems || []).slice(0, 8)) {
+          const item = document.createElement('li')
+          const who = p.id ? names.get(p.id) || p.id : ''
+          item.textContent = who ? `${who} : ${p.message}` : p.message
+          problems.append(item)
+        }
+        const more = (c.problems?.length || 0) - 8 + (c.more || 0)
+        if (more > 0) {
+          const item = document.createElement('li')
+          item.textContent = T(`and ${more} more`, `et ${more} de plus`)
+          problems.append(item)
+        }
+        li.append(problems)
+      }
+      list.append(li)
+    }
+    box.append(list)
+    return box
+  }
+
+  function traceLine({ model, started, text, attachments }) {
+    const line = document.createElement('div')
+    line.className = 'chat-trace'
+    const seconds = Math.max(1, Math.round((Date.now() - started) / 1000))
+    const when = new Date(started).toLocaleString(lang === 'fr' ? 'fr-FR' : 'en-GB', { dateStyle: 'short', timeStyle: 'short' })
+    const source = [T(`message of ${num(text.length)} characters`, `message de ${num(text.length)} caractères`)]
+    if (attachments.length) source.push(attachments.map((a) => a.name).join(', '))
+    line.textContent = [model.providerLabel, model.label, T(`${seconds} s`, `${seconds} s`), when].filter(Boolean).join(' · ')
+    const src = document.createElement('div')
+    src.textContent = T('Source: ', 'Source : ') + source.join(T(', files: ', ', fichiers : '))
+    line.append(src)
+    return line
+  }
+
+  function retryButton({ userMsg, text, attachments }) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'btn chat-retry'
+    button.textContent = T('Retry from the same source', 'Relancer depuis la même source')
+    button.title = T(
+      'Puts the diagram back as it was before this reply, then sends the same request again, to the model chosen now.',
+      "Remet le diagramme dans l'état d'avant cette réponse, puis renvoie la même demande, au modèle choisi maintenant.",
+    )
+    button.addEventListener('click', async () => {
+      if (controller) return
+      const undone = await undoAiRound()
+      if (undone === 'cancelled') return
+      // L'échange relancé quitte le fil : la nouvelle réponse le remplace.
+      while (userMsg.nextSibling) userMsg.nextSibling.remove()
+      userMsg.remove()
+      send(text, attachments, { rewind: true })
+    })
+    return button
+  }
+
   // Version docker : le serveur fait la boucle et renvoie un flux SSE.
-  async function sendServer({ conn, model, text, attachments, handle, signal }) {
-    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text, lang, ...(attachments.length ? { attachments } : {}) }
+  async function sendServer({ conn, model, text, attachments, handle, signal, assist, rewind }) {
+    const body = { conversationId: conversation?.id, tabId: bridge.tabId, text, lang, assist, ...(rewind ? { rewind: true } : {}), ...(attachments.length ? { attachments } : {}) }
     if (conn) body.custom = conn
     else body.model = model.id
     // Type propre au chat : le serveur le lit avec une limite assez grande pour les pièces jointes.
@@ -780,11 +1015,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   }
 
   // Version en ligne : la boucle tourne ici, les outils agissent sur cette page.
-  async function sendLocal({ conn, model, text, attachments, handle, signal }) {
+  async function sendLocal({ conn, model, text, attachments, handle, signal, assist, rewind }) {
     const engine = await loadEngine()
     const kind = kindOf(model)
     if (!conversation || conversation.kind !== kind || !conversation.messages) conversation = { kind, messages: [] }
     const conv = conversation
+    if (rewind) engine.rewindTurn(conv)
     const common = {
       model: conn.model,
       conv,
@@ -800,6 +1036,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       signal,
       log: (...args) => console.warn(...args),
       lang,
+      assist,
     }
     if (conn.format === 'anthropic') {
       // Le SDK 1.12 enverrait la clé dans « Authorization: Bearer », que l'API refuse
@@ -826,6 +1063,7 @@ function loadEngine() {
     OpenAICompatClient,
     runAnthropicTurn: loop.runAnthropicTurn,
     runOpenAITurn: loop.runOpenAITurn,
+    rewindTurn: loop.rewindTurn,
     toolSet: loop.createToolSet(z),
   }))
   enginePromise.catch(() => (enginePromise = null))

@@ -1,4 +1,4 @@
-![BPMN-Pilot : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un assistant IA ou depuis un agent MCP](public/social-preview.png)
+![BPMN-Pilot : dessiner des processus BPMN 2.0 dans le navigateur, à la main, avec un co-pilote IA ou depuis un agent MCP](public/social-preview.png)
 
 # BPMN-Pilot
 
@@ -8,65 +8,140 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Leylines-Prism/bpmn-pilot/badge)](https://scorecard.dev/viewer/?uri=github.com/Leylines-Prism/bpmn-pilot)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/17089/badge)](https://www.bestpractices.dev/projects/17089)
+[![BPMN-Pilot MCP server on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/score.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-soutenir-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
 [English](README.md) | **Français**
 
-![L'assistant IA dessine un processus de commande en ligne avec deux pools et quatre lanes, puis le range](docs/demo.fr.gif)
+![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
 
-**Modélisez tous les processus de votre contexte en quelques secondes, en quelques échanges avec votre
-agent IA.**
-
-### [▶ Essayer la version en ligne : bpmn.leylines.fr](https://bpmn.leylines.fr)
-
-Sans compte ni installation, dans votre navigateur.
+**Modélisez en quelques secondes tous les processus de votre contexte, simplement en échangeant avec
+votre agent IA.**
 
 Relié à un agent et à tout ce qu'il connaît (messagerie, wiki, base documentaire, RAG, mémoire en
 graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations en diagrammes BPMN :
+l'agent trouve les processus, l'éditeur les dessine et les vérifie, et vous relisez le résultat. Fini
+les heures passées sur la structure BPMN et le dessin à la main.
 
-- l'agent trouve les processus ;
-- l'éditeur les dessine et les vérifie ;
-- vous relisez et ajustez le résultat.
+BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
-Fini les heures passées à réfléchir à la structure BPMN et à dessiner à la main. Une relecture humaine
-reste nécessaire, mais le travail va beaucoup plus vite.
-
-**Version Docker** : tout agent MCP pilote l'éditeur.
-
-**Version en ligne** : la même idée, avec son assistant intégré. Décrivez un processus ou joignez vos
-documents (Word, Excel, PDF, e-mails…), et il le dessine.
-
-**Mise en forme dans la même conversation** : couleurs de fond, de contour et de texte, gras, italique,
-souligné, taille et police, noms et types des éléments, sur autant d'éléments à la fois que vous voulez
-(« mets toutes les tâches manuelles en orange, texte en gras »). Chaque réponse s'annule d'un clic.
-
-BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js). Utilisez-le en ligne sur
-[bpmn.leylines.fr](https://bpmn.leylines.fr), avec un simple navigateur, ou faites-le tourner sur votre
-propre machine avec Docker.
-
+- **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
+  VS Code. Il pilote l'éditeur ouvert dans votre navigateur.
+- **Demandez au co-pilote IA intégré** ([en ligne](https://bpmn.leylines.fr) ou en Docker) : décrivez
+  un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine.
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
-- **Demandez à l'assistant IA** : il dessine les processus que vous décrivez, dans l'onglet ouvert.
-- **Connectez un agent par MCP** (version Docker), comme Claude Code.
+
+La même conversation met aussi le schéma en forme (couleurs, polices, noms et types, sur autant
+d'éléments à la fois que vous voulez) et chaque réponse s'annule d'un clic. Le pilote, c'est vous,
+d'où le nom : le co-pilote IA et vos agents préparent le travail, et vous gardez la main sur chaque
+diagramme.
+
+Deux façons de l'utiliser, au choix :
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**En ligne : [bpmn.leylines.fr](https://bpmn.leylines.fr)**
+
+Rien à installer, aucun compte : ouvrez le lien et dessinez. Le co-pilote IA marche avec votre propre
+clé API, et vos diagrammes restent dans votre navigateur. [En savoir plus](#lutiliser-en-ligne)
+
+</td>
+<td width="50%" valign="top">
+
+**En Docker : `ghcr.io/leylines-prism/bpmn-pilot`**
+
+Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos agents
+(Claude Code, Claude Desktop, GitHub Copilot) à l'éditeur. [Le lancer](#le-lancer-avec-docker)
+
+</td>
+</tr>
+</table>
+
+**Pour les experts BPMN**, le bouton **Expert** de la barre ouvre de quoi éprouver un modèle et en
+rendre compte : la simulation de jetons et le rapport de processus. Il passe en bleu tant que le mode
+est actif, et l'éditeur garde une barre sobre pour les autres (voir la
+[section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
+
+- **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
+  coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
+  d'amélioration, événements de fin, activités par couloir.
+- **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
+  manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
+  bpmnlint), avec autocorrection.
+
+**Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
+un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
+une onde au clic et un curseur masqué à l'arrêt (touches 1 à 4). En mode Expert, la simulation de jetons s'y lance aussi.
+
+Les outils experts sur un processus d'achat interne à quatre couloirs :
+
+<table>
+<tr>
+<th width="50%">Mode Présentation</th>
+<th width="50%">Simulation de jetons</th>
+</tr>
+<tr>
+<td><img src="docs/presentation.fr.gif" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton à 2×" width="100%"></td>
+<td><img src="docs/token-simulation.fr.gif" alt="Un jeton parcourt le processus d'achat, à 0,5× puis à 3×" width="100%"></td>
+</tr>
+<tr>
+<th width="50%">Carte de chaleur</th>
+<th width="50%">Rapport de processus</th>
+</tr>
+<tr>
+<td><img src="docs/heatmap.fr.gif" alt="La probabilité d'une branche dans le panneau Processus, puis la carte de chaleur après 200 jetons" width="100%"></td>
+<td><img src="docs/process-report.fr.gif" alt="Le rapport de processus en PDF depuis le menu Expert, puis ses quatre pages" width="100%"></td>
+</tr>
+</table>
+
+BPMN 2.0 est la norme internationale [ISO/IEC 19510](https://www.iso.org/fr/standard/62652.html),
+publiée par l'OMG. Un diagramme fait ici se lit de la même façon dans tout éditeur ou moteur conforme,
+et le fichier .bpmn s'y ouvre.
+
+<details>
+<summary><b>Pourquoi BPMN plutôt qu'un logigramme ?</b></summary>
+
+Les outils de dessin généralistes comme draw.io, Lucidchart ou Visio tracent des boîtes et des flèches.
+Une forme veut dire ce que son auteur a voulu dire, et chaque équipe invente ses conventions. BPMN donne
+à chaque symbole un sens défini :
+
+- **Qui fait quoi** : des pools pour les organisations, des couloirs pour les rôles, des flux de message
+  pour ce qu'ils échangent.
+- **Ce qui déclenche et ce qui attend** : événements de début, minuteur, message et erreur, et
+  événements accrochés à une tâche pour les délais et les exceptions.
+- **Comment les chemins se séparent et se rejoignent** : passerelles exclusive (une seule branche),
+  parallèle (toutes) et inclusive (certaines), chacune avec sa règle.
+- **Un fichier que les outils comprennent** : le .bpmn décrit le processus lui-même, pas son
+  image. Il se vérifie, se simule, devient un rapport, se lit et s'écrit par un agent IA, et
+  s'exécute dans un moteur de workflow. Une image de logigramme ne permet rien de tout cela.
+- **Pas d'enfermement** : le même fichier s'ouvre dans tout éditeur conforme, aujourd'hui comme dans dix
+  ans.
+
+</details>
 
 > [!TIP]
-> **La version en ligne s'utilise telle quelle, sans risque.** Le lien public (https://bpmn.leylines.fr)
-> n'est que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
+> **La version en ligne, [bpmn.leylines.fr](https://bpmn.leylines.fr), s'utilise telle quelle, sans risque.**
+> Ce ne sont que des fichiers statiques servis par GitHub Pages : aucun serveur applicatif, aucun compte,
 > aucune base de données derrière.
 >
 > - **Vos diagrammes restent dans votre navigateur.** Ils sont enregistrés dans le stockage du
 >   navigateur, et les fichiers que vous ouvrez ou téléchargez ne quittent jamais votre ordinateur.
 > - **Vos clés API aussi.** Elles ne sont envoyées qu'au fournisseur d'IA que vous avez choisi,
 >   directement depuis votre navigateur, jamais à un serveur de ce projet.
-> - **Quand vous utilisez l'assistant**, votre message et le diagramme partent directement chez ce
+> - **Quand vous utilisez le co-pilote**, votre message et le diagramme partent directement chez ce
 >   fournisseur, selon ses propres conditions. Aucun intermédiaire.
 > - **La seule autre requête** est une mesure d'audience sans cookie, qui ne contient jamais de
 >   diagramme, de message ni de clé.
 >
-> Utilisez tout de même toujours une clé API créée pour cet éditeur seul, avec une durée de validité
-> limitée et une limite de dépense. Détails, limites et moyen de le vérifier vous-même :
+> Prenez tout de même une clé API réservée à cet éditeur, qui expire d'elle-même et dont la dépense est
+> plafonnée. Ce qui est protégé, ce qui ne l'est pas et comment le vérifier vous-même :
 > [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md).
 
-La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa propre mémoire et son contexte,
-avec tout ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
+La connexion MCP va plus loin que le dessin à l'écran. Un agent apporte sa mémoire, son contexte et tout
+ce à quoi il est connecté, et intègre des diagrammes BPMN à ses propres workflows :
 
 - il charge un diagramme en XML BPMN, ou le dessine ;
 - il le vérifie selon les règles BPMN ;
@@ -77,12 +152,37 @@ Les outils s'exécutent dans un onglet de l'éditeur, qui doit seulement rester 
 
 > [!WARNING]
 > **Version Docker seulement : pas faite pour être exposée sur internet, par conception.** Cela
-> concerne votre propre copie, pas la version en ligne ci-dessus. La version Docker est prévue pour
-> votre propre machine ou un réseau privé, elle n'a donc pas de connexion. Le risque reste limité,
+> concerne la copie que vous faites tourner, pas la version en ligne ci-dessus. Prévue pour votre
+> machine ou un réseau privé, la version Docker n'a pas d'identification. Le risque reste limité,
 > mais la publier revient à ouvrir à tous un service sans authentification : vos clés API peuvent
 > être utilisées ou volées, et les diagrammes stockés dans le conteneur (les fichiers BPMN de « Mes
 > diagrammes ») peuvent être lus ou supprimés. Par défaut, elle ne répond que sur cette machine
-> (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos propres risques.
+> (`127.0.0.1`). Si vous la mettez quand même sur internet, c'est à vos risques.
+
+## L'utiliser en ligne
+
+L'éditeur est ouvert à tous sur https://bpmn.leylines.fr (GitHub Pages) : sans compte, sans
+installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
+explique comment dessiner, enregistrer, exporter et se servir du co-pilote IA. Le bouton Aide (?) de
+la barre d'outils l'ouvre aussi.
+
+Il suit les versions publiées (le dernier tag `vX.Y.Z`) et affiche sa version en bas à gauche
+du canevas et du guide d'utilisation.
+
+Pour le co-pilote IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
+rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
+certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
+dit ce qui sort du navigateur, et
+[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
+
+La page stable compte son audience de façon anonyme, sans cookie :
+visites, provenance et quelques actions (co-pilote ouvert ou utilisé, fournisseur connecté, diagramme
+créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
+elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
+messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent ce comptage, et un
+indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image Docker ni `npm run dev`
+n'envoient quoi que ce soit. Le réglage suit les [recommandations de la CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) pour les mesures d'audience
+exemptées de consentement.
 
 ## Le lancer avec Docker
 
@@ -90,7 +190,7 @@ Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose. Deux 
 sur le GitHub Container Registry, pour amd64 et arm64 :
 
 - `ghcr.io/leylines-prism/bpmn-pilot` : l'éditeur.
-- `ghcr.io/leylines-prism/bpmn-pilot-mcp` : son serveur (assistant IA, MCP pour les agents,
+- `ghcr.io/leylines-prism/bpmn-pilot-mcp` : son serveur (co-pilote IA, MCP pour les agents,
   « Mes diagrammes »).
 
 ### En ligne de commande
@@ -103,11 +203,11 @@ docker compose -f docker-compose.image.yml up -d
 
 Puis ouvrir http://localhost:8080. Sans `curl`, `wget https://raw.githubusercontent.com/Leylines-Prism/bpmn-pilot/main/docker-compose.image.yml` fait la même chose.
 
-- **Assistant IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Anthropic,
+- **Co-pilote IA** : créez un fichier `.env` dans le même dossier avec votre clé API (Anthropic,
   OpenAI, Mistral, ou un Ollama local), par exemple `ANTHROPIC_API_KEY=sk-ant-...`, puis relancez la
   commande `up -d`. Toutes les variables sont listées dans [mcp/.env.example](mcp/.env.example).
-  Une clé peut aussi se saisir dans la fenêtre Options de l'assistant. Sans clé, l'éditeur marche ;
-  seul l'assistant est éteint.
+  Une clé peut aussi se saisir dans la fenêtre Options du co-pilote. Sans clé, l'éditeur marche ;
+  seul le co-pilote est éteint.
 - **Vos fichiers** (Mes diagrammes sur le serveur, exports) sont dans le dossier `bpmn-data`, à côté
   de `docker-compose.image.yml` : voir [Vos fichiers](#vos-fichiers-version-docker).
 - **Page vitrine** : le logo de la barre d'outils ouvre une page vitrine, avec le logo et les fonds
@@ -271,7 +371,7 @@ indique que MCP est fermé, et l'agent reçoit une erreur 401 qui nomme `MCP_TOK
 
 **Dans la version Docker**, le plus sûr est le serveur : le fichier `.env` à côté de
 `docker-compose.image.yml` (ou `mcp/.env` depuis le code source). La clé reste sur le serveur et
-n'arrive jamais au navigateur. Une clé saisie dans la fenêtre Options de l'assistant est gardée dans le
+n'arrive jamais au navigateur. Une clé saisie dans la fenêtre Options du co-pilote est gardée dans le
 navigateur comme ci-dessous, puis envoyée à chaque message à votre serveur, qui la transmet au
 fournisseur sans l'enregistrer.
 
@@ -299,7 +399,7 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 
 | Réglage | Rôle |
 |---|---|
-| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés API de l'assistant IA. Voir `mcp/.env.example`. |
+| `MISTRAL_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`… (`mcp/.env`) | Clés API du co-pilote IA. Voir `mcp/.env.example`. |
 | `MCP_TOKEN` (`mcp/.env`) | Jeton que les agents doivent envoyer. La fenêtre « Connecter un agent » en génère un. Obligatoire quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost. |
 | `MCP_AUTH` (`mcp/.env`) | `off` ouvre `/mcp` sans jeton sous un autre nom que localhost. Seulement sur un réseau de confiance, ou derrière un proxy qui authentifie `/mcp`. |
 | `BPMN_PORT` | Port du site (8080 par défaut). |
@@ -307,7 +407,6 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | `BPMN_BIND` | Interface réseau où le site écoute (`127.0.0.1` par défaut). `0.0.0.0` l'ouvre à votre réseau, sans HTTPS. |
 | `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). Dans un outil de gestion de conteneurs, un chemin absolu. |
 | `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires du dossier de données (1000 par défaut). |
-| `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires de ses fichiers (1000 par défaut). |
 | `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
 
 ## Ce que fait l'éditeur
@@ -318,15 +417,20 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
-  simulation de jetons, vérification des règles BPMN, grille, mini-carte, et le panneau Processus
+  vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
+- **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
+  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
+  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
+  probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
+  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
   toutes prêtes ou le sélecteur de couleur du système, et la mise en forme du texte (gras, italique,
   souligné, taille, police, « Auto » pour un texte lisible sur les fonds sombres). Le panneau
   Processus copie un style sur d'autres éléments et reprend d'un clic ceux déjà dans le diagramme.
-- **Assistant IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
+- **Co-pilote IA** : décrivez un processus et il le dessine, dans votre langue. Vous pouvez coller ou
   déposer des images, des PDF, des documents bureautiques (Word, Excel, PowerPoint, OpenDocument) et
   des fichiers texte (CSV, JSON, XML, Markdown…), dont le texte est lu dans le navigateur. Le modèle se choisit dans Options. Ce qu'il ajoute ou modifie est
   entouré sur le canevas, une pilule résume les changements, et un clic montre l'avant et l'après ou
@@ -342,35 +446,10 @@ BPMN, le fichier .bpmn s'ouvre donc dans d'autres outils BPMN, se vérifie et se
 dessine l'IA est aussi du BPMN valide. En revanche, pas de collaboration en temps réel, de lien de
 partage ni de modèles.
 
-## L'utiliser en ligne
-
-L'éditeur est ouvert à tous sur https://bpmn.leylines.fr (GitHub Pages) : sans compte, sans
-installation, juste un navigateur. Son [guide d'utilisation](https://bpmn.leylines.fr/aide.html)
-explique comment dessiner, enregistrer, exporter et se servir de l'assistant IA. Le bouton Aide (?) de
-la barre d'outils l'ouvre aussi.
-
-Il suit les versions publiées (le dernier tag `vX.Y.Z`) et affiche sa version en bas à gauche
-du canevas et du guide d'utilisation.
-
-Pour l'assistant IA, chaque visiteur saisit sa propre clé API, qui reste dans son navigateur. Par
-rapport à la version Docker, pas de connexion d'agent (MCP), pas d'enregistrement sur un serveur, et
-certains fournisseurs (OpenAI) refusent les appels depuis une page web. Le lien « Confidentialité » de la page
-dit ce qui sort du navigateur, et
-[Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
-
-La page stable mesure son audience de façon anonyme, sans cookie :
-visites, provenance et quelques actions (assistant ouvert ou utilisé, fournisseur connecté, diagramme
-créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
-elle-même ces mesures ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
-messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent la mesure, et un
-indicateur dans le stockage du navigateur exclut vos propres visites (voir [src/analytics.js](src/analytics.js)). Ni l'image
-Docker ni `npm run dev` ne mesurent quoi que ce soit. La mesure est configurée conformément aux recommandations de la
-CNIL pour les mesures d'audience exemptées de consentement.
-
 ## Développement
 
 `npm install`, puis `npm run dev` pour l'éditeur, et `npm start` dans `mcp/` pour le serveur.
-Détails sur le serveur, l'assistant et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
+Détails sur le serveur, le co-pilote et les outils MCP : [mcp/README.fr.md](mcp/README.fr.md).
 `npm run build:online` construit la version en ligne en site statique dans `dist-online/` (`BASE_PATH` règle son
 chemin). La mesure d'audience s'active avec les variables GitHub `VITE_UMAMI_URL` (adresse
 du service de mesure) et `VITE_UMAMI_WEBSITE_ID` (identifiant du site) : sans elles, rien n'est envoyé. Le site est publié par [.github/workflows/pages.yml](.github/workflows/pages.yml) à chaque
@@ -387,7 +466,7 @@ l'éditeur est assisté par IA, avec Claude Code et d'autres modèles, et chaque
 dans le navigateur avant d'être publié. Les relectures de développeurs expérimentés sont particulièrement
 appréciées.
 
-**Testeurs recherchés pour les fournisseurs d'IA.** L'assistant est essayé au quotidien avec les
+**Testeurs recherchés pour les fournisseurs d'IA.** Le co-pilote est essayé au quotidien avec les
 modèles Anthropic seulement. OpenAI, Mistral, xAI (Grok), Ollama et les serveurs compatibles OpenAI sont pris en
 charge d'après leur documentation, mais rarement essayés pour de vrai. Si vous utilisez l'un d'eux,
 tout retour aide, que ça marche ou non : ouvrez une [issue](https://github.com/Leylines-Prism/bpmn-pilot/issues)
@@ -400,8 +479,11 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 
-Si l'éditeur vous rend service, vous pouvez soutenir le projet en offrant un café sur
-[Ko-fi](https://ko-fi.com/leylines_prism).
+## Soutenir le développement
+
+BPMN-Pilot est gratuit, sans abonnement. Mon copain Claude carbure à la caféine. S'il vous fait gagner du temps, un café sur Ko-fi fait vivre le projet :
+
+[![Soutenir sur Ko-fi](https://img.shields.io/badge/Ko--fi-Soutenir%20le%20projet-FF5E5B?logo=ko-fi&logoColor=white&style=for-the-badge)](https://ko-fi.com/leylines_prism)
 
 ## Licence
 

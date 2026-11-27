@@ -58,7 +58,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
           <p>${T(`They are not sent to us, nor to the host of this site${hostName}.`,
                  `Ils ne sont transmis ni à nous ni à l'hébergeur du site${hostName}.`)}</p>`)
 
-  const assistant = section('assistant', T('With the AI assistant', "Avec l'assistant IA"), `
+  const assistant = section('assistant', T('With the AI co-pilot', "Avec le co-pilote IA"), `
           <p>${T('Your messages, the diagram and your API key are sent from your browser directly to the provider you selected (Anthropic, OpenAI, Mistral, etc.).',
                  "Vos messages, le diagramme et votre clé API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Anthropic, OpenAI, Mistral, etc.).")}</p>
           <p>${T("The provider's own terms and privacy policy apply, and it bills you for usage.",
@@ -68,24 +68,24 @@ export function setupPrivacy({ container, env = import.meta.env }) {
   const responsible = `<section class="pv-section pv-responsible" aria-labelledby="pv-responsible-title">
         <span class="pv-icon">${ICONS.key}</span>
         <div class="pv-body"><h3 id="pv-responsible-title">${T('Responsible use', 'Usage responsable')}</h3>
-          <p>${T('Use, first and foremost, an API key dedicated to this editor, created for it alone, with a limited validity period.',
-                 "Utilisez en priorité une clé API dédiée à cet éditeur, créée pour lui seul, avec une durée de validité limitée.")}</p>
-          <p>${T('Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.',
-                 "Ajoutez une limite de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.")}</p>
+          <p>${T('Use an API key reserved for this editor, with a short validity period.',
+                 "Utilisez une clé API réservée à cet éditeur, avec une durée de validité courte.")}</p>
+          <p>${T('Add a spending cap if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.',
+                 "Ajoutez un plafond de dépense si votre fournisseur le permet. En cas de fuite, la clé ne sert qu'ici, expire d'elle-même et se supprime sans toucher à vos autres usages.")}</p>
         </div>
       </section>`
 
   const audience = analyticsHost ? section('chart', T('Audience measurement', "Mesure d'audience"), `
-          <p>${T('The site measures its audience anonymously.', 'Le site mesure sa fréquentation de façon anonyme.')}</p>
+          <p>${T('The site counts its visits anonymously.', 'Le site compte ses visites de façon anonyme.')}</p>
           <ul class="pv-facts">
-            <li class="pv-key">${T('The content of your diagrams, messages and API keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés API n\'est jamais collecté.')}</li>
-            <li>${T('The measurement follows the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent:', "La mesure suit les recommandations de la CNIL pour les mesures d'audience exemptées de consentement :")}</li>
+            <li>${T('The content of your diagrams, messages and API keys is never collected.', 'Le contenu de vos diagrammes, de vos messages et de vos clés API n\'est jamais collecté.')}</li>
+            <li>${T(`It follows the <a href="https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience" target="_blank" rel="noopener">recommendations of the CNIL</a> (the French data protection authority, page in French) for audience measurement exempt from consent:`, `Ce comptage suit les <a href="https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience" target="_blank" rel="noopener">recommandations de la CNIL</a> pour les mesures d'audience exemptées de consentement :`)}</li>
             <li class="pv-sub">${T('No cookie is set and your IP address is not recorded.', "Aucun cookie n'est déposé et votre adresse IP n'est pas enregistrée.")}</li>
             <li class="pv-sub">${T('Visitors are counted with a hashed identifier, renewed every month.', 'Les visiteurs sont comptés au moyen d\'un identifiant haché, renouvelé chaque mois.')}</li>
-            <li class="pv-sub">${T('The measurement is turned off if your browser sends a "Do Not Track" or "Global Privacy Control" signal.', 'La mesure est désactivée si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».')}</li>
+            <li class="pv-sub">${T('Nothing is counted if your browser sends a "Do Not Track" or "Global Privacy Control" signal.', 'Rien n\'est compté si votre navigateur envoie le signal « Do Not Track » ou « Global Privacy Control ».')}</li>
           </ul>
-          <p>${T("Its purpose is to know how the site is used, so as to improve it. Legal basis: the publisher's legitimate interest.",
-                 "Elle sert à savoir comment le site est utilisé, pour l'améliorer. Base légale : l'intérêt légitime de l'éditeur.")}</p>`) : ''
+          <p>${T("Its purpose is to know how the site is used, so as to improve it.",
+                 "Le but : savoir comment le site est utilisé, pour l'améliorer.")}</p>`) : ''
 
   const legal = hostLegal ? section('scale', T('Legal notice', 'Mentions légales'), `
           <p>${T('Personal, non-commercial site, published by a private individual.',
@@ -95,7 +95,7 @@ export function setupPrivacy({ container, env = import.meta.env }) {
   const hosting = section('server', T('Hosting', 'Hébergement'), `
           <p>${T(`The host of this site${hostName} keeps technical logs, as any web host does, including your IP address and the pages requested.`,
                  `L'hébergeur du site${hostName} conserve, comme tout hébergeur web, des journaux techniques qui incluent votre adresse IP et les pages demandées.`)}${analyticsHost
-            ? T(' The measurement server may also keep technical logs for a short period.', ' Le serveur de mesure peut également conserver des journaux techniques pendant une courte durée.')
+            ? T(' The statistics server may also keep technical logs for a short period.', ' Le serveur de statistiques peut aussi conserver des journaux techniques pendant une courte durée.')
             : ''}</p>
           <p>${analyticsHost
             ? T('The page loads no third-party scripts.', 'La page ne charge aucun script tiers.')

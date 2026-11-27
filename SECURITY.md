@@ -15,7 +15,7 @@ Never include a real API key.
 
 - The editor and the online version (API keys kept in the browser, content sent to AI providers).
   Where its data lives and goes: [docs/online-privacy.md](docs/online-privacy.md).
-- The MCP server and the built-in assistant in `mcp/` (token check, allowed origins and hosts,
+- The MCP server and the built-in AI co-pilot in `mcp/` (token check, allowed origins and hosts,
   saved diagrams).
 - The Docker images published from this repository.
 

@@ -46,6 +46,12 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
+import { setupHeatmap } from './heatmap.js'
+import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupSimulationGlow } from './simulation-glow.js'
+import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
+import bpmnPilotModdle from './bpmn-pilot-moddle.json'
+import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
@@ -135,6 +141,8 @@ const modeler = new BpmnModeler({
   propertiesPanel: { parent: '#properties-panel' },
   linting: { bpmnlint: lintConfig, active: true },
   colorPicker: { colors: COLORS },
+  // Probabilités des branches pour la carte de chaleur (attribut bpmnpilot:probability).
+  moddleExtensions: { bpmnpilot: bpmnPilotModdle },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -150,6 +158,7 @@ const modeler = new BpmnModeler({
     LintProcessBadgeModule,
     GridModule,
     CopyAsImageModule,
+    ProbabilityPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -374,6 +383,75 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
+// Rapport de processus (menu Expert et outil get_process_report). Il reprend les comptes
+// de la dernière simulation, s'il y en a une.
+const reportName = () => `${baseName()} - ${T('process report', 'rapport de processus')}`
+
+async function processReport({ simulate = false } = {}) {
+  const simulation = simulate ? heatmap.runBatch() : heatmap.getResult()
+  const { checkDiagram } = await import('./diagram-checks.js')
+  const checks = await checkDiagram(modeler).catch((err) => { console.warn('Quality checks for the report:', err); return null })
+  return buildReport(modeler, { name: baseName(), simulation, checks })
+}
+
+async function exportReport(format, button) {
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const report = await processReport()
+    if (format === 'md') await deliver(reportToMarkdown(report), reportName(), 'md', 'text/markdown')
+    else await deliver(await reportToPdf(modeler, report), reportName(), 'pdf', 'application/pdf')
+    track('export', { format: `report-${format}` })
+  } catch (err) {
+    console.error('Process report error:', err)
+    alert(T('Process report failed: ', 'Rapport de processus impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+}
+// Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
+document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
+document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
+
+// Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
+// une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
+const askCopilot = (text) => window.dispatchEvent(new CustomEvent('bpmn-pilot-copilot-ask', { detail: { text } }))
+document.getElementById('btn-ai-probabilities').addEventListener('click', () => {
+  setExpert(true)
+  const branches = modeler.get('elementRegistry').filter(isBranchFlow)
+  if (!branches.length) {
+    alert(T('No gateway with several outgoing flows (exclusive, inclusive, complex or event-based): there is no probability to propose.',
+      'Aucune passerelle à plusieurs flux sortants (exclusive, inclusive, complexe ou basée sur les événements) : pas de probabilité à proposer.'))
+    return
+  }
+  askCopilot(T(
+    'Propose realistic probabilities for the branches of each gateway of this diagram, from the labels, conditions and documentation. ' +
+      'Set them with update_elements (the branches of one gateway add up to 100 %), without changing anything else. ' +
+      'Then give, in one line per gateway, what justifies your values.',
+    'Propose des probabilités réalistes pour les branches de chaque passerelle de ce diagramme, d\'après les libellés, les conditions et la documentation. ' +
+      'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
+      'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.'))
+})
+document.getElementById('btn-ai-analysis').addEventListener('click', () => {
+  setExpert(true)
+  if (!hasShapes(modeler)) {
+    alert(T('The diagram is empty: nothing to analyze.', 'Le diagramme est vide : rien à analyser.'))
+    return
+  }
+  askCopilot(T(
+    'Analyze this process for its report: read get_process_report with simulate, then save your analysis with set_report_commentary ' +
+      '(summary, bottlenecks, rare paths, risks, improvements, each tied to the elements concerned and to the figures of the report). ' +
+      'Do not change the diagram. Finish with a short summary of what you saved.',
+    'Analyse ce processus pour son rapport : lis get_process_report avec simulate, puis enregistre ton analyse avec set_report_commentary ' +
+      '(synthèse, goulots, chemins rares, risques, pistes d\'amélioration, chacun relié aux éléments concernés et aux chiffres du rapport). ' +
+      'Ne modifie pas le diagramme. Termine par un court résumé de ce que tu as enregistré.'))
+})
+
+async function processReportForAi({ simulate } = {}) {
+  if (!hasShapes(modeler)) throw new Error('The diagram is empty: nothing to report.')
+  return reportToMarkdown(await processReport({ simulate }))
+}
+
 // Outil export_diagram (serveur MCP et chat intégré) : le fichier est produit ici,
 // déposé dans le dossier exports du serveur s'il y en a un, et proposé dans une
 // bannière du canevas. Il ne se télécharge que sur un clic de l'utilisateur.
@@ -439,17 +517,35 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
   }
 })
 
-// Le bouton suit l'état réel de la simulation : on pilote le service de
-// l'extension, et l'événement qu'elle émet met à jour le libellé, que la
-// bascule vienne de ce bouton ou du contrôle intégré au canevas.
+// L'entrée Simulation du menu Expert suit l'état réel de la simulation : on pilote le
+// service de l'extension, et l'événement qu'elle émet met à jour le libellé, que la
+// bascule vienne de ce menu, de la touche T ou du contrôle intégré au canevas. Le bouton
+// Expert porte un point lumineux tant qu'une simulation tourne.
 const simButton = document.getElementById('btn-simulation')
 modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.textContent = active ? T('Stop simulation', 'Arrêter la simulation') : 'Simulation'
+  simButton.title = active
+    ? T('Back to editing. Expert mode stays on, so you can set the branch probabilities', 'Revenir à l\'édition. Le mode Expert reste actif pour régler les probabilités des branches')
+    : T('Run tokens through the process, with the heatmap and branch probabilities', 'Faire circuler des jetons dans le processus, avec la carte de chaleur et les probabilités des branches')
   simButton.classList.toggle('active', !!active)
+  document.getElementById('btn-expert').classList.toggle('running', !!active)
+  // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
+  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités. « Quitter
+  // le mode Expert » revient une fois la simulation arrêtée.
+  document.getElementById('expert-menu').classList.toggle('simulating', !!active)
 })
 simButton.addEventListener('click', () => {
+  setExpert(true)
   modeler.get('toggleMode').toggleMode()
 })
+// La simulation de jetons appartient au mode expert : hors de ce mode, ni le bouton ni la
+// touche T de l'extension ne la lancent, et quitter le mode expert l'arrête.
+{
+  const toggleMode = modeler.get('toggleMode')
+  const toggle = toggleMode.toggleMode.bind(toggleMode)
+  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !isExpert() ? undefined : toggle(active))
+  window.addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && toggleMode._active) toggle(false) })
+}
 
 function download(content, filename, type) {
   const a = document.createElement('a')
@@ -461,6 +557,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
+setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.
@@ -474,6 +571,8 @@ setupPanelToggle({
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
+const heatmap = setupHeatmap(modeler)
+setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
@@ -537,12 +636,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi }) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi })
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

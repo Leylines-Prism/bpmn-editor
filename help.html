@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Help · BPMN-Pilot · Leylines</title>
-  <meta name="description" content="Guide to the Leylines BPMN editor: draw a process, save it, export it, and have an AI assistant draw it for you." />
+  <meta name="description" content="Guide to the Leylines BPMN editor: draw a process, save it, export it, and have an AI co-pilot draw it for you." />
   <link rel="alternate" hreflang="fr" href="aide.html" />
   <link rel="icon" href="/src/brand/favicon.ico" sizes="48x48" />
   <link rel="icon" type="image/svg+xml" href="/src/brand/favicon-white.svg" media="(prefers-color-scheme: light)" />
@@ -24,6 +24,7 @@
     </a>
     <span class="name">BPMN-Pilot · Help</span>
     <span class="grow"></span>
+    <button class="btn round" id="btn-theme" type="button" data-icon="theme" aria-label="Theme: auto"></button>
     <a class="btn" href="aide.html" hreflang="fr" lang="fr">Français</a>
     <a class="btn primary" href="./">Open the editor</a>
   </header>
@@ -38,12 +39,13 @@
           <li><a href="#drawing">Drawing</a></li>
           <li><a href="#properties">Process panel</a></li>
           <li><a href="#colors-text">Colors and text</a></li>
-          <li><a href="#checking">Check, tidy up, simulate</a></li>
+          <li><a href="#checking">Check and tidy up</a></li>
           <li><a href="#saving">Saving and My diagrams</a></li>
           <li><a href="#open-export">Open, import, export</a></li>
-          <li><a href="#assistant">AI assistant</a></li>
+          <li><a href="#assistant">AI co-pilot</a></li>
           <li><a href="#prompt-examples">Prompt examples</a></li>
           <li><a href="#keys">Your API keys</a></li>
+          <li><a href="#bpmn-experts">For BPMN experts</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#docker">Docker version and MCP agents</a></li>
           <li><a href="#small-screens">On a phone or tablet</a></li>
@@ -61,10 +63,10 @@
       <div class="hero">
         <h1>BPMN-Pilot guide</h1>
         <!-- online -->
-        <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Describe a process or attach your documents (Word, Excel, PDF, emails…), and the AI assistant draws it in seconds: you review and adjust the result instead of spending hours on the BPMN structure. You can also draw by hand. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click.</p>
+        <p class="lead">A free BPMN 2.0 editor in your browser, with no account and nothing to install. Describe a process or attach your documents (Word, Excel, PDF, emails…), and the AI co-pilot draws it in seconds: you review and adjust the result instead of spending hours on the BPMN structure. You can also draw by hand. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click. You are the pilot, hence the name: the AI co-pilot prepares the work, and you keep the final say on every diagram.</p>
         <!-- /online -->
         <!-- docker -->
-        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Connected to your AI agent and everything it knows (mail, wiki, document base, RAG, knowledge graph), it models the processes of that context in seconds, from a few exchanges: the agent finds the processes through MCP, the editor draws and checks them, and you review and adjust the result. The built-in AI assistant and drawing by hand work too. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click.</p>
+        <p class="lead">A free BPMN 2.0 editor with no account, installed on your machine or network. Connected to your AI agent and everything it knows (mail, wiki, document base, RAG, knowledge graph), it models the processes of that context in seconds, through plain conversation: the agent finds them through MCP, the editor draws and checks them, and you review and adjust the result. The built-in AI co-pilot and drawing by hand work too. The same conversation also styles the diagram: fill, outline and text colors, bold, italic, underline, size and font, as well as element names and types, on as many elements at once as you like ("make every manual task orange, with bold text"). Each answer undoes in one click. You are the pilot, hence the name: the AI co-pilot prepares the work, and you keep the final say on every diagram.</p>
         <!-- /docker -->
         <div class="cta">
           <a class="btn primary" href="./">Open the editor</a>
@@ -76,7 +78,7 @@
       <section id="getting-started">
         <h2>Getting started</h2>
         <p>A new diagram already holds a small process: a start, a task and an end, both the first time you open the editor and each time you click <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>New</span>. Build from there, or delete these shapes to draw something else.</p>
-        <figure><img src="/src/help/img/en-editeur.webp" width="1440" height="820" alt="The editor with an expense claim process: the palette on the left, the canvas, and the AI assistant panel open on the right." loading="lazy" /><figcaption>The editor, with the AI assistant panel open on the right. The Process panel is hidden here.</figcaption></figure>
+        <figure><img src="/src/help/img/en-editeur.webp" width="1440" height="820" alt="The editor with an expense claim process: the palette on the left, the canvas, and the AI co-pilot panel open on the right." loading="lazy" /><figcaption>The editor, with the AI co-pilot panel open on the right. The Process panel is hidden here.</figcaption></figure>
         <ol>
           <li>Pick a shape in the palette on the left, then click the canvas to place it.</li>
           <li>Click a shape: its context menu appears next to it and lets you append the next element, already connected.</li>
@@ -84,12 +86,24 @@
           <li>Name the file in the field on the left of the toolbar. That name is used when saving and for every export.</li>
         </ol>
         <p>Your work is kept in the browser after every change, and you find it as you left it when you reopen the page. The "Autosave" label in the toolbar is there to remind you.</p>
-        <p>The <span class="uib">FR</span> or <span class="uib">EN</span> button switches the interface language, and the round button <span class="ico" data-icon="theme" aria-hidden="true"></span> next to it picks the theme: light, dark, or your system's. The browser remembers both choices.</p>
+        <p>The <span class="uib">FR</span> or <span class="uib">EN</span> button switches the interface language. The <span class="uib"><span class="ico" data-icon="theme" aria-hidden="true"></span>Theme</span> button next to it moves to the next theme on each click: automatic (your system's), light, then dark. Its tooltip shows the current theme. The help follows the same choice and has its own button, top right. The browser remembers both choices.</p>
+        <p>BPMN 2.0 is an international standard: published by the Object Management Group (OMG) and adopted by ISO as <a href="https://www.iso.org/standard/62652.html" target="_blank" rel="noopener">ISO/IEC 19510:2013</a>, identical to BPMN 2.0.1. Its notation and execution semantics are the same for every tool and every team: a diagram made here reads the same elsewhere, and the .bpmn file opens in any compliant editor or engine.</p>
+        <details class="faq">
+          <summary>Why BPMN rather than a flowchart?</summary>
+          <p>General drawing tools such as draw.io, Lucidchart or Visio draw boxes and arrows. A shape means what its author meant, and every team invents its own conventions. BPMN gives each symbol a defined meaning:</p>
+          <ul>
+            <li><strong>Who does what</strong>: pools for organisations, lanes for roles, message flows for what they exchange.</li>
+            <li><strong>What triggers and what waits</strong>: start, timer, message and error events, and events attached to a task for deadlines and exceptions.</li>
+            <li><strong>How paths split and join</strong>: exclusive (a single branch), parallel (all of them) and inclusive (some of them) gateways, each with its own rule.</li>
+            <li><strong>A file that tools understand</strong>: the .bpmn file describes the process itself, not its picture. It can be checked, simulated, turned into a report, read and written by an AI agent, and run by a workflow engine. A drawn flowchart allows none of this.</li>
+            <li><strong>No lock-in</strong>: the same file opens in any compliant editor, today and in ten years.</li>
+          </ul>
+        </details>
         <!-- online -->
-        <div class="note">There is no account. Your diagrams stay in your browser. If you use the assistant, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
+        <div class="note">There is no account. Your diagrams stay in your browser. If you use the co-pilot, only the AI provider receives them. Neither this site nor its host has access to them. The site only measures its audience, without cookies (see <a href="#privacy">Privacy</a>).</div>
         <!-- /online -->
         <!-- docker -->
-        <div class="note">There is no account. Your diagrams stay in your browser, or on your server if you save them there. If you use the assistant, only the AI provider receives them, through your server. This version does not measure its audience.</div>
+        <div class="note">There is no account. Your diagrams stay in your browser, or on your server if you save them there. If you use the co-pilot, only the AI provider receives them, through your server. This version does not measure its audience.</div>
         <!-- /docker -->
       </section>
 
@@ -114,8 +128,8 @@
         <p>The wrench opens the <span class="uib">Change element</span> window. It lists the types that fit the selected element: a task can become a user task, a service task, a call activity or a sub-process, a start event can become a message or timer start event, and so on. Type a few letters in the search field to filter the list, then click a type or press <kbd>Enter</kbd>. The <kbd>R</kbd> key opens the same window from the keyboard.</p>
         <p>For a task or a sub-process, the icons at the top right of the window add a marker without changing the type: parallel multi-instance <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, sequential multi-instance <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span> and loop <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>. Click again to remove the marker. You then set the loop cardinality and completion condition in the <a href="#properties">Process panel</a>.</p>
         <h3><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo and redo</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> and <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Redo</span> buttons, at the top left of the canvas next to Token simulation, step through your edits and the assistant's one at a time, like <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd>. They are greyed out when there is nothing to undo or redo.</p>
-        <p>Tidy up, and a layout or a diagram replaced by the assistant, reload the whole diagram. Just before, the editor keeps a copy: Undo goes back to it in one step, but older edits can no longer be undone one by one. Opening a file or creating a diagram starts with an empty history.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> and <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Redo</span> buttons, at the top left of the canvas, step through your edits and the co-pilot's one at a time, like <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd>. They are greyed out when there is nothing to undo or redo.</p>
+        <p>Tidy up, and a layout or a diagram replaced by the co-pilot, reload the whole diagram. Just before, the editor keeps a copy: Undo goes back to it in one step, but older edits can no longer be undone one by one. Opening a file or creating a diagram starts with an empty history.</p>
         <h3>Keyboard shortcuts</h3>
         <p>On a Mac, use <kbd>Cmd</kbd> instead of <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -138,7 +152,7 @@
           </table>
         </div>
         <h3>The minimap</h3>
-        <p>The minimap shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="uib">Open minimap</span> to expand it, then <span class="uib">Close minimap</span> to collapse it.</p>
+        <p>It shows a small view of the whole diagram, top right of the canvas. It is collapsed when the editor opens: click <span class="uib">Open minimap</span> to expand it, then <span class="uib">Close minimap</span> to collapse it.</p>
         <ul>
           <li>The orange frame is the part visible on screen. Drag it to move around.</li>
           <li>Click anywhere else in the minimap to center the view on that point.</li>
@@ -146,7 +160,25 @@
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>, and <kbd>0</kbd> fits the diagram to the screen. The diagram cannot be edited in this mode. The Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
+        <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Laser pointer</b>: a red-orange dot with a short trail replaces the arrow on the diagram</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Highlight on hover</b>: the hovered element and its flows light up, the rest of the diagram fades</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Ripple on click</b>: a circle widens where you click</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Hide when still</b>: after two seconds without moving, the cursor and the bar fade out, and come back on the first movement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The choices are kept in this browser. On a touch screen, the laser and the ripple follow the finger. The highlight relies on hovering and does not apply there.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, ripple and highlight</p><img src="/docs/presentation-pointer.gif" width="1280" height="720" alt="The purchase process in presentation: the laser pointer follows the flow, a ripple on each click, then the highlight lights up a task, a gateway and their flows in turn. The Pointer menu opens, then the cursor and the bar fade out when still." loading="lazy" /><figcaption>The laser and the click ripple, key 2 for the highlight, then the bar fading out when still.</figcaption></figure>
+          <figure><p class="fig-title">The Pointer menu</p><img src="/src/help/img/en-presentation-pointeur.webp" width="800" height="440" alt="The Pointer menu open in presentation, four switches on. The Approve in committee task and its flows in red-orange, the rest faded, with the laser pointer trail." loading="lazy" /><figcaption>The Pointer menu, with the laser and the highlight on a task.</figcaption></figure>
+        </div>
       </section>
 
       <section id="properties">
@@ -194,7 +226,7 @@
         <ul>
           <li><span class="ui">Shape</span>: two rows of ready-made colors, pale fills then vivid fills that also turn the text white, then a <span class="ui">Fill</span> and a <span class="ui">Stroke</span> to set one without the other (the square opens your system's color picker). The field next to the square shows the color's hexadecimal code, or in gray the default color's code when none is set: type one, for example <code>#1E88E5</code>, then Enter to apply it. A flow only has a stroke.</li>
           <li><span class="ui">Text</span>: bold, italic, underline, size and font (when nothing is set, each list shows the value applied, for example <span class="ui">12</span> and <span class="ui">Arial</span>, or 11 for labels placed under the shape, such as event labels), two rows of text colors as round dots (the first: black, a gray gradient and four dark shades for light fills; the second: white and vivid shades, three of them bright for dark fills), an <span class="ui">Other</span> row for any color, with its square and hexadecimal code as for the fill, then <span class="ui">Auto</span> and <span class="ui">Default text</span>.</li>
-          <li><span class="ui">Used in this diagram</span>, in the <span class="ui">Style</span> group, lists on one row, most recent first, up to 8 styles set elsewhere (colors and text formatting together), by you or by the assistant. One click applies one of them to the selected element.</li>
+          <li><span class="ui">Used in this diagram</span>, in the <span class="ui">Style</span> group, lists on one row, most recent first, up to 8 styles set elsewhere (colors and text formatting together), by you or by the co-pilot. One click applies one of them to the selected element.</li>
           <li><span class="uib">Copy style</span>, in the <span class="ui">Style</span> group above the other two, remembers the element's fill, stroke, font and text color. Its button shows an eyedropper in a square painted with the selected element's colors: that is what will be copied. <span class="uib">Paste style</span> applies the copied style to another element. Its button gives a preview: a roller in a square, the square in the shape colors, the roller in the text color. To handle several elements at once, select them and use the <span class="uib">Paste style</span> roller of the context menu. The browser keeps this copy, even from one diagram to another.</li>
         </ul>
         <p>Each change is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</p>
@@ -203,7 +235,7 @@
       </section>
 
       <section id="checking">
-        <h2>Check, tidy up, simulate</h2>
+        <h2>Check and tidy up</h2>
         <h3>BPMN correctness checks</h3>
         <p>The editor has a built-in BPMN correctness checker, <a href="https://github.com/bpmn-io/bpmnlint" target="_blank" rel="noopener">bpmnlint<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>. It reviews your work as you draw, with its 27 recommended rules: disconnected element, process with no start or end, badly connected gateway, element without a label… They are advice and never block saving.</p>
         <ul>
@@ -259,9 +291,7 @@
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
-        <h3><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> button (next to Tidy up) switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. Click <span class="uib">Stop simulation</span> to go back to editing.</p>
-        <figure><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
       </section>
 
       <section id="saving">
@@ -291,14 +321,14 @@
         </ul>
         <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening.</p>
         <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
-        <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the assistant's pill.</p>
+        <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the co-pilot's pill.</p>
         <ul>
           <li>In green, what was added (on the right). In red, what was removed (on the left). In orange, what was changed, on both sides.</li>
           <li>In blue, on request, what only moved or changed color. Click a chip at the top to show or hide a kind of difference.</li>
           <li>The list on the right details each difference, for example "Name: Approve → Check the receipts". A click centers both views on the element.</li>
           <li>Both views scroll and zoom together. <kbd>Esc</kbd> closes the window.</li>
         </ul>
-        <figure><img src="/src/help/img/en-avant-apres.webp" width="1440" height="720" alt="Before and after window: the diagram before the assistant on the left, the current diagram on the right, with an added element in green, a removed one in red, a changed one in orange, and the list of differences." loading="lazy" /><figcaption>The Before and after window, opened from the assistant's pill.</figcaption></figure>
+        <figure><img src="/src/help/img/en-avant-apres.webp" width="1440" height="720" alt="Before and after window: the diagram before the co-pilot on the left, the current diagram on the right, with an added element in green, a removed one in red, a changed one in orange, and the list of differences." loading="lazy" /><figcaption>The Before and after window, opened from the co-pilot's pill.</figcaption></figure>
         <h3><span class="ico" data-icon="save" aria-hidden="true"></span>Export</h3>
         <div class="table-wrap">
           <table>
@@ -321,8 +351,9 @@
         <!-- docker -->
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
+        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, comes from the Expert menu: see <a href="#bpmn-experts">For BPMN experts</a>.</p>
         <h3>Exports asked of the AI</h3>
-        <p>You can ask the AI assistant or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
+        <p>You can ask the AI co-pilot or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
         <!-- docker -->
         <p>The file is also saved in the exports folder of the server, whatever the Destination choice, never replacing an existing file.</p>
@@ -332,15 +363,16 @@
       </section>
 
       <section id="assistant">
-        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI assistant</h2>
-        <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI assistant</span> button in the toolbar opens a chat panel. Describe a process there, and the assistant draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
+        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</h2>
+        <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
+        <figure class="fig-anim"><p class="fig-title">The co-pilot draws a process</p><img src="/docs/demo.gif" width="1200" height="675" alt="The AI co-pilot draws an online order process with two pools and four lanes" loading="lazy" /><figcaption>A request in plain language, and the diagram builds up in the editor.</figcaption></figure>
 
         <h3>1. Choose a provider</h3>
         <!-- online -->
-        <p>The assistant uses an AI model from the provider of your choice, with your own API key. Open <span class="uib">Options</span> in the assistant panel:</p>
+        <p>The co-pilot uses an AI model from the provider of your choice, with your own API key. Open <span class="uib">Options</span> in the co-pilot panel:</p>
         <!-- /online -->
         <!-- docker -->
-        <p>The assistant uses an AI model from the provider of your choice. Open <span class="uib">Options</span> in the assistant panel. If keys are set on the server, the <span class="ui">Server models</span> choice comes first in the list: there is nothing to enter. Otherwise, choose a provider and paste your API key:</p>
+        <p>The co-pilot uses an AI model from the provider of your choice. Open <span class="uib">Options</span> in the co-pilot panel. If keys are set on the server, the <span class="ui">Server models</span> choice comes first in the list: there is nothing to enter. Otherwise, choose a provider and paste your API key:</p>
         <!-- /docker -->
         <div class="table-wrap">
           <table>
@@ -366,12 +398,12 @@
           </table>
         </div>
         <p>Select the provider at the top of the window, paste the key, click <span class="uib">Test</span>, then choose the model: the list fills in once the connection is tested. One provider is used at a time, and switching does not erase the keys of the others. The panel shows which model is in use.</p>
-        <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Assistant options window with the Mistral provider chosen: address, empty API key, models, Test and List models buttons." loading="lazy" /><figcaption>Assistant options: Mistral chosen, waiting for the key.</figcaption></figure>
+        <figure><img src="/src/help/img/en-options.webp" width="640" height="530" alt="Co-pilot options window with the Mistral provider chosen: address, empty API key, models, Test and List models buttons." loading="lazy" /><figcaption>Co-pilot options: Mistral chosen, waiting for the key.</figcaption></figure>
 
         <h3>2. Describe the process</h3>
-        <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The assistant answers in the language of your message. For example:</p>
+        <p>Write it the way you would explain it to a colleague: who does what, in which order, with which decisions. The co-pilot answers in the language of your message. For example:</p>
         <div class="note">"Draw the expense claim process. The employee enters the claim, their manager approves or rejects it. Above €500, accounting approves it too. Once approved, it is paid within 5 days. Use one lane per role."</div>
-        <p>Under each answer, small tags show what the assistant did on the canvas: reading, adding shapes, connections, layout… Then ask it for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself.</p>
+        <p>Under each answer, small tags show what the co-pilot did on the canvas: reading, adding shapes, connections, layout… Then ask it for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself.</p>
         <ul>
           <li>The input box grows with the text. The button in its corner opens a large editor, to paste long text or open a .txt or .md file. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends.</li>
           <li><span class="uib">New chat</span> starts over. Your drawing does not change.</li>
@@ -379,17 +411,17 @@
         </ul>
 
         <h3>3. Start from a file</h3>
-        <p>The assistant can also start from a whiteboard photo, a screenshot of an old tool, a procedure in a PDF or a Word document, a list of steps in a spreadsheet, or an export from another tool. Paste the file (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the assistant to draw it. Up to 5 files per message.</p>
+        <p>The co-pilot can also start from a whiteboard photo, a screenshot of an old tool, a procedure in a PDF or a Word document, a list of steps in a spreadsheet, or an export from another tool. Paste the file (<kbd>Ctrl</kbd>+<kbd>V</kbd>), drop it on the panel, or pick it with the paperclip, then ask the co-pilot to draw it. Up to 5 files per message.</p>
         <ul>
-          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, up to 3.75 MB, reduced to 1568 pixels per side if needed) and <strong>PDF</strong> (up to 20 MB) go to the model as they are. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral. An OpenAI-compatible server (Ollama, LiteLLM, vLLM…) gets images, not PDFs. If the chosen model cannot read images, the assistant says so instead of a technical error. A PDF over 100 pages goes beyond the limit of most providers: send only the useful pages. Attached files stay in the conversation for the next questions, up to about 15 MB: beyond that, the oldest ones are removed.</li>
+          <li><strong>Images</strong> (PNG, JPEG, GIF, WebP, up to 3.75 MB, reduced to 1568 pixels per side if needed) and <strong>PDF</strong> (up to 20 MB) go to the model as they are. Claude models read both. With other providers, images depend on the model, and PDFs work with OpenAI and Mistral. An OpenAI-compatible server (Ollama, LiteLLM, vLLM…) gets images, not PDFs. If the chosen model cannot read images, the co-pilot says so instead of a technical error. A PDF over 100 pages goes beyond the limit of most providers: send only the useful pages. Attached files stay in the conversation for the next questions, up to about 15 MB: beyond that, the oldest ones are removed.</li>
           <li><strong>Office documents</strong> (Word, Excel, PowerPoint, and their OpenDocument equivalents: <code>.docx</code>, <code>.xlsx</code>, <code>.pptx</code>, <code>.odt</code>, <code>.ods</code>, <code>.odp</code>) and <strong>text files</strong> (TXT, Markdown, CSV, JSON, XML, BPMN, HTML, YAML, logs, emails) are read in your browser, and only their text goes with the message: tables become rows, each sheet and each slide keeps its name. Every provider reads them. Only the body text is read: images, charts and SmartArt, headers and footers, comments and speaker notes are left out. If your process is drawn in a SmartArt or a diagram, attach a screenshot of it instead. Dates in a spreadsheet arrive as numbers, and a password-protected document does not open. E-mails (.eml) give their headers (From, To, Date, Subject) and their text; their attachments are only named.</li>
         </ul>
         <p>A message holds up to 100,000 characters, attached text included. The <em>Expand the input</em> button, at the top right of the field, opens a larger editor, where <em>Open a file…</em> inserts the text of one of these files so you can trim it before sending.</p>
 
         <h3>4. Color and format</h3>
-        <p>The assistant can also dress up the diagram: fill, stroke, text color, bold, italic, underline, size and font, on shapes and flows alike. It uses the same settings as the <a href="#properties">Process panel</a>, and you touch up the result by hand the same way. For example:</p>
+        <p>The co-pilot can also dress up the diagram: fill, stroke, text color, bold, italic, underline, size and font, on shapes and flows alike. It uses the same settings as the <a href="#properties">Process panel</a>, and you touch up the result by hand the same way. For example:</p>
         <div class="note">"Give each actor its own color, in pale tones. Put the rejection path in red, and the accounting tasks in bold."</div>
-        <figure><img src="/src/help/img/en-ia-couleurs.webp" width="1003" height="873" alt="Expense report process in three lanes colored by the assistant: pale blue for the employee, orange for the manager, green for accounting. The rejection flow and the Expense rejected event are red, and the Reimburse task is dark green with bold white text." loading="lazy" /><figcaption>An expense report colored by the assistant: one shade per actor, the rejection in red, and white text picked automatically on the dark green.</figcaption></figure>
+        <figure><img src="/src/help/img/en-ia-couleurs.webp" width="1003" height="873" alt="Expense report process in three lanes colored by the co-pilot: pale blue for the employee, orange for the manager, green for accounting. The rejection flow and the Expense rejected event are red, and the Reimburse task is dark green with bold white text." loading="lazy" /><figcaption>An expense report colored by the co-pilot: one shade per actor, the rejection in red, and white text picked automatically on the dark green.</figcaption></figure>
         <ul>
           <li>On a dark fill, it picks white or black text, whichever reads best.</li>
           <li>The colors it sets are saved in the .bpmn file following the standard, like those set by hand. They join the <span class="ui">Used in this diagram</span> styles of the <span class="ui">Style</span> group, ready to reuse.</li>
@@ -397,26 +429,29 @@
           <li>An MCP agent (Claude Code, Claude Desktop…) can do the same, with the <code>style_elements</code> tool.</li>
         </ul>
 
-        <h3>See what the assistant changed</h3>
-        <p>After each answer, the shapes the assistant added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>
+        <h3>See what the co-pilot changed</h3>
+        <p>After each answer, the shapes the co-pilot added get a thin magenta outline and a dot, the shapes it changed a dashed outline. A pill at the top of the canvas sums up, for example "AI: 2 added, 1 changed, 1 removed". Hover over the pill to see the names of the removed shapes.</p>
         <ul>
-          <li>When the assistant changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click it to show the outlines, click again to hide them.</li>
+          <li>When the co-pilot changes a lot at once, such as a diagram drawn from scratch, no outline is shown: the pill alone sums up. Click it to show the outlines, click again to hide them.</li>
           <li>Your own edits and automatic layout are never marked. <kbd>Ctrl</kbd>+<kbd>Z</kbd> updates the marking.</li>
           <li><span class="uib">Before / after</span>, on the pill, compares the diagram from before the answer with the current one, side by side (see <a href="#compare">Compare two versions</a>).</li>
-          <li><span class="uib">Undo</span>, on the pill, reverts everything the assistant changed since your message in one step, layout included. If you edited the diagram in the meantime, the editor asks you to confirm, since your edits are undone too. <kbd>Ctrl</kbd>+<kbd>Y</kbd> brings the changes back.</li>
+          <li><span class="uib">Undo</span>, on the pill, reverts everything the co-pilot changed since your message in one step, layout included. If you edited the diagram in the meantime, the editor asks you to confirm, since your edits are undone too. <kbd>Ctrl</kbd>+<kbd>Y</kbd> brings the changes back.</li>
           <li>The marking is cleared by the pill's cross, by your next message, or when another diagram is opened. It never appears in the file or in exports.</li>
         </ul>
 
+        <h3>Review and checks</h3>
+        <p>Around each answer, the co-pilot points out what the request leaves open, checks the diagram it produced, fixes on its own what fails, and shows where the result comes from. The details are in <a href="#ai-checks">Review, checks and traceability</a>. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns off the extra requests.</p>
+
         <h3>What it costs</h3>
-        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console.</p>
+        <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
       </section>
 
       <section id="prompt-examples">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Prompt examples</h2>
-        <p>Ready-to-use prompts for the <a href="#assistant">AI assistant</a>, to adapt to your context. They work with every provider, online and in the Docker version. The assistant replies, and names the elements, in the language of the prompt.</p>
+        <p>Ready-to-use prompts for the <a href="#assistant">AI co-pilot</a>, to adapt to your context. They work with every provider, online and in the Docker version. The co-pilot replies, and names the elements, in the language of the prompt.</p>
 
         <details class="faq prompts-list">
-          <summary>12 demo prompts, ready to copy and paste</summary>
+          <summary>18 demo prompts, ready to copy and paste</summary>
         <h3>Model</h3>
         <div class="prompt">
           <p class="prompt-title">From a description</p>
@@ -473,10 +508,58 @@
           <p class="prompt-text">Export the diagram as a PDF named "Customer returns".</p>
           <p class="prompt-tip">The file downloads only when you click <span class="uib">Download</span>, under the answer.</p>
         </div>
+        <div class="prompt">
+          <p class="prompt-title">Process analysis</p>
+          <p class="prompt-text">Read the process report, with a 100-token simulation. Suggest three improvements to the process itself, each with the change to the diagram and the expected effect. Do not change anything.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Activity documentation</p>
+          <p class="prompt-text">Fill in the Documentation field of every activity that has none, in one sentence: who does what, with what result.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Branch probabilities</p>
+          <p class="prompt-text">Set a probability on each flow leaving an exclusive gateway, based on the labels and the context. List your assumptions.</p>
+          <p class="prompt-tip">They feed the <span class="uib">Run</span> button of the heatmap.</p>
+        </div>
+
+        <h3>Structured prompts</h3>
+        <p>For a sharper result on the first try: a role, a context, modeling rules and an expected deliverable. The <span class="uib">Copy</span> button keeps the line breaks.</p>
+        <div class="prompt">
+          <p class="prompt-title">Full process scoping</p>
+          <p class="prompt-text structured">Role: you are a senior process analyst, strict about the BPMN 2.0 standard.
+Context: an 80-person company. Onboarding a new employee involves HR, the manager, IT and facilities.
+Goal: model the process, from the offer being accepted to the end of the probation period.
+Modeling rules:
+- one lane per actor, named after the role
+- tasks named "verb + object", typed as user, service or manual
+- a parallel gateway for what is prepared at the same time: workstation, accounts, badge
+- a deadline 5 working days before the start date, with a reminder to the team concerned if the equipment is not ready
+- two distinct ends: probation confirmed, probation ended
+Deliverable: the tidied diagram, then the list of assumptions you made.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Diagnosis, then target version</p>
+          <p class="prompt-text structured">Role: continuous improvement consultant.
+Step 1, diagnosis: analyze the open diagram without changing it. List the waiting times, duplicate data entry, back-and-forth between lanes, decisions with no owner and paths that lead nowhere.
+Step 2, proposal: present at most five improvements, ranked by expected gain, each with the problem, the change to the diagram and the risk.
+Step 3, only after I agree: apply the improvements I keep. Keep the names of unchanged steps, color new elements green and modified elements orange, then tidy up the diagram.
+Constraint: no regulatory step disappears. When in doubt, ask me.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Several organizations, with exceptions and deadlines</p>
+          <p class="prompt-text structured">Context: a car insurance claim between the policyholder, the insurer and the approved garage. One pool per organization, exchanges as message flows.
+Happy path: the policyholder files the claim online. The insurer checks the coverage, appoints an assessor, then approves the garage's quote. The garage repairs the car and invoices the insurer, who pays the invoice.
+Exceptions to model:
+- policy does not cover the claim: reasoned refusal sent to the policyholder, case closed
+- missing supporting documents: reminder after 7 days (non-interrupting timer), case closed after 30 days (interrupting timer)
+- quote above €5,000: approval by a manager
+Requirements: events named as past states ("Claim filed"), an indicative probability on each branch, the Documentation field filled in for each insurer task.
+To finish: check the diagram, fix what fails and sum up the process in five lines.</p>
+        </div>
 
         </details>
 
-        <p>Each answer can be undone in a single step (see <a href="#assistant">See what the assistant changed</a>). In the <a href="#docker">Docker version</a>, an MCP agent accepts the same prompts and also provides four built-in prompts.</p>
+        <p>Each answer can be undone in a single step (see <a href="#assistant">See what the co-pilot changed</a>). In the <a href="#docker">Docker version</a>, an MCP agent accepts the same prompts and also provides five built-in prompts.</p>
       </section>
 
       <section id="keys">
@@ -485,7 +568,7 @@
         <p>Your key never goes through this site or its host (GitHub Pages). It stays in your browser and goes straight to the chosen provider with each message. Where it is kept depends on the <span class="ui">Remember API keys on your device</span> box in Options:</p>
         <!-- /online -->
         <!-- docker -->
-        <p>The safest place for keys is the server (see the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>): they never reach the browser, and the assistant offers them under <span class="ui">Server models</span>. A key entered in Options goes to your server with each message, and the server passes it on to the provider without storing it. In the browser, it is kept according to the <span class="ui">Remember API keys on your device</span> box:</p>
+        <p>The safest place for keys is the server (see the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>): they never reach the browser, and the co-pilot offers them under <span class="ui">Server models</span>. A key entered in Options goes to your server with each message, and the server passes it on to the provider without storing it. In the browser, it is kept according to the <span class="ui">Remember API keys on your device</span> box:</p>
         <!-- /docker -->
         <div class="table-wrap">
           <table>
@@ -505,8 +588,95 @@
         <div class="note warn">On a shared computer, leave the box unchecked and close the tab when you leave.</div>
         <div class="note responsible" role="note" aria-labelledby="responsible-use">
           <p class="note-title" id="responsible-use">Responsible use</p>
-          <p>Preferably, use an API key created for this editor alone, with a limited validity period. Add a spending limit if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
+          <p>Use an API key reserved for this editor, with a short validity period, and add a spending cap if your provider allows it. If it leaks, the key only works here, expires on its own and can be deleted without affecting anything else you use.</p>
         </div>
+      </section>
+
+      <section id="bpmn-experts">
+        <h2>For BPMN experts</h2>
+        <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <a href="#probabilities">Propose probabilities</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
+        <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
+        <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
+        <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
+        <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Slowed down, then sped up</p><img src="/docs/token-simulation.gif" width="1280" height="720" alt="A token runs through the purchase process, at 0.5× then 3×" loading="lazy" /><figcaption>A token slowed down, then sped up with the speed slider.</figcaption></figure>
+          <figure><p class="fig-title">A token on its way</p><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
+        </div>
+        <h3 id="probabilities">Branch probabilities</h3>
+        <p>The <span class="ui">Probability (%)</span> field, in the <span class="ui">Simulation</span> group of the <a href="#properties">Process panel</a>, appears in expert mode for a sequence flow leaving an exclusive, inclusive, complex or event-based gateway. It takes a value from 0 to 100 and can be undone like any change.</p>
+        <p>When a model is chosen for the co-pilot, <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Propose probabilities</span>, in the <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> menu, asks it for realistic values from the labels, conditions and documentation. Its values are marked like its other changes, and undone in one click. Under the field, "Proposed by the AI co-pilot, to review" stays until you change the value or tick <span class="ui">Keep the co-pilot's value</span>. Until then, the process report lists the gateway as to complete.</p>
+        <ul>
+          <li><strong>Exclusive, complex or event-based gateway:</strong> a single flow is taken. Flows without a value share equally what remains up to 100%, then the whole set is scaled to a total of 100%.</li>
+          <li><strong>Inclusive gateway:</strong> each flow is taken according to its own probability, and at least one always is. The join waits for as many tokens as the split sent.</li>
+          <li><strong>Parallel gateway and uncontrolled flows:</strong> every flow is taken, and the field does not appear.</li>
+        </ul>
+        <p>The value is saved in the .bpmn file as the <code>bpmnpilot:probability</code> attribute (namespace <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), which other BPMN tools ignore without error. The co-pilot and MCP agents set it with the <code>update_elements</code> tool.</p>
+        <h3 id="heatmap">Heatmap</h3>
+        <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
+        <ol>
+          <li>Start the simulation (<span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>). The speed box, at the bottom of the canvas, holds two controls: <span class="uib">Heatmap</span>, and <span class="uib">Run</span> followed by a field that sets the number of tokens, from 1 to 10,000 (100 by default).</li>
+          <li><strong>Check coverage.</strong> Turn on <span class="uib">Heatmap</span>, then send a few tokens, picking a different path at each gateway. The map follows every step. Anything left dashed grey was never reached: a forgotten branch, an unreachable end event.</li>
+          <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation, enter the number of tokens and click <span class="uib">Run</span> (or press <kbd>Enter</kbd> in the field): the result is immediate, with no animation.</li>
+          <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
+        </ol>
+        <p>The heatmap counts passes: it measures neither durations nor costs. This run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Computing the map</p><img src="/docs/heatmap.gif" width="1280" height="720" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" loading="lazy" /><figcaption>A probability set on a branch, then 200 tokens computed at once.</figcaption></figure>
+          <figure><p class="fig-title">Reading the map</p><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
+        </div>
+        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
+        <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
+        <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
+        <ul>
+          <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
+          <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
+          <li>improvement areas, by priority, with the expected effect;</li>
+          <li>the AI co-pilot's analysis, if one was made (see below);</li>
+          <li>after a simulation, the heatmap and its figures: most traversed activities, passes and observed share of each gateway branch, elements never reached;</li>
+          <li>the six <a href="#ai-checks">quality checks</a>, computed in the editor, without AI;</li>
+          <li>end events, activities by lane, and the element sequence: type, lane, documentation and outgoing flows with their conditions.</li>
+        </ul>
+        <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the <a href="#heatmap">heatmap</a> (in PDF), the number of instances per element, the share of each end event and rework.</p>
+        <p><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Co-pilot analysis</span>, in the same menu, asks the co-pilot for a reading of the process: it computes 100 tokens, reads the report, then saves a summary and its points (bottlenecks, rare paths, risks, improvements), each tied to the elements concerned. The analysis is kept in the .bpmn file, where other BPMN tools ignore it: it follows the diagram and is paid for only once. The report presents it as written by the co-pilot, with the model and the date, to be validated by the process owner. If the diagram changes afterwards, the report says so. <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it. Both entries stay greyed out until a model is chosen, and each costs one chat turn. An MCP agent does the same with the <code>set_report_commentary</code> tool.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Exporting the report</p><img src="/docs/process-report.gif" width="1280" height="720" alt="The process report in PDF from the Expert menu, then its four pages" loading="lazy" /><figcaption>From the Expert menu, then the four pages of the PDF.</figcaption></figure>
+          <figure><p class="fig-title">First page</p><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
+        </div>
+        <h3 id="ai-checks">Review, checks and traceability</h3>
+        <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
+        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <ul>
+          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
+          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
+          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
+          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
+          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
+        </ul>
+        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
+        <p>What each of the six checks detects:</p>
+        <div class="table-wrap"><table class="checks-table">
+          <thead><tr><th>Check</th><th>Reports for example</th></tr></thead>
+          <tbody>
+            <tr><td>Well-formed XML</td><td>unclosed tag, forbidden character, empty document</td></tr>
+            <tr><td>BPMN 2.0 metamodel</td><td>unknown element or attribute in the BPMN namespace, unreadable value (extensions from other tools are accepted)</td></tr>
+            <tr><td>References and scopes</td><td>duplicate or missing id, sequence flow leaving its process or subprocess, message flow inside a single pool, boundary event attached outside its container, default flow that does not start from its gateway, lane listing an element of another process</td></tr>
+            <tr><td>Diagram (DI)</td><td>model element never drawn, shape without bounds, flow with fewer than two points, element drawn twice, drawing pointing to a missing element</td></tr>
+            <tr><td>bpmn-js reimport</td><td>bpmn-js warning when reading the document again, beyond those already raised by the metamodel</td></tr>
+            <tr><td>bpmnlint</td><td>error from the recommended rules: isolated element, missing start or end, element without a name, superfluous gateway… (warnings are counted without failing the check)</td></tr>
+          </tbody>
+        </table></div>
+        <h3 id="experts-mcp">With an MCP agent</h3>
+        <p>In the <a href="#docker">Docker version</a>, an MCP agent gets the same checks and the same report:</p>
+        <ul>
+          <li><code>validate_diagram</code> returns the check report: element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues with element, rule and message;</li>
+          <li><code>get_process_report</code> returns the <a href="#process-report">process report</a> in Markdown. With <code>simulate</code>, it first computes 100 tokens following the branch probabilities;</li>
+          <li><code>update_elements</code> also sets the <span class="ui">Documentation</span> field and the probability of a branch, marked as proposed by the AI until reviewed;</li>
+          <li><code>set_report_commentary</code> saves the analysis of the process in the file, for the report;</li>
+          <li>the <code>critique_description</code> prompt lists what is ambiguous or missing in a description, before drawing.</li>
+        </ul>
+        <p>The agent has no automatic correction loop: calling <code>validate_diagram</code> and fixing the problems is up to it. The modeling rules the server gives it ask for this at the end of each drawing.</p>
       </section>
 
       <section id="privacy">
@@ -514,16 +684,16 @@
         <ul>
           <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
-          <li>If you use the AI assistant, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>If you use the AI co-pilot, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
           <li>Like any web host, GitHub Pages keeps technical logs, including your IP address.</li>
-          <li>The stable site counts its visits anonymously, without cookies (the development version measures nothing), according to the recommendations of the CNIL (the French data protection authority) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the assistant, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
+          <li>The stable site counts its visits anonymously, without cookies (nothing is counted on the development version), according to the <a href="https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience" target="_blank" rel="noopener">recommendations of the CNIL</a> (the French data protection authority, page in French) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the co-pilot, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
           <li>The site loads no third-party script.</li>
         </ul>
         <p>The <span class="uib">Privacy</span> link at the bottom of the canvas repeats these points in the editor.</p>
           <!-- /online -->
           <!-- docker -->
           <li>Your diagrams, settings and API keys stay in your browser, or on your server for what you save there. Nothing is sent to the author of the editor.</li>
-          <li>If you use the AI assistant, your messages, the diagram and your attached files go through your server to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>If you use the AI co-pilot, your messages, the diagram and your attached files go through your server to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
           <li>An agent connected through MCP reads and edits the open diagram. What it does with it depends on the agent and its provider.</li>
           <li>This version does not measure its audience and loads no third-party script.</li>
           </ul>
@@ -543,15 +713,17 @@
           <li>every provider, OpenAI included, with no browser blocking,</li>
           <li>a <span class="ui">Server</span> choice in <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>, to reach your saved work from several browsers,</li>
           <li>exports dropped on the server, if you choose,</li>
-          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, color and format it, and its changes are marked like the assistant's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
+          <li>an MCP server: an agent such as Claude Code, Claude Desktop or GitHub Copilot in VS Code can draw in the open editor, color and format it, and its changes are marked like the co-pilot's. Click the MCP badge in the toolbar for the address and ready-to-paste settings.</li>
         </ul>
-        <p>The MCP server gives the agent modeling rules (naming, gateways, happy path) along with its tools, and four ready-made prompts. Depending on the agent, they appear in a prompt menu (the <span class="ui">+</span> button in Claude Desktop) or as commands (<code>/mcp__bpmn-pilot__review_diagram</code> in Claude Code):</p>
+        <p>The MCP server gives the agent modeling rules (naming, gateways, happy path) along with its tools, and five ready-made prompts. Depending on the agent, they appear in a prompt menu (the <span class="ui">+</span> button in Claude Desktop) or as commands (<code>/mcp__bpmn-pilot__review_diagram</code> in Claude Code):</p>
         <ul>
           <li><code>model_process</code>: draws a process from your description,</li>
           <li><code>model_collaboration</code>: draws one pool per organization, with the messages between them,</li>
           <li><code>review_diagram</code>: lists what to improve in the open diagram, without changing anything,</li>
-          <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning.</li>
+          <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning,</li>
+          <li><code>critique_description</code>: lists what is ambiguous or missing in a description, with severity, quoted passage and question, before drawing.</li>
         </ul>
+        <p>The check and report tools are described in <a href="#experts-mcp">With an MCP agent</a>.</p>
         <p>The <a href="#prompt-examples">Prompt examples</a> also work with an MCP agent.</p>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>
@@ -567,7 +739,7 @@
         <p>The editor is designed for a computer screen, a mouse and a keyboard. On a phone, it is mostly for viewing a diagram.</p>
         <ul>
           <li><strong>What works:</strong> opening a .bpmn file or an entry from <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>, panning and zooming with your fingers, exporting.</li>
-          <li><strong>What is difficult:</strong> placing and connecting shapes, typing labels, using the Process panel and the assistant, for lack of room.</li>
+          <li><strong>What is difficult:</strong> placing and connecting shapes, typing labels, using the Process panel and the co-pilot, for lack of room.</li>
         </ul>
         <p>Below 900 pixels wide (or 500 high), a banner above the canvas says so. Close it with its cross: it does not come back in this browser. On a small screen the Process panel also starts hidden. On a tablet, the <span class="ico" data-icon="panel" aria-hidden="true"></span> button on the right of the toolbar opens it. On a phone, the toolbar is wider than the screen and its last buttons are out of reach.</p>
         <div class="note">To model, use a screen at least 1280 pixels wide, or a tablet in landscape with a keyboard and a mouse.</div>
@@ -578,10 +750,10 @@
         <details class="faq">
           <summary>Do I need an account?</summary>
           <!-- online -->
-          <p>No. The editor works without an account. Only the AI assistant needs an API key from an AI provider.</p>
+          <p>No. The editor works without an account. Only the AI co-pilot needs an API key from an AI provider.</p>
           <!-- /online -->
           <!-- docker -->
-          <p>No. The editor works without an account. Only the AI assistant needs an API key, set on the server or entered in Options.</p>
+          <p>No. The editor works without an account. Only the AI co-pilot needs an API key, set on the server or entered in Options.</p>
           <!-- /docker -->
         </details>
         <details class="faq">
@@ -619,7 +791,7 @@
         </details>
         <!-- /docker -->
         <details class="faq">
-          <summary>The assistant drew something unexpected.</summary>
+          <summary>The co-pilot drew something unexpected.</summary>
           <p>The pill's <span class="uib">Undo</span> button reverts the whole answer at once, <kbd>Ctrl</kbd>+<kbd>Z</kbd> one change at a time. You can also ask it for the fix in a few words. The more precise the description (roles, decisions, error cases), the better the result. A stronger model also helps with large processes.</p>
         </details>
         <details class="faq">
@@ -635,7 +807,9 @@
       <section id="feedback">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2z"/><path d="M8.5 9.5h7M8.5 12.5h4.5"/></svg>Send feedback</h2>
         <p>A bug, an idea, a question? The <span class="uib">Feedback</span> button, bottom right of the canvas, tells you where to write. You can also open an issue on <a href="https://github.com/Leylines-Prism/bpmn-pilot/issues" target="_blank" rel="noopener">GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
-        <p>Is the editor useful to you? You can <a href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help">support the project with a coffee on Ko-fi<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg></a>.</p>
+        <h3 id="support">Support development</h3>
+        <p>BPMN-Pilot is free, with no subscription. My buddy Claude runs on caffeine. If the editor is useful to you, a coffee on Ko-fi keeps the project going.</p>
+        <p><a class="kofi-btn" href="https://ko-fi.com/leylines_prism" target="_blank" rel="noopener" data-support="help"><svg class="kofi-cup" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h12v4.5a5.5 5.5 0 0 1-5.5 5.5h-1A5.5 5.5 0 0 1 4 12.5z"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 2.5v2.5M12 2.5v2.5"/><path d="M3 21h14"/></svg>Support on Ko-fi</a></p>
       </section>
 
       <footer>
@@ -644,6 +818,8 @@
       </footer>
     </main>
   </div>
+  <script type="module" src="/src/help/theme-button.js"></script>
+  <script type="module" src="/src/help/sections.js"></script>
   <script type="module" src="/src/help/toc-spy.js"></script>
   <script type="module" src="/src/help/support-link.js"></script>
   <script type="module" src="/src/help/channel-link.js"></script>

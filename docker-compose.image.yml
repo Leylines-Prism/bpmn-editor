@@ -19,7 +19,7 @@
 
 services:
   editor:
-    image: ghcr.io/leylines-prism/bpmn-pilot:1.3.1
+    image: ghcr.io/leylines-prism/bpmn-pilot:1.4.4
     ports:
       - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:8080"
     environment:
@@ -38,7 +38,7 @@ services:
   # le crée s'il manque, avec diagrams/ et exports/, et le donne à l'utilisateur du serveur.
   # Sans lui, un dossier créé par Docker appartient à root et le serveur ne peut pas y écrire.
   data-init:
-    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.3.1
+    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.4.4
     user: "0:0"
     entrypoint:
       - sh
@@ -64,7 +64,7 @@ services:
     restart: "no"
 
   mcp:
-    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.3.1
+    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.4.4
     environment:
       # Fournisseurs du chat intégré (voir mcp/.env.example pour le détail).
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
@@ -85,6 +85,9 @@ services:
       CHAT_RELAY: ${CHAT_RELAY:-}
       # Jeton demandé aux clients MCP (fenêtre « Connecter un agent »).
       MCP_TOKEN: ${MCP_TOKEN:-}
+      # off : ouvre /mcp sans jeton sous un autre nom que localhost (réseau de confiance, ou proxy
+      # qui authentifie /mcp). Sans jeton ni off, /mcp répond 401 hors localhost.
+      MCP_AUTH: ${MCP_AUTH:-}
       # Pour un autre nom ou une autre adresse (proxy, nom de domaine), voir le README.
       BPMN_EDITOR_ORIGINS: ${BPMN_EDITOR_ORIGINS:-http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}}
       MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}

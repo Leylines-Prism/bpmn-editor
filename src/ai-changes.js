@@ -43,6 +43,15 @@ export function newAiRound() {
   current?.reset()
 }
 
+// Revient au diagramme d'avant le tour en cours (bouton « Relancer » du chat).
+// Renvoie 'undone', 'none' (rien à annuler) ou 'cancelled' (refusé par l'utilisateur).
+export async function undoAiRound() {
+  if (!current) return 'none'
+  const result = await current.undoRound()
+  if (result === null) return 'none'
+  return result ? 'undone' : 'cancelled'
+}
+
 // Enveloppe les outils d'écriture. Un seul suivi par éditeur.
 export function trackAiChanges(modeler, tools) {
   if (!current || current.modeler !== modeler) current = createTracker(modeler)
@@ -106,7 +115,7 @@ function createTracker(modeler) {
   // Revient au diagramme du début du tour. Si l'historique de bpmn-js le permet, on le
   // remonte (Ctrl+Y rétablit pas à pas). Sinon on recharge la copie du début du tour.
   async function undoRound() {
-    if (!start) return false
+    if (!start) return null
     if (handEdits && !confirm(T(
       "Undo the AI's changes? Your own changes made since then will be undone too.",
       "Annuler les changements de l'IA ? Vos retouches faites depuis seront annulées aussi.",
@@ -282,7 +291,7 @@ function createTracker(modeler) {
     reset()
   })
 
-  return { modeler, run, reset }
+  return { modeler, run, reset, undoRound }
 }
 
 // ── Pilule de résumé, en haut du canevas ───────────────────────────────────

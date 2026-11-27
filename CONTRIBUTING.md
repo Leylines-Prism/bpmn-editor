@@ -13,7 +13,7 @@ browser before each change. So:
 - If you see something clumsy, fragile or simply wrong, say so. A short explanation in an issue
   helps as much as a fix.
 - Experienced developers are especially welcome to review the code, the security of the MCP server,
-  or the way the AI assistant handles API keys.
+  or the way the AI co-pilot handles API keys.
 - AI-assisted contributions are fine too, as long as you have read and tested what you submit.
 
 There is no guaranteed response time, but every issue and pull request is read.
@@ -34,7 +34,7 @@ You need Node.js 22 or later.
 ```
 npm install
 npm run dev          # the editor, at http://localhost:5173
-cd mcp && npm install && npm start   # the MCP server and the built-in assistant
+cd mcp && npm install && npm start   # the MCP server and the built-in AI co-pilot
 ```
 
 `npm run lint` checks the code with ESLint, and `npm test` runs the automated tests (Node.js test
@@ -76,8 +76,11 @@ GitHub Pages keeps the deployment it already has when the same commit comes back
 a commit that main has already published therefore leaves the stable page on the previous version.
 To avoid that, release in this order:
 
-1. Open a pull request that bumps the version in `package.json`, `package-lock.json` and the three
-   image lines of `docker-compose.image.yml` (editor, mcp and data-init).
+1. Open a pull request that bumps the version in `package.json`, `package-lock.json`,
+   `mcp/package.json`, `mcp/package-lock.json` and the three image lines of
+   `docker-compose.image.yml` (editor, mcp and data-init). The MCP server announces the version of
+   `mcp/package.json` to clients and directories, and a test fails if it differs from the
+   application's.
 2. Once its checks pass, publish the release with the pull request's branch as its target (not
    main). The tag builds the Docker images and publishes the stable page from that commit.
 3. Merge the pull request. The merge is a new commit, so the site is published again, with the

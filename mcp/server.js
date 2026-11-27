@@ -17,6 +17,7 @@ import * as z from 'zod/v4'
 
 import express from 'express'
 import { timingSafeEqual } from 'node:crypto'
+import { readFileSync } from 'node:fs'
 
 import { LOCAL_HOSTS, LOCKED_MESSAGE, mcpAccess } from './auth.js'
 import { EditorBridge } from './bridge.js'
@@ -36,6 +37,10 @@ import { PROVIDERS, apiErrorMessage, checkBaseUrl, listModels, providerBaseUrl }
 try {
   process.loadEnvFile(new URL('.env', import.meta.url))
 } catch {}
+
+// Version annoncée aux clients MCP : celle de mcp/package.json, tenue égale à celle de
+// l'application (test/version.test.mjs le vérifie).
+const VERSION = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8')).version
 
 const HOST = process.env.MCP_HOST || '127.0.0.1'
 const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
@@ -71,11 +76,11 @@ const TOOLS = buildTools(z)
 const PROMPTS = buildPrompts(z)
 
 function buildMcpServer() {
-  const server = new McpServer({ name: 'bpmn-pilot', version: '0.1.0' }, { instructions: INSTRUCTIONS })
+  const server = new McpServer({ name: 'bpmn-pilot', version: VERSION }, { instructions: INSTRUCTIONS })
   for (const tool of TOOLS) {
     server.registerTool(
       tool.name,
-      { title: tool.title, description: tool.description, inputSchema: tool.inputSchema },
+      { title: tool.title, description: tool.description, inputSchema: tool.inputSchema, annotations: tool.annotations },
       async (args) => {
         try {
           bridge.noteMcpCall()
@@ -280,6 +285,8 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
       emit,
       signal: abort.signal,
       lang: langOf(req),
+      assist: req.body.assist && typeof req.body.assist === 'object' ? req.body.assist : {},
+      rewind: req.body.rewind === true,
     })
     emit({ type: 'done' })
   } catch (err) {
@@ -440,3 +447,14 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   )
 })
 httpServer.on('upgrade', (req, socket, head) => bridge.handleUpgrade(req, socket, head))
+
+// Transport stdio (option --stdio, ou MCP_TRANSPORT=stdio) : le client MCP lance le serveur
+// lui-même et lui parle par l'entrée et la sortie standard. Le serveur HTTP reste ouvert pour
+// les onglets de l'éditeur (/bridge). Les journaux vont sur la sortie d'erreur, jamais sur la
+// sortie standard qui porte le protocole.
+if (process.argv.includes('--stdio') || process.env.MCP_TRANSPORT === 'stdio') {
+  const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js')
+  await buildMcpServer().connect(new StdioServerTransport())
+  process.stdin.on('end', () => process.exit(0))
+  log('[mcp] transport stdio actif')
+}

@@ -10,34 +10,33 @@ It does not cover the Docker version, which has its own server (see the [README]
 - The online version is only static files served by GitHub Pages. There is no application server, no
   account and no database behind it. Nothing receives your diagrams or your API keys, apart from the AI
   provider you choose.
-- Your diagrams stay in your browser. Your API keys stay in your browser and are only sent to the AI
-  provider you chose, straight from your browser.
-- When you use the AI assistant, your message, your attachments and the diagram it reads go straight to
+- Your diagrams and your API keys stay in your browser. The keys only go to the AI provider you chose,
+  with no middleman.
+- When you use the AI co-pilot, your message, your attachments and the diagram it reads go straight to
   that provider, under its own terms.
 - The only other request is anonymous usage statistics without cookies, which never contain a diagram, a
   message or a key.
 
-Entering an API key on this page is safe within the limits listed below. Still, always use an API key
-created for this editor alone, with a limited validity period and a spending limit (see
-[Good practice](#good-practice)).
+Entering an API key on this page is safe, with the caveats listed below. Still, use a key reserved for
+this editor, one that expires on its own and has a spending cap (see [Good practice](#good-practice)).
 
 ## Where each piece of data lives
 
 | Data | Where it is kept | Where it can go |
 |---|---|---|
-| The open diagram | browser storage (`localStorage`), saved automatically | nowhere, except to the AI provider when you use the assistant |
+| The open diagram | browser storage (`localStorage`), saved automatically | nowhere, except to the AI provider when you use the co-pilot |
 | "My diagrams" | browser database (IndexedDB) | nowhere: server storage is turned off in the online version |
 | Opened files and exports (BPMN, SVG, PNG, PDF) | read and created in the page, downloaded to your computer | nowhere |
 | API keys | `sessionStorage` by default (gone when the tab closes), `localStorage` if "Remember API keys on your device" is checked | only in the request headers sent to the provider you chose |
 | Provider addresses and models | `localStorage` | nowhere |
-| Conversation with the assistant | page memory only, lost on reload | to the provider, with each message |
-| Chat attachments (images, PDF, office documents, text files) | page memory (office documents and text files are read in the page, only their text is kept) | to the provider, with the message |
+| Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
+| Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
 
 ## Every request the page makes
 
 1. **The site's own files** (HTML, scripts, styles, images), from GitHub Pages. As with any website, the
    host sees your IP address and the files requested.
-2. **The AI provider you chose**, only when you use the assistant or list its models: Anthropic, OpenAI,
+2. **The AI provider you chose**, only when you use the co-pilot or list its models: Anthropic, OpenAI,
    Mistral, xAI, Ollama on your own machine, or the "OpenAI-compatible" address you enter yourself.
 3. **Anonymous usage statistics** (audience measurement), on the stable page only: the page address
    (without the part after `#`), the referring site, the browser language, the screen size, and the name
@@ -50,15 +49,15 @@ address is forced to empty when the online version is built ([src/main.js](../sr
 ## What protects your keys and diagrams
 
 - **No third-party script.** The Content Security Policy only allows the site's own scripts
-  (`script-src 'self'`, no inline script apart from one small script allowed by its hash). No CDN, no
+  (`script-src 'self'`, plus one short inline script allowed by its hash). No CDN, no
   tracker script, no external font.
-- **No HTML from outside.** The assistant's replies, diagram names and model names are shown as plain
+- **No HTML from outside.** The co-pilot's replies, diagram names and model names are shown as plain
   text, never interpreted as HTML. The code uses no `eval`.
 - **No setting read from the address.** The page reads nothing from the URL's query string: a crafted
   link cannot change a provider address to divert a key.
-- **No exit through the assistant.** The assistant's tools only read and change the diagram, or offer a
+- **No exit through the co-pilot.** The co-pilot's tools only read and change the diagram, or offer a
   download. None of them sends data to an address, so instructions hidden in a diagram or a PDF cannot
-  make the assistant send your key elsewhere.
+  make the co-pilot send your key elsewhere.
 - **No display inside another site.** GitHub Pages cannot send the header that forbids it, so the page
   checks it itself: inside a frame of another page, the editor does not start and only shows a link that
   opens it in its own tab ([src/frame-guard.js](../src/frame-guard.js)). Nothing can be clicked without

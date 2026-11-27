@@ -7,8 +7,8 @@ import { buildPrompts } from '../src/ai/prompts.js'
 const prompts = buildPrompts(z)
 const byName = Object.fromEntries(prompts.map((p) => [p.name, p]))
 
-test('the four prompts are there, with unique names', () => {
-  assert.deepEqual(Object.keys(byName).sort(), ['model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram'])
+test('the five prompts are there, with unique names', () => {
+  assert.deepEqual(Object.keys(byName).sort(), ['critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram'])
   for (const p of prompts) assert.ok(p.title && p.description, p.name)
 })
 
@@ -30,4 +30,13 @@ test('model_collaboration lists the participants only when given', () => {
 
 test('review_diagram asks not to change anything', () => {
   assert.match(byName.review_diagram.text(), /Do not change anything/)
+})
+
+test('critique_description requires a description and asks before drawing', () => {
+  const p = byName.critique_description
+  assert.equal(z.object(p.argsSchema).safeParse({}).success, false)
+  const text = p.text({ description: 'Handle a refund' })
+  assert.match(text, /Handle a refund/)
+  assert.match(text, /Do not draw anything yet/)
+  assert.match(text, /blocking/)
 })

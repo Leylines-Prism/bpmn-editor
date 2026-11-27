@@ -49,12 +49,12 @@ body:
   - type: dropdown
     id: assistant
     attributes:
-      label: AI assistant or MCP involved?
+      label: AI co-pilot or MCP involved?
       options:
         - "No"
-        - Built-in assistant (Anthropic)
-        - Built-in assistant (OpenAI)
-        - Built-in assistant (Ollama or another provider)
+        - Built-in AI co-pilot (Anthropic)
+        - Built-in AI co-pilot (OpenAI)
+        - Built-in AI co-pilot (Ollama or another provider)
         - An agent through MCP
   - type: textarea
     id: extra
