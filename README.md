@@ -182,7 +182,7 @@ flag in the browser storage excludes your own visits (see [src/analytics.js](src
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the
 [recommendations of the CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) (the French data protection authority, page in French) for audience measurement exempt from consent.
 
-### Install it as a PWA
+### Install it on your device (PWA)
 
 The online version is a PWA (Progressive Web App), with a web app manifest. Chrome and Edge
 (computer and Android) offer to install it: Install button in the toolbar, or icon at the right of the address bar. On iPhone and iPad: Share, Add to Home Screen. In
@@ -253,7 +253,7 @@ docker compose up -d --build
 Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
 next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
 
-### Install it as a PWA
+### Install it on your device (PWA)
 
 On `http://localhost:8080`, Chrome and Edge offer to install the editor as a PWA (icon in the
 address bar, or menu > Install). It opens in its own window, which you can keep open for an agent
