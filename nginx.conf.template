@@ -103,6 +103,14 @@ server {
         try_files $uri =404;
     }
 
+    # Manifeste de l'application installable : nginx ne connaît pas l'extension .webmanifest.
+    location = /manifest.webmanifest {
+        include /etc/nginx/snippets/headers.conf;
+        add_header Cache-Control "no-cache";
+        default_type application/manifest+json;
+        try_files $uri =404;
+    }
+
     # SPA fallback
     location / {
         include /etc/nginx/snippets/headers.conf;

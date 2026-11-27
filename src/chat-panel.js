@@ -825,6 +825,11 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         track('assistant-erreur', { fournisseur: conn?.provider || 'serveur', classe })
       }
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
+      // Application ouverte hors connexion : l'éditeur marche, le fournisseur est hors de portée.
+      else if (navigator.onLine === false) add('error', T(
+        'You are offline. The AI co-pilot needs a connection to reach its provider. The editor itself still works.',
+        "Vous êtes hors connexion. Le Co-pilote IA a besoin du réseau pour joindre son fournisseur. L'éditeur, lui, reste utilisable.",
+      ))
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
     } finally {

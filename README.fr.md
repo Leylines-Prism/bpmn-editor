@@ -188,6 +188,21 @@ indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image
 n'envoient quoi que ce soit. Le réglage suit les [recommandations de la CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) pour les mesures d'audience
 exemptées de consentement.
 
+### L'installer comme une application
+
+Chrome et Edge (ordinateur et Android) proposent d'installer l'éditeur comme une application :
+icône à droite de la barre d'adresse, ou menu du navigateur, Installer. Sur iPhone et iPad :
+Partager, Sur l'écran d'accueil. Dans Safari sur Mac : Fichier, Ajouter au Dock. Firefox sur
+ordinateur n'installe pas les applications web. L'application s'ouvre dans sa propre fenêtre.
+
+Après une première visite, l'éditeur et son guide fonctionnent aussi hors connexion, installés ou
+non : un service worker ([src/pwa/sw.js](src/pwa/sw.js)) garde une copie des fichiers du site dans
+le navigateur. Il ne traite que les requêtes vers le site lui-même : les appels aux fournisseurs
+d'IA et la mesure d'audience ne passent jamais par lui. Le co-pilote IA a besoin du réseau pour
+joindre son fournisseur. Une nouvelle version s'annonce par un bandeau avec un bouton Recharger :
+rien ne se recharge tout seul. Sur iPhone et iPad, l'application installée a son propre stockage,
+séparé de Safari : pour passer un diagramme de l'un à l'autre, passez par un fichier .bpmn.
+
 ## Le lancer avec Docker
 
 Il faut [Docker](https://docs.docker.com/get-docker/) avec Docker Compose. Deux images sont publiées
@@ -248,6 +263,16 @@ docker compose up -d --build
 Les clés API vont alors dans `mcp/.env` (copie de `mcp/.env.example`), les autres réglages dans
 un fichier `.env` à côté de `docker-compose.yml`. **Mise à jour** : `git pull`, puis
 `docker compose up -d --build`.
+
+### L'installer comme une application
+
+Sur `http://localhost:8080`, Chrome et Edge proposent d'installer l'éditeur comme une application
+(icône dans la barre d'adresse, ou menu > Installer). Il s'ouvre dans sa propre fenêtre, que l'on
+garde ouverte pour qu'un agent y dessine. Les navigateurs ne proposent l'installation qu'en HTTPS ou
+sur localhost : depuis une autre machine, passez par une adresse HTTPS (voir
+[Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). La version Docker ne
+fonctionne pas hors ligne : le Co-pilote IA, le serveur MCP et les diagrammes enregistrés ont besoin
+du serveur.
 
 ## Vos fichiers (version Docker)
 

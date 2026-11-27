@@ -31,12 +31,16 @@ this editor, one that expires on its own and has a spending cap (see [Good pract
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
 | Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
+| Copy of the site for offline use | browser cache storage (Cache API), filled by the service worker: the site's own files only (code, pages, pictures) | nowhere: it holds none of your data |
 | Voice dictation | recognized on the device by the browser (Web Speech API with `processLocally`), the text goes into the input box | nowhere: the microphone button only appears when the browser can recognize speech on the device, so no audio goes to a speech service |
 
 ## Every request the page makes
 
 1. **The site's own files** (HTML, scripts, styles, images), from GitHub Pages. As with any website, the
    host sees your IP address and the files requested.
+   After a first visit, a service worker ([src/pwa/sw.js](../src/pwa/sw.js)) keeps a copy of these
+   files to open the site offline, and checks for a new version now and then. It handles only requests
+   to the site itself: the requests below go straight to their destination, without it.
 2. **The AI provider you chose**, only when you use the co-pilot or list its models: Anthropic, OpenAI,
    Mistral, xAI, Ollama on your own machine, or the "OpenAI-compatible" address you enter yourself.
 3. **Anonymous usage statistics** (audience measurement), on the stable page only: the page address

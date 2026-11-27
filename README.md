@@ -178,6 +178,20 @@ flag in the browser storage excludes your own visits (see [src/analytics.js](src
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the
 [recommendations of the CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) (the French data protection authority, page in French) for audience measurement exempt from consent.
 
+### Install it as an app
+
+Chrome and Edge (computer and Android) offer to install the editor as an app: icon at the right of
+the address bar, or the browser menu, Install. On iPhone and iPad: Share, Add to Home Screen. In
+Safari on a Mac: File, Add to Dock. Firefox on a computer does not install web apps. The app opens
+in its own window.
+
+After a first visit, the editor and its user guide also work offline, installed or not: a service
+worker ([src/pwa/sw.js](src/pwa/sw.js)) keeps a copy of the site's files in the browser. It
+handles only requests to the site itself: calls to AI providers and audience measurement never go
+through it. The AI co-pilot needs a connection to reach its provider. A new version is announced by
+a banner with a Reload button: nothing reloads on its own. On iPhone and iPad, the installed app has
+its own storage, separate from Safari: to move a diagram from one to the other, use a .bpmn file.
+
 ## Run it with Docker
 
 You need [Docker](https://docs.docker.com/get-docker/) with Docker Compose. Two images are published
@@ -234,6 +248,14 @@ docker compose up -d --build
 
 Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
 next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
+
+### Install it as an app
+
+On `http://localhost:8080`, Chrome and Edge offer to install the editor as an app (icon in the
+address bar, or menu > Install). It opens in its own window, which you can keep open for an agent
+to draw in. Browsers offer installation only over HTTPS or on localhost: from another machine, use
+an HTTPS address (see [Reach it from other machines](#reach-it-from-other-machines)). The Docker
+version does not work offline: the AI co-pilot, the MCP server and saved diagrams need the server.
 
 ## Your files (Docker version)
 
