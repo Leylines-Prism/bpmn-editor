@@ -28,8 +28,8 @@ export default [
     languageOptions: { globals: { ...globals.serviceworker } },
   },
   {
-    // Le serveur MCP, la configuration de Vite et les tests, exécutés par Node.
-    files: ['mcp/**/*.js', 'test/**/*.mjs', '*.config.js', '*.config.mjs'],
+    // Le serveur MCP, la configuration de Vite, les tests et les scripts, exécutés par Node.
+    files: ['mcp/**/*.js', 'test/**/*.mjs', 'scripts/**/*.mjs', '*.config.js', '*.config.mjs'],
     languageOptions: { globals: { ...globals.node } },
   },
 ]

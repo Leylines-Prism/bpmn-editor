@@ -1,0 +1,20 @@
+ID;Description;Étape suivante;Libellé du lien;Type;Fonction;Assigné à;Systèmes
+1;Contrat signé;2;;Début;Chef de projet;;
+2;Tenir le kick-off;3;;Utilisateur;Chef de projet;Claire Morel;"ITSM, outil de gestion de projet"
+3;Fournir l'inventaire des sites;4;;Utilisateur;Client;;"Tableur, portail client"
+4;Réaliser le site survey;5;;Utilisateur;Ingénierie réseau;Karim Benali;"CMDB, IPAM, application de survey"
+5;Sites prêts ?;"7;6";"Oui;Non";Décision;Ingénierie réseau;;
+6;Lever les réserves du survey;4;;Manuelle;Client;;
+7;Rédiger le HLD et le LLD;8;;Utilisateur;Ingénierie réseau;Karim Benali;"Orchestrateur SD-WAN, IPAM, wiki"
+8;Valider le HLD;9;;Utilisateur;Client;;
+9;Préparer les templates ZTP;10;;Utilisateur;Ingénierie réseau;Karim Benali;"Orchestrateur SD-WAN, dépôt Git, IPAM"
+10;Livrer et raccorder les CPE;11;;Manuelle;NOC;Technicien sur site (sous-traitant);"ITSM, outil de logistique"
+11;Basculer la vague de sites;12;;Utilisateur;NOC;Équipe NOC de nuit;"Orchestrateur SD-WAN, ITSM"
+12;Exécuter les post-checks;13;;Utilisateur;NOC;Équipe NOC de nuit;"Orchestrateur SD-WAN, supervision"
+13;Post-checks OK ?;"15;14";"Oui;Non";Décision;NOC;;
+14;Exécuter le rollback;11;;Utilisateur;NOC;Équipe NOC de nuit;"Orchestrateur SD-WAN, ITSM"
+15;Prononcer la recette;16;;Utilisateur;Client;;Portail client
+16;Ouvrir le portail client (SSO);17;;Service;Ingénierie réseau;;"Portail client, annuaire du client (SAML)"
+17;Former les équipes du client;18;;Manuelle;Chef de projet;Claire Morel;
+18;Transférer au Run;19;;Utilisateur;NOC;Responsable NOC;"ITSM, supervision, CMDB"
+19;Service en production;;;Fin;NOC;;
