@@ -92,7 +92,7 @@ a.btn { text-decoration: none; }
   cursor: text;
 }
 .file-name-field:hover { border-color: var(--ink-muted); }
-.file-name-field:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent); }
+.file-name-field:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 0; border-color: var(--accent); }
 .file-name-icon {
   width: 16px; height: 16px; flex-shrink: 0;
   background-color: currentColor;
@@ -921,9 +921,8 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 /* Boutons de la fenêtre : relevés comme ceux de la barre d'outils, pour qu'on
    voie qu'ils se cliquent. Supprimer garde la couleur de danger. */
 #library-dialog .btn:not(.primary) {
-  border-color: var(--line-strong);
+  border-color: var(--line);
   background: var(--surface-raised);
-  box-shadow: 0 1px 0 var(--line);
 }
 #library-dialog .btn:not(.primary):not(:disabled):hover { background: var(--surface-sunken); border-color: var(--ink-muted); }
 #library-dialog .btn:not(:disabled):active { box-shadow: none; transform: translateY(1px); }
@@ -1222,12 +1221,11 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 }
 
 /* Boutons de la barre d'outils et de l'en-tête du co-pilote : un contour fin
-   et un fond légèrement relevé montrent qu'ils se cliquent, sans alourdir la barre. */
+   et estompé et un fond légèrement relevé montrent qu'ils se cliquent, sans alourdir la barre. */
 #toolbar > .btn:not(#btn-chat),
 #chat-panel header .btn {
-  border-color: var(--line-strong);
+  border-color: var(--line);
   background: var(--surface-raised);
-  box-shadow: 0 1px 0 var(--line);
 }
 #toolbar > .btn:not(#btn-chat):hover,
 #chat-panel header .btn:hover {
@@ -1235,7 +1233,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   border-color: var(--ink-muted);
 }
 #toolbar > .btn:not(#btn-chat):active,
-#chat-panel header .btn:active { box-shadow: none; transform: translateY(1px); }
+#chat-panel header .btn:active { transform: translateY(1px); }
 #toolbar > .btn.active:not(#btn-chat) { background: var(--accent-soft); border-color: var(--accent); }
 #chat-panel header #chat-settings,
 #chat-panel header #chat-reset { color: var(--ink); }
@@ -1517,6 +1515,30 @@ body.presenting #canvas .djs-container { cursor: grab; }
 }
 #presentation-bar[hidden], #presentation-hint[hidden] { display: none; }
 #presentation-bar .btn.icon-only { font-size: 18px; }
+/* Chaque commande de la barre se lit comme un bouton : fond, contour, survol et état actif.
+   La croix garde son style orange (.pres-close). */
+#presentation-bar { gap: 6px; padding: 6px; align-items: center; }
+#presentation-bar .btn:not(.pres-close) {
+  border: 1px solid var(--line); background: var(--surface);
+}
+/* Discrète au repos : la barre s'estompe et revient en pleine opacité au survol ou au clavier. */
+#presentation-bar:not(:hover):not(:focus-within) { opacity: 0.55; }
+#presentation-bar .btn:not(.pres-close):hover { border-color: var(--accent); background: var(--surface-sunken); color: var(--ink); }
+#presentation-bar .btn.active:not(.pres-close):hover { background: var(--accent-soft); }
+#presentation-bar .btn:not(.pres-close):active { transform: translateY(1px); }
+#presentation-bar .btn.active:not(.pres-close) { border-color: var(--accent); background: var(--accent-soft); }
+#presentation-bar .pres-close { margin-left: 4px; }
+/* Le canevas reste blanc en présentation : la barre, son menu et la bulle d'aide restent
+   claires dans tous les thèmes. */
+#presentation-bar, #presentation-hint {
+  color-scheme: light;
+  --surface: #F5F7FA; --surface-raised: #FFFFFF; --surface-sunken: #ECEFF3;
+  --line: #ECEFF3; --line-strong: #7A869A; --ink: #0C1120; --ink-muted: #3D4656;
+  --accent: #0F6FAD; --on-accent: #FFFFFF; --accent-soft: #E3F4FD; --warm: #B04E08; --focus-ring: #0F6FAD;
+  --elevation-1: 0 1px 2px rgba(12, 17, 32, 0.08);
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) { #presentation-bar .btn:active { transform: none; } }
 /* En haut, sous la barre : le bas du schéma garde la commande de vitesse de la simulation. */
 #presentation-hint {
   position: fixed; left: 50%; top: calc(var(--space-4) + 52px); transform: translateX(-50%); z-index: 20;
