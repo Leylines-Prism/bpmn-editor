@@ -11,8 +11,6 @@
 [![BPMN-Pilot MCP server on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/score.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-support-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
-[![bpmn-pilot MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
-
 **English** | [Français](README.fr.md)
 
 ![The AI co-pilot draws an online order process with two pools and four lanes](docs/demo.gif)
@@ -473,6 +471,8 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). Questions and ideas go to
 [issues](https://github.com/Leylines-Prism/bpmn-pilot/issues), and security problems to the private
 form described in [SECURITY.md](SECURITY.md). There is no guaranteed response time, but everything
 is read.
+
+[![bpmn-pilot MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 
 ## Support development
 
