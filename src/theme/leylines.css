@@ -1229,7 +1229,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .ai-changes-pill button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
 
 /* ── Bandeau des petits écrans : entre la barre d'outils et le canevas ── */
-#small-screen-notice {
+#small-screen-notice, .app-notice {
   display: flex; align-items: flex-start; gap: var(--space-2);
   margin: var(--space-2) var(--space-2) 0; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
   background: var(--surface-raised); color: var(--ink);
@@ -1238,15 +1238,18 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   font-size: 13px; line-height: 18px; flex-shrink: 0;
 }
 #small-screen-notice[hidden] { display: none; }
-#small-screen-notice p { margin: 0; flex: 1; padding-top: 3px; }
-#small-screen-notice a { color: var(--accent); }
-#small-screen-notice .close {
+.app-notice { align-items: center; }
+.app-notice p { padding-top: 0; }
+.app-notice .btn { flex-shrink: 0; }
+#small-screen-notice p, .app-notice p { margin: 0; flex: 1; padding-top: 3px; }
+#small-screen-notice a, .app-notice a { color: var(--accent); }
+#small-screen-notice .close, .app-notice .close {
   width: 26px; height: 26px; flex-shrink: 0; display: grid; place-items: center; padding: 0;
   border: 0; border-radius: var(--radius-sm); background: transparent;
   color: var(--ink-muted); font-size: 18px; line-height: 1; cursor: pointer;
 }
-#small-screen-notice .close:hover { background: var(--surface-sunken); color: var(--ink); }
-#small-screen-notice .close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#small-screen-notice .close:hover, .app-notice .close:hover { background: var(--surface-sunken); color: var(--ink); }
+#small-screen-notice .close:focus-visible, .app-notice .close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
 
 /* ── Vue « Avant / après » (src/compare.js) ─────────────────────────────── */
 #compare-dialog {
@@ -1619,3 +1622,25 @@ dialog .dlg-close:focus-visible,
 }
 @keyframes expert-pulse { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { #toolbar > #btn-expert.running::after { animation: none; } }
+
+/* Dictée vocale : micro sous le trombone, texte provisoire au-dessus de la saisie. */
+#chat-panel.has-mic #chat-input { min-height: 90px; }
+#chat-panel #chat-mic {
+  position: absolute; top: 60px; right: 4px; width: 26px; height: 26px;
+  display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--ink-muted); cursor: pointer;
+}
+#chat-panel #chat-mic:hover { background: var(--surface-raised); color: var(--ink); }
+#chat-panel #chat-mic:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+#chat-panel #chat-mic[data-state="preparing"] { color: var(--accent); cursor: progress; }
+#chat-panel #chat-mic[data-state="listening"] { background: #d93025; color: #fff; animation: chat-mic-pulse 1.4s ease-in-out infinite; }
+@keyframes chat-mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 48, 37, 0.45); }
+  50% { box-shadow: 0 0 0 5px rgba(217, 48, 37, 0); }
+}
+@media (prefers-reduced-motion: reduce) { #chat-panel #chat-mic[data-state="listening"] { animation: none; } }
+#chat-panel #chat-voice-interim {
+  padding: var(--space-1) var(--space-3); border-top: 1px solid var(--line);
+  color: var(--ink-muted); font-style: italic; font-size: 13px;
+}
+#chat-panel #chat-voice-interim[hidden] { display: none; }

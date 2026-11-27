@@ -17,11 +17,12 @@ import { lang, num, T } from './i18n/lang.js'
 import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
 import { fileToText, textFileKind, TEXT_FILE_ACCEPT, withTextFiles } from './ai/text-files.js'
 import { makeResizable } from './panel-resize.js'
-import { trackOnce } from './analytics.js'
+import { onPageHide, range, track, trackOnce } from './analytics.js'
 import { newAiRound, undoAiRound } from './ai-changes.js'
 import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
 import { setChatModel } from './copilot-analysis.js'
+import { MIC_ICON, setupVoiceInput, voiceSupported } from './voice-input.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -141,12 +142,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <div id="chat-destination" hidden></div>
+    <div id="chat-voice-interim" aria-live="polite" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
         <textarea id="chat-input" placeholder="${T('Describe the process to draw, or what to change… Documents, images and PDFs accepted.', 'Décrivez le processus à dessiner ou à modifier… Documents, images et PDF acceptés.')}"></textarea>
         <button type="button" id="chat-expand" title="${T('Expand the input', 'Agrandir la zone de saisie')}" aria-label="${T('Expand the input', 'Agrandir la zone de saisie')}">${EXPAND_ICON}</button>
         <button type="button" id="chat-attach" title="${T('Attach a file: image, PDF, Word, Excel, PowerPoint, text, CSV, JSON… (you can also paste or drop it)', 'Joindre un fichier : image, PDF, Word, Excel, PowerPoint, texte, CSV, JSON… (on peut aussi le coller ou le glisser)')}" aria-label="${T('Attach a file', 'Joindre un fichier')}">${ATTACH_ICON}</button>
         <input type="file" id="chat-attach-input" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,${TEXT_FILE_ACCEPT}" multiple hidden>
+        ${voiceSupported() ? `<button type="button" id="chat-mic">${MIC_ICON}</button>` : ''}
       </div>
       <button class="btn primary" type="submit" id="chat-send" title="${T('Send (Enter; Shift+Enter for a new line)', 'Envoyer (Entrée ; Maj+Entrée pour aller à la ligne)')}">${T('Send', 'Envoyer')}</button>
     </form>
@@ -650,6 +653,16 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     }
   })
 
+  const micButton = panel.querySelector('#chat-mic')
+  const voice = micButton && setupVoiceInput({
+    button: micButton,
+    input,
+    interim: panel.querySelector('#chat-voice-interim'),
+    notify: add,
+    onText: fitInput,
+  })
+  if (micButton) panel.classList.add('has-mic')
+
   form.addEventListener('submit', (e) => {
     e.preventDefault()
     if (controller) {
@@ -685,6 +698,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         `${model.providerLabel || model.label} ne lit que les images PNG et JPEG. Convertissez l'image, ou faites-en une capture d'écran.`))
       return
     }
+    voice?.stop()
     input.value = ''
     fitInput()
     pending = []
@@ -692,9 +706,17 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     send(text, attachments)
   })
 
+  // Mesure d'usage (version en ligne) : nombre de messages et d'appels d'outils de la
+  // session, envoyés en une fois à la fermeture de la page. Jamais le texte ni les fichiers.
+  const usage = { messages: 0, tools: 0 }
+  onPageHide(() => { if (usage.messages) track('copilote-bilan', { messages: range(usage.messages), outils: range(usage.tools) }) })
+  const fileType = (a) => (a.kind === 'text' ? (/\.([a-z0-9]{1,5})$/i.exec(a.name || '')?.[1] || 'texte').toLowerCase() : a.kind)
+
   // rewind : relance de la dernière demande, qui remplace son échange dans l'historique.
   async function send(text, attachments = [], { rewind = false, critique = true } = {}) {
     trackOnce('assistant-utilise')
+    usage.messages++
+    for (const type of new Set(attachments.map(fileType))) track('assistant-piece-jointe', { type })
     // Chaque réponse ne marque que ce qu'elle a changé.
     newAiRound()
     // Seule la dernière réponse se relance.
@@ -747,6 +769,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         if (tools) reply.insertBefore(document.createTextNode(chunk), tools)
         else reply.append(chunk)
       } else if (event.type === 'tool') {
+        usage.tools++
         reply.hidden = false
         gotText = true
         if (!tools) {
@@ -795,7 +818,18 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     } catch (err) {
       failed = true
       errorText = err?.message || ''
+      if (!controller.signal.aborted) {
+        // Classe d'erreur seulement : code HTTP par centaines, ou pas de réponse du serveur.
+        const status = Number(err?.status)
+        const classe = status === 401 || status === 403 || status === 429 ? String(status) : status >= 500 ? '5xx' : status >= 400 ? '4xx' : 'reseau'
+        track('assistant-erreur', { fournisseur: conn?.provider || 'serveur', classe })
+      }
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
+      // Application ouverte hors connexion : l'éditeur marche, le fournisseur est hors de portée.
+      else if (navigator.onLine === false) add('error', T(
+        'You are offline. The AI co-pilot needs a connection to reach its provider. The editor itself still works.',
+        "Vous êtes hors connexion. Le Co-pilote IA a besoin du réseau pour joindre son fournisseur. L'éditeur, lui, reste utilisable.",
+      ))
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
     } finally {

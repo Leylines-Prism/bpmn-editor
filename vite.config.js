@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs'
+import { join, relative, resolve, sep } from 'node:path'
 import { defineConfig, loadEnv } from 'vite'
 
 // Politique de sécurité du contenu, posée au build dans chaque page : seuls les scripts
@@ -167,6 +168,72 @@ function helpEdition(mode) {
   }
 }
 
+// Application installable (PWA). Toutes les versions reçoivent le manifeste et ses icônes
+// (public/icons) : Chrome et Edge proposent alors d'installer l'éditeur, en HTTPS ou sur localhost.
+// La version en ligne reçoit en plus le service worker (src/pwa/sw.js), qui l'ouvre hors connexion.
+// La version serveur (image docker) n'en a pas : le co-pilote, le serveur MCP et les diagrammes
+// enregistrés y passent par le serveur, et nginx renverrait index.html pour un sw.js absent.
+// Le service worker reçoit au build la liste des fichiers construits, sauf les GIF de l'aide
+// (trop lourds, copiés seulement une fois vus) et l'image d'aperçu des liens partagés.
+const MANIFEST = {
+  name: 'BPMN-Pilot',
+  short_name: 'BPMN-Pilot',
+  description: 'A BPMN 2.0 editor with an AI co-pilot. Draw processes by hand, with the co-pilot, or from any MCP agent.',
+  id: './',
+  start_url: './',
+  scope: './',
+  display: 'standalone',
+  background_color: '#F5F7FA',
+  theme_color: '#0C1120',
+  lang: 'en',
+  categories: ['productivity', 'business', 'developer'],
+  icons: [
+    { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+    { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+    { src: 'icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+  ],
+}
+const NOT_PRECACHED = /\.(gif|map)$|^sw\.js$|^social-preview\.png$/
+
+function listFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name)
+    return entry.isDirectory() ? listFiles(path) : [path]
+  })
+}
+
+function pwa(mode, base, version) {
+  let outDir = 'dist'
+  return {
+    name: 'pwa',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir)
+    },
+    transformIndexHtml(html) {
+      return html.replace('<link rel="apple-touch-icon"', `<link rel="manifest" href="${base}manifest.webmanifest" />\n  <meta name="apple-mobile-web-app-title" content="BPMN-Pilot" />\n  <link rel="apple-touch-icon"`)
+    },
+    generateBundle() {
+      this.emitFile({ type: 'asset', fileName: 'manifest.webmanifest', source: `${JSON.stringify(MANIFEST, null, 2)}\n` })
+    },
+    // Après l'écriture de tous les fichiers, public/ compris.
+    closeBundle() {
+      if (mode !== 'online') return
+      const files = listFiles(outDir)
+        .map((path) => relative(outDir, path).split(sep).join('/'))
+        .filter((file) => !NOT_PRECACHED.test(file))
+        .sort()
+      const hash = createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 10)
+      const sw = readFileSync('src/pwa/sw.js', 'utf8')
+        .replace("'__PWA_VERSION__'", JSON.stringify(version))
+        .replace("'__PWA_HASH__'", JSON.stringify(hash))
+        .replace("'__PWA_BASE__'", JSON.stringify(base))
+        .replace('const FILES = __PWA_FILES__', `const FILES = ${JSON.stringify(files)}`)
+      writeFileSync(join(outDir, 'sw.js'), sw)
+    },
+  }
+}
+
 const APP_VERSION = appVersion()
 
 export default defineConfig(async ({ mode }) => ({
@@ -177,6 +244,7 @@ export default defineConfig(async ({ mode }) => ({
     socialPreview(mode, process.env.BASE_PATH || '/'),
     siteChannel(process.env.SITE_CHANNEL || '', APP_VERSION),
     helpEdition(mode),
+    pwa(mode, process.env.BASE_PATH || '/', APP_VERSION),
   ],
   define: {
     ...(await sealedContacts(mode)),

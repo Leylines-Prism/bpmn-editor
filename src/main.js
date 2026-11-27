@@ -53,12 +53,14 @@ import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
+import { setupPwa } from './pwa/register.js'
 import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDeepLink } from './deep-link.js'
 import { setupDiagramLibrary } from './diagram-library.js'
 import { setupFeedback } from './feedback.js'
 import { setupAnalytics, track } from './analytics.js'
+import { setupUsageEvents } from './usage-events.js'
 import { APP_VERSION, IS_DEV_SITE, OTHER_SITE } from './site-channel.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
@@ -249,12 +251,15 @@ async function importAndReport(xml, fileName) {
 
 async function importFile(file) {
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
+    track('fichier-invalide', { cause: 'format' })
     alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
     return
   }
   const failure = await importAndReport(await file.text(), file.name)
-  if (failure) alert(T('Import failed: ', 'Import impossible : ') + failure)
-  else track('fichier-ouvert', { source: 'fichier' })
+  if (failure) {
+    track('fichier-invalide', { cause: 'lecture' })
+    alert(T('Import failed: ', 'Import impossible : ') + failure)
+  } else track('fichier-ouvert', { source: 'fichier' })
 }
 
 document.getElementById('file-input').addEventListener('change', async (e) => {
@@ -268,7 +273,7 @@ setupXmlDialog({
   fileInput: document.getElementById('file-input'),
   onImport: async (xml) => {
     const failure = await importAndReport(xml, null)
-    if (!failure) track('fichier-ouvert', { source: 'xml' })
+    track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'xml' } : { source: 'xml' })
     return failure
   },
 })
@@ -288,6 +293,7 @@ document.getElementById('compare-input').addEventListener('change', async (e) =>
   }
   const { xml } = await modeler.saveXML({ format: true })
   const { openCompare } = await import('./compare.js')
+  track('comparer', { source: 'fichier' })
   await openCompare({
     title: T('Compare', 'Comparer'),
     before: { xml: await file.text(), title: file.name },
@@ -511,6 +517,7 @@ document.getElementById('btn-layout').addEventListener('click', async () => {
   try {
     await autoLayout(modeler)
     setStatus(T('Diagram tidied up', 'Diagramme rangé'))
+    track('mise-en-page-auto')
   } catch (err) {
     console.error('Layout error:', err)
     alert(T('Layout failed: ', 'Mise en page impossible : ') + err.message)
@@ -569,6 +576,7 @@ setupPanelToggle({
   canvas: modeler.get('canvas'),
 })
 setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modeler.get('canvas') })
+setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'), save: () => autosave({ quiet: true }) })
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 const heatmap = setupHeatmap(modeler)
@@ -631,8 +639,11 @@ if (APP_VERSION) {
 }
 if (import.meta.env.MODE === 'online') {
   // Mesure d'audience, si Umami est réglé au build (voir src/analytics.js). Pas sur la page de
-  // développement : seule la page stable est mesurée.
-  if (!IS_DEV_SITE) setupAnalytics()
+  // développement : seule la page stable est mesurée. Puis l'usage des fonctions (src/usage-events.js).
+  if (!IS_DEV_SITE) {
+    setupAnalytics({ lang })
+    setupUsageEvents(modeler)
+  }
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {

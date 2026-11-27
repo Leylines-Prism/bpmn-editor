@@ -23,6 +23,11 @@ export default [
     languageOptions: { globals: { ...globals.browser } },
   },
   {
+    // Le service worker de la version en ligne.
+    files: ['src/pwa/sw.js'],
+    languageOptions: { globals: { ...globals.serviceworker } },
+  },
+  {
     // Le serveur MCP, la configuration de Vite et les tests, exécutés par Node.
     files: ['mcp/**/*.js', 'test/**/*.mjs', '*.config.js', '*.config.mjs'],
     languageOptions: { globals: { ...globals.node } },

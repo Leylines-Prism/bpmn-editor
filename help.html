@@ -48,6 +48,7 @@
           <li><a href="#bpmn-experts">For BPMN experts</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#docker">Docker version and MCP agents</a></li>
+          <li><a href="#install-app">Install as an app</a></li>
           <li><a href="#small-screens">On a phone or tablet</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#feedback">Send feedback</a></li>
@@ -408,6 +409,7 @@
           <li>The input box grows with the text. The button in its corner opens a large editor, to paste long text or open a .txt or .md file. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends.</li>
           <li><span class="uib">New chat</span> starts over. Your drawing does not change.</li>
           <li><span class="uib">Stop</span> interrupts an answer in progress.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span>, under the paperclip, transcribes your voice into the input box, in the interface language. One click starts dictation, another stops it. While dictating, the button turns red and the provisional text shows in gray above the input. Nothing is sent until you click <span class="uib">Send</span>: read it first, a misheard word changes the drawing. Speech is recognized on your device: neither the sound nor the text leaves the browser. It needs Chrome or Edge 139 or later, or Firefox 160 or later, on a computer. Elsewhere, the button does not appear. On the first dictation, the browser downloads the speech model for the language once and asks for microphone access.</li>
         </ul>
 
         <h3>3. Start from a file</h3>
@@ -646,7 +648,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         </div>
         <h3 id="ai-checks">Review, checks and traceability</h3>
         <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
-        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1163" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1175" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
         <ul>
           <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
           <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
@@ -685,6 +687,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <!-- online -->
           <li>Your diagrams, settings and API keys stay in your browser. They are not sent to us, nor to the host of this site (GitHub Pages).</li>
           <li>If you use the AI co-pilot, your messages, the diagram, your attached files and your key go straight from your browser to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>The co-pilot's voice dictation recognizes speech on your device: neither the sound nor the dictated text leaves the browser until you send the message.</li>
           <li>Like any web host, GitHub Pages keeps technical logs, including your IP address.</li>
           <li>The stable site counts its visits anonymously, without cookies (nothing is counted on the development version), according to the <a href="https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience" target="_blank" rel="noopener">recommendations of the CNIL</a> (the French data protection authority, page in French) for audience measurement exempt from consent. The IP address is not recorded. It is only used to determine the country, region and city. The data collected is: the page viewed and the referring site, the device characteristics sent by the browser, and a few actions without their content (creating, opening or exporting a diagram, using the co-pilot, type of provider connected, active time in ranges, click on the support link). "Do Not Track" and "Global Privacy Control" signals turn the measurement off.</li>
           <li>The site loads no third-party script.</li>
@@ -694,6 +697,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <!-- docker -->
           <li>Your diagrams, settings and API keys stay in your browser, or on your server for what you save there. Nothing is sent to the author of the editor.</li>
           <li>If you use the AI co-pilot, your messages, the diagram and your attached files go through your server to the chosen provider, which applies its own terms and privacy policy. Do not include data you would not trust that provider with.</li>
+          <li>The co-pilot's voice dictation recognizes speech on your device: neither the sound nor the dictated text leaves the browser until you send the message.</li>
           <li>An agent connected through MCP reads and edits the open diagram. What it does with it depends on the agent and its provider.</li>
           <li>This version does not measure its audience and loads no third-party script.</li>
           </ul>
@@ -732,6 +736,26 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><code>exports</code>: the exports made with the <span class="ui">Server</span> or <span class="ui">Both</span> destination. An export never replaces a file: a second <code>Order process.pdf</code> becomes <code>Order process (2).pdf</code>.</li>
         </ul>
         <p>Installation is described in the <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">project README on GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+      </section>
+
+      <section id="install-app">
+        <h2>Install as an app</h2>
+        <p>BPMN-Pilot installs like an application: it then opens in its own window, without the address bar, from the Start menu, the Dock or the home screen.</p>
+        <ul>
+          <li><strong>Chrome and Edge</strong> (computer and Android): the install icon at the right of the address bar, or the browser menu, <strong>Install</strong>.</li>
+          <li><strong>Safari on a Mac</strong>: <strong>File</strong> menu, <strong>Add to Dock</strong>.</li>
+          <li><strong>iPhone and iPad</strong>: <strong>Share</strong> button, <strong>Add to Home Screen</strong>.</li>
+          <li><strong>Firefox</strong> on a computer does not install web apps.</li>
+        </ul>
+        <!-- online -->
+        <h3 id="offline">Offline</h3>
+        <p>After a first visit, the editor, this guide and the showcase page open without a connection, installed or not: the browser keeps a copy of the site's files. The animated pictures of this guide are kept once viewed. The AI co-pilot needs a connection to reach its provider: offline, it says so.</p>
+        <p>When a new version is published, a banner above the canvas offers to <span class="uib">Reload</span>. Nothing reloads on its own, and reloading keeps the diagram in progress.</p>
+        <div class="note">On iPhone and iPad, the installed app has its own storage, separate from Safari: the diagrams of <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span> in Safari do not appear in it. To move a diagram from one to the other, export it as a .bpmn file and open it on the other side.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Docker version: installation is offered on localhost or over HTTPS. The installed app does not work offline, since the AI co-pilot, the MCP server and saved diagrams go through the server.</p>
+        <!-- /docker -->
       </section>
 
       <section id="small-screens">

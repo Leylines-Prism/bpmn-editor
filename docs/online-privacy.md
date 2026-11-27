@@ -31,17 +31,25 @@ this editor, one that expires on its own and has a spending cap (see [Good pract
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
 | Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
+| Copy of the site for offline use | browser cache storage (Cache API), filled by the service worker: the site's own files only (code, pages, pictures) | nowhere: it holds none of your data |
+| Voice dictation | recognized on the device by the browser (Web Speech API with `processLocally`), the text goes into the input box | nowhere: the microphone button only appears when the browser can recognize speech on the device, so no audio goes to a speech service |
 
 ## Every request the page makes
 
 1. **The site's own files** (HTML, scripts, styles, images), from GitHub Pages. As with any website, the
    host sees your IP address and the files requested.
+   After a first visit, a service worker ([src/pwa/sw.js](../src/pwa/sw.js)) keeps a copy of these
+   files to open the site offline, and checks for a new version now and then. It handles only requests
+   to the site itself: the requests below go straight to their destination, without it.
 2. **The AI provider you chose**, only when you use the co-pilot or list its models: Anthropic, OpenAI,
    Mistral, xAI, Ollama on your own machine, or the "OpenAI-compatible" address you enter yourself.
 3. **Anonymous usage statistics** (audience measurement), on the stable page only: the page address
-   (without the part after `#`), the referring site, the browser language, the screen size, and the name
-   of an action, with at most an export format or a provider name. No cookie, no diagram, no message, no
-   key. It is turned off by "Do Not Track" and "Global Privacy Control". The code is in [src/analytics.js](../src/analytics.js).
+   (without the part after `#`), the referring site, the browser language, the screen size, the app version,
+   and the name of an action with at most a category: the interface language, an export format, a provider
+   name, a file type, an error class (HTTP code range), a count range. The actions are listed in
+   [src/usage-events.js](../src/usage-events.js) and the files that call `track`. No cookie, no diagram, no
+   message, no file content, no key. It is turned off by "Do Not Track" and "Global Privacy Control". The
+   code is in [src/analytics.js](../src/analytics.js).
 
 The MCP connection, server storage and server exports do not exist in the online version: their server
 address is forced to empty when the online version is built ([src/main.js](../src/main.js)).

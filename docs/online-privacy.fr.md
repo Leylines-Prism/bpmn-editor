@@ -32,18 +32,26 @@ clé réservée à cet éditeur, qui expire d'elle-même et dont la dépense est
 | Adresses et modèles des fournisseurs | `localStorage` | nulle part |
 | Conversation avec le co-pilote | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
 | Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (pour les documents et les fichiers texte, seul le texte extrait est gardé) | chez le fournisseur, avec le message |
+| Copie du site pour le hors connexion | stockage de cache du navigateur (Cache API), rempli par le service worker : les seuls fichiers du site (code, pages, images) | nulle part : elle ne contient aucune de vos données |
 
 ## Toutes les requêtes de la page
 
 1. **Les fichiers du site** (HTML, scripts, styles, images), depuis GitHub Pages. Comme pour tout site,
    l'hébergeur voit votre adresse IP et les fichiers demandés.
+   Après une première visite, un service worker ([src/pwa/sw.js](../src/pwa/sw.js)) garde une copie de
+   ces fichiers pour ouvrir le site hors connexion, et regarde de temps en temps si une nouvelle version
+   est sortie. Il ne traite que les requêtes vers le site lui-même : celles qui suivent vont droit à leur
+   destination, sans lui.
 2. **Le fournisseur d'IA choisi**, seulement quand vous utilisez le co-pilote ou listez ses modèles :
    Anthropic, OpenAI, Mistral, xAI, Ollama sur votre propre machine, ou l'adresse « compatible OpenAI » que
    vous saisissez vous-même.
 3. **La mesure d'audience anonyme** (statistiques d'usage), sur la page stable seulement : l'adresse de la
-   page (sans la partie après `#`), le site de provenance, la langue du navigateur, la taille de l'écran et
-   le nom d'une action, avec au plus un format d'export ou un nom de fournisseur. Ni cookie, ni diagramme,
-   ni message, ni clé. Elle est coupée par « Do Not Track » et « Global Privacy Control ». Le code est dans [src/analytics.js](../src/analytics.js).
+   page (sans la partie après `#`), le site de provenance, la langue du navigateur, la taille de l'écran, la
+   version de l'app, et le nom d'une action avec au plus une catégorie : langue de l'interface, format
+   d'export, nom de fournisseur, type de fichier, classe d'erreur (tranche de code HTTP), tranche de nombre.
+   Les actions sont listées dans [src/usage-events.js](../src/usage-events.js) et les fichiers qui appellent
+   `track`. Ni cookie, ni diagramme, ni message, ni contenu de fichier, ni clé. Elle est coupée par « Do Not
+   Track » et « Global Privacy Control ». Le code est dans [src/analytics.js](../src/analytics.js).
 
 La connexion MCP, l'enregistrement et les exports sur serveur n'existent pas dans la version en ligne :
 leur adresse de serveur est forcée à vide quand la version en ligne est construite

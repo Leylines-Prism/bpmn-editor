@@ -48,6 +48,7 @@
           <li><a href="#experts-bpmn">Pour les experts BPMN</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
           <li><a href="#docker">Version Docker et agents MCP</a></li>
+          <li><a href="#installer-app">Installer comme une application</a></li>
           <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
           <li><a href="#faq">Questions fréquentes</a></li>
           <li><a href="#feedback">Donner votre avis</a></li>
@@ -408,6 +409,7 @@
           <li>La zone de saisie grandit avec le texte. Le bouton dans son coin ouvre un grand éditeur, pour coller un long texte ou ouvrir un fichier .txt ou .md. <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoie.</li>
           <li><span class="uib">Nouvelle discussion</span> repart de zéro. Le schéma, lui, ne change pas.</li>
           <li><span class="uib">Arrêter</span> interrompt une réponse en cours.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span>, sous le trombone, transcrit votre voix dans la zone de saisie, dans la langue de l'interface. Un clic lance la dictée, un autre l'arrête. Pendant la dictée, le bouton est rouge et le texte provisoire s'affiche en gris au-dessus de la saisie. Rien ne part sans <span class="uib">Envoyer</span> : relisez d'abord, un mot mal compris change le dessin. La voix est reconnue sur votre appareil, ni le son ni le texte ne quittent le navigateur. Il faut Chrome ou Edge 139 ou plus, ou Firefox 160 ou plus, sur ordinateur. Ailleurs, le bouton n'apparaît pas. À la première dictée, le navigateur télécharge une fois le modèle vocal de la langue et demande l'accès au micro.</li>
         </ul>
 
         <h3>3. Partir d'un fichier</h3>
@@ -646,7 +648,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         </div>
         <h3 id="controles-ia">Critique, contrôles et traçabilité</h3>
         <p>Autour de chaque réponse, le co-pilote montre ce qu'il a compris, ce que l'éditeur a vérifié et d'où vient le résultat.</p>
-        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1188" alt="Panneau du co-pilote après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-ia-controles.webp" width="380" height="1200" alt="Panneau du co-pilote après une demande d'achat : trois points à clarifier marqués Bloquant, Important et Mineur, la réponse avec ses hypothèses, le rapport 6/6 contrôles réussis avec 1 correction demandée et 1 retenue, la ligne fournisseur, modèle, durée et date, le bouton Relancer depuis la même source et la ligne de destination au-dessus du champ." loading="lazy" /><figcaption>Points à clarifier, rapport de contrôle, traçabilité et destination, autour d'une réponse.</figcaption></figure>
         <ul>
           <li><strong>Critique de la demande.</strong> Avant de dessiner une description (200 caractères au moins, ou un fichier joint), le modèle relève ce qui est ambigu ou manquant : acteurs, déclencheur, résultats, décisions, exceptions et délais, boucles, documents échangés, vocabulaire flou. Chaque point porte une gravité (<span class="ui">Bloquant</span>, <span class="ui">Important</span>, <span class="ui">Mineur</span>), la question à trancher et, s'il existe, le passage cité. Le dessin part aussitôt, avec des hypothèses que le modèle liste en fin de réponse. Répondez aux questions dans le message suivant pour affiner le diagramme.</li>
           <li><strong>Rapport de contrôle.</strong> Après chaque réponse qui a modifié le diagramme, l'éditeur le vérifie lui-même, sans appel au modèle. Le rapport donne les compteurs (pools, couloirs, activités, passerelles, événements, flux) et six contrôles : XML bien formé, conformité au métamodèle BPMN 2.0 (éléments et attributs connus), références et portées (un flux de séquence reste dans son processus, un flux de message relie deux pools), chaque élément dessiné (partie graphique DI complète), réimport par bpmn-js sans avertissement, règles bpmnlint sans erreur. Un clic sur la ligne du rapport en déplie le détail.</li>
@@ -685,6 +687,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <!-- online -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur. Ils ne sont transmis ni à nous ni à l'hébergeur du site (GitHub Pages).</li>
           <li>Si vous utilisez le co-pilote IA, vos messages, le diagramme, vos fichiers joints et votre clé partent directement de votre navigateur chez le fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>La dictée vocale du co-pilote reconnaît la voix sur votre appareil : ni le son ni le texte dicté ne quittent le navigateur avant que vous envoyiez le message.</li>
           <li>Comme tout hébergeur web, GitHub Pages garde des journaux techniques, dont votre adresse IP.</li>
           <li>Le site stable compte ses visites de façon anonyme, sans cookie (rien n'est compté sur la version de développement), conformément aux <a href="https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience" target="_blank" rel="noopener">recommandations de la CNIL</a> pour l'audience exemptée de consentement. L'adresse IP n'est pas enregistrée. Elle sert uniquement à déterminer le pays, la région et la ville. Sont collectés : la page consultée et le site de provenance, les caractéristiques de l'appareil transmises par le navigateur, et quelques actions sans leur contenu (création, ouverture ou export d'un diagramme, utilisation du co-pilote, type de fournisseur connecté, temps d'utilisation par tranche, clic vers la page de soutien). Les signaux « Do Not Track » et « Global Privacy Control » désactivent la mesure.</li>
           <li>Le site ne charge aucun script tiers.</li>
@@ -694,6 +697,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <!-- docker -->
           <li>Vos diagrammes, vos réglages et vos clés API restent dans votre navigateur, ou sur votre serveur pour ce que vous y enregistrez. Rien n'est envoyé à l'auteur de l'éditeur.</li>
           <li>Si vous utilisez le co-pilote IA, vos messages, le diagramme et vos fichiers joints passent par votre serveur jusqu'au fournisseur choisi, qui applique ses propres conditions et sa politique de confidentialité. N'y mettez pas de données que vous ne confieriez pas à ce fournisseur.</li>
+          <li>La dictée vocale du co-pilote reconnaît la voix sur votre appareil : ni le son ni le texte dicté ne quittent le navigateur avant que vous envoyiez le message.</li>
           <li>Un agent connecté par MCP lit et modifie le diagramme ouvert. Ce qu'il en fait dépend de l'agent et de son fournisseur.</li>
           <li>Cette version ne mesure pas sa fréquentation et ne charge aucun script tiers.</li>
           </ul>
@@ -732,6 +736,26 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><code>exports</code> : les exports faits avec la destination <span class="ui">Serveur</span> ou <span class="ui">Les deux</span>. Un export ne remplace jamais un fichier : un deuxième <code>Mon processus.pdf</code> devient <code>Mon processus (2).pdf</code>.</li>
         </ul>
         <p>L'installation est décrite dans le <a href="https://github.com/Leylines-Prism/bpmn-pilot#readme" target="_blank" rel="noopener">README du projet sur GitHub<svg class="icon-inline" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>.</p>
+      </section>
+
+      <section id="installer-app">
+        <h2>Installer comme une application</h2>
+        <p>BPMN-Pilot s'installe comme une application : il s'ouvre alors dans sa propre fenêtre, sans barre d'adresse, depuis le menu Démarrer, le Dock ou l'écran d'accueil.</p>
+        <ul>
+          <li><strong>Chrome et Edge</strong> (ordinateur et Android) : l'icône d'installation à droite de la barre d'adresse, ou le menu du navigateur, <strong>Installer</strong>.</li>
+          <li><strong>Safari sur Mac</strong> : menu <strong>Fichier</strong>, <strong>Ajouter au Dock</strong>.</li>
+          <li><strong>iPhone et iPad</strong> : bouton <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong>.</li>
+          <li><strong>Firefox</strong> sur ordinateur n'installe pas les applications web.</li>
+        </ul>
+        <!-- online -->
+        <h3 id="hors-ligne">Hors connexion</h3>
+        <p>Après une première visite, l'éditeur, cette aide et la page vitrine s'ouvrent sans connexion, installés ou non : le navigateur garde une copie des fichiers du site. Les images animées de l'aide sont gardées une fois vues. Le Co-pilote IA a besoin du réseau pour joindre son fournisseur : hors connexion, il le dit.</p>
+        <p>Quand une nouvelle version est publiée, un bandeau au-dessus du canevas propose de <span class="uib">Recharger</span>. Rien ne se recharge tout seul, et recharger garde le diagramme en cours.</p>
+        <div class="note">Sur iPhone et iPad, l'application installée a son propre stockage, séparé de Safari : les diagrammes de <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span> dans Safari n'y apparaissent pas. Pour passer un diagramme de l'un à l'autre, exportez-le en fichier .bpmn et ouvrez-le de l'autre côté.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <p>Version Docker : l'installation est proposée sur localhost ou en HTTPS. L'application installée ne fonctionne pas hors ligne, le Co-pilote IA, le serveur MCP et les diagrammes enregistrés passant par le serveur.</p>
+        <!-- /docker -->
       </section>
 
       <section id="petits-ecrans">
