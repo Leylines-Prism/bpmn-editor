@@ -490,7 +490,7 @@ Each function is turned on separately in **Expert** > **Choose modules…**.
 - **Camunda 8 and 7 export**: platform set, executable processes, gateway conditions in FEEL or JUEL from the
   Condition field or the flow label, tasks with an assignee as user tasks.
 - **DMN decision tables**: link business rule tasks to decision tables edited with dmn-js, with the DRD,
-  .dmn import and export, decision models in My diagrams, `zeebe:calledDecision` for Camunda 8, table checks
+  .dmn import and export, Excel and CSV import and export of a table, decision models in My diagrams, `zeebe:calledDecision` for Camunda 8, table checks
   (overlaps under Unique, uncovered values, unquoted text), a test bench (rules that apply, one case per rule), a comparison of two versions,
   computed tokens that follow the tables at gateways, and the MCP tools `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
 

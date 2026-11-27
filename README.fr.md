@@ -520,7 +520,7 @@ Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
 - **Export pour Camunda 8 et 7** : plateforme indiquée, processus exécutables, conditions des passerelles en FEEL
   ou en JUEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur.
 - **Tables de décision DMN** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,
-  avec le DRD, l'import et l'export .dmn, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
+  avec le DRD, l'import et l'export .dmn, l'import et l'export Excel et CSV d'une table, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
   les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets), un banc d'essai
   (règles qui s'appliquent, un cas par règle), la comparaison de deux versions, des jetons calculés qui suivent les tables aux passerelles,
   et les outils MCP `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
