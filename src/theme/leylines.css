@@ -1423,7 +1423,7 @@ dialog .dlg-head h2 { flex: 1; min-width: 0; margin-bottom: 0; }
 dialog .dlg-close { flex: none; font-size: 20px; }
 
 /* ── Mode présentation (src/presentation.js) : le schéma seul, en plein écran ── */
-body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(dialog) { display: none !important; }
+body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(#presentation-fx):not(dialog) { display: none !important; }
 body.presenting #main { padding: 0; gap: 0; }
 body.presenting #main > :not(#canvas) { display: none !important; }
 body.presenting #canvas { border: 0; border-radius: 0; box-shadow: none; }
@@ -1453,6 +1453,55 @@ body.presenting #canvas .djs-container { cursor: grab; }
   transition: opacity 0.6s ease;
 }
 #presentation-hint.fade { opacity: 0; }
+
+/* Pointeur de présentation (src/presentation-pointer.js) : menu d'interrupteurs, laser,
+   onde au clic, surbrillance et curseur masqué à l'arrêt. */
+:root { --pres-pointer: #FF3B1F; --pres-pointer-glow: rgba(255, 59, 31, 0.5); }
+#presentation-bar { transition: opacity 0.4s ease; }
+.pres-pointer { position: relative; display: flex; }
+.pres-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: 21;
+  display: flex; flex-direction: column; gap: 2px; min-width: 250px; padding: var(--space-1);
+  border: 1px solid var(--line); border-radius: var(--radius-md);
+  background: var(--surface-raised); box-shadow: var(--elevation-1);
+}
+.pres-menu[hidden] { display: none; }
+.pres-menu .btn { justify-content: flex-start; gap: 10px; }
+.pres-menu .btn span { flex: 1; text-align: left; }
+.pres-menu kbd {
+  min-width: 20px; padding: 0 5px; border: 1px solid var(--line); border-radius: 4px;
+  font: 500 12px/18px var(--font-sans); color: var(--ink-muted); text-align: center;
+}
+/* Interrupteur dessiné avant le libellé : rail gris, plein et pastille à droite quand actif. */
+.pres-menu .btn::before {
+  content: ''; flex: none; width: 28px; height: 16px; border-radius: 8px;
+  background: radial-gradient(circle 6px at 8px 50%, var(--surface-raised) 5.5px, transparent 6px), var(--line);
+  transition: background 0.15s;
+}
+.pres-menu .btn[aria-checked="true"]::before {
+  background: radial-gradient(circle 6px at 20px 50%, #fff 5.5px, transparent 6px), var(--pres-pointer);
+}
+#presentation-fx { position: fixed; inset: 0; z-index: 19; pointer-events: none; }
+#presentation-fx[hidden] { display: none; }
+#presentation-fx canvas { width: 100%; height: 100%; display: block; }
+.pres-ripple {
+  position: fixed; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%;
+  border: 3px solid var(--pres-pointer); animation: pres-ripple 0.55s ease-out forwards;
+}
+@keyframes pres-ripple { to { transform: scale(3.4); opacity: 0; } }
+body.presenting.pres-laser #canvas .djs-container > svg,
+body.presenting.pres-laser #canvas .djs-container > svg * { cursor: none !important; }
+body.presenting.pres-idle, body.presenting.pres-idle * { cursor: none !important; }
+body.presenting.pres-idle #presentation-bar { opacity: 0; }
+#canvas .djs-container.pres-dim .djs-element:not(.pres-hot):not(.pres-near):not(.djs-root) { opacity: 0.3; transition: opacity 0.2s; }
+#canvas .djs-element.pres-hot .djs-visual > :is(rect, circle, polygon, path, polyline) {
+  stroke: var(--pres-pointer) !important; stroke-width: 3px !important;
+  filter: drop-shadow(0 0 4px var(--pres-pointer-glow));
+}
+@media (prefers-reduced-motion: reduce) {
+  .pres-ripple { animation-duration: 0.01s; }
+  #presentation-bar, #canvas .djs-container.pres-dim .djs-element { transition: none; }
+}
 @media (prefers-reduced-motion: reduce) { #presentation-hint { transition: none; } }
 @media (max-width: 560px) { #presentation-hint { white-space: normal; width: calc(100vw - 32px); text-align: center; } }
 

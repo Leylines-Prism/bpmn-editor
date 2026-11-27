@@ -159,8 +159,25 @@
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>, and <kbd>0</kbd> fits the diagram to the screen. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
         <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
+        <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Laser pointer</b>: a red-orange dot with a short trail replaces the arrow on the diagram</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Highlight on hover</b>: the hovered element and its flows light up, the rest of the diagram fades</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Ripple on click</b>: a circle widens where you click</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Hide when still</b>: after two seconds without moving, the cursor and the bar fade out, and come back on the first movement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The choices are kept in this browser. On a touch screen, the laser and the ripple follow the finger. The highlight relies on hovering and does not apply there.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, ripple and highlight</p><img src="/docs/presentation-pointer.gif" width="1280" height="720" alt="The purchase process in presentation: the laser pointer follows the flow, a ripple on each click, then the highlight lights up a task, a gateway and their flows in turn. The Pointer menu opens, then the cursor and the bar fade out when still." loading="lazy" /><figcaption>The laser and the click ripple, key 2 for the highlight, then the bar fading out when still.</figcaption></figure>
+          <figure><p class="fig-title">The Pointer menu</p><img src="/src/help/img/en-presentation-pointeur.webp" width="800" height="440" alt="The Pointer menu open in presentation, four switches on. The Approve in committee task and its flows in red-orange, the rest faded, with the laser pointer trail." loading="lazy" /><figcaption>The Pointer menu, with the laser and the highlight on a task.</figcaption></figure>
+        </div>
       </section>
 
       <section id="properties">

@@ -7,7 +7,10 @@
 // La simulation de jetons s'y lance aussi, depuis la barre : ses commandes (départ,
 // pause, choix aux passerelles, journal, vitesse) restent alors à l'écran. Elle ne
 // modifie pas le diagramme, et elle continue si l'on quitte la présentation.
+// Le menu Pointeur de la barre (src/presentation-pointer.js) cumule laser, surbrillance,
+// onde au clic et curseur masqué à l'arrêt, avec les touches 1 à 4.
 import { T } from './i18n/lang.js'
+import { setupPresentationPointer } from './presentation-pointer.js'
 
 const PRIORITY = 3000
 
@@ -39,8 +42,18 @@ export function setupPresentation({ button, modeler, onExit }) {
   const hint = document.createElement('div')
   hint.id = 'presentation-hint'
   hint.hidden = true
-  hint.textContent = T('Drag to move · Ctrl + wheel or pinch to zoom · Esc to exit', 'Glisser pour déplacer · Ctrl + molette ou pincement pour zoomer · Échap pour quitter')
+  hint.textContent = T('Drag to move · Ctrl + wheel or pinch to zoom · 1 to 4: pointer effects · Esc to exit', 'Glisser pour déplacer · Ctrl + molette ou pincement pour zoomer · 1 à 4 : effets du pointeur · Échap pour quitter')
   document.body.append(bar, hint)
+  const hintText = hint.textContent
+  let flashTimer = null
+  // Rappel bref d'un réglage, dans la bulle d'aide du haut.
+  function flash(message) {
+    clearTimeout(flashTimer)
+    hint.textContent = message
+    hint.classList.remove('fade')
+    flashTimer = setTimeout(() => hint.classList.add('fade'), 1500)
+  }
+  const pointer = setupPresentationPointer({ modeler, bar, flash })
 
   function fit() {
     const { inner } = canvas.viewbox()
@@ -75,6 +88,11 @@ export function setupPresentation({ button, modeler, onExit }) {
   // Clavier et coller : rien n'atteint l'éditeur pendant la présentation, sauf Échap.
   const onKey = (e) => {
     if (!active) return
+    if (pointer.onKey(e)) {
+      e.stopImmediatePropagation()
+      e.preventDefault()
+      return
+    }
     if (e.key === 'Escape') {
       e.preventDefault()
       exit()
@@ -108,8 +126,11 @@ export function setupPresentation({ button, modeler, onExit }) {
     } catch {}
     canvas.resized()
     fit()
+    pointer.enter()
     // L'aide disparaît d'elle-même après quelques secondes.
-    setTimeout(() => hint.classList.add('fade'), 4000)
+    hint.textContent = hintText
+    clearTimeout(flashTimer)
+    flashTimer = setTimeout(() => hint.classList.add('fade'), 4000)
   }
 
   function exit() {
@@ -119,6 +140,8 @@ export function setupPresentation({ button, modeler, onExit }) {
     bar.hidden = true
     hint.hidden = true
     hint.classList.remove('fade')
+    clearTimeout(flashTimer)
+    pointer.exit()
     window.removeEventListener('keydown', onKey, true)
     for (const type of ['paste', 'cut', 'copy', 'drop']) window.removeEventListener(type, block, true)
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {})

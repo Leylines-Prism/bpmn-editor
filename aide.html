@@ -159,8 +159,25 @@
         </ul>
         <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</h3>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>, et <kbd>0</kbd> ajuste le schéma à l'écran. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
         <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Touche</th><th>Effet</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Pointeur laser</b> : un point rouge orangé suivi d'une courte traînée remplace la flèche sur le schéma</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Surbrillance au survol</b> : l'élément survolé et ses flux s'allument, le reste du schéma pâlit</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Onde au clic</b> : un cercle s'élargit là où l'on clique</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Masquer à l'arrêt</b> : après deux secondes sans bouger, le curseur et la barre s'effacent, et reviennent au premier mouvement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Les choix sont retenus dans ce navigateur. Sur écran tactile, le laser et l'onde suivent le doigt. La surbrillance, liée au survol, n'y joue pas.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, onde et surbrillance</p><img src="/docs/presentation-pointer.fr.gif" width="1280" height="720" alt="Le processus d'achat en présentation : le pointeur laser suit le flux, une onde à chaque clic, puis la surbrillance allume tour à tour une tâche, une passerelle et leurs flux. Le menu Pointeur s'ouvre, puis le curseur et la barre s'effacent à l'arrêt." loading="lazy" /><figcaption>Le laser et l'onde au clic, la touche 2 pour la surbrillance, puis la barre qui s'efface à l'arrêt.</figcaption></figure>
+          <figure><p class="fig-title">Le menu Pointeur</p><img src="/src/help/img/fr-presentation-pointeur.webp" width="800" height="440" alt="Le menu Pointeur ouvert en présentation, quatre interrupteurs actifs. La tâche Valider en comité et ses flux en rouge orangé, le reste pâli, avec la traînée du pointeur laser." loading="lazy" /><figcaption>Le menu Pointeur, avec le laser et la surbrillance sur une tâche.</figcaption></figure>
+        </div>
       </section>
 
       <section id="proprietes">

@@ -73,7 +73,8 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
   bpmnlint), avec autocorrection.
 
 **Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
-un processus en réunion. En mode Expert, la simulation de jetons s'y lance aussi.
+un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
+une onde au clic et un curseur masqué à l'arrêt (touches 1 à 4). En mode Expert, la simulation de jetons s'y lance aussi.
 
 Les outils experts sur un processus d'achat interne à quatre couloirs :
 
