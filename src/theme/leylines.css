@@ -1581,6 +1581,7 @@ html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none 
    présentation : dans un petit carré au trait orange de la charte. */
 dialog .dlg-close,
 .cmp-close,
+.dmn-close,
 .pv-close,
 .pres-close {
   width: 22px !important; height: 22px !important; min-width: 0; padding: 0 !important; align-self: center; margin-block: 0 !important;
@@ -1591,10 +1592,12 @@ dialog .dlg-close,
 }
 dialog .dlg-close:hover,
 .cmp-close:hover,
+.dmn-close:hover,
 .pv-close:hover,
 .pres-close:hover { background: color-mix(in srgb, var(--warm) 14%, transparent) !important; }
 dialog .dlg-close:focus-visible,
 .cmp-close:focus-visible,
+.dmn-close:focus-visible,
 .pv-close:focus-visible,
 .pres-close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 

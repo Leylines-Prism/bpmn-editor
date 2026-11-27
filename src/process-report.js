@@ -22,6 +22,7 @@ import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
 import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
 import { markdownToLine, markdownToPlain, shiftHeadings } from './doc/markdown.js'
+import { findingText, describeTable } from './dmn/decision-texts.js'
 
 const LEVELS = ['error', 'warning', 'todo']
 const LEVEL_LABEL = {
@@ -152,7 +153,7 @@ function allLanes(laneSets, out = []) {
 
 // options : { name (nom du fichier), simulation (résultat de la carte de chaleur), lint (résultats
 // bpmnlint), checks (rapport de checkDiagram, src/diagram-checks.js) }
-export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null } = {}) {
+export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null, decisions = null } = {}) {
   const definitions = modeler.getDefinitions()
   const translate = modeler.get('translate')
   const { processes, participants } = collectContainers(definitions)
@@ -532,7 +533,33 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     heat,
     checks: checkRows,
     analysis,
+    decisions: decisionRows(decisions),
     flagged: Object.fromEntries(worst),
+  }
+}
+
+// Décisions DMN du diagramme (mode Expert), d'après src/dmn/setup.js report() : une entrée par
+// décision avec sa table, les tâches qui l'appellent et ses constats, plus les constats des liens.
+function decisionRows(data) {
+  if (!data) return null
+  const findingsOf = (id) => data.findings.filter((f) => f.decision === id).map((f) => ({ level: f.level, text: findingText(f) }))
+  return {
+    items: data.summary.decisions.map((d) => ({
+      id: d.id,
+      name: clean(d.name) || d.id,
+      line: describeTable(d),
+      calledBy: (data.calls[d.id] || []).map((t) => clean(t.name) || t.id),
+      table: d.kind === 'table'
+        ? {
+            head: [...d.inputs.map((i) => clean(i.label || i.expression)), ...d.outputs.map((o) => clean(o.label || o.name)), T('Annotation', 'Annotation')],
+            inputs: d.inputs.length,
+            rows: d.rules.map((rule) => [...rule.inputs.map((v) => v || '-'), ...rule.outputs, rule.annotation || '']),
+          }
+        : null,
+      expression: d.kind === 'literal' ? d.expression : '',
+      findings: findingsOf(d.id),
+    })),
+    links: data.findings.filter((f) => !f.decision).map((f) => ({ level: f.level, text: findingText(f) })),
   }
 }
 
@@ -710,6 +737,22 @@ export function reportToMarkdown(r) {
     lines.push(`| ${T('Check', 'Contrôle')} | ${T('Result', 'Résultat')} | ${T('First problems', 'Premiers problèmes')} |`, '|---|---|---|')
     for (const c of r.checks) lines.push(`| ${mdCell(c.label)} | ${checkResult(c)} | ${mdCell(c.first.join(' · '))} |`)
   }
+  if (r.decisions) {
+    lines.push('', `## ${T('Decisions (DMN)', 'Décisions (DMN)')}`)
+    for (const d of r.decisions.items) {
+      lines.push('', `### ${d.name}`, '', `*${mdCell(d.line)}* · ${T('called by', 'appelée par')} ${d.calledBy.length ? mdCell(d.calledBy.join(' · ')) : T('no task', 'aucune tâche')} · \`${d.id}\``)
+      if (d.table?.rows.length) {
+        lines.push('', `| N° | ${d.table.head.map((h, i) => (i < d.table.inputs ? `${T('When', 'Quand')} ${mdCell(h)}` : i < d.table.head.length - 1 ? `${T('Then', 'Alors')} ${mdCell(h)}` : mdCell(h))).join(' | ')} |`, `|---|${d.table.head.map(() => '---').join('|')}|`)
+        d.table.rows.forEach((row, i) => lines.push(`| ${i + 1} | ${row.map((v) => mdCell(v)).join(' | ')} |`))
+      }
+      if (d.expression) lines.push('', '```', d.expression, '```')
+      for (const f of d.findings) lines.push('', `- **${DECISION_LEVEL[f.level]()}** : ${f.text}`)
+    }
+    if (r.decisions.links.length) {
+      lines.push('')
+      for (const f of r.decisions.links) lines.push(`- **${DECISION_LEVEL[f.level]()}** : ${f.text}`)
+    }
+  }
   if (r.ends.length) {
     lines.push('', `## ${T('End events', 'Événements de fin')}`, '')
     lines.push(`| ${T('End event', 'Événement de fin')} | ${T('Lane', 'Couloir')} |${r.simulation ? ` ${T('Share of instances', 'Part des instances')} |` : ''}`, `|---|---|${r.simulation ? '---|' : ''}`)
@@ -737,6 +780,12 @@ export function reportToMarkdown(r) {
     for (const s of documented) lines.push('', `### ${s.number}. ${s.name}`, '', shiftHeadings(s.docMarkdown, 2))
   }
   return lines.join('\n') + '\n'
+}
+
+const DECISION_LEVEL = {
+  error: () => T('Error', 'Erreur'),
+  warning: () => T('Warning', 'Avertissement'),
+  info: () => T('To complete', 'À compléter'),
 }
 
 const analysisByline = (a) => {
@@ -1085,6 +1134,44 @@ export async function reportToPdf(modeler, r) {
         d.cell.styles.textColor = c.skipped ? muted : c.ok ? [21, 128, 61] : hex(COLORS.error.strong)
       },
     })
+  }
+
+  if (r.decisions) {
+    section(T('Decisions (DMN)', 'Décisions (DMN)'))
+    for (const d of r.decisions.items) {
+      subsection(`${d.name} (${d.id})`)
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...muted)
+      doc.text(pdfText(`${d.line} · ${T('called by', 'appelée par')} ${d.calledBy.join(', ') || T('no task', 'aucune tâche')}`), M, y + 1)
+      y += 4
+      if (d.table?.rows.length) {
+        table({
+          head: [['N°', ...d.table.head.map((h, i) => pdfText(i < d.table.inputs ? `${T('When', 'Quand')} ${h}` : i < d.table.head.length - 1 ? `${T('Then', 'Alors')} ${h}` : h))]],
+          body: d.table.rows.map((row, i) => [String(i + 1), ...row.map(pdfText)]),
+          columnStyles: { 0: { cellWidth: 10 } },
+          styles: { ...baseTable.styles, font: 'courier' },
+        })
+      } else y += 2
+      if (d.expression) {
+        doc.setFont('courier', 'normal').setFontSize(8).setTextColor(...ink)
+        doc.text(doc.splitTextToSize(pdfText(d.expression), W - 2 * M), M, y + 2)
+        y += 8
+      }
+      for (const f of d.findings) {
+        if (y > H - M - 8) { doc.addPage(); y = M + 4 }
+        doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...(f.level === 'error' ? hex(COLORS.error.strong) : f.level === 'warning' ? hex(COLORS.warning.strong) : muted))
+        const lines = doc.splitTextToSize(pdfText(`${DECISION_LEVEL[f.level]()} : ${f.text}`), W - 2 * M)
+        doc.text(lines, M, y + 1)
+        y += lines.length * 3.6 + 1
+      }
+      y += 2
+    }
+    for (const f of r.decisions.links) {
+      if (y > H - M - 8) { doc.addPage(); y = M + 4 }
+      doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(...(f.level === 'error' ? hex(COLORS.error.strong) : muted))
+      doc.text(pdfText(`${DECISION_LEVEL[f.level]()} : ${f.text}`), M, y + 1)
+      y += 4.5
+    }
+    y += 2
   }
 
   if (r.ends.length) {

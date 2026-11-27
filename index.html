@@ -53,16 +53,19 @@
     <button class="btn" id="btn-open-menu" title="Open a file, paste XML or compare with a file" data-icon="open" popovertarget="open-menu" aria-haspopup="menu">Open</button>
     <div id="open-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-open" title="Open a BPMN 2.0 diagram from your computer" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
+      <button class="btn dmn-only expert-only" id="btn-open-dmn" title="Add the decisions of a DMN file to the open diagram, to link them to its business rule tasks" data-icon="table" role="menuitem">.dmn file (decisions)…</button>
       <button class="btn" id="btn-import-xml" title="Paste BPMN XML; a process without layout is laid out automatically" data-icon="code" role="menuitem">Paste XML…</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-compare-file" title="Compare the open diagram with a .bpmn file, side by side" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
+    <input type="file" id="dmn-input" accept=".dmn,.xml" style="display:none" />
     <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
+      <button class="btn dmn-only expert-only" id="btn-save-dmn" title="The decisions of this diagram as a DMN 1.3 file, for Camunda Modeler or a decision engine" data-icon="table" role="menuitem">Decisions (.dmn file)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
       <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
@@ -83,6 +86,9 @@
       <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
       <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
       <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
+      <div class="menu-sep" role="separator"></div>
+      <button class="btn menu-switch" id="btn-dmn" role="menuitemcheckbox" aria-checked="false" title="Link business rule tasks to DMN decision tables, edited in the app">Decision tables (DMN)</button>
+      <button class="btn dmn-only expert-only" id="btn-dmn-drd" data-icon="table" title="Open the decisions of this diagram and their requirements diagram" role="menuitem">Decisions of the diagram…</button>
       <div class="menu-sep" role="separator"></div>
       <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-probabilities" data-icon="assistant" title="Ask the AI co-pilot for realistic branch probabilities, to review before simulating" role="menuitem">Propose probabilities</button><span class="copilot-help" id="help-ai-probabilities" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>

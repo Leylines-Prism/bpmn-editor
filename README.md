@@ -68,6 +68,9 @@ and the toolbar stays uncluttered for everyone else (see the
   which paths are taken, never reached, or looped through.
 - **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
   activities by lane.
+- **DMN decision tables**, behind a switch of the Expert menu: each business rule task links to an editable decision
+  table and its requirements diagram (dmn-js), stored in the .bpmn with the Camunda 8 link (`zeebe:calledDecision`),
+  checked for overlaps and gaps, and written by the co-pilot or an MCP agent on request.
 - **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
   reimport, bpmnlint), with automatic correction.
@@ -429,6 +432,9 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   process, with a speed slider. During the simulation, color the diagram by the number of tokens
   through each element, played by hand or computed from branch probabilities. Export a process report
   (PDF or Markdown) with the findings in three levels, improvement areas, the element sequence and, after a simulation, the heatmap.
+- **DMN decision tables (Expert mode)**: link business rule tasks to decision tables edited with dmn-js, with the DRD,
+  .dmn import and export, decision models in My diagrams, `zeebe:calledDecision` for Camunda 8, table checks
+  (overlaps under Unique, uncovered values, unquoted text) and the MCP tools `get_decisions`, `set_decision_table`, `link_decision`.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color

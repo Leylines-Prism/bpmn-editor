@@ -70,6 +70,9 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
   coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
 - **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
   d'amélioration, événements de fin, activités par couloir.
+- **Tables de décision DMN**, derrière un interrupteur du menu Expert : chaque tâche de règle métier se relie à une
+  table de décision modifiable et à son diagramme d'exigences (dmn-js), rangées dans le .bpmn avec le lien Camunda 8
+  (`zeebe:calledDecision`), contrôlées (chevauchements, valeurs non couvertes), et rédigées par le co-pilote ou un agent MCP à la demande.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
@@ -459,6 +462,10 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
   probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
   niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
+- **Tables de décision DMN (mode Expert)** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,
+  avec le DRD, l'import et l'export .dmn, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
+  les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets) et les outils MCP
+  `get_decisions`, `set_decision_table`, `link_decision`.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
