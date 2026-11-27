@@ -50,7 +50,7 @@
           <li><a href="#bpmn-experts">For BPMN experts</a></li>
           <li><a href="#privacy">Privacy</a></li>
           <li><a href="#docker">Docker version and MCP agents</a></li>
-          <li><a href="#install-app">Install as an app</a></li>
+          <li><a href="#install-app">Install as a PWA</a></li>
           <li><a href="#small-screens">On a phone or tablet</a></li>
           <li><a href="#faq">FAQ</a></li>
           <li><a href="#feedback">Send feedback</a></li>
@@ -843,24 +843,24 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="install-app">
-        <h2>Install as an app</h2>
-        <p>BPMN-Pilot installs like an application: it then opens in its own window, without the address bar, from the Start menu, the Dock or the home screen.</p>
+        <h2>Install as a PWA</h2>
+        <p>BPMN-Pilot is a PWA (Progressive Web App): thanks to its web app manifest, the browser installs it in its own window, without the address bar, launched from the Start menu, the Dock or the home screen.</p>
         <ul>
           <li><strong>Chrome and Edge</strong> (computer and Android): the <span class="uib"><span class="ico" data-icon="install" aria-hidden="true"></span>Install</span> button in the toolbar, which appears only when the browser offers installation, or the install icon at the right of the address bar.</li>
           <li><strong>Safari on a Mac</strong>: <strong>File</strong> menu, <strong>Add to Dock</strong>.</li>
           <li><strong>iPhone and iPad</strong>: <strong>Share</strong> button, <strong>Add to Home Screen</strong>.</li>
-          <li><strong>Firefox</strong> on a computer does not install web apps.</li>
+          <li><strong>Firefox</strong> on a computer does not support installing PWAs.</li>
         </ul>
-        <figure><img src="/src/help/img/en-installer.webp" width="335" height="54" alt="Right end of the toolbar: the Install button, before Help, language, theme and panel." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the app is installed.</figcaption></figure>
+        <figure><img src="/src/help/img/en-installer.webp" width="335" height="54" alt="Right end of the toolbar: the Install button, before Help, language, theme and panel." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the PWA is installed.</figcaption></figure>
         <!-- online -->
-        <h3 id="offline">Offline</h3>
-        <p>After a first visit, the editor, this guide and the showcase page open without a connection, installed or not: the browser keeps a copy of the site's files. The animated pictures of this guide are kept once viewed. The AI co-pilot needs a connection to reach its provider: offline, it says so.</p>
-        <p>When a new version is published, a banner above the canvas offers to <span class="uib">Reload</span>. Nothing reloads on its own, and reloading keeps the diagram in progress.</p>
+        <h3 id="offline">Offline (service worker)</h3>
+        <p>After a first visit, the editor, this guide and the showcase page open without a connection, installed or not: a service worker caches the site's files (Cache API). The GIFs of this guide are cached once displayed. The AI co-pilot needs a connection to reach its provider's API: offline, it says so.</p>
+        <p>When a new version is published, its service worker waits: a banner above the canvas offers to <span class="uib">Reload</span>. Nothing reloads on its own, and reloading keeps the diagram in progress.</p>
         <figure><img src="/src/help/img/en-mise-a-jour.webp" width="980" height="66" alt="Banner under the toolbar: a new version of BPMN-Pilot is available, with a Reload button and a cross." loading="lazy" /><figcaption>The banner of a new version. The cross closes it: the new version applies the next time you open the editor.</figcaption></figure>
-        <div class="note">On iPhone and iPad, the installed app has its own storage, separate from Safari: the diagrams of <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span> in Safari do not appear in it. To move a diagram from one to the other, export it as a .bpmn file and open it on the other side.</div>
+        <div class="note">On iPhone and iPad, the installed PWA has its own storage (localStorage and IndexedDB), separate from Safari: the diagrams of <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span> in Safari do not appear in it. To move a diagram from one to the other, export it as a .bpmn file and open it on the other side.</div>
         <!-- /online -->
         <!-- docker -->
-        <p>Docker version: installation is offered on localhost or over HTTPS. The installed app does not work offline, since the AI co-pilot, the MCP server and saved diagrams go through the server.</p>
+        <p>Docker version: the PWA installs on localhost or over HTTPS (the secure context browsers require). Without a service worker, it does not work offline: the AI co-pilot, the MCP server and saved diagrams go through the server.</p>
         <!-- /docker -->
       </section>
 
