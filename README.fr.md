@@ -11,6 +11,8 @@
 [![BPMN-Pilot MCP server on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/score.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-soutenir-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/leylines_prism)
 
+[![Serveur MCP bpmn-pilot : note de qualité et de maintenance sur Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
+
 [English](README.md) | **Français**
 
 ![Le co-pilote IA dessine un processus de commande en ligne avec deux pools et quatre lanes](docs/demo.fr.gif)
