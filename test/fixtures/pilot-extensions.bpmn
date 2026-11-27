@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:bpmnpilot="https://bpmn.leylines.fr/schema/bpmn-pilot/1.0" id="Defs" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" name="Demande" isExecutable="false">
+    <bpmn:extensionElements>
+      <bpmnpilot:analysis author="Model" date="2026-11-27T20:00:00Z" fingerprint="abcd1234">
+        <bpmnpilot:summary>Synthèse **gras**</bpmnpilot:summary>
+        <bpmnpilot:points kind="risk" elements="Agent">Risque cité</bpmnpilot:points>
+      </bpmnpilot:analysis>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="S"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:adHocSubProcess id="Agent" name="Qualifier la demande" bpmnpilot:agent="true">
+      <bpmn:documentation>Agent IA</bpmn:documentation>
+      <bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing>
+      <bpmn:serviceTask id="Tool1" name="Chercher le client" />
+    </bpmn:adHocSubProcess>
+    <bpmn:userTask id="Review" name="Revoir la proposition" bpmnpilot:goalShare="100" bpmnpilot:goalOp="min"><bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F3</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="G" name="Validée ?"><bpmn:incoming>F3</bpmn:incoming><bpmn:outgoing>F4</bpmn:outgoing><bpmn:outgoing>F5</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="E1" name="Acceptée" bpmnpilot:goalShare="80" bpmnpilot:goalOp="min"><bpmn:incoming>F4</bpmn:incoming></bpmn:endEvent>
+    <bpmn:endEvent id="E2" name="Refusée"><bpmn:incoming>F5</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="S" targetRef="Agent" />
+    <bpmn:sequenceFlow id="F2" sourceRef="Agent" targetRef="Review" />
+    <bpmn:sequenceFlow id="F3" sourceRef="Review" targetRef="G" />
+    <bpmn:sequenceFlow id="F4" name="Oui" sourceRef="G" targetRef="E1" bpmnpilot:probability="85" bpmnpilot:probabilitySource="copilot" />
+    <bpmn:sequenceFlow id="F5" name="Non" sourceRef="G" targetRef="E2" bpmnpilot:probability="15" />
+    <bpmn:boundaryEvent id="B" attachedToRef="Agent"><bpmn:timerEventDefinition id="TD" /></bpmn:boundaryEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="D"><bpmndi:BPMNPlane id="PL" bpmnElement="P">
+    <bpmndi:BPMNShape id="S_di" bpmnElement="S" bioc:fill="#FFFFFF" color:background-color="#FFFFFF"><dc:Bounds x="0" y="0" width="36" height="36" /></bpmndi:BPMNShape>
+  </bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>
