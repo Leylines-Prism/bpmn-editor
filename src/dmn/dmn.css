@@ -8,17 +8,6 @@ html:not(.dmn) .dmn-badge,
 html:not(.expert) [data-group-id="group-bpmn-pilot-decision"],
 html:not(.dmn) [data-group-id="group-bpmn-pilot-decision"] { display: none !important; }
 
-/* Interrupteur du menu Expert : rail gris, plein et pastille à droite quand allumé. */
-#toolbar .menu .menu-switch { gap: 10px; }
-#toolbar .menu .menu-switch::before {
-  content: ''; flex: none; width: 28px; height: 16px; border-radius: 8px;
-  background: radial-gradient(circle 6px at 8px 50%, var(--surface-raised) 5.5px, transparent 6px), var(--line-strong);
-  transition: background 0.15s;
-}
-#toolbar .menu .menu-switch[aria-checked="true"]::before {
-  background: radial-gradient(circle 6px at 20px 50%, #fff 5.5px, transparent 6px), var(--accent);
-}
-
 /* Pastille d'une tâche de règle métier (le canevas reste clair dans les deux thèmes). */
 .dmn-badge {
   display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 8px;

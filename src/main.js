@@ -50,6 +50,7 @@ import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
@@ -594,8 +595,10 @@ simButton.addEventListener('click', () => {
 {
   const toggleMode = modeler.get('toggleMode')
   const toggle = toggleMode.toggleMode.bind(toggleMode)
-  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !isExpert() ? undefined : toggle(active))
+  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !(isExpert() && isModuleOn('simulation')) ? undefined : toggle(active))
   window.addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && toggleMode._active) toggle(false) })
+  // Module Simulation éteint (src/expert-modules.js) : une simulation en cours s'arrête.
+  window.addEventListener(MODULES_EVENT, () => { if (!isModuleOn('simulation') && toggleMode._active) toggle(false) })
 }
 
 function download(content, filename, type) {
@@ -609,6 +612,7 @@ function download(content, filename, type) {
 
 setupThemeToggle(document.getElementById('btn-theme'))
 setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
+setupExpertModules(document.getElementById('btn-expert-modules'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.

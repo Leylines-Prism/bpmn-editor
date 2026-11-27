@@ -83,17 +83,15 @@
     <button class="btn" id="btn-present" data-icon="present" title="Presentation: the diagram alone, full screen">Presentation</button>
     <button class="btn" id="btn-expert" data-icon="expert" popovertarget="expert-menu" aria-haspopup="menu" title="Expert mode: token simulation and process report">Expert</button>
     <div id="expert-menu" class="menu" popover role="menu">
-      <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
-      <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
-      <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
-      <div class="menu-sep" role="separator"></div>
-      <button class="btn menu-switch" id="btn-dmn" role="menuitemcheckbox" aria-checked="false" title="Link business rule tasks to DMN decision tables, edited in the app">Decision tables (DMN)</button>
+      <button class="btn mod-simulation-only" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
+      <div class="menu-row mod-simulation-only"><button class="btn copilot-only" disabled id="btn-ai-probabilities" data-icon="assistant" title="Ask the AI co-pilot for realistic branch probabilities, to review before simulating" role="menuitem">Propose probabilities</button><span class="copilot-help" id="help-ai-probabilities" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
+      <button class="btn mod-report-only" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
+      <button class="btn mod-report-only" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
+      <div class="menu-row mod-report-only"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <button class="btn dmn-only expert-only" id="btn-dmn-drd" data-icon="table" title="Open the decisions of this diagram and their requirements diagram" role="menuitem">Decisions of the diagram…</button>
       <div class="menu-sep" role="separator"></div>
-      <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-probabilities" data-icon="assistant" title="Ask the AI co-pilot for realistic branch probabilities, to review before simulating" role="menuitem">Propose probabilities</button><span class="copilot-help" id="help-ai-probabilities" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
-      <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
-      <div class="menu-sep expert-only" role="separator"></div>
-      <button class="btn expert-only" id="btn-expert-off" data-icon="close" title="Hide the simulation, the heatmap and the branch probabilities" role="menuitem">Leave expert mode</button>
+      <button class="btn" id="btn-expert-modules" data-icon="modules" title="Turn each expert function on or off" role="menuitem">Choose modules…</button>
+      <button class="btn expert-only" id="btn-expert-off" data-icon="close" title="Hide all expert functions" role="menuitem">Leave expert mode</button>
     </div>
     <span id="autosave-status">Autosave: —</span>
     <button class="btn icon-only" id="btn-install" data-icon="install" type="button" hidden title="Install BPMN-Pilot as an app" aria-label="Install as an app"></button>

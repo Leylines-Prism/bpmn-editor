@@ -12,7 +12,7 @@ const FR = {
   '#btn-open': { text: 'Fichier .bpmn ou .xml…', title: 'Ouvrir un diagramme BPMN 2.0 depuis votre ordinateur' },
   '#btn-open-dmn': { text: 'Fichier .dmn (décisions)…', title: 'Ajouter les décisions d\'un fichier DMN au diagramme ouvert, pour les lier à ses tâches de règle métier' },
   '#btn-save-dmn': { text: 'Décisions (fichier .dmn)', title: 'Les décisions de ce diagramme en fichier DMN 1.3, pour Camunda Modeler ou un moteur de décision' },
-  '#btn-dmn': { text: 'Tables de décision (DMN)', title: 'Lier les tâches de règle métier à des tables de décision DMN, modifiables dans l\'application' },
+  '#btn-expert-modules': { text: 'Choisir les modules…', title: 'Allumer ou éteindre chaque fonction experte' },
   '#btn-dmn-drd': { text: 'Décisions du diagramme…', title: 'Ouvrir les décisions de ce diagramme et leur diagramme d\'exigences' },
   '#btn-import-xml': { text: 'Coller du XML…', title: 'Coller du XML BPMN ; un processus sans disposition est rangé automatiquement' },
   '#btn-compare-file': { text: 'Comparer avec un fichier…', title: 'Comparer le diagramme ouvert avec un fichier .bpmn, côte à côte' },

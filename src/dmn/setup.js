@@ -135,7 +135,7 @@ export function setupDecisions({ modeler, library, download, baseName, setStatus
     },
   })
 
-  setupDmnSwitch(document.getElementById('btn-dmn'))
+  setupDmnSwitch()
   document.getElementById('btn-open-dmn').addEventListener('click', () => importFileFor(null))
   document.getElementById('btn-save-dmn').addEventListener('click', () => {
     const xml = service.getXml()

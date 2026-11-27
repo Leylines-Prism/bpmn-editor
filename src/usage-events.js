@@ -4,6 +4,7 @@
 
 import { track, range, trackGithubLinks } from './analytics.js'
 import { EXPERT_EVENT } from './expert-mode.js'
+import { MODULES_EVENT } from './expert-modules.js'
 import { openedAsApp } from './pwa/install.js'
 
 export function setupUsageEvents(modeler) {
@@ -11,6 +12,9 @@ export function setupUsageEvents(modeler) {
 
   // Mode Expert, activé ou quitté (pas l'état retrouvé au chargement).
   window.addEventListener(EXPERT_EVENT, ({ detail }) => track('mode-expert', { etat: detail.on ? 'on' : 'off' }))
+  // Module du mode Expert allumé ou éteint dans « Choisir les modules… » (src/expert-modules.js).
+  window.addEventListener(MODULES_EVENT, ({ detail }) => track('module-expert', { module: detail.id, etat: detail.on ? 'on' : 'off' }))
+  on('btn-expert-modules', () => track('modules-experts'))
 
   // Simulation de jetons lancée, par le menu Expert, la touche T ou le contrôle du canevas.
   // L'extension émet l'événement plusieurs fois par bascule : seul le passage à l'état actif compte.

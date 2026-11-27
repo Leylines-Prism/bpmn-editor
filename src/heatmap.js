@@ -13,6 +13,7 @@
 // que le diagramme ne change pas, et le rapport en tire une page Carte de chaleur.
 
 import { EXPERT_EVENT } from './expert-mode.js'
+import { isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { T, num } from './i18n/lang.js'
 import { runBatch } from './simulation-stats.js'
 import { structureFingerprint } from './copilot-analysis.js'
@@ -107,6 +108,8 @@ export function setupHeatmap(modeler, { branchHint = () => null } = {}) {
   toggleButton.addEventListener('click', () => setShown(!shown))
   // Sortie du mode expert : la carte s'efface avec ses boutons.
   addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && shown) setShown(false) })
+  // Module Carte de chaleur éteint (src/expert-modules.js) : la carte s'efface aussi.
+  addEventListener(MODULES_EVENT, () => { if (!isModuleOn('heatmap') && shown) setShown(false) })
   function runTokens() {
     const runs = clampRuns(runsInput.value)
     runsInput.value = runs
