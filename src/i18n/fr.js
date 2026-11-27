@@ -407,6 +407,16 @@ export default {
   'Element is missing name': 'Il manque un nom à cet élément',
   'Element is unused': "Cet élément n'est pas utilisé",
   'Element name is not unique': "Le nom de cet élément n'est pas unique",
+  // Règle maison bpmnpilot/event-triggers (src/lint/event-triggers.js)
+  'Trigger not allowed on a process start event': "Déclencheur interdit par la norme sur un début de processus",
+  'Trigger not allowed on an event sub-process start event': "Déclencheur interdit par la norme sur ce début de sous-processus événementiel",
+  'This trigger cannot be non-interrupting': 'Ce déclencheur ne peut pas être non interruptif',
+  'Trigger not allowed on an intermediate catch event': "Déclencheur interdit par la norme sur un événement de réception",
+  'Trigger not allowed on an intermediate throw event': "Déclencheur interdit par la norme sur un événement d'émission",
+  'Boundary event is missing a trigger': 'Il manque un déclencheur à cet événement de bordure',
+  'Trigger not allowed on a boundary event': "Déclencheur interdit par la norme sur un événement de bordure",
+  'Trigger not allowed on an end event': "Déclencheur interdit par la norme sur un événement de fin",
+  'Cancel event only belongs to a transaction': "Un événement d'annulation n'a sa place que dans une transaction",
   // bpmn-js-token-simulation
   'Token Simulation': 'Simulation de jetons',
   'Play Simulation': 'Lancer la simulation',

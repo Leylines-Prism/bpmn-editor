@@ -29,4 +29,10 @@ export function setupThemeToggle(button, t = T) {
     try { localStorage.setItem(KEY, mode) } catch { /* stockage indisponible : le choix vaut pour cette page */ }
     apply(mode, button, t)
   })
+  // Un autre onglet (éditeur, aide, vitrine) a changé le thème : on le suit sans recharger.
+  window.addEventListener('storage', (e) => {
+    if (e.key !== KEY && e.key !== null) return
+    mode = read()
+    apply(mode, button, t)
+  })
 }

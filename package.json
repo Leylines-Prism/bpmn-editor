@@ -13,6 +13,7 @@
     "predev": "npm run lint:pack",
     "prebuild": "npm run lint:pack",
     "lint": "eslint .",
+    "pretest": "npm run lint:pack",
     "test": "node --test \"test/*.test.mjs\""
   },
   "dependencies": {
