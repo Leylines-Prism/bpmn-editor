@@ -161,6 +161,10 @@ Puis ouvrir http://localhost:5173. Le badge passe à « MCP : prêt » (l'onglet
 Pour Claude Code, le fichier `.mcp.json` à la racine déclare déjà le serveur
 (`http://127.0.0.1:3333/mcp`).
 
+Le serveur parle aussi MCP par stdio, pour les clients qui le lancent eux-mêmes :
+`node mcp/server.js --stdio` (ou `MCP_TRANSPORT=stdio`). Il ouvre quand même son port HTTP pour les
+onglets de l'éditeur, et son journal part sur la sortie d'erreur. Les contrôles des annuaires utilisent ce mode.
+
 ## Outils
 
 | Outil | Rôle |
@@ -260,6 +264,7 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | Variable | Défaut | Rôle |
 |---|---|---|
 | `MCP_PORT` | `3333` | port du serveur |
+| `MCP_TRANSPORT` | aucune | `stdio` ajoute le transport stdio, comme l'option `--stdio`. Le port HTTP reste ouvert pour les onglets de l'éditeur |
 | `MCP_HOST` | `127.0.0.1` (`0.0.0.0` dans l'image docker) | adresse d'écoute |
 | `MCP_TOKEN` | aucune | jeton que les clients MCP doivent envoyer (`Authorization: Bearer <jeton>`). Sans lui, `/mcp` ne demande rien sur localhost, et il est fermé (401) quand `MCP_ALLOWED_HOSTS` contient un autre nom que localhost |
 | `MCP_AUTH` | aucune | `off` ouvre `/mcp` sans jeton même sous un autre nom que localhost (réseau de confiance, ou proxy qui authentifie `/mcp`). Le serveur avertit au démarrage |

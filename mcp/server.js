@@ -442,3 +442,14 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   )
 })
 httpServer.on('upgrade', (req, socket, head) => bridge.handleUpgrade(req, socket, head))
+
+// Transport stdio (option --stdio, ou MCP_TRANSPORT=stdio) : le client MCP lance le serveur
+// lui-même et lui parle par l'entrée et la sortie standard. Le serveur HTTP reste ouvert pour
+// les onglets de l'éditeur (/bridge). Les journaux vont sur la sortie d'erreur, jamais sur la
+// sortie standard qui porte le protocole.
+if (process.argv.includes('--stdio') || process.env.MCP_TRANSPORT === 'stdio') {
+  const { StdioServerTransport } = await import('@modelcontextprotocol/sdk/server/stdio.js')
+  await buildMcpServer().connect(new StdioServerTransport())
+  process.stdin.on('end', () => process.exit(0))
+  log('[mcp] transport stdio actif')
+}
