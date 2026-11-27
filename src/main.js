@@ -51,6 +51,7 @@ import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
+import { RulesPanelModule } from './rules-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
@@ -67,6 +68,7 @@ import { APP_VERSION, IS_DEV_SITE, OTHER_SITE } from './site-channel.js'
 import { setupDocEditor } from './doc/doc-editor.js'
 import { setupDocBadges } from './doc/doc-badges.js'
 import { setupDocSearch } from './doc/doc-search.js'
+import { setupTableDialog } from './table-dialog.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -166,6 +168,7 @@ const modeler = new BpmnModeler({
     GridModule,
     CopyAsImageModule,
     ProbabilityPanelModule,
+    RulesPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -284,6 +287,18 @@ setupXmlDialog({
 })
 setupFileDrop({ onFile: importFile })
 
+// Ouvrir > Depuis un tableau : une ligne par étape, convertie sans IA.
+setupTableDialog({
+  openButton: document.getElementById('btn-import-table'),
+  download: (content, name, ext, type) => download(content, `${name}.${ext}`, type),
+  onCreate: async (xml, name) => {
+    const failure = await importAndReport(xml, name)
+    if (!failure) setStatus(T('Diagram created from the table', 'Diagramme créé depuis le tableau'))
+    track(failure ? 'fichier-invalide' : 'fichier-ouvert', failure ? { cause: 'tableau' } : { source: 'tableau' })
+    return failure
+  },
+})
+
 // Ouvrir > Comparer avec un fichier : le fichier choisi à gauche, le diagramme ouvert à droite.
 document.getElementById('btn-compare-file').addEventListener('click', () => {
   document.getElementById('compare-input').click()
@@ -394,6 +409,28 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
+// Exporter > BPMN pour Camunda 8 ou 7 (mode Expert) : même diagramme, préparé pour le moteur.
+async function exportCamunda(target, button) {
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ toCamunda }, { xml }] = await Promise.all([import('./export-camunda.js'), modeler.saveXML({ format: true })])
+    const { xml: out, summary } = await toCamunda(modeler.get('moddle'), xml, target)
+    await deliver(out, `${baseName()} - Camunda ${target}`, 'bpmn', 'application/xml')
+    let msg = T(`Exported for Camunda ${target}: ${summary.conditions} condition(s) written`, `Exporté pour Camunda ${target} : ${summary.conditions} condition(s) écrite(s)`)
+    if (summary.left) msg += T(`, ${summary.left} unlabelled branch(es) to complete in Camunda Modeler`, `, ${summary.left} branche(s) sans libellé à compléter dans Camunda Modeler`)
+    setStatus(msg)
+    track('export', { format: `camunda-${target}` })
+  } catch (err) {
+    console.error('Camunda export error:', err)
+    alert(T('Camunda export failed: ', 'Export Camunda impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+}
+document.getElementById('btn-camunda-8').addEventListener('click', (e) => exportCamunda(8, e.currentTarget))
+document.getElementById('btn-camunda-7').addEventListener('click', (e) => exportCamunda(7, e.currentTarget))
+
 // Rapport de processus (menu Expert et outil get_process_report). Il reprend les comptes
 // de la dernière simulation, s'il y en a une.
 const reportName = () => `${baseName()} - ${T('process report', 'rapport de processus')}`
@@ -405,12 +442,22 @@ async function processReport({ simulate = false } = {}) {
   return buildReport(modeler, { name: baseName(), simulation, checks })
 }
 
+// Export Word : le texte de l'export Markdown, en styles Word, avec l'image du diagramme.
+const DOCX_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+async function wordFile(markdown, report) {
+  const [{ markdownToDocx }, { content }] = await Promise.all([import('./export-docx.js'), renderExport(modeler, 'png')])
+  const png = new Uint8Array(await content.arrayBuffer())
+  const bytes = await markdownToDocx(markdown, { title: report.title, png, imageName: report.title, lang })
+  return new Blob([bytes], { type: DOCX_TYPE })
+}
+
 async function exportReport(format, button) {
   button.disabled = true
   try {
     if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
     const report = await processReport()
     if (format === 'md') await deliver(reportToMarkdown(report), reportName(), 'md', 'text/markdown')
+    else if (format === 'docx') await deliver(await wordFile(reportToMarkdown(report), report), reportName(), 'docx', DOCX_TYPE)
     else await deliver(await reportToPdf(modeler, report), reportName(), 'pdf', 'application/pdf')
     track('export', { format: `report-${format}` })
   } catch (err) {
@@ -423,6 +470,7 @@ async function exportReport(format, button) {
 // Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
 document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
 document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
+document.getElementById('btn-report-docx').addEventListener('click', (e) => { setExpert(true); exportReport('docx', e.currentTarget) })
 
 // Exporter > Fiches de procédure : une fiche par activité, avec sa documentation.
 async function exportSheets(format, button) {
@@ -432,6 +480,7 @@ async function exportSheets(format, button) {
     const [{ sheetsToMarkdown, sheetsToPdf }, report] = await Promise.all([import('./doc/procedure-sheets.js'), processReport()])
     const name = `${baseName()} - ${T('procedure sheets', 'fiches de procédure')}`
     if (format === 'md') await deliver(sheetsToMarkdown(report), name, 'md', 'text/markdown')
+    else if (format === 'docx') await deliver(await wordFile(sheetsToMarkdown(report), report), name, 'docx', DOCX_TYPE)
     else await deliver(await sheetsToPdf(report), name, 'pdf', 'application/pdf')
     track('export', { format: `sheets-${format}` })
   } catch (err) {
@@ -443,6 +492,7 @@ async function exportSheets(format, button) {
 }
 document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => exportSheets('pdf', e.currentTarget))
 document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
+document.getElementById('btn-sheets-docx').addEventListener('click', (e) => exportSheets('docx', e.currentTarget))
 
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.

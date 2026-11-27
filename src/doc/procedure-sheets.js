@@ -37,6 +37,7 @@ export function sheetsToMarkdown(report) {
     lines.push('', '---', '', `## ${heading(s)}`, '')
     const facts = [`**Type**${colon()}${s.type}`]
     if (s.lane) facts.push(`**${T('Lane', 'Couloir')}**${colon()}${s.lane}`)
+    if (s.assignee) facts.push(`**${T('Assigned to', 'Assigné à')}**${colon()}${s.assignee}`)
     lines.push(facts.join(' · '))
     if (s.previous?.length) lines.push('', `**${T('Before', 'Avant')}**${colon()}${s.previous.join(' ; ')}`)
     if (s.next) lines.push('', `**${T('Next', 'Ensuite')}**${colon()}${s.next}`)
@@ -198,7 +199,7 @@ export async function sheetsToPdf(report) {
     doc.setFont('helvetica', 'bold').setFontSize(16).setTextColor(...INK)
     for (const l of doc.splitTextToSize(pdfText(heading(s)), maxW)) { doc.text(l, M, y + 5); y += 7 }
     doc.setFont('helvetica', 'normal').setFontSize(10).setTextColor(...MUTED)
-    doc.text(pdfText([s.type, s.lane].filter(Boolean).join(' · ')), M, y + 3)
+    doc.text(pdfText([s.type, s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${colon()}${s.assignee}` : ''].filter(Boolean).join(' · ')), M, y + 3)
     y += 8
     // Avant / Ensuite, dans un encadré.
     const facts = []

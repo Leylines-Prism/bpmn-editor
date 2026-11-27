@@ -54,15 +54,18 @@
     <div id="open-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-open" title="Open a BPMN 2.0 diagram from your computer" data-icon="open" role="menuitem">.bpmn or .xml file…</button>
       <button class="btn" id="btn-import-xml" title="Paste BPMN XML; a process without layout is laid out automatically" data-icon="code" role="menuitem">Paste XML…</button>
+      <button class="btn" id="btn-import-table" title="Build a process from a table of steps pasted from Excel, or a .csv or .xlsx file, without AI" data-icon="table" role="menuitem">From a table…</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-compare-file" title="Compare the open diagram with a .bpmn file, side by side" data-icon="compare" role="menuitem">Compare with a file…</button>
     </div>
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
+    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets (PDF, Word, Markdown), or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
+      <button class="btn expert-only" id="btn-camunda-8" title="BPMN file prepared for Camunda 8: platform set, executable process, gateway conditions in FEEL from the flow labels" data-icon="engine" role="menuitem">BPMN for Camunda 8</button>
+      <button class="btn expert-only" id="btn-camunda-7" title="BPMN file prepared for Camunda 7: platform set, executable process, gateway conditions in JUEL from the flow labels" data-icon="engine" role="menuitem">BPMN for Camunda 7</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-svg" title="Vector image, sharp at any size" data-icon="image" role="menuitem">SVG image</button>
       <button class="btn" id="btn-png" title="Bitmap image at 2× resolution, white background" data-icon="image" role="menuitem">PNG image</button>
@@ -70,6 +73,7 @@
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-sheets-pdf" title="One page per activity, in the order of the flow, with its documentation" data-icon="pdf" role="menuitem">Procedure sheets (PDF)</button>
       <button class="btn" id="btn-sheets-md" title="The same procedure sheets, as Markdown text" data-icon="code" role="menuitem">Procedure sheets (Markdown)</button>
+      <button class="btn" id="btn-sheets-docx" title="The same procedure sheets, as an editable Word document" data-icon="word" role="menuitem">Procedure sheets (Word)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>
@@ -83,6 +87,7 @@
       <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
       <button class="btn" id="btn-report-pdf" title="Process report: findings, improvement areas and element sequence, as a PDF" data-icon="pdf" role="menuitem">Process report (PDF)</button>
       <button class="btn" id="btn-report-md" title="Same process report, as Markdown text" data-icon="code" role="menuitem">Process report (Markdown)</button>
+      <button class="btn" id="btn-report-docx" title="Same process report, as an editable Word document" data-icon="word" role="menuitem">Process report (Word)</button>
       <div class="menu-sep" role="separator"></div>
       <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-probabilities" data-icon="assistant" title="Ask the AI co-pilot for realistic branch probabilities, to review before simulating" role="menuitem">Propose probabilities</button><span class="copilot-help" id="help-ai-probabilities" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <div class="menu-row"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>

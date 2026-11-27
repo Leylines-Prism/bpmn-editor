@@ -14,6 +14,13 @@
       ]
     },
     {
+      "name": "AssignedActivity",
+      "extends": ["bpmn:Activity"],
+      "properties": [
+        { "name": "assignee", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
       "name": "Analysis",
       "superClass": ["Element"],
       "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },

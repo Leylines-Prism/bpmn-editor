@@ -106,6 +106,10 @@ const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim()
 // Documentation d'un élément : Markdown d'origine, et sa version sur une ligne pour les tableaux.
 const docSource = (bo) => (bo?.documentation || []).map((d) => d.text || '').filter((t) => t.trim()).join('\n\n').trim()
 const docOf = (bo) => markdownToLine(docSource(bo))
+// Condition d'un flux écrite en clair (« Avance < 3000 ») et personne ou rôle assigné à une activité.
+export const conditionText = (flow) => clean(flow?.conditionExpression?.body)
+export const assigneeOf = (bo) => clean(bo?.get?.('bpmnpilot:assignee'))
+const laneCell = (s) => [s.lane, s.assignee ? `${T('Assigned to', 'Assigné à')}${T(': ', ' : ')}${s.assignee}` : ''].filter(Boolean).join(' · ')
 
 export function typeLabel(bo) {
   const base = TYPE_LABELS[short(bo)] ? pick(TYPE_LABELS[short(bo)]) : short(bo)
@@ -373,7 +377,10 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
   const describeNext = (n, depth = 0) => out(n).map((f) => {
     const t = f.targetRef
     if (!t) return ''
-    const label = clean(f.name) ? `${clean(f.name)} : ` : ''
+    const rule = conditionText(f)
+    const name = clean(f.name)
+    const shown = name && rule && name !== rule ? `${name} (${rule})` : name || rule
+    const label = shown ? `${shown} : ` : ''
     if (isGateway(t) && depth < 3 && out(t).length) {
       const inner = describeNext(t, depth + 1)
       if (is(t, 'bpmn:ParallelGateway') && out(t).length > 1) return `${label}${T('in parallel', 'en parallèle')} : ${inner}`
@@ -389,6 +396,7 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     name: displayName(n),
     type: typeLabel(n),
     lane: laneName(n),
+    assignee: assigneeOf(n),
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -726,7 +734,7 @@ export function reportToMarkdown(r) {
   for (const s of r.sequence) {
     const flag = s.level ? ` (${LEVEL_LABEL[s.level]().toLowerCase()})` : ''
     const doc = s.documentation || (s.needsDoc ? `*${T('to complete', 'à compléter')}*` : '')
-    lines.push(`| ${s.number} | ${mdCell(s.name)}${flag} | ${mdCell(s.type)} | ${mdCell(s.lane)} | ${mdCell(doc)} | ${mdCell(s.next)} |${r.simulation ? ` ${s.count} |` : ''}`)
+    lines.push(`| ${s.number} | ${mdCell(s.name)}${flag} | ${mdCell(s.type)} | ${mdCell(laneCell(s))} | ${mdCell(doc)} | ${mdCell(s.next)} |${r.simulation ? ` ${s.count} |` : ''}`)
   }
   if (r.simulation) lines.push('', T(`Instances: tokens counted at the last simulation (${num(r.simulation.runs)} instances).`, `Instances : jetons comptés lors de la dernière simulation (${num(r.simulation.runs)} instances).`))
   // La documentation entière, mise en forme : le tableau n'en montre qu'une ligne.
@@ -1115,7 +1123,7 @@ export async function reportToPdf(modeler, r) {
       String(s.number),
       pdfText(s.name + (s.tags.length ? '\n' + s.tags.map((t) => t.title).join(', ') : '')),
       pdfText(s.type),
-      pdfText(s.lane),
+      pdfText(laneCell(s)),
       pdfText(s.docMarkdown ? markdownToPlain(s.docMarkdown) : s.needsDoc ? T('to complete', 'à compléter') : '–'),
       pdfText(s.next || '–'),
       ...(r.simulation ? [String(s.count)] : []),
