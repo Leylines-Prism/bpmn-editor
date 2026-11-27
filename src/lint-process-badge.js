@@ -1,4 +1,5 @@
-// Erreurs de validation du processus lui-même (début ou fin manquant…).
+// Erreurs de validation du processus lui-même (début ou fin manquant…), et croix sur les
+// formes qu'elles visent quand on peut les désigner.
 //
 // Le processus n'a pas de forme à l'écran : bpmn-js-bpmnlint accroche son badge
 // à l'élément racine, à une position fixe du diagramme. Sur un canevas vide ou
@@ -53,6 +54,23 @@ function LintProcessBadge(eventBus, canvas, linting, overlays, elementRegistry) 
 
     badges.set(elementId, html)
     render()
+  }
+
+  // Certaines erreurs du processus désignent des formes précises : « plusieurs événements
+  // de début vierges » vise ces événements. On marque aussi chacun d'eux d'une croix, en plus
+  // du badge Processus, pour qu'on voie où corriger.
+  const createIssues = linting._createIssues
+  linting._createIssues = function (issues) {
+    const extra = {}
+    for (const [id, list] of Object.entries(issues)) {
+      const blank = list.filter((issue) => issue.rule === 'single-blank-start-event')
+      if (!blank.length) continue
+      const starts = elementRegistry.filter(
+        (el) => is(el, 'bpmn:StartEvent') && !el.labelTarget && !(el.businessObject.eventDefinitions || []).length && el.businessObject.$parent?.id === id,
+      )
+      for (const start of starts) extra[start.id] = [...(extra[start.id] || issues[start.id] || []), ...blank]
+    }
+    createIssues.call(this, { ...issues, ...extra })
   }
 
   const clearOverlays = linting._clearOverlays

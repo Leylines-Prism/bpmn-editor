@@ -778,7 +778,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <!-- docker -->
         <details class="faq">
           <summary>My MCP agent does not draw.</summary>
-          <p>The agent draws in the last editor tab you used: keep it open. The MCP badge in the toolbar should read "MCP: ready": the tab is linked to the server and waits for an agent. As soon as an agent connects, it shows its name instead, for example "MCP: Claude Code", and hovering it gives its version and the time of its last call. The MCP protocol only sends this name and version: neither the model in use nor the account. Click it to get the address and the settings to paste into the agent again.</p>
+          <p>The agent draws in the last editor tab you used: keep it open. The MCP badge in the toolbar should read "MCP: ready": the tab is linked to the server and waits for an agent. As soon as an agent connects, it shows its name instead, for example "MCP: Claude Code", and hovering it gives its version and the time of its last call. After 15 minutes without activity from the agent, the badge goes back to "MCP: ready", and hovering it still shows the last agent's name. The MCP protocol only sends this name and version: neither the model in use nor the account. Click it to get the address and the settings to paste into the agent again.</p>
           <p>If the agent gets a 401 error "MCP is closed", the editor is served under a name other than localhost without a token, so the server closes MCP access. Generate a token in the <span class="ui">Connect an agent</span> window, add it to the server variables (<code>MCP_TOKEN</code>), restart, then paste the new setting into the agent.</p>
         </details>
         <details class="faq">
