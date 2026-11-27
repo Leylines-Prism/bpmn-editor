@@ -1,6 +1,7 @@
 // Pages d'aide : bouton « Copier » sur chaque exemple de prompt (.prompt-text).
 // Le texte copié est celui affiché, espaces regroupés, prêt à coller dans le co-pilote.
 // Un prompt structuré garde ses retours à la ligne.
+import { track } from '../analytics.js'
 const fr = document.documentElement.lang === 'fr'
 const LABEL = fr ? 'Copier' : 'Copy'
 const DONE = fr ? 'Copié' : 'Copied'
@@ -28,7 +29,7 @@ async function copy(text, source) {
   }
 }
 
-for (const text of document.querySelectorAll('.prompt-text')) {
+for (const [index, text] of [...document.querySelectorAll('.prompt-text')].entries()) {
   const title = text.parentElement.querySelector('.prompt-title')
   const button = document.createElement('button')
   button.type = 'button'
@@ -43,6 +44,8 @@ for (const text of document.querySelectorAll('.prompt-text')) {
       ? text.textContent.split('\n').map((line) => line.replace(/\s+/g, ' ').trim()).filter(Boolean).join('\n')
       : text.textContent.replace(/\s+/g, ' ').trim()
     const ok = await copy(value, text)
+    // Numéro de l'exemple copié (1, 2…), pas son texte.
+    if (ok) track('prompt-exemple-copie', { numero: index + 1 })
     label.textContent = ok ? DONE : FAILED
     button.classList.toggle('done', ok)
     clearTimeout(timer)

@@ -176,8 +176,10 @@ dit ce qui sort du navigateur, et
 [Vos données et vos clés API dans la version en ligne](docs/online-privacy.fr.md) donne le détail.
 
 La page stable compte son audience de façon anonyme, sans cookie :
-visites, provenance et quelques actions (co-pilote ouvert ou utilisé, fournisseur connecté, diagramme
-créé, ouvert ou exporté, temps actif par tranche, clic sur le lien de soutien). Aucun script tiers n'est chargé : la page envoie
+visites (pages d'aide comprises), provenance, version de l'app et usage de chaque fonction (diagramme créé, ouvert
+ou exporté, mode Expert, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
+fournisseur connecté, types de fichiers joints, classes d'erreur, Votre avis, exemples de prompts copiés, liens
+GitHub et de soutien, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
 messages ni les clés API. « Do Not Track » et « Global Privacy Control » coupent ce comptage, et un
 indicateur dans le stockage du navigateur exclut vos propres visites. Ni l'image Docker ni `npm run dev`

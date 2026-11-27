@@ -7,6 +7,7 @@ import { contactChoices, openSealed } from '../feedback.js'
 import { WALLPAPERS } from './wallpapers.js'
 import { createPulses } from './pulses.js'
 import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from '../support.js'
+import { setupAnalytics, trackGithubLinks } from '../analytics.js'
 import introLight from '../brand/leylines-logo-intro-light.svg?url'
 import introDark from '../brand/leylines-logo-intro-dark.svg?url'
 
@@ -66,6 +67,9 @@ support.title = T('Thanks for the coffee! (Ko-fi)', 'Merci pour le café ! (Ko-f
 support.setAttribute('aria-label', support.title)
 contacts.append(support)
 trackSupportClicks(contacts)
+// Vue de la page vitrine et clics vers GitHub (voir src/analytics.js).
+setupAnalytics({ lang, activeTime: false })
+trackGithubLinks(document, 'vitrine')
 
 // Carrousel
 const slidesBox = document.getElementById('slides')

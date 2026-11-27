@@ -167,8 +167,9 @@ Compared with the Docker version, there is no agent connection (MCP) and no savi
 some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the page says what leaves the browser, and
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
-The stable page measures its audience anonymously, without cookies: visits, referrers and a few actions (co-pilot opened or used, provider connected, diagram
-created, opened or exported, active time by range, support link clicked). No third-party script is loaded: the page sends
+The stable page measures its audience anonymously, without cookies: visits (help pages included), referrers, app version and the use of each function (diagram created, opened or exported,
+expert mode, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
+error classes, feedback, prompt examples copied, GitHub and support links, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
 flag in the browser storage excludes your own visits (see [src/analytics.js](src/analytics.js)). Neither the

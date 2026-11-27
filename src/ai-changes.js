@@ -22,6 +22,7 @@ import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 import { T, num } from './i18n/lang.js'
 import { getHistory, isHistoryReload } from './history.js'
 import { fontOf, textColorOf } from './label-style.js'
+import { track } from './analytics.js'
 
 // Outils qui modifient le diagramme.
 const WRITE_TOOLS = ['add_shapes', 'connect_shapes', 'update_elements', 'style_elements', 'remove_elements', 'set_diagram_xml', 'auto_layout']
@@ -98,6 +99,7 @@ function createTracker(modeler) {
 
   async function openBeforeAfter() {
     if (!start) return
+    track('comparer', { source: 'ia' })
     const { openCompare } = await import('./compare.js')
     const { xml } = await modeler.saveXML({ format: true })
     await openCompare({

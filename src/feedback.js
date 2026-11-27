@@ -14,6 +14,7 @@
 
 import { T } from './i18n/lang.js'
 import { SUPPORT_URL, CUP_ICON, trackSupportClicks } from './support.js'
+import { track } from './analytics.js'
 import { addDialogClose } from './dialog-close.js'
 
 const DEFAULT_FEEDBACK_URL = 'https://github.com/Leylines-Prism/bpmn-pilot/issues'
@@ -176,8 +177,8 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
             : `<span>${esc(c.detail)}</span>`
           const inner = `<span class="choice-icon icon-${c.icon}">${ICONS[c.icon]}</span><span class="choice-text"><strong>${esc(c.title)}</strong>${detail}</span><span class="choice-go">${CHEVRON}</span>`
           return c.sealed
-            ? `<button type="button" class="choice" data-sealed="${i}" aria-live="polite">${inner}</button>`
-            : `<a class="choice" href="${esc(c.url)}" target="_blank" rel="noopener">${inner}</a>`
+            ? `<button type="button" class="choice" data-sealed="${i}" data-choice="${esc(c.icon)}" aria-live="polite">${inner}</button>`
+            : `<a class="choice" href="${esc(c.url)}" target="_blank" rel="noopener" data-choice="${esc(c.icon)}">${inner}</a>`
         })
         .join('')}
       <a class="choice" href="${SUPPORT_URL}" target="_blank" rel="noopener" data-support="avis"><span class="choice-icon icon-support">${CUP_ICON}</span><span class="choice-text"><strong>${T('Buy the author a coffee', "Offrir un café à l'auteur")}</strong><span>${T('If the editor is useful to you, a small thank-you on Ko-fi.', 'Si l\'éditeur vous rend service, un petit merci sur Ko-fi.')}</span></span><span class="choice-go">${CHEVRON}</span></a>
@@ -190,11 +191,17 @@ export function setupFeedback({ container, env = import.meta.env, sealed = SEALE
   document.body.append(dialog)
   // Dernier choix : soutenir le projet sur Ko-fi (clic compté, voir src/support.js).
   trackSupportClicks(dialog)
-  const open = () => { if (!dialog.open) dialog.showModal() }
+  const open = () => {
+    if (dialog.open) return
+    track('votre-avis')
+    dialog.showModal()
+  }
   button.addEventListener('click', open)
   dialog.addEventListener('click', async (e) => {
     const choice = e.target.closest('.choice')
     if (!choice) return
+    // Le choix fait (bug, idée, contact…), compté avant l'ouverture du lien. Ko-fi : « soutien ».
+    if (choice.dataset.choice) track('votre-avis-choix', { choix: choice.dataset.choice })
     // Choix chiffré : la fenêtre reste ouverte pendant la vérification, et en cas d'échec.
     if (choice.hasAttribute('data-sealed')) {
       e.preventDefault()

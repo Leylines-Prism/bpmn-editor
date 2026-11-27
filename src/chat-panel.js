@@ -17,7 +17,7 @@ import { lang, num, T } from './i18n/lang.js'
 import { IMAGE_TYPES, MAX_ATTACHMENTS, MAX_IMAGE_BYTES, MAX_PDF_BYTES, MAX_TOTAL_BYTES, PDF_TYPE, supports } from './ai/attachments.js'
 import { fileToText, textFileKind, TEXT_FILE_ACCEPT, withTextFiles } from './ai/text-files.js'
 import { makeResizable } from './panel-resize.js'
-import { trackOnce } from './analytics.js'
+import { onPageHide, range, track, trackOnce } from './analytics.js'
 import { newAiRound, undoAiRound } from './ai-changes.js'
 import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
@@ -692,9 +692,17 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     send(text, attachments)
   })
 
+  // Mesure d'usage (version en ligne) : nombre de messages et d'appels d'outils de la
+  // session, envoyés en une fois à la fermeture de la page. Jamais le texte ni les fichiers.
+  const usage = { messages: 0, tools: 0 }
+  onPageHide(() => { if (usage.messages) track('copilote-bilan', { messages: range(usage.messages), outils: range(usage.tools) }) })
+  const fileType = (a) => (a.kind === 'text' ? (/\.([a-z0-9]{1,5})$/i.exec(a.name || '')?.[1] || 'texte').toLowerCase() : a.kind)
+
   // rewind : relance de la dernière demande, qui remplace son échange dans l'historique.
   async function send(text, attachments = [], { rewind = false, critique = true } = {}) {
     trackOnce('assistant-utilise')
+    usage.messages++
+    for (const type of new Set(attachments.map(fileType))) track('assistant-piece-jointe', { type })
     // Chaque réponse ne marque que ce qu'elle a changé.
     newAiRound()
     // Seule la dernière réponse se relance.
@@ -747,6 +755,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         if (tools) reply.insertBefore(document.createTextNode(chunk), tools)
         else reply.append(chunk)
       } else if (event.type === 'tool') {
+        usage.tools++
         reply.hidden = false
         gotText = true
         if (!tools) {
@@ -795,6 +804,12 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     } catch (err) {
       failed = true
       errorText = err?.message || ''
+      if (!controller.signal.aborted) {
+        // Classe d'erreur seulement : code HTTP par centaines, ou pas de réponse du serveur.
+        const status = Number(err?.status)
+        const classe = status === 401 || status === 403 || status === 429 ? String(status) : status >= 500 ? '5xx' : status >= 400 ? '4xx' : 'reseau'
+        track('assistant-erreur', { fournisseur: conn?.provider || 'serveur', classe })
+      }
       if (controller.signal.aborted) add('notice', T('Reply stopped.', 'Réponse interrompue.'))
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))

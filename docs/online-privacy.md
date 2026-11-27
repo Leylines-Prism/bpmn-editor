@@ -39,9 +39,12 @@ this editor, one that expires on its own and has a spending cap (see [Good pract
 2. **The AI provider you chose**, only when you use the co-pilot or list its models: Anthropic, OpenAI,
    Mistral, xAI, Ollama on your own machine, or the "OpenAI-compatible" address you enter yourself.
 3. **Anonymous usage statistics** (audience measurement), on the stable page only: the page address
-   (without the part after `#`), the referring site, the browser language, the screen size, and the name
-   of an action, with at most an export format or a provider name. No cookie, no diagram, no message, no
-   key. It is turned off by "Do Not Track" and "Global Privacy Control". The code is in [src/analytics.js](../src/analytics.js).
+   (without the part after `#`), the referring site, the browser language, the screen size, the app version,
+   and the name of an action with at most a category: the interface language, an export format, a provider
+   name, a file type, an error class (HTTP code range), a count range. The actions are listed in
+   [src/usage-events.js](../src/usage-events.js) and the files that call `track`. No cookie, no diagram, no
+   message, no file content, no key. It is turned off by "Do Not Track" and "Global Privacy Control". The
+   code is in [src/analytics.js](../src/analytics.js).
 
 The MCP connection, server storage and server exports do not exist in the online version: their server
 address is forced to empty when the online version is built ([src/main.js](../src/main.js)).
