@@ -69,6 +69,7 @@ import { setupDocEditor } from './doc/doc-editor.js'
 import { setupDocBadges } from './doc/doc-badges.js'
 import { setupDocSearch } from './doc/doc-search.js'
 import { setupTableDialog } from './table-dialog.js'
+import { rowsToXlsx } from './sheet-io.js'
 import { setupGridDialog } from './grid-dialog.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
@@ -551,7 +552,7 @@ document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => 
   button.disabled = true
   try {
     if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ raciRows }, { rowsToXlsx }, report] = await Promise.all([import('./raci.js'), import('./sheet-io.js'), processReport()])
+    const [{ raciRows }, report] = await Promise.all([import('./raci.js'), processReport()])
     if (!report.raci) throw new Error(T('no activity has an Accountable, Consulted or Informed role yet (Responsibilities group of the properties panel)', 'aucune activité n\'a encore de rôle Valide, Consultés ou Informés (groupe Responsabilités du panneau de propriétés)'))
     const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')
     const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -586,7 +587,7 @@ document.getElementById('btn-ai-probabilities').addEventListener('click', () => 
 })
 document.getElementById('btn-ai-potential').addEventListener('click', () => {
   setExpert(true)
-  if (!modeler.get('elementRegistry').some((el) => el.businessObject?.$instanceOf?.('bpmn:Activity'))) {
+  if (!modeler.get('elementRegistry').find((el) => el.businessObject?.$instanceOf?.('bpmn:Activity'))) {
     alert(T('The diagram has no activity to rate.', 'Le diagramme n\'a aucune activité à noter.'))
     return
   }

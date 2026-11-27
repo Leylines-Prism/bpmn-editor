@@ -25,6 +25,19 @@ graphe ou « second cerveau »), BPMN-Pilot transforme de simples conversations 
 l'agent trouve les processus, l'éditeur les dessine et les vérifie, et vous relisez le résultat. Fini
 les heures passées sur la structure BPMN et le dessin à la main.
 
+<table>
+<tr><th width="34%">Votre invite</th><th>Le diagramme dessiné par le co-pilote IA</th></tr>
+<tr>
+<td valign="top">
+
+> Dessine une demande d'achat : le salarié saisit sa demande, son manager l'accepte ou la refuse. Si elle est acceptée, les achats commandent au fournisseur, puis la comptabilité paie la facture. En cas de refus, le salarié est prévenu.
+
+<sub>Un message, un seul passage. Couloirs, décision, flux de messages vers le pool du fournisseur, puis les six contrôles du résultat.</sub>
+</td>
+<td><img src="docs/prompt-example.fr.png" alt="Diagramme BPMN dessiné depuis l'invite : un pool Entreprise avec les couloirs Salarié, Manager, Achats et Comptabilité, une décision d'acceptation et des flux de messages vers un pool Fournisseur"></td>
+</tr>
+</table>
+
 BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
 - **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
@@ -68,8 +81,12 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
 
 - **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
   coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
-- **Rapport de processus** en PDF ou en Markdown : chiffres clés, constats par niveau, axes
-  d'amélioration, événements de fin, activités par couloir.
+- **Rapport de processus** en PDF, en Markdown ou en Word : chiffres clés, constats par niveau, axes
+  d'amélioration, événements de fin, activités par couloir, matrice RACI.
+- **Potentiel d'IA par activité** : automatisable, assistée par IA ou humaine, avec la raison et le
+  garde-fou, noté par le co-pilote ou à la main, et repris dans le rapport.
+- **BPMN pour Camunda 8 ou 7** : plateforme indiquée, processus exécutable, conditions des passerelles
+  en FEEL ou en JUEL, assignations sur les tâches utilisateur.
 - **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
   manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
   bpmnlint), avec autocorrection.
@@ -447,10 +464,14 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 ## Ce que fait l'éditeur
 
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
-  .xml, SVG, PNG, PDF), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
+  .xml, SVG, PNG, PDF, fichier .bpmn chiffré par mot de passe), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
   cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
+- **Sans IA** : construire un processus depuis un tableau d'étapes (collé depuis Excel, .csv ou .xlsx,
+  colonnes de Visio Data Visualizer lues telles quelles), ou depuis une grille rôles × tâches en atelier.
+- **Responsabilités** : personne assignée, systèmes utilisés et RACI de chaque activité, conditions en
+  clair sur les branches des décisions. Fiches de procédure en PDF, Markdown ou Word, matrice RACI en Excel.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.

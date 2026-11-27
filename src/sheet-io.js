@@ -7,7 +7,7 @@ import { openZip, xlsxSheets, MAX_OFFICE_BYTES } from './ai/text-files.js'
 
 // Découpe un texte collé (Excel donne des tabulations) ou un fichier CSV.
 export function parseDelimited(text) {
-  const clean = String(text ?? '').replace(/^﻿/, '').replace(/\r\n?/g, '\n')
+  const clean = String(text ?? '').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n')
   const first = clean.split('\n').find((l) => l.trim()) || ''
   // Tabulation d'abord (copier depuis Excel), sinon le séparateur le plus présent.
   const counts = ['\t', ';', ','].map((d) => [d, first.split(d).length - 1])

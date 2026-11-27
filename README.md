@@ -24,6 +24,19 @@ Connected to an agent and everything it knows (mail, wiki, document base, RAG, k
 processes, the editor draws and checks them, and you review the result. No more hours spent on the
 BPMN structure and on drawing by hand.
 
+<table>
+<tr><th width="34%">Your prompt</th><th>The diagram drawn by the AI co-pilot</th></tr>
+<tr>
+<td valign="top">
+
+> Draw a purchase request: the employee enters the request, their manager accepts or rejects it. If accepted, purchasing orders from the supplier, then accounting pays the invoice. If rejected, the employee is told.
+
+<sub>One message, one pass. Lanes, decision, message flows to the supplier pool, then the six checks of the result.</sub>
+</td>
+<td><img src="docs/prompt-example.png" alt="BPMN diagram drawn from the prompt: a Company pool with Employee, Manager, Purchasing and Accounting lanes, an approval decision and message flows to a Supplier pool"></td>
+</tr>
+</table>
+
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), in English and French:
 
 - **Connect an agent through MCP** (Docker version), such as Claude Code, Claude Desktop or GitHub Copilot in
@@ -66,8 +79,12 @@ and the toolbar stays uncluttered for everyone else (see the
 
 - **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
   which paths are taken, never reached, or looped through.
-- **Process report** as PDF or Markdown: key figures, findings by level, improvement areas, end events,
-  activities by lane.
+- **Process report** as PDF, Markdown or Word: key figures, findings by level, improvement areas, end events,
+  activities by lane, RACI matrix.
+- **AI potential by activity**: automatable, AI-assisted or human, with the reason and the safeguard,
+  rated by the co-pilot or by hand, and listed in the report.
+- **BPMN for Camunda 8 or 7**: platform set, executable process, gateway conditions in FEEL or JUEL,
+  assignees on user tasks.
 - **Checks on every co-pilot answer**, in both modes: a review of the request before drawing (ambiguities, missing
   points), then six checks (XML, BPMN 2.0 metamodel, references and scopes, diagram interchange,
   reimport, bpmnlint), with automatic correction.
@@ -418,10 +435,15 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 
 ## What the editor does
 
-- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF), copy
+- **Files**: name, new, open (file, pasted XML, or drop), export (.bpmn, .xml, SVG, PNG, PDF, password-encrypted
+  .bpmn file), copy
   as an image, print the diagram alone fitted to one page. The current diagram is restored when you
   come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
+- **Without AI**: build a process from a table of steps (pasted from Excel, .csv or .xlsx, Visio Data
+  Visualizer columns read as they are), or from a roles × tasks grid in a workshop.
+- **Responsibilities**: assignee, systems used and RACI for each activity, plain-words conditions on
+  decision branches. Procedure sheets in PDF, Markdown or Word, RACI matrix in Excel.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
   checking, grid, minimap, and the Process panel for the properties of each
   element.

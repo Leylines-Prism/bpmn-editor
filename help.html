@@ -214,6 +214,19 @@
             </tbody>
           </table>
         </div>
+        <h3 id="responsibilities">Responsibilities, systems and conditions (RACI)</h3>
+        <p>The lane says which department performs an activity. The panel adds the rest, for each activity:</p>
+        <ul>
+          <li><span class="ui">Assigned to</span>, in the General group: the person or precise role who performs it (the R of RACI), in addition to the lane.</li>
+          <li><span class="ui">Systems used</span>: the applications or tools, comma-separated (ERP, email, business tool…).</li>
+          <li>The <span class="ui">Responsibilities (RACI)</span> group: <span class="ui">Accountable (A)</span>, who answers for the result; <span class="ui">Consulted (C)</span> and <span class="ui">Informed (I)</span>, comma-separated.</li>
+        </ul>
+        <p>These fields feed the procedure sheets, the process report (RACI matrix) and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>RACI matrix (Excel)</span> export, where R comes from Assigned to, or else from the lane. The AI co-pilot and MCP agents read and fill them too.</p>
+        <p>On a flow leaving an exclusive or inclusive gateway, the <span class="ui">Condition</span> field takes the rule in plain words, for example "Amount &lt; 3000". It is stored in the standard <code>conditionExpression</code> element, which other tools read, and the <a href="#camunda-export">export for Camunda</a> translates it into the engine's language. While the flow has no other label, the condition shows on the diagram. The default flow has no condition.</p>
+        <div class="fig-pair">
+          <figure><p class="fig-title">An activity</p><img src="/src/help/img/en-panneau-raci.webp" width="300" height="1145" alt="Process panel of the Check the request task: Assigned to Team lead, Systems used ERP, Responsibilities (RACI) group with Accountable Department head and Consulted HR, then the Expert mode AI adoption group, AI potential AI-assisted." loading="lazy" /><figcaption>Assigned to, Systems used, RACI and, in Expert mode, AI adoption.</figcaption></figure>
+          <figure><p class="fig-title">A decision flow</p><img src="/src/help/img/en-condition-flux.webp" width="300" height="530" alt="Process panel of the Yes flow leaving the decision: the Condition field holds Amount &lt; 3000." loading="lazy" /><figcaption>The plain-words condition of a branch.</figcaption></figure>
+        </div>
         <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
       </section>
 
@@ -253,7 +266,7 @@
         <h3>Using the documentation</h3>
         <ul>
           <li>In <a href="#drawing">Presentation mode</a>, a click on an element shows its sheet on the right of the screen. The <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Sheets</span> button of the bar, or the <kbd>D</kbd> key, turns the sheets on or off. <kbd>Esc</kbd> closes the open sheet.</li>
-          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Procedure sheets (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Procedure sheets (Markdown)</span>, produces one sheet per activity in the order of the flow: its type, its lane, what comes before and after, then its formatted documentation. Documented gateways and events get a sheet too, and an activity without documentation is marked "to complete". The PDF starts with the documentation of the process and a clickable table of contents.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Procedure sheets (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Procedure sheets (Markdown)</span> or <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Procedure sheets (Word)</span>, produces one sheet per activity in the order of the flow: its type, its lane, the assignee, systems and RACI when they are filled in, what comes before and after, then its formatted documentation. Documented gateways and events get a sheet too, and an activity without documentation is marked "to complete". The PDF starts with the documentation of the process and a clickable table of contents.</li>
           <li>The <a href="#process-report">process report</a> shows the documentation on one line in its element sequence, and in full at the end of the Markdown report.</li>
           <li>The AI co-pilot and MCP agents read the documentation of each element along with the diagram: ask them a question about the process, they use it to answer.</li>
         </ul>
@@ -361,10 +374,33 @@
         <ul>
           <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>.bpmn or .xml file…</span>, opens a file from your disk.</li>
           <li><span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Paste XML…</span> opens a diagram copied as code, for example from another tool or an AI answer.</li>
+          <li><span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>From a table…</span> builds a process from a table of steps, without AI (see below).</li>
+          <li><span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid…</span> builds a process in a workshop, one task per row and one role per column (see below).</li>
           <li>You can also drop a .bpmn file onto the page.</li>
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
-        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening.</p>
+        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening. An <a href="#encrypted-file">encrypted file</a> (.bpmn.enc) opens the same way, after its password.</p>
+        <h3 id="from-table"><span class="ico" data-icon="table" aria-hidden="true"></span>Create from a table (no AI)</h3>
+        <p>Many procedures already exist as a list of steps in Excel. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>From a table…</span>, turns them into a diagram: copy the rows in Excel, header included, and paste them into the window, or choose a .csv, .tsv or .xlsx file. The conversion runs in the page, with no AI and nothing sent. A preview counts the steps, links, decisions and lanes before creation, and flags errors (next step not found, duplicate ID).</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Column</th><th>Content</th></tr></thead>
+            <tbody>
+              <tr><td>ID</td><td>The step identifier. Without this column, the rows follow one another in order.</td></tr>
+              <tr><td>Description</td><td>The step label, the only required column. A label ending with "?" becomes a decision.</td></tr>
+              <tr><td>Next step ID</td><td>The IDs of the next steps, comma-separated. Several IDs after a decision give its branches.</td></tr>
+              <tr><td>Connector label</td><td>The labels of the outgoing flows, in the same order ("Yes,No").</td></tr>
+              <tr><td>Shape type</td><td>Start, End, Decision, Parallel, User, Service, Manual, Send, Receive, Timer, Subprocess… Empty: a task.</td></tr>
+              <tr><td>Function</td><td>The role or department: one lane per value.</td></tr>
+              <tr><td>Assigned to, Systems, Accountable, Consulted, Informed, Notes</td><td>Optional: they fill the <a href="#responsibilities">fields of the same name</a> and the documentation of the activity.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The headers of Microsoft Visio Data Visualizer (Process Step ID, Next Step ID, Connector Label, Shape Type, Function) and the What / Who / How columns are read as they are, in English and in French. The <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Template (.xlsx)</span> button gives a workbook ready to fill in. The editor adds what the diagram lacks: start event, end event, and a merge gateway before a step where several paths join.</p>
+        <figure><img src="/src/help/img/en-depuis-tableau.webp" width="720" height="514" alt="Create a process from a table window: six rows pasted from Excel with the columns ID, Description, Next step ID, Connector label, Shape type and Function, and the preview: 6 steps, 6 links, 1 decision, 4 lanes." loading="lazy" /><figcaption>Six rows pasted from Excel, and the preview before creation.</figcaption></figure>
+        <h3 id="roles-grid"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid (workshop)</h3>
+        <p>In a workshop, listing is faster than drawing. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="grid" aria-hidden="true"></span>Roles × tasks grid…</span>, shows a grid: roles in columns, tasks in rows, in order. One click in the cell of the role that performs each task is enough. <kbd>Enter</kbd> on the last row adds a task in the same role. A task ending with "?" becomes a decision: Yes leads to the next task, No to an end you can reconnect. <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Continue in the table…</span> carries the grid over to the From a table window, to add branches, labels or types.</p>
+        <figure><img src="/src/help/img/en-grille-roles.webp" width="920" height="452" alt="Roles × tasks grid window: three roles in columns (Employee, Manager, Accounting) and four tasks, each checked in the column of its role, including the decision Approve?." loading="lazy" /><figcaption>Four tasks shared between three roles, including a decision.</figcaption></figure>
         <h3 id="compare"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare two versions</h3>
         <p>The comparison window shows two versions side by side, read only: the older one on the left, the open diagram on the right. Open it with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span>, or with the <span class="uib">Before / after</span> button on the co-pilot's pill.</p>
         <ul>
@@ -381,16 +417,20 @@
             <tbody>
               <tr><td>.bpmn file</td><td>Keep the diagram, reopen it here or in another BPMN tool</td></tr>
               <tr><td>.xml file</td><td>The same content, for tools that expect the .xml extension</td></tr>
+              <tr><td>Encrypted .bpmn file…</td><td>Send a sensitive process: the file is encrypted with a password (see below)</td></tr>
+              <tr><td>BPMN for Camunda 8 or 7</td><td>In Expert mode: a file ready for the engine, see <a href="#camunda-export">Export for Camunda</a></td></tr>
               <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
-              <tr><td>Procedure sheets (PDF or Markdown)</td><td>One sheet per activity, in the order of the flow, with its documentation (see <a href="#documenting">Documenting elements</a>)</td></tr>
+              <tr><td>Procedure sheets (PDF, Markdown or Word)</td><td>One sheet per activity, in the order of the flow, with its documentation, assignee, systems and RACI (see <a href="#documenting">Documenting elements</a>). The Word document can then be edited like any other.</td></tr>
+              <tr><td>RACI matrix (Excel)</td><td>A workbook: one row per activity, one column per role, and the letters R, A, C, I (see <a href="#responsibilities">Responsibilities</a>)</td></tr>
               <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
+        <figure><img src="/src/help/img/en-menu-exporter.webp" width="242" height="606" alt="Export menu open in Expert mode: Destination, .bpmn file, .xml file, Encrypted .bpmn file, BPMN for Camunda 8 and 7, SVG and PNG images, PDF document, Procedure sheets in PDF, Markdown and Word, RACI matrix (Excel), XML code to copy, Print." loading="lazy" /><figcaption>The Export menu, in Expert mode.</figcaption></figure>
         <!-- online -->
         <p>In the Docker version, the menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /online -->
@@ -404,6 +444,9 @@
         <!-- docker -->
         <p>The file is also saved in the exports folder of the server, whatever the Destination choice, never replacing an existing file.</p>
         <!-- /docker -->
+        <h3 id="encrypted-file"><span class="ico" data-icon="lock" aria-hidden="true"></span>Encrypted file (AES-256)</h3>
+        <p>A process can reveal an organization, amounts or weaknesses. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="lock" aria-hidden="true"></span>Encrypted .bpmn file…</span>, asks twice for a password of at least 8 characters, then downloads a .bpmn.enc file encrypted in your browser: AES-256-GCM, with a key derived from the password by PBKDF2-SHA-256 (600,000 iterations). The password is neither kept nor sent: if it is lost, the file can no longer be opened. Only BPMN-Pilot reopens this file, with <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span> or by drag and drop. Send the password through another channel than the file.</p>
+        <figure><img src="/src/help/img/en-mot-de-passe.webp" width="460" height="346" alt="Encrypted .bpmn file window: explanation of the encryption, Password and Confirm the password fields, Cancel and Encrypt and save buttons." loading="lazy" /><figcaption>The password window, before saving.</figcaption></figure>
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
         <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
       </section>
@@ -496,6 +539,7 @@
       <section id="prompt-examples">
         <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>Prompt examples</h2>
         <p>Ready-to-use prompts for the <a href="#assistant">AI co-pilot</a>, to adapt to your context. They work with every provider, online and in the Docker version. The co-pilot replies, and names the elements, in the language of the prompt.</p>
+        <figure><p class="fig-title">One prompt, one diagram</p><img src="/docs/prompt-example.png" width="1400" height="1083" alt="Diagram drawn by the co-pilot from the prompt: a Company pool with Employee, Manager, Purchasing and Accounting lanes, a Request approved? decision, and message flows to a Supplier pool." loading="lazy" /><figcaption>"Draw a purchase request: the employee enters the request, their manager accepts or rejects it. If accepted, purchasing orders from the supplier, then accounting pays the invoice. If rejected, the employee is told." One message, one pass.</figcaption></figure>
 
         <details class="faq prompts-list">
           <summary>18 demo prompts, ready to copy and paste</summary>
@@ -642,7 +686,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       <section id="bpmn-experts">
         <h2>For BPMN experts</h2>
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
-        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <a href="#probabilities">Propose probabilities</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, then <a href="#probabilities">Propose probabilities</a>, <a href="#ai-potential">AI potential by activity</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
         <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
@@ -691,6 +735,19 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <figure class="fig-anim"><p class="fig-title">Exporting the report</p><img src="/docs/process-report.gif" width="1280" height="720" alt="The process report in PDF from the Expert menu, then its four pages" loading="lazy" /><figcaption>From the Expert menu, then the four pages of the PDF.</figcaption></figure>
           <figure><p class="fig-title">First page</p><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
         </div>
+        <p>The report also comes as a Word document, with <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, to rework and put in your organization's style. When activities have a <a href="#responsibilities">RACI</a>, it adds the RACI matrix. When they have an AI potential, it adds the AI potential by activity section.</p>
+        <h3 id="ai-potential"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity (AI adoption)</h3>
+        <p>Where does AI pay off in this process, and with what safeguard? In Expert mode, the Process panel of an activity gains the <span class="ui">AI adoption</span> group: <span class="ui">AI potential</span> (Automatable, by an AI agent with human review; AI-assisted; Human) and <span class="ui">Why, and safeguard</span>. You can fill them by hand, or choose <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span> in the Expert menu: the co-pilot rates each activity from its name, lane, documentation, assignee and systems, saves its rating and reason, then sums up where AI pays off first and the risks to frame. The process report lists these ratings in a table, with their reasons.</p>
+        <figure><img src="/src/help/img/en-menu-expert-complet.webp" width="225" height="306" alt="Expert menu: Simulation, Process report in PDF, Markdown and Word, Propose probabilities, AI potential by activity, Co-pilot analysis, Leave expert mode." loading="lazy" /><figcaption>The full Expert menu.</figcaption></figure>
+        <h3 id="camunda-export"><span class="ico" data-icon="engine" aria-hidden="true"></span>Export for Camunda (8 and 7)</h3>
+        <p>In Expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span> offers <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 8</span> and <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 7</span>. The file opens in Camunda Modeler on the right platform and deploys as it is:</p>
+        <ul>
+          <li>the platform and its version are set, and each process is marked executable;</li>
+          <li>gateway conditions are written in the engine's language: FEEL for Camunda 8 (<code>=amount &lt; 3000</code>), JUEL for Camunda 7 (<code>${amount &lt; 3000}</code>). They come from the Condition field, or else from the flow label ("Amount &lt; 3000", or the answer "Yes" to the gateway's question);</li>
+          <li>the Assigned to field becomes the assignment of the user task;</li>
+          <li>a message gives the number of conditions written and of unlabelled branches, to complete in Camunda Modeler. Forms, connectors and variables are still defined in Camunda.</li>
+        </ul>
+        <p>The open diagram is not changed: only the exported file carries these additions.</p>
         <h3 id="ai-checks">Review, checks and traceability</h3>
         <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
         <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1175" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
