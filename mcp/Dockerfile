@@ -12,6 +12,9 @@ RUN echo '{"type":"module"}' > src/package.json
 # Dossier de données (diagrammes et exports) : monté par docker-compose depuis la machine hôte.
 RUN mkdir -p /data/diagrams /data/exports && chown -R node:node /data && chmod -R 750 /data
 LABEL org.opencontainers.image.licenses="MIT"
+# Nom du serveur dans le registre MCP officiel (server.json) : le registre le lit pour vérifier
+# que l'image appartient bien à ce dépôt.
+LABEL io.modelcontextprotocol.server.name="io.github.Leylines-Prism/bpmn-pilot"
 ENV MCP_HOST=0.0.0.0 NODE_ENV=production DIAGRAMS_DIR=/data/diagrams EXPORTS_DIR=/data/exports
 USER node
 EXPOSE 3333

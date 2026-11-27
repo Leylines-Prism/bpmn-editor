@@ -41,11 +41,14 @@ jobs:
             description: BPMN 2.0 editor in the browser (bpmn-js), with an AI co-pilot. Pairs with bpmn-pilot-mcp.
             # Adresse relative du serveur MCP, relayée par le nginx de l'éditeur (voir nginx.conf.template).
             build-args: VITE_MCP_BRIDGE_URL=/bridge
+            mcp-name: ''
           - name: bpmn-pilot-mcp
             file: mcp/Dockerfile
             title: BPMN-Pilot MCP server
             description: MCP server and built-in AI chat for BPMN-Pilot (bpmn-pilot image).
             build-args: ''
+            # Lu par le registre MCP officiel (voir server.json et le job registry plus bas).
+            mcp-name: io.modelcontextprotocol.server.name=io.github.Leylines-Prism/bpmn-pilot
     env:
       # Annotations posées aussi sur l'index multi-plateforme, où le registre lit la description.
       DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
@@ -75,10 +78,12 @@ jobs:
             org.opencontainers.image.title=${{ matrix.title }}
             org.opencontainers.image.description=${{ matrix.description }}
             org.opencontainers.image.licenses=MIT
+            ${{ matrix.mcp-name }}
           annotations: |
             org.opencontainers.image.title=${{ matrix.title }}
             org.opencontainers.image.description=${{ matrix.description }}
             org.opencontainers.image.licenses=MIT
+            ${{ matrix.mcp-name }}
 
       - uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
@@ -98,3 +103,52 @@ jobs:
           sbom: true
           cache-from: type=gha,scope=${{ matrix.name }}
           cache-to: type=gha,mode=max,scope=${{ matrix.name }}
+
+  # Inscrit le serveur MCP dans le registre officiel (registry.modelcontextprotocol.io), une fois
+  # l'image bpmn-pilot-mcp publiée. Authentification par OIDC GitHub : aucun secret à créer.
+  # Les préversions (v1.3.0-rc.1) ne sont pas inscrites.
+  registry:
+    needs: image
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # connexion au registre MCP par OIDC
+    env:
+      MCP_PUBLISHER_VERSION: v1.8.1
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      # mcp-publisher, à une version fixe, vérifié par sa signature Sigstore avant usage.
+      - name: Download and verify mcp-publisher
+        run: |
+          set -euo pipefail
+          archive="mcp-publisher_linux_amd64.tar.gz"
+          base_url="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl --fail --location --silent --show-error --output "$archive" "$base_url/$archive"
+          curl --fail --location --silent --show-error --output "$archive.sigstore.json" "$base_url/$archive.sigstore.json"
+          cosign verify-blob \
+            --bundle "$archive.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
+            "$archive"
+          tar xzf "$archive" mcp-publisher
+          rm -f "$archive" "$archive.sigstore.json"
+
+      # La version et le tag de l'image viennent du tag Git (v1.2.3 donne 1.2.3).
+      - name: Set version in server.json
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          v="${VERSION#v}"
+          jq --arg v "$v" '.version = $v | .packages[0].identifier = "ghcr.io/leylines-prism/bpmn-pilot-mcp:" + $v' server.json > server.tmp
+          mv server.tmp server.json
+
+      - run: ./mcp-publisher login github-oidc
+
+      - run: ./mcp-publisher publish
