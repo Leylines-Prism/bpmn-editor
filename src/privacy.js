@@ -62,7 +62,9 @@ export function setupPrivacy({ container, env = import.meta.env }) {
           <p>${T('Your messages, the diagram and your API key are sent from your browser directly to the provider you selected (Anthropic, OpenAI, Mistral, etc.).',
                  "Vos messages, le diagramme et votre clé API sont envoyés directement de votre navigateur au fournisseur que vous avez choisi (Anthropic, OpenAI, Mistral, etc.).")}</p>
           <p>${T("The provider's own terms and privacy policy apply, and it bills you for usage.",
-                 "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>`)
+                 "Les conditions d'utilisation et la politique de confidentialité de ce fournisseur s'appliquent, et c'est lui qui vous facture l'usage.")}</p>
+          <p>${T('Voice dictation is recognized on your device: neither the sound nor the dictated text leaves the browser until you send the message.',
+                 "La dictée vocale est reconnue sur votre appareil : ni le son ni le texte dicté ne quittent le navigateur avant l'envoi du message.")}</p>`)
 
   // Encadré mis en avant : la clé d'API recommandée pour cet éditeur.
   const responsible = `<section class="pv-section pv-responsible" aria-labelledby="pv-responsible-title">
