@@ -39,6 +39,10 @@ const TOOL_LABELS = {
   remove_elements: T('removal', 'suppression'),
   auto_layout: T('layout', 'mise en page'),
   validate_diagram: 'validation',
+  get_decisions: T('reading the decisions', 'lecture des décisions'),
+  set_decision_table: T('decision table', 'table de décision'),
+  link_decision: T('decision link', 'lien de décision'),
+  test_decision: T('testing the table', 'essai de la table'),
 }
 
 const CSS = `

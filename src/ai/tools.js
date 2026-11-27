@@ -36,6 +36,14 @@ They are marked as proposed by the AI until the user reviews them.
 set_report_commentary stores your analysis of the process (summary, bottlenecks, rare paths, risks, improvements)
 in the diagram file: it appears in the process report, under your name. Base each point on the report's figures.
 
+Decisions (DMN): a business rule task can call a DMN decision kept in the diagram file (one DMN 1.3 model per diagram,
+with its decision requirements diagram). get_decisions lists the decisions, their tables and the tasks that call them.
+set_decision_table creates or replaces a decision table and can link it to a task (linkTo); link_decision links or unlinks
+a task. Write FEEL: text between double quotes ("A"), numbers bare, "-" for any value, comparisons (< 1000, >= 18),
+ranges ([1..10], ]1000..5000]), lists ("A","B"). Give the allowed values of text inputs and outputs. With the Unique hit
+policy no two rules may apply together; use First or Priority when they must overlap. Check the findings each tool returns.
+test_decision evaluates a decision table on input cases (with no cases, one case per rule): use it to check a table you wrote.
+
 Modeling rules (validate_diagram checks most of them):
 - Every process has a start event and at least one end event. Use a single blank start event per process.
 - Name every task, event, splitting gateway, pool and lane, in the user's business words, not technical terms.
@@ -329,6 +337,96 @@ export function buildTools(z) {
         'For an analysis of how the process runs, use get_process_report.',
       inputSchema: {},
       annotations: READ,
+    },
+    {
+      name: 'get_decisions',
+      title: 'Read the decisions',
+      description:
+        'Lists the DMN decisions kept in the diagram file: for each decision its id, name and logic. A decision table gives its hit policy, ' +
+        'inputs (label, FEEL expression, type, allowed values), outputs (label, name, type, allowed values) and rules (input entries, output entries, annotation). ' +
+        'Also returns the business rule tasks that call each decision, the input data of the requirements diagram, and the findings ' +
+        '(overlapping rules under the Unique hit policy, uncovered values, outputs outside their allowed values, unquoted text, unlinked tasks). Read-only.',
+      inputSchema: {},
+      annotations: READ,
+    },
+    {
+      name: 'set_decision_table',
+      title: 'Write a decision table',
+      description:
+        'Creates a DMN decision with its decision table, or replaces the table of an existing decision (decisionId), in the decision model kept in the diagram file. ' +
+        'A new decision is drawn in the requirements diagram with one input data per input. linkTo links a task to the decision ' +
+        '(a plain task becomes a business rule task); the link is written for BPMN-Pilot and for Camunda 8 (zeebe:calledDecision). ' +
+        'Entries are FEEL: "-" or an empty string for any value; text values may be given without quotes when the type is string. ' +
+        'Returns the decision id and the findings on the table. The user can undo it with Ctrl+Z.',
+      annotations: edit(true, false),
+      inputSchema: {
+        decisionId: z.string().optional().describe('Id of an existing decision to replace its table; omit to create a decision'),
+        name: z.string().min(1).max(200).describe('Decision name, in business words, for example "Assess the credit risk"'),
+        hitPolicy: z.enum(['UNIQUE', 'FIRST', 'PRIORITY', 'ANY', 'COLLECT', 'RULE ORDER', 'OUTPUT ORDER']).optional().describe('Default UNIQUE'),
+        aggregation: z.enum(['SUM', 'MIN', 'MAX', 'COUNT']).optional().describe('With COLLECT only'),
+        inputs: z
+          .array(
+            z.object({
+              label: z.string().min(1).max(120),
+              expression: z.string().max(200).optional().describe('FEEL expression read from the process data, for example amount or customer.score; derived from the label if omitted'),
+              type: z.enum(['string', 'number', 'boolean', 'date', 'time', 'dateTime', 'dayTimeDuration', 'yearMonthDuration']).optional().describe('Default string'),
+              values: z.array(z.string().max(120)).max(30).optional().describe('Allowed values, for a text input for example ["A", "B", "C"]'),
+            }),
+          )
+          .min(1)
+          .max(10),
+        outputs: z
+          .array(
+            z.object({
+              label: z.string().min(1).max(120),
+              name: z.string().max(80).optional().describe('Variable name of the result, derived from the label if omitted'),
+              type: z.enum(['string', 'number', 'boolean', 'date', 'time', 'dateTime', 'dayTimeDuration', 'yearMonthDuration']).optional().describe('Default string'),
+              values: z.array(z.string().max(120)).max(30).optional(),
+            }),
+          )
+          .min(1)
+          .max(5),
+        rules: z
+          .array(
+            z.object({
+              inputs: z.array(z.string().max(300)).describe('One FEEL entry per input, in order'),
+              outputs: z.array(z.string().max(300)).describe('One FEEL value per output, in order'),
+              annotation: z.string().max(300).optional(),
+            }),
+          )
+          .max(60),
+        linkTo: elementId.optional().describe('Id of the task that calls this decision'),
+      },
+    },
+    {
+      name: 'test_decision',
+      title: 'Test a decision table',
+      description:
+        'Evaluates a DMN decision table of the diagram on input cases, without changing anything: for each case, the rules that apply and the result ' +
+        'under the hit policy, or the conflict (two rules under Unique, different outputs under Any). Give each case its input values in column order, ' +
+        'or as an object keyed by input label or expression. Without cases, builds one case per rule from its simple entries and says whether each rule fires. ' +
+        'Use it after set_decision_table to check the table, and to explain it with examples. Read-only.',
+      annotations: READ,
+      inputSchema: {
+        decisionId: z.string().min(1).describe('Id of the decision, as returned by get_decisions'),
+        cases: z
+          .array(z.union([z.array(z.union([z.string(), z.number(), z.boolean(), z.null()])), z.record(z.string(), z.union([z.string(), z.number(), z.boolean(), z.null()]))]))
+          .max(50)
+          .optional()
+          .describe('Input cases: each an array of values in column order, or an object { "input label or expression": value }. Omit for one case per rule'),
+      },
+    },
+    {
+      name: 'link_decision',
+      title: 'Link a task to a decision',
+      description:
+        'Links a task to a DMN decision of the diagram (a plain task becomes a business rule task), or unlinks it when decisionId is empty. ' +
+        'The link is written for BPMN-Pilot and for Camunda 8 (zeebe:calledDecision). Use get_decisions for the ids. The user can undo it with Ctrl+Z.',
+      annotations: edit(false, true),
+      inputSchema: {
+        elementId,
+        decisionId: z.string().describe('Id of the decision, or an empty string to unlink'),
+      },
     },
     {
       name: 'remove_elements',

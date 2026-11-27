@@ -17,6 +17,11 @@ import { autoLayout } from './auto-layout.js'
 import { reloadWithCopy } from './history.js'
 import { trackAiChanges } from './ai-changes.js'
 import { checkDiagram } from './diagram-checks.js'
+import { setDecisionTable, summarize as summarizeDmn, checkDecision } from './dmn/dmn-model.js'
+import { evaluateDecision, casesPerRule } from './dmn/dmn-eval.js'
+
+// Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
+const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
 import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
@@ -178,11 +183,11 @@ function setBadge(badge, state, client = null) {
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 // options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
 // options.processReport({ simulate }) : le rapport de processus en Markdown, pour get_process_report.
-export function createTools(modeler, { exportDiagram, processReport } = {}) {
-  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport))
+export function createTools(modeler, { exportDiagram, processReport, decisions } = {}) {
+  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport, decisions))
 }
 
-function buildTools(modeler, exportDiagram, processReport) {
+function buildTools(modeler, exportDiagram, processReport, decisions) {
   const canvas = modeler.get('canvas')
   const elementRegistry = modeler.get('elementRegistry')
   const elementFactory = modeler.get('elementFactory')
@@ -672,6 +677,7 @@ function buildTools(modeler, exportDiagram, processReport) {
     // Rapport complet (src/diagram-checks.js) : compteurs, six contrôles, et le détail de bpmnlint.
     async validate_diagram() {
       const report = await checkDiagram(modeler)
+      const decisionFindings = decisions ? (await decisions.check()).map(({ fr, ...f }) => f) : []
       const issues = (report.lint?.issues || []).map((issue) => {
         const element = elementRegistry.get(issue.id)
         const name = element ? getBusinessObject(element).name : undefined
@@ -680,15 +686,89 @@ function buildTools(modeler, exportDiagram, processReport) {
       // Erreurs : celles de bpmnlint, plus chaque problème des autres contrôles.
       const structural = report.checks.filter((c) => c.id !== 'lint' && !c.ok).reduce((n, c) => n + c.problems.length + (c.more || 0), 0)
       return {
-        errors: (report.lint?.errors || 0) + structural,
-        warnings: report.lint?.warnings || 0,
+        errors: (report.lint?.errors || 0) + structural + decisionFindings.filter((f) => f.level === 'error').length,
+        warnings: (report.lint?.warnings || 0) + decisionFindings.filter((f) => f.level === 'warning').length,
         infos: report.lint?.infos || 0,
         counts: report.counts,
         checks: report.checks
           .filter((c) => !c.skipped)
           .map((c) => (c.ok ? { check: c.id, ok: true } : { check: c.id, ok: false, problems: c.problems, ...(c.more ? { more: c.more } : {}) })),
         issues,
+        ...(decisionFindings.length ? { decisions: decisionFindings } : {}),
       }
+    },
+
+    // Décisions DMN rangées dans le .bpmn (src/dmn/).
+    async get_decisions() {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      const summary = await decisions.getSummary()
+      const calledBy = {}
+      for (const el of elementRegistry.filter((e) => e.type === 'bpmn:BusinessRuleTask')) {
+        const ref = decisions.decisionRefOf(el)
+        ;(calledBy[ref || ''] ||= []).push(el.id)
+      }
+      return {
+        model: summary.name || null,
+        decisions: summary.decisions.map((d) => ({ ...d, calledBy: calledBy[d.id] || [] })),
+        inputData: summary.inputData,
+        ...(summary.knowledge.length ? { knowledge: summary.knowledge } : {}),
+        unlinkedTasks: calledBy[''] || [],
+        findings: (await decisions.check()).map(({ fr, ...f }) => f),
+      }
+    },
+
+    async set_decision_table(spec) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      if (spec.linkTo) getElement(spec.linkTo)
+      const { xml, decisionId, created } = await setDecisionTable(decisions.getXml() || null, spec)
+      const summary = await summarizeDmn(xml)
+      atomic(() => {
+        decisions.saveXml(xml)
+        if (spec.linkTo) decisions.linkNow(spec.linkTo, decisionId, summary)
+      })
+      const decision = summary.decisions.find((d) => d.id === decisionId)
+      return {
+        decisionId,
+        created,
+        rules: decision?.rules.length || 0,
+        ...(spec.linkTo ? { linkedTo: spec.linkTo } : {}),
+        findings: checkDecision(decision).map(({ fr, ...f }) => f),
+      }
+    },
+
+    async test_decision({ decisionId, cases }) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      const summary = await decisions.getSummary()
+      const decision = summary.decisions.find((d) => d.id === decisionId)
+      if (!decision) throw new Error(`Unknown decision ${decisionId}. Read the ids with get_decisions.`)
+      if (decision.kind !== 'table') throw new Error(`Decision ${decisionId} is not a decision table.`)
+      const run = (inputs) => {
+        try {
+          const r = evaluateDecision(decision, inputs)
+          return { matched: r.matched, result: plain(r.result), ...(r.error ? { error: r.error } : {}), ...(r.warnings.length ? { warnings: r.warnings } : {}) }
+        } catch (err) {
+          return { error: err.message }
+        }
+      }
+      if (cases?.length) return { decisionId, hitPolicy: decision.hitPolicy, cases: cases.map((inputs) => ({ inputs, ...run(inputs) })) }
+      const perRule = casesPerRule(decision)
+      return {
+        decisionId,
+        hitPolicy: decision.hitPolicy,
+        cases: perRule.map((c) => {
+          const r = run(c.inputs)
+          return { rule: c.rule, inputs: c.inputs, ...r, fires: !r.error && !!r.matched?.includes(c.rule) && (decision.hitPolicy !== 'FIRST' || r.matched[0] === c.rule) }
+        }),
+        ...(perRule.length < decision.rules.length ? { skippedRules: decision.rules.map((_, n) => n + 1).filter((n) => !perRule.some((c) => c.rule === n)) } : {}),
+      }
+    },
+
+    async link_decision({ elementId, decisionId }) {
+      if (!decisions) throw new Error('Decisions are not available in this editor.')
+      getElement(elementId)
+      const summary = await decisions.getSummary()
+      const task = atomic(() => decisions.linkNow(elementId, decisionId || '', summary))
+      return decisionId ? { linked: task.id, decisionId } : { unlinked: task.id }
     },
 
     async get_process_report({ simulate } = {}) {

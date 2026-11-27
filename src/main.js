@@ -42,6 +42,7 @@ import '@fontsource/urbanist/600.css'
 import './brand/tokens.css'
 import './theme/leylines.css'
 import './doc/doc.css'
+import './dmn/dmn.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
@@ -49,10 +50,14 @@ import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
+import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import { RulesPanelModule } from './rules-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
+import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json'
+import { DecisionPanelModule } from './dmn/decision-links.js'
+import { setupDecisions } from './dmn/setup.js'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
 import { setupPwa } from './pwa/register.js'
@@ -153,7 +158,8 @@ const modeler = new BpmnModeler({
   linting: { bpmnlint: lintConfig, active: true },
   colorPicker: { colors: COLORS },
   // Probabilités des branches pour la carte de chaleur (attribut bpmnpilot:probability).
-  moddleExtensions: { bpmnpilot: bpmnPilotModdle },
+  // Tables de décision : lien bpmnpilot:decisionRef, et zeebe:calledDecision pour Camunda 8.
+  moddleExtensions: { bpmnpilot: bpmnPilotModdle, zeebe: zeebeModdle },
   additionalModules: [
     BpmnPropertiesPanelModule,
     BpmnPropertiesProviderModule,
@@ -171,6 +177,7 @@ const modeler = new BpmnModeler({
     CopyAsImageModule,
     ProbabilityPanelModule,
     RulesPanelModule,
+    DecisionPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -296,6 +303,8 @@ async function importFile(file) {
       }
     }
   }
+  // Un .dmn déposé sur l'éditeur rejoint les décisions du diagramme ouvert (mode Expert).
+  if (/\.dmn$/i.test(file.name)) return decisions.importDmnFile(file)
   if (!/\.(bpmn|xml)$/i.test(file.name)) {
     track('fichier-invalide', { cause: 'format' })
     alert(T('Unsupported format: choose a .bpmn or .xml file.', 'Format non pris en charge : choisissez un fichier .bpmn ou .xml.'))
@@ -391,6 +400,7 @@ const library = setupDiagramLibrary({
   isDirty: () => dirty,
   markClean: () => { dirty = false },
   serverUrl: mcpBridgeUrl ? mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/diagrams') : null,
+  openDecisionModel: (item) => decisions.openDecisionModel(item),
 })
 
 // Version docker : le menu Exporter peut aussi déposer les fichiers dans le dossier du serveur.
@@ -505,7 +515,8 @@ async function processReport({ simulate = false } = {}) {
   const simulation = simulate ? heatmap.runBatch() : heatmap.getResult()
   const { checkDiagram } = await import('./diagram-checks.js')
   const checks = await checkDiagram(modeler).catch((err) => { console.warn('Quality checks for the report:', err); return null })
-  return buildReport(modeler, { name: baseName(), simulation, checks })
+  const decisionReport = await decisions.report().catch((err) => { console.warn('Decisions for the report:', err); return null })
+  return buildReport(modeler, { name: baseName(), simulation, checks, decisions: decisionReport })
 }
 
 // Export Word : le texte de l'export Markdown, en styles Word, avec l'image du diagramme.
@@ -588,6 +599,15 @@ document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => 
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
 const askCopilot = (text) => window.dispatchEvent(new CustomEvent('bpmn-pilot-copilot-ask', { detail: { text } }))
+// Tables de décision DMN (mode Expert, interrupteur du menu Expert).
+const decisions = setupDecisions({
+  modeler,
+  library,
+  download,
+  baseName,
+  setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
+  askCopilot,
+})
 document.getElementById('btn-ai-probabilities').addEventListener('click', () => {
   setExpert(true)
   const branches = modeler.get('elementRegistry').filter(isBranchFlow)
@@ -734,8 +754,10 @@ simButton.addEventListener('click', () => {
 {
   const toggleMode = modeler.get('toggleMode')
   const toggle = toggleMode.toggleMode.bind(toggleMode)
-  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !isExpert() ? undefined : toggle(active))
+  toggleMode.toggleMode = (active = !toggleMode._active) => (active && !(isExpert() && isModuleOn('simulation')) ? undefined : toggle(active))
   window.addEventListener(EXPERT_EVENT, ({ detail }) => { if (!detail.on && toggleMode._active) toggle(false) })
+  // Module Simulation éteint (src/expert-modules.js) : une simulation en cours s'arrête.
+  window.addEventListener(MODULES_EVENT, () => { if (!isModuleOn('simulation') && toggleMode._active) toggle(false) })
 }
 
 function download(content, filename, type) {
@@ -749,6 +771,7 @@ function download(content, filename, type) {
 
 setupThemeToggle(document.getElementById('btn-theme'))
 setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
+setupExpertModules(document.getElementById('btn-expert-modules'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
 // le diagramme en cours et son historique d'annulation restent intacts.
@@ -764,7 +787,8 @@ setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'
 setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
-const heatmap = setupHeatmap(modeler)
+// Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
+const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
 setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
@@ -837,12 +861,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi }) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi })
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

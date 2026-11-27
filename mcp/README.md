@@ -179,9 +179,13 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `auto_layout` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout |
-| `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element |
+| `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element; with decisions in the file, their findings too |
 | `get_process_report` | returns the process report in Markdown, like the Export menu: findings by level, improvement areas, end events, activities by lane, element sequence. With `simulate`, first computes 100 tokens following the branch probabilities |
 | `set_report_commentary` | saves your analysis of the process (summary, bottlenecks, rare paths, risks, improvements, each tied to elements) in the diagram file; the process report shows it as written by the AI co-pilot |
+| `get_decisions` | lists the DMN decisions kept in the diagram file: decision tables (hit policy, inputs, outputs, rules), the business rule tasks that call them, and the findings (overlapping rules, uncovered values, unlinked tasks) |
+| `set_decision_table` | creates a DMN decision table, or replaces one, in the decision model of the diagram, and can link a task to it (`linkTo`). The link is written for BPMN-Pilot and for Camunda 8 (`zeebe:calledDecision`) |
+| `link_decision` | links a task to a decision of the diagram, or unlinks it |
+| `test_decision` | evaluates a decision table on input cases without changing it: rules that apply and result under the hit policy. Without cases, one case per rule, to check that each rule fires |
 
 A call that fails halfway is undone entirely: the diagram is never left half changed.
 

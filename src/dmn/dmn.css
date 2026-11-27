@@ -1,0 +1,142 @@
+/* Tables de décision DMN (src/dmn/) : interrupteur, pastilles, panneau, fenêtre dmn-js.
+   Tout est visible seulement en mode Expert avec l'interrupteur DMN allumé (html.expert.dmn). */
+
+html:not(.dmn) .dmn-only,
+html:not(.expert) .dmn-only,
+html:not(.expert) .dmn-badge,
+html:not(.dmn) .dmn-badge,
+html:not(.expert) [data-group-id="group-bpmn-pilot-decision"],
+html:not(.dmn) [data-group-id="group-bpmn-pilot-decision"] { display: none !important; }
+
+/* Pastille d'une tâche de règle métier (le canevas reste clair dans les deux thèmes). */
+.dmn-badge {
+  display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 8px;
+  border: 0; border-radius: 9999px; background: #0F6FAD; color: #FFFFFF; cursor: pointer;
+  font: 600 11px/1 var(--font-sans); white-space: nowrap; box-shadow: 0 0 0 2px #FFFFFF;
+}
+.dmn-badge svg { display: block; }
+.dmn-badge:hover, .dmn-badge:focus-visible { background: #0B5A8D; outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px rgba(15, 111, 173, 0.35); }
+.dmn-badge.empty { background: #FFFFFF; color: #0F6FAD; border: 1.5px dashed #0F6FAD; box-shadow: none; }
+.dmn-badge.empty:hover, .dmn-badge.empty:focus-visible { background: #E3F4FD; }
+.dmn-badge.broken { background: #B42318; }
+body.presenting .dmn-badge:not(:has(svg)), body.presenting .dmn-badge.broken,
+.djs-container.simulation .dmn-badge { display: none; }
+
+/* Groupe « Décision (DMN) » du panneau de propriétés. */
+#properties-panel .dmn-entry { display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
+#properties-panel .dmn-entry .bio-properties-panel-label { margin-bottom: -4px; }
+#properties-panel .dmn-select {
+  width: 100%; min-height: 32px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 13px;
+}
+#properties-panel .dmn-summary, #properties-panel .dmn-empty, #properties-panel .dmn-message { margin: 0; font-size: 12px; line-height: 18px; color: var(--ink-muted); }
+#properties-panel .dmn-findings { margin: 0; padding-left: 18px; font-size: 12px; line-height: 17px; }
+#properties-panel .dmn-findings .dmn-error { color: var(--danger, #B42318); }
+#properties-panel .dmn-findings .dmn-warning { color: var(--warm); }
+#properties-panel .dmn-findings .dmn-info { color: var(--ink-muted); }
+#properties-panel .dmn-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+#properties-panel .dmn-actions.column { flex-direction: column; align-items: stretch; }
+#properties-panel .dmn-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 4px 10px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer;
+}
+#properties-panel .dmn-button:hover:not(:disabled) { background: var(--surface-sunken); }
+#properties-panel .dmn-button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+#properties-panel .dmn-button.primary:hover:not(:disabled) { filter: brightness(1.08); }
+#properties-panel .dmn-button.ai { border-color: transparent; background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box; }
+#properties-panel .dmn-button:disabled { opacity: 0.6; cursor: default; }
+#properties-panel .dmn-ico { display: inline-flex; }
+
+/* Mes diagrammes : étiquette des modèles de décision. */
+.library-kind {
+  display: inline-block; margin-left: 4px; padding: 0 6px; border-radius: 9999px;
+  background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 600; line-height: 16px; vertical-align: 1px;
+}
+
+/* Fenêtre DMN : plein écran comme la comparaison, zone de travail toujours claire. */
+#dmn-dialog {
+  width: calc(100vw - 32px); height: calc(100vh - 32px); max-width: none; max-height: none;
+  margin: 16px; padding: 0; box-sizing: border-box;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--surface-raised); color: var(--ink);
+  border: 1px solid var(--line); border-radius: var(--radius-md); font-family: var(--font-sans);
+}
+#dmn-dialog:not([open]) { display: none; }
+#dmn-dialog::backdrop { background: rgba(5, 8, 18, 0.45); }
+#dmn-dialog .dmn-head {
+  position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); border-bottom: 1px solid var(--line);
+}
+#dmn-dialog .dmn-head::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1.5px; background: var(--leyline); pointer-events: none; }
+#dmn-dialog .dmn-title { display: flex; flex-direction: column; min-width: 0; }
+#dmn-dialog .dmn-title small { font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+#dmn-dialog .dmn-title h2 { margin: 0; font-size: 17px; line-height: 22px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 36vw; }
+#dmn-dialog .dmn-tabs { display: flex; gap: 2px; padding: 3px; border-radius: 9999px; background: var(--surface-sunken); }
+#dmn-dialog .dmn-tabs button {
+  border: 0; background: transparent; color: var(--ink-muted); font: inherit; font-size: 13px;
+  padding: 4px 12px; border-radius: 9999px; cursor: pointer;
+}
+#dmn-dialog .dmn-tabs button.on { background: var(--surface-raised); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12); }
+#dmn-dialog .dmn-tabs button:disabled { opacity: 0.5; cursor: default; }
+#dmn-dialog .dmn-grow { flex: 1; }
+#dmn-dialog .dmn-status { margin: 0; padding: 6px var(--space-4); font-size: 13px; background: var(--accent-soft); color: var(--ink); }
+#dmn-dialog .dmn-status.error { background: color-mix(in srgb, #B42318 12%, transparent); }
+#dmn-dialog .dmn-status[hidden] { display: none; }
+#dmn-dialog .dmn-main { flex: 1; min-height: 0; display: flex; }
+#dmn-dialog .dmn-body {
+  flex: 1; min-width: 0; min-height: 0; position: relative; overflow: auto;
+  background: #FFFFFF; color: #22242A; color-scheme: light;
+}
+#dmn-dialog .dmn-body .dmn-decision-table-container,
+#dmn-dialog .dmn-body .dmn-literal-expression-container,
+#dmn-dialog .dmn-body .dmn-boxed-expression-container { padding: var(--space-3); font-family: var(--font-sans); }
+#dmn-dialog .dmn-body .dmn-drd-container { height: 100%; }
+/* Banc d'essai, à droite de la table. */
+#dmn-dialog .dmn-head .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+#dmn-dialog .dmn-bench {
+  flex: none; width: 340px; overflow: auto; padding: var(--space-3) var(--space-4);
+  border-left: 1px solid var(--line); background: var(--surface-raised); font-size: 13px; line-height: 18px;
+}
+#dmn-dialog .dmn-bench[hidden] { display: none; }
+#dmn-dialog .dmn-bench h3 { margin: 0 0 4px; font-size: 15px; line-height: 20px; font-weight: 600; }
+#dmn-dialog .dmn-bench-head p { margin: 0; color: var(--ink-muted); font-size: 12px; }
+#dmn-dialog .dmn-bench-form { display: flex; flex-direction: column; gap: 10px; margin-top: var(--space-3); }
+#dmn-dialog .dmn-bench-field label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 3px; font-weight: 600; }
+#dmn-dialog .dmn-bench-field small { font-weight: 400; color: var(--ink-muted); font-family: var(--font-mono); }
+#dmn-dialog .dmn-bench-field input, #dmn-dialog .dmn-bench-field select {
+  width: 100%; box-sizing: border-box; min-height: 32px; padding: 4px 8px; font: inherit; font-size: 13px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink);
+}
+#dmn-dialog .dmn-bench-empty { margin: 0; color: var(--ink-muted); }
+#dmn-dialog .dmn-bench-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+#dmn-dialog .dmn-bench-result { margin: var(--space-3) 0 0; padding: 8px 10px; border-radius: var(--radius-sm); white-space: pre-line; background: var(--surface-sunken); }
+#dmn-dialog .dmn-bench-result.ok { background: color-mix(in srgb, #1E8E3E 12%, transparent); }
+#dmn-dialog .dmn-bench-result.error { background: color-mix(in srgb, #B42318 12%, transparent); }
+#dmn-dialog .dmn-bench-result[hidden], #dmn-dialog .dmn-bench-cases[hidden] { display: none; }
+#dmn-dialog .dmn-bench-cases table { width: 100%; margin-top: var(--space-2); border-collapse: collapse; font-size: 12px; }
+#dmn-dialog .dmn-bench-cases th, #dmn-dialog .dmn-bench-cases td { padding: 4px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+#dmn-dialog .dmn-bench-cases tr.ko td:last-child { color: var(--danger, #B42318); font-weight: 700; }
+#dmn-dialog .dmn-bench-cases tr.ok td:last-child { color: #1E8E3E; }
+#dmn-dialog .dmn-diff-list { margin: var(--space-2) 0 0; padding: 0; list-style: none; }
+#dmn-dialog .dmn-diff-list li { display: flex; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--line); }
+#dmn-dialog .dmn-diff-list li > span { flex: none; width: 14px; font-weight: 700; text-align: center; }
+#dmn-dialog .dmn-diff-list .dmn-diff-added > span { color: #1E8E3E; }
+#dmn-dialog .dmn-diff-list .dmn-diff-removed > span { color: var(--danger, #B42318); }
+#dmn-dialog .dmn-diff-list .dmn-diff-changed > span, #dmn-dialog .dmn-diff-list .dmn-diff-moved > span { color: var(--warm); }
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-diff-added td { background: #E6F4EA !important; }
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-diff-changed td { background: #FFF1E0 !important; }
+/* Règles retenues par le banc d'essai, dans la table de dmn-js (toujours claire). */
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-hit td { background: #FFF1C2 !important; }
+#dmn-dialog .dmn-body .tjs-table tbody tr.dmn-hit td:first-child { box-shadow: inset 4px 0 0 #E8A200; }
+@media (max-width: 720px) {
+  #dmn-dialog .dmn-main { flex-direction: column; }
+  #dmn-dialog .dmn-bench { width: auto; max-height: 45vh; border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 720px) {
+  #dmn-dialog { width: 100vw; height: 100vh; margin: 0; border-radius: 0; }
+  #dmn-dialog .dmn-title h2 { max-width: 60vw; }
+}
+/* Les onglets de la fenêtre remplacent le bouton « Voir le DRD » de dmn-js. */
+#dmn-dialog .dmn-body .view-drd { display: none; }
+#dmn-dialog .dmn-head .btn[hidden] { display: none; }

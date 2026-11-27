@@ -35,24 +35,45 @@
       <nav aria-label="Contents">
         <p>Contents</p>
         <ol>
-          <li><a href="#getting-started">Getting started</a></li>
-          <li><a href="#drawing">Drawing</a></li>
-          <li><a href="#properties">Process panel</a></li>
-          <li><a href="#documenting">Documenting elements</a></li>
-          <li><a href="#colors-text">Colors and text</a></li>
-          <li><a href="#checking">Check and tidy up</a></li>
-          <li><a href="#saving">Saving and My diagrams</a></li>
-          <li><a href="#open-export">Open, import, export</a></li>
-          <li><a href="#assistant">AI co-pilot</a></li>
-          <li><a href="#prompt-examples">Prompt examples</a></li>
-          <li><a href="#keys">Your API keys</a></li>
-          <li><a href="#bpmn-experts">For BPMN experts</a></li>
-          <li><a href="#privacy">Privacy</a></li>
-          <li><a href="#docker">Docker version and MCP agents</a></li>
-          <li><a href="#install-app">Install as an app</a></li>
-          <li><a href="#small-screens">On a phone or tablet</a></li>
-          <li><a href="#faq">FAQ</a></li>
-          <li><a href="#feedback">Send feedback</a></li>
+          <li class="toc-part"><span>Draw and share</span>
+            <ol>
+              <li><a href="#getting-started">Getting started</a></li>
+              <li><a href="#drawing">Drawing</a></li>
+              <li><a href="#colors-text">Colors and text</a></li>
+              <li><a href="#checking">Check and tidy up</a></li>
+              <li><a href="#saving">Saving and My diagrams</a></li>
+              <li><a href="#open-export">Open, import, export</a></li>
+              <li><a href="#presenting">Presenting</a></li>
+              <li><a href="#documenting">Documenting elements</a></li>
+              <li><a href="#properties">Process panel</a></li>
+              <li><a href="#assistant">AI co-pilot</a></li>
+              <li><a href="#ai-checks">Review, checks and traceability</a></li>
+              <li><a href="#prompt-examples">Prompt examples</a></li>
+              <li><a href="#keys">Your API keys</a></li>
+            </ol>
+          </li>
+          <li class="toc-part"><span>Expert mode</span>
+            <ol>
+              <li><a href="#bpmn-experts">Turn on Expert mode</a></li>
+              <li><a href="#simulation">Simulation and heatmap</a></li>
+              <li><a href="#process-report">Process report</a></li>
+              <li><a href="#ai-potential">AI potential by activity</a></li>
+              <li><a href="#risks-compliance">Risks and compliance</a></li>
+              <li><a href="#camunda-export">Camunda export</a></li>
+              <li><a href="#dmn-decisions">Decision tables (DMN)</a></li>
+              <li><a href="#experts-mcp">MCP agents in Expert mode</a></li>
+            </ol>
+          </li>
+          <li class="toc-part"><span>Install and administer</span>
+            <ol>
+              <li><a href="#privacy">Privacy</a></li>
+              <li><a href="#docker">Docker version and MCP agents</a></li>
+              <li><a href="#install-app">Install as an app</a></li>
+              <li><a href="#small-screens">On a phone or tablet</a></li>
+              <li><a href="#faq">FAQ</a></li>
+              <li><a href="#feedback">Send feedback</a></li>
+            </ol>
+          </li>
         </ol>
       </nav>
     </details>
@@ -74,7 +95,16 @@
           <a class="btn primary" href="./">Open the editor</a>
           <a class="btn" href="#assistant">Let the AI draw</a>
         </div>
+        <div class="paths">
+          <a class="path" href="#drawing-part"><span class="ico" data-icon="new" aria-hidden="true"></span><span><strong>Draw a diagram</strong><span>Place, connect, name: a readable process in minutes, by hand or with the AI co-pilot.</span></span></a>
+          <a class="path" href="#expert-part"><span class="ico" data-icon="expert" aria-hidden="true"></span><span><strong>Expert mode</strong><span>Simulate, measure, produce a report, link DMN decision tables.</span></span></a>
+        </div>
         <hr />
+      </div>
+
+      <div class="part-banner" id="drawing-part">
+        <p class="part-title"><span class="ico" data-icon="new" aria-hidden="true"></span>Draw and share a diagram</p>
+        <p>Everything you need to draw a process, style it, check it, present it and share it, by hand or with the AI co-pilot. No knowledge of BPMN is needed to start.</p>
       </div>
 
       <section id="getting-started">
@@ -161,116 +191,6 @@
           <li><kbd>Ctrl</kbd>+wheel over the minimap zooms the canvas.</li>
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
-        <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. A click on an element shows its <a href="#documenting">documentation sheet</a>, and <kbd>D</kbd> turns the sheets on or off. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
-        <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
-        <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Key</th><th>Effect</th></tr></thead>
-            <tbody>
-              <tr><td><kbd>1</kbd></td><td><b class="ui">Laser pointer</b>: a red-orange dot with a short trail replaces the arrow on the diagram</td></tr>
-              <tr><td><kbd>2</kbd></td><td><b class="ui">Highlight on hover</b>: the hovered element and its flows light up, the rest of the diagram fades</td></tr>
-              <tr><td><kbd>3</kbd></td><td><b class="ui">Ripple on click</b>: a circle widens where you click</td></tr>
-              <tr><td><kbd>4</kbd></td><td><b class="ui">Hide when still</b>: after two seconds without moving, the cursor and the bar fade out, and come back on the first movement</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>The choices are kept in this browser. On a touch screen, the laser and the ripple follow the finger. The highlight relies on hovering and does not apply there.</p>
-        <div class="fig-pair">
-          <figure class="fig-anim"><p class="fig-title">Laser, ripple and highlight</p><img src="/docs/presentation-pointer.gif" width="1280" height="720" alt="The purchase process in presentation: the laser pointer follows the flow, a ripple on each click, then the highlight lights up a task, a gateway and their flows in turn. The Pointer menu opens, then the cursor and the bar fade out when still." loading="lazy" /><figcaption>The laser and the click ripple, key 2 for the highlight, then the bar fading out when still.</figcaption></figure>
-          <figure><p class="fig-title">The Pointer menu</p><img src="/src/help/img/en-presentation-pointeur.webp" width="800" height="440" alt="The Pointer menu open in presentation, four switches on. The Approve in committee task and its flows in red-orange, the rest faded, with the laser pointer trail." loading="lazy" /><figcaption>The Pointer menu, with the laser and the highlight on a task.</figcaption></figure>
-        </div>
-      </section>
-
-      <section id="properties">
-        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Process panel</h2>
-        <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
-        <h3>Show and hide the panel</h3>
-        <ul>
-          <li>The <span class="ico" data-icon="panel" aria-hidden="true"></span> button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
-          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, reach it with <kbd>Tab</kbd> and use the left and right arrows. Double-click it to go back to the default width.</li>
-        </ul>
-        <h3>Name, ID and Executable</h3>
-        <p>Every element has the <span class="ui">General</span> group.</p>
-        <ul>
-          <li><span class="ui">Name</span> is the label shown on the canvas. Changing it here is the same as double-clicking the shape.</li>
-          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. Hidden on screen, it lets the file link elements together (a flow to its task, a pool to its process) and lets execution engines identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
-          <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
-        </ul>
-        <p>For a pool, the General group holds its name and ID, then those of the process it contains, with the Executable box. So once a diagram has pools, this is where the process settings live.</p>
-        <h3>Other groups</h3>
-        <p>Fields are sorted into groups. Click a group title to collapse or expand it. A dot to the right of the title means the group already holds values.</p>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Group</th><th>Shown for</th><th>Content</th></tr></thead>
-            <tbody>
-              <tr><td>Documentation</td><td>All elements</td><td>Text describing the element, in Markdown, saved in the file (see <a href="#documenting">Documenting elements</a>). A pool has two fields, one for itself and one for its process.</td></tr>
-              <tr><td>Message, Signal, Error, Escalation</td><td>Events of that type (and receive or send tasks for Message)</td><td>The message, signal, error or escalation used, picked from a list shared by the whole diagram. Two events with the same reference point to the same message.</td></tr>
-              <tr><td>Timer</td><td>Timer events</td><td>The type (date, duration or cycle) and the value in ISO 8601 format, for example <code>PT1H</code> for one hour.</td></tr>
-              <tr><td>Link</td><td>Link events</td><td>The link name. A throw event jumps to the catch event with the same name.</td></tr>
-              <tr><td>Compensation</td><td>Compensation events</td><td>The activity to compensate, and whether to wait for the compensation to complete.</td></tr>
-              <tr><td>Multi-instance</td><td>Activities marked as multi-instance</td><td>The loop cardinality and the completion condition.</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <h3 id="responsibilities">Responsibilities, systems and conditions (RACI)</h3>
-        <p>The lane says which department performs an activity. The panel adds the rest, for each activity:</p>
-        <ul>
-          <li><span class="ui">Assigned to</span>, in the General group: the person or precise role who performs it (the R of RACI), in addition to the lane.</li>
-          <li><span class="ui">Systems used</span>: the applications or tools, comma-separated (ERP, email, business tool…).</li>
-          <li>The <span class="ui">Responsibilities (RACI)</span> group: <span class="ui">Accountable (A)</span>, who answers for the result; <span class="ui">Consulted (C)</span> and <span class="ui">Informed (I)</span>, comma-separated.</li>
-        </ul>
-        <p>These fields feed the procedure sheets, the process report (RACI matrix) and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>RACI matrix (Excel)</span> export, where R comes from Assigned to, or else from the lane. The AI co-pilot and MCP agents read and fill them too.</p>
-        <p>On a flow leaving an exclusive or inclusive gateway, the <span class="ui">Condition</span> field takes the rule in plain words, for example "Amount &lt; 3000". It is stored in the standard <code>conditionExpression</code> element, which other tools read, and the <a href="#camunda-export">export for Camunda</a> translates it into the engine's language. While the flow has no other label, the condition shows on the diagram. The default flow has no condition.</p>
-        <div class="fig-pair">
-          <figure><p class="fig-title">An activity</p><img src="/src/help/img/en-panneau-raci.webp" width="300" height="1145" alt="Process panel of the Check the request task: Assigned to Team lead, Systems used ERP, Responsibilities (RACI) group with Accountable Department head and Consulted HR, then the Expert mode AI adoption group, AI potential AI-assisted." loading="lazy" /><figcaption>Assigned to, Systems used, RACI and, in Expert mode, AI adoption.</figcaption></figure>
-          <figure><p class="fig-title">A decision flow</p><img src="/src/help/img/en-condition-flux.webp" width="300" height="530" alt="Process panel of the Yes flow leaving the decision: the Condition field holds Amount &lt; 3000." loading="lazy" /><figcaption>The plain-words condition of a branch.</figcaption></figure>
-        </div>
-        <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
-      </section>
-
-      <section id="documenting">
-        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenting elements</h2>
-        <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
-        <h3>The documentation window</h3>
-        <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
-        <ul>
-          <li>At the top, three views: <span class="uib">Write</span>, <span class="uib">Side by side</span> (editing on the left, formatted preview on the right) and <span class="uib">Preview</span>. The browser remembers the last one.</li>
-          <li>The formatting bar adds bold, italic, heading, bulleted list, numbered list and link. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> and <kbd>Ctrl</kbd>+<kbd>K</kbd> do the same from the keyboard.</li>
-          <li><span class="uib">Template ▾</span> inserts the headings of a template, the one for the element type first: purpose, actors, inputs, outputs, rules and references for an activity; question asked and criterion of each branch for a gateway, with one line per branch under its name; trigger, time limit or result for an event; purpose, scope, owner and indicators for the process.</li>
-          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> types what you say at the cursor, with the co-pilot's on-device speech recognition: neither the audio nor the text leaves the browser. The button only appears in browsers that allow it.</li>
-          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Write with the co-pilot</span> asks the AI co-pilot for a first version, based on the diagram (lane, neighbouring elements, conditions, documentation of the other elements) and your conversation. It writes "to be confirmed" where it does not know, keeps the text already there, and its text shows up in the window at once for review. The button stays greyed out until a model is set.</li>
-        </ul>
-        <figure><img src="/src/help/img/en-documentation.webp" width="1400" height="880" alt="Documentation window of the Approve in committee task, Side by side view: Markdown on the left with the headings Purpose, Actors, Inputs, Outputs, Rules, References, formatted preview on the right. At the top, the formatting bar, Template, Dictate and Write with the co-pilot." loading="lazy" /><figcaption>The documentation window, Side by side view.</figcaption></figure>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>You type</th><th>You get</th></tr></thead>
-            <tbody>
-              <tr><td><code>## Rules</code></td><td>A heading (<code>#</code> to <code>######</code>)</td></tr>
-              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Bold, italic</td></tr>
-              <tr><td><code>- Policyholder</code>, <code>1. Check</code></td><td>Bulleted list, numbered list (two spaces in front for a sub-list)</td></tr>
-              <tr><td><code>[Procedure](https://example.com)</code></td><td>A link. Only https, http and mailto addresses are kept</td></tr>
-              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>A quote, code</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p>Markdown stays readable text: Camunda, Signavio and the other BPMN tools show it as it is in their Documentation field, and text written without formatting keeps its line breaks.</p>
-        <h3>Spotting and finding documentation</h3>
-        <ul>
-          <li>A blue marker, top right, flags each documented element. On hover it shows a preview of the documentation; a click opens the window.</li>
-          <li>In <a href="#bpmn-experts">Expert mode</a>, a dotted marker also flags the activities without documentation, the ones the process report lists as "to complete". A click opens the window to write it.</li>
-          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Search</span>, top left of the canvas, or <kbd>Ctrl</kbd>+<kbd>F</kbd> on the canvas, searches labels, ids and documentation. Under each result, the matching excerpt of the documentation. <kbd>Enter</kbd> centres the diagram on the element and selects it.</li>
-        </ul>
-        <figure><img src="/src/help/img/en-doc-pastilles.webp" width="1400" height="731" alt="The purchase process with a blue marker on each documented element, and the preview of the documentation of Approve in committee when hovering its marker." loading="lazy" /><figcaption>The markers, and the preview on hover.</figcaption></figure>
-        <h3>Using the documentation</h3>
-        <ul>
-          <li>In <a href="#drawing">Presentation mode</a>, a click on an element shows its sheet on the right of the screen. The <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Sheets</span> button of the bar, or the <kbd>D</kbd> key, turns the sheets on or off. <kbd>Esc</kbd> closes the open sheet.</li>
-          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Procedure sheets (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Procedure sheets (Markdown)</span> or <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Procedure sheets (Word)</span>, produces one sheet per activity in the order of the flow: its type, its lane, the assignee, systems and RACI when they are filled in, what comes before and after, then its formatted documentation. Documented gateways and events get a sheet too, and an activity without documentation is marked "to complete". The PDF starts with the documentation of the process and a clickable table of contents.</li>
-          <li>The <a href="#process-report">process report</a> shows the documentation on one line in its element sequence, and in full at the end of the Markdown report.</li>
-          <li>The AI co-pilot and MCP agents read the documentation of each element along with the diagram: ask them a question about the process, they use it to answer.</li>
-        </ul>
-        <figure><img src="/src/help/img/en-doc-presentation.webp" width="1600" height="956" alt="The purchase process in Presentation mode, with the sheet of the Approve in committee task open on the right: purpose, actors, inputs, outputs, rules and references." loading="lazy" /><figcaption>The sheet of an activity, in Presentation mode.</figcaption></figure>
       </section>
 
       <section id="colors-text">
@@ -349,7 +269,7 @@
         <h3><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</h3>
         <p>The <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Tidy up</span> button (after <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>) recomputes the layout of everything on the canvas, from left to right. Useful after an import or an AI drawing.</p>
         <div class="note warn">Tidy up moves every shape. The editor asks you to confirm, and <span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Undo</span> brings back the previous layout.</div>
-        <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in <a href="#bpmn-experts">For BPMN experts</a>.</p>
+        <p><a href="#simulation">Token simulation</a>, the heatmap and branch probabilities are described in the <a href="#expert-part">Expert mode</a> part.</p>
       </section>
 
       <section id="saving">
@@ -438,7 +358,7 @@
         <!-- docker -->
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
-        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, comes from the Expert menu: see <a href="#bpmn-experts">For BPMN experts</a>.</p>
+        <p>The <a href="#process-report">process report</a>, as PDF or Markdown, comes from the Expert menu: see <a href="#bpmn-experts">Expert mode</a>. In Expert mode, DMN decisions can also be opened and exported as .dmn files: see <a href="#dmn-files">Decision tables (DMN)</a>.</p>
         <h3>Exports asked of the AI</h3>
         <p>You can ask the AI co-pilot or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
@@ -451,6 +371,119 @@
         <figure><img src="/src/help/img/en-mot-de-passe.webp" width="460" height="346" alt="Encrypted .bpmn file window: explanation of the encryption, Password and Confirm the password fields, Cancel and Encrypt and save buttons." loading="lazy" /><figcaption>The password window, before saving.</figcaption></figure>
         <h3><span class="ico" data-icon="print" aria-hidden="true"></span>Print</h3>
         <p>Export, then Print…, opens the browser's print window on the diagram alone, centered with 10 mm margins. The orientation follows its shape: landscape if it is wider than tall, portrait otherwise. Safari leaves that choice to its own print window. A large diagram is shrunk to fit one page, a small one keeps its on-screen size. For a very long process, the PDF or SVG export lets you zoom in.</p>
+      </section>
+
+      <section id="presenting">
+        <h2><span class="ico" data-icon="present" aria-hidden="true"></span>Presenting</h2>
+        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. A click on an element shows its <a href="#documenting">documentation sheet</a>, and <kbd>D</kbd> turns the sheets on or off. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
+        <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Key</th><th>Effect</th></tr></thead>
+            <tbody>
+              <tr><td><kbd>1</kbd></td><td><b class="ui">Laser pointer</b>: a red-orange dot with a short trail replaces the arrow on the diagram</td></tr>
+              <tr><td><kbd>2</kbd></td><td><b class="ui">Highlight on hover</b>: the hovered element and its flows light up, the rest of the diagram fades</td></tr>
+              <tr><td><kbd>3</kbd></td><td><b class="ui">Ripple on click</b>: a circle widens where you click</td></tr>
+              <tr><td><kbd>4</kbd></td><td><b class="ui">Hide when still</b>: after two seconds without moving, the cursor and the bar fade out, and come back on the first movement</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>The choices are kept in this browser. On a touch screen, the laser and the ripple follow the finger. The highlight relies on hovering and does not apply there.</p>
+        <div class="fig-pair">
+          <figure class="fig-anim"><p class="fig-title">Laser, ripple and highlight</p><img src="/docs/presentation-pointer.gif" width="1280" height="720" alt="The purchase process in presentation: the laser pointer follows the flow, a ripple on each click, then the highlight lights up a task, a gateway and their flows in turn. The Pointer menu opens, then the cursor and the bar fade out when still." loading="lazy" /><figcaption>The laser and the click ripple, key 2 for the highlight, then the bar fading out when still.</figcaption></figure>
+          <figure><p class="fig-title">The Pointer menu</p><img src="/src/help/img/en-presentation-pointeur.webp" width="800" height="440" alt="The Pointer menu open in presentation, four switches on. The Approve in committee task and its flows in red-orange, the rest faded, with the laser pointer trail." loading="lazy" /><figcaption>The Pointer menu, with the laser and the highlight on a task.</figcaption></figure>
+        </div>
+      </section>
+
+      <section id="documenting">
+        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenting elements</h2>
+        <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
+        <h3>The documentation window</h3>
+        <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
+        <ul>
+          <li>At the top, three views: <span class="uib">Write</span>, <span class="uib">Side by side</span> (editing on the left, formatted preview on the right) and <span class="uib">Preview</span>. The browser remembers the last one.</li>
+          <li>The formatting bar adds bold, italic, heading, bulleted list, numbered list and link. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> and <kbd>Ctrl</kbd>+<kbd>K</kbd> do the same from the keyboard.</li>
+          <li><span class="uib">Template ▾</span> inserts the headings of a template, the one for the element type first: purpose, actors, inputs, outputs, rules and references for an activity; question asked and criterion of each branch for a gateway, with one line per branch under its name; trigger, time limit or result for an event; purpose, scope, owner and indicators for the process.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> types what you say at the cursor, with the co-pilot's on-device speech recognition: neither the audio nor the text leaves the browser. The button only appears in browsers that allow it.</li>
+          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Write with the co-pilot</span> asks the AI co-pilot for a first version, based on the diagram (lane, neighbouring elements, conditions, documentation of the other elements) and your conversation. It writes "to be confirmed" where it does not know, keeps the text already there, and its text shows up in the window at once for review. The button stays greyed out until a model is set.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-documentation.webp" width="1400" height="880" alt="Documentation window of the Approve in committee task, Side by side view: Markdown on the left with the headings Purpose, Actors, Inputs, Outputs, Rules, References, formatted preview on the right. At the top, the formatting bar, Template, Dictate and Write with the co-pilot." loading="lazy" /><figcaption>The documentation window, Side by side view.</figcaption></figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>You type</th><th>You get</th></tr></thead>
+            <tbody>
+              <tr><td><code>## Rules</code></td><td>A heading (<code>#</code> to <code>######</code>)</td></tr>
+              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Bold, italic</td></tr>
+              <tr><td><code>- Policyholder</code>, <code>1. Check</code></td><td>Bulleted list, numbered list (two spaces in front for a sub-list)</td></tr>
+              <tr><td><code>[Procedure](https://example.com)</code></td><td>A link. Only https, http and mailto addresses are kept</td></tr>
+              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>A quote, code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Markdown stays readable text: Camunda, Signavio and the other BPMN tools show it as it is in their Documentation field, and text written without formatting keeps its line breaks.</p>
+        <h3>Spotting and finding documentation</h3>
+        <ul>
+          <li>A blue marker, top right, flags each documented element. On hover it shows a preview of the documentation; a click opens the window.</li>
+          <li>In <a href="#bpmn-experts">Expert mode</a>, a dotted marker also flags the activities without documentation, the ones the process report lists as "to complete". A click opens the window to write it.</li>
+          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Search</span>, top left of the canvas, or <kbd>Ctrl</kbd>+<kbd>F</kbd> on the canvas, searches labels, ids and documentation. Under each result, the matching excerpt of the documentation. <kbd>Enter</kbd> centres the diagram on the element and selects it.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-doc-pastilles.webp" width="1400" height="731" alt="The purchase process with a blue marker on each documented element, and the preview of the documentation of Approve in committee when hovering its marker." loading="lazy" /><figcaption>The markers, and the preview on hover.</figcaption></figure>
+        <h3>Using the documentation</h3>
+        <ul>
+          <li>In <a href="#drawing">Presentation mode</a>, a click on an element shows its sheet on the right of the screen. The <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Sheets</span> button of the bar, or the <kbd>D</kbd> key, turns the sheets on or off. <kbd>Esc</kbd> closes the open sheet.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Procedure sheets (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Procedure sheets (Markdown)</span> or <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Procedure sheets (Word)</span>, produces one sheet per activity in the order of the flow: its type, its lane, the assignee, systems and RACI when they are filled in, what comes before and after, then its formatted documentation. Documented gateways and events get a sheet too, and an activity without documentation is marked "to complete". The PDF starts with the documentation of the process and a clickable table of contents.</li>
+          <li>The <a href="#process-report">process report</a> shows the documentation on one line in its element sequence, and in full at the end of the Markdown report.</li>
+          <li>The AI co-pilot and MCP agents read the documentation of each element along with the diagram: ask them a question about the process, they use it to answer.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-doc-presentation.webp" width="1600" height="956" alt="The purchase process in Presentation mode, with the sheet of the Approve in committee task open on the right: purpose, actors, inputs, outputs, rules and references." loading="lazy" /><figcaption>The sheet of an activity, in Presentation mode.</figcaption></figure>
+      </section>
+
+      <section id="properties">
+        <h2><span class="ico" data-icon="panel" aria-hidden="true"></span>Process panel</h2>
+        <p>The right-hand panel shows the properties of the selected element. When nothing is selected, it shows those of the process, or of the collaboration if the diagram has pools. Its header gives the element type (User task, Message start event…) and its label.</p>
+        <h3>Show and hide the panel</h3>
+        <ul>
+          <li>The <span class="ico" data-icon="panel" aria-hidden="true"></span> button at the far right of the toolbar hides the panel. Click it again to bring the panel back. The canvas takes the freed space, and the browser remembers your choice for next time. This button has no keyboard shortcut.</li>
+          <li>To change the width, drag the handle on the left edge of the panel. With the keyboard, reach it with <kbd>Tab</kbd> and use the left and right arrows. Double-click it to go back to the default width.</li>
+        </ul>
+        <h3>Name, ID and Executable</h3>
+        <p>Every element has the <span class="ui">General</span> group.</p>
+        <ul>
+          <li><span class="ui">Name</span> is the label shown on the canvas. Changing it here is the same as double-clicking the shape.</li>
+          <li><span class="ui">ID</span> is the technical reference of the element in the XML file. Hidden on screen, it lets the file link elements together (a flow to its task, a pool to its process) and lets execution engines identify a step. It must be unique in the diagram and contain no spaces. The panel shows a message under the field when a value is refused. The editor assigns one automatically, so you only need to change it if an external tool expects a specific value.</li>
+          <li><span class="ui">Executable</span> only applies to the process. When checked, it states (the <code>isExecutable</code> attribute) that a workflow engine such as Camunda or Flowable can deploy and run this process. For a diagram meant for documentation or analysis, you can leave it unchecked.</li>
+        </ul>
+        <p>For a pool, the General group holds its name and ID, then those of the process it contains, with the Executable box. So once a diagram has pools, this is where the process settings live.</p>
+        <h3>Other groups</h3>
+        <p>Fields are sorted into groups. Click a group title to collapse or expand it. A dot to the right of the title means the group already holds values.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Group</th><th>Shown for</th><th>Content</th></tr></thead>
+            <tbody>
+              <tr><td>Documentation</td><td>All elements</td><td>Text describing the element, in Markdown, saved in the file (see <a href="#documenting">Documenting elements</a>). A pool has two fields, one for itself and one for its process.</td></tr>
+              <tr><td>Message, Signal, Error, Escalation</td><td>Events of that type (and receive or send tasks for Message)</td><td>The message, signal, error or escalation used, picked from a list shared by the whole diagram. Two events with the same reference point to the same message.</td></tr>
+              <tr><td>Timer</td><td>Timer events</td><td>The type (date, duration or cycle) and the value in ISO 8601 format, for example <code>PT1H</code> for one hour.</td></tr>
+              <tr><td>Link</td><td>Link events</td><td>The link name. A throw event jumps to the catch event with the same name.</td></tr>
+              <tr><td>Compensation</td><td>Compensation events</td><td>The activity to compensate, and whether to wait for the compensation to complete.</td></tr>
+              <tr><td>Multi-instance</td><td>Activities marked as multi-instance</td><td>The loop cardinality and the completion condition.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3 id="responsibilities">Responsibilities, systems and conditions (RACI)</h3>
+        <p>The lane says which department performs an activity. The panel adds the rest, for each activity:</p>
+        <ul>
+          <li><span class="ui">Assigned to</span>, in the General group: the person or precise role who performs it (the R of RACI), in addition to the lane.</li>
+          <li><span class="ui">Systems used</span>: the applications or tools, comma-separated (ERP, email, business tool…).</li>
+          <li>The <span class="ui">Responsibilities (RACI)</span> group: <span class="ui">Accountable (A)</span>, who answers for the result; <span class="ui">Consulted (C)</span> and <span class="ui">Informed (I)</span>, comma-separated.</li>
+        </ul>
+        <p>These fields feed the procedure sheets, the process report (RACI matrix) and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>RACI matrix (Excel)</span> export, where R comes from Assigned to, or else from the lane. The AI co-pilot and MCP agents read and fill them too.</p>
+        <p>On a flow leaving an exclusive or inclusive gateway, the <span class="ui">Condition</span> field takes the rule in plain words, for example "Amount &lt; 3000". It is stored in the standard <code>conditionExpression</code> element, which other tools read, and the <a href="#camunda-export">export for Camunda</a> translates it into the engine's language. While the flow has no other label, the condition shows on the diagram. The default flow has no condition.</p>
+        <div class="fig-pair">
+          <figure><p class="fig-title">An activity</p><img src="/src/help/img/en-panneau-raci.webp" width="300" height="1145" alt="Process panel of the Check the request task: Assigned to Team lead, Systems used ERP, Responsibilities (RACI) group with Accountable Department head and Consulted HR, then the Expert mode AI adoption group, AI potential AI-assisted." loading="lazy" /><figcaption>Assigned to, Systems used, RACI and, in Expert mode, AI adoption.</figcaption></figure>
+          <figure><p class="fig-title">A decision flow</p><img src="/src/help/img/en-condition-flux.webp" width="300" height="530" alt="Process panel of the Yes flow leaving the decision: the Condition field holds Amount &lt; 3000." loading="lazy" /><figcaption>The plain-words condition of a branch.</figcaption></figure>
+        </div>
+        <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
       </section>
 
       <section id="assistant">
@@ -536,6 +569,39 @@
 
         <h3>What it costs</h3>
         <p>The editor is free. AI calls are billed by the provider, to your account, at its rates. The cost depends on the model and the size of the diagram: each message sends it in full. With Ollama, on your own computer, there is nothing to pay. To stay in control, set a spending limit in your provider's console. The review of the request and the automatic correction add requests: turn them off in <span class="uib">Options</span>.</p>
+      </section>
+
+      <section id="ai-checks">
+        <h2>Review, checks and traceability</h2>
+        <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
+        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1175" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <ul>
+          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
+          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
+          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
+          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
+          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
+        </ul>
+        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
+        <p>What each of the six checks detects:</p>
+        <div class="table-wrap"><table class="checks-table">
+          <thead><tr><th>Check</th><th>Reports for example</th></tr></thead>
+          <tbody>
+            <tr><td>Well-formed XML</td><td>unclosed tag, forbidden character, empty document</td></tr>
+            <tr><td>BPMN 2.0 metamodel</td><td>unknown element or attribute in the BPMN namespace, unreadable value (extensions from other tools are accepted)</td></tr>
+            <tr><td>References and scopes</td><td>duplicate or missing id, sequence flow leaving its process or subprocess, message flow inside a single pool, boundary event attached outside its container, default flow that does not start from its gateway, lane listing an element of another process</td></tr>
+            <tr><td>Diagram (DI)</td><td>model element never drawn, shape without bounds, flow with fewer than two points, element drawn twice, drawing pointing to a missing element</td></tr>
+            <tr><td>bpmn-js reimport</td><td>bpmn-js warning when reading the document again, beyond those already raised by the metamodel</td></tr>
+            <tr><td>bpmnlint</td><td>error from the recommended rules: isolated element, missing start or end, element without a name, superfluous gateway… (warnings are counted without failing the check)</td></tr>
+          </tbody>
+        </table></div>
+        <h3 id="checks-mcp">With an MCP agent</h3>
+        <p>In the <a href="#docker">Docker version</a>, an MCP agent gets the same checks:</p>
+        <ul>
+          <li><code>validate_diagram</code> returns the check report: element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues with element, rule and message, plus the findings on the decision tables of the diagram;</li>
+          <li>the <code>critique_description</code> prompt lists what is ambiguous or missing in a description, before drawing.</li>
+        </ul>
+        <p>The agent has no automatic correction loop: calling <code>validate_diagram</code> and fixing the problems is up to it. The modeling rules the server gives it ask for this at the end of each drawing.</p>
       </section>
 
       <section id="prompt-examples">
@@ -685,12 +751,24 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         </div>
       </section>
 
-      <section id="bpmn-experts">
-        <h2>For BPMN experts</h2>
-        <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and checking in detail what the AI produces. None of them is needed to draw a diagram.</p>
-        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, then <a href="#probabilities">Propose probabilities</a>, <a href="#ai-potential">AI potential by activity</a> and <a href="#process-report">Co-pilot analysis</a>, greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The co-pilot checks and the MCP tools are available either way.</p>
+      <div class="part-banner" id="expert-part">
+        <p class="part-title"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert mode</p>
+        <p>Tools to test a model and prepare its execution: token simulation, heatmap, process report, AI potential, risks and compliance, Camunda export, DMN decision tables. None of this is needed to draw. The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar turns them on, and <span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span> turns on only the ones you use.</p>
+      </div>
+
+      <section id="bpmn-experts" class="expert-part">
+        <h2><span class="ico" data-icon="expert" aria-hidden="true"></span>Turn on Expert mode</h2>
+        <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and linking the decisions of the process to DMN tables.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu, with the commands of the <a href="#modules">modules that are on</a>: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, <a href="#probabilities">Propose probabilities</a>, <a href="#process-report">Co-pilot analysis</a> and <a href="#ai-potential">AI potential by activity</a>, the last three greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The <a href="#ai-checks">co-pilot checks</a> and the MCP drawing tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="186" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF or Markdown." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
-        <h3 id="simulation"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</h3>
+        <h3 id="modules"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules</h3>
+        <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span>, at the bottom of the menu, opens a window with one switch per function: <span class="ui">Token simulation</span>, <span class="ui">Heatmap</span>, <span class="ui">Process report</span>, <span class="ui">AI potential</span>, <span class="ui">Risks and compliance</span>, <span class="ui">Camunda export</span> and <span class="ui">Decision tables (DMN)</span>. Turn on only what you use: the Expert menu and the Process panel only show the commands of the modules that are on. The heatmap needs the simulation. By default, the simulation, the heatmap, the report, the AI potential and the risks are on, and the Camunda export and decision tables are off. The browser remembers your choices.</p>
+        <figure><img src="/src/help/img/en-modules-experts.webp" width="1040" height="1128" alt="The Expert modules window: Token simulation, Heatmap, Process report and Decision tables (DMN), each with its switch, a line of explanation and a link to the help." loading="lazy" /><figcaption>The Expert modules window: here, decision tables are off.</figcaption></figure>
+        <p>Turning a module off leaves the diagram as it is: the probabilities, decisions, AI potential, risks and process identity already set stay in the file. The <span class="ui">Decision tables (DMN)</span> module, once on, adds the markers of business rule tasks, the <span class="ui">Decision (DMN)</span> group of the Process panel and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span> entry: see <a href="#dmn-decisions">Decision tables (DMN)</a>. AI agents, through the co-pilot or MCP, keep all their tools, whatever modules are on.</p>
+      </section>
+
+      <section id="simulation" class="expert-part">
+        <h2><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation and heatmap</h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, switches to simulation mode: a play button appears on each start event. Click it to send a token, and watch it follow the flows. At exclusive gateways, you choose the path. A slider at the bottom of the canvas sets the token speed, from 0.25× to 4×. A log lists the steps taken, so you can check that the process ends in every case. The Expert menu then offers only <span class="uib">Stop simulation</span>, and an orange dot on the button shows that a simulation is running. Stopping goes back to editing and keeps expert mode on: the canvas is locked during the simulation, and the branch probabilities are set once it has stopped.</p>
         <p>The checkbox marked with a Christmas tree, at the end of the speed box, spins the Leylines gradient around the outline of each step a token enters. It is off by default, and the browser remembers your choice.</p>
         <div class="fig-pair">
@@ -714,12 +792,16 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><strong>Measure the distribution.</strong> Outside the simulation, select each flow leaving an exclusive, inclusive or event-based gateway, and fill in the <span class="ui">Probability (%)</span> field of the <span class="ui">Simulation</span> group, in the Process panel. Flows without a value share the rest equally. Then start the simulation, enter the number of tokens and click <span class="uib">Run</span> (or press <kbd>Enter</kbd> in the field): the result is immediate, with no animation.</li>
           <li>Read the map. A badge gives the number of passes on each activity and event, with the share of instances ("31 · 31 %"). Above one pass per instance, it gives the average number of executions ("131 · 1.3×"): that is a rework loop. Flow width follows the same count.</li>
         </ol>
+        <p>With <a href="#dmn-decisions">decision tables</a> on, an exclusive gateway right after a business rule task linked to a table splits computed tokens by that table: each rule weighs the same, and each outgoing flow gets the rules whose output it names, by its name ("high") or its condition (<code>risk = "high"</code>). The default flow gets the others. As soon as one flow of the gateway has a probability, the probabilities win.</p>
         <p>The heatmap counts passes: it measures neither durations nor costs. This run follows gateways according to their probabilities, and does not trigger boundary events. The map disappears when the simulation stops, but its counts remain available as long as the diagram does not change: the PDF <a href="#process-report">process report</a> includes it on a page of its own. Probabilities are saved in the .bpmn file, under an attribute of BPMN Pilot that other tools ignore.</p>
         <div class="fig-pair">
           <figure class="fig-anim"><p class="fig-title">Computing the map</p><img src="/docs/heatmap.gif" width="1280" height="720" alt="The branch probability in the Process panel, then the heatmap after 200 tokens" loading="lazy" /><figcaption>A probability set on a branch, then 200 tokens computed at once.</figcaption></figure>
           <figure><p class="fig-title">Reading the map</p><img src="/src/help/img/en-heatmap.webp" width="1060" height="440" alt="Heatmap after 100 tokens: document check in red, run more than once per instance, less used branches in yellow, with each activity's badge and the legend." loading="lazy" /><figcaption>The map after 100 tokens: the document check, in red, is the busiest activity.</figcaption></figure>
         </div>
-        <h3 id="process-report"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h3>
+      </section>
+
+      <section id="process-report" class="expert-part">
+        <h2><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report</h2>
         <p>The process report turns the diagram into a document anyone can read without a BPMN tool: a sheet to hand to a team, attach to a quality procedure or present to the process owner. It also works as a modeling review: it lists errors, warnings and missing information, and derives improvement areas by priority.</p>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>. The report is built from the diagram, with no extra input:</p>
         <ul>
@@ -729,6 +811,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li>the AI co-pilot's analysis, if one was made (see below);</li>
           <li>after a simulation, the heatmap and its figures: most traversed activities, passes and observed share of each gateway branch, elements never reached;</li>
           <li>the six <a href="#ai-checks">quality checks</a>, computed in the editor, without AI;</li>
+          <li>the <a href="#dmn-decisions">DMN decision tables</a>, with the tasks that call them and their findings;</li>
           <li>end events, activities by lane, and the element sequence: type, lane, documentation and outgoing flows with their conditions.</li>
         </ul>
         <p>For a complete report, name each gateway with its question and each outgoing flow with its answer, place activities in lanes, and fill in the <span class="ui">Documentation</span> field of activities. None of this is required: the report flags what is missing. After a simulation, it adds the <a href="#heatmap">heatmap</a> (in PDF), the number of instances per element, the share of each end event and rework.</p>
@@ -738,10 +821,16 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <figure><p class="fig-title">First page</p><img src="/src/help/img/en-process-report.webp" width="1060" height="750" alt="First page of the process report: key figures, diagram with elements outlined in color, and table of findings in orange and yellow." loading="lazy" /><figcaption>First page of the report: key figures, annotated diagram and findings.</figcaption></figure>
         </div>
         <p>The report also comes as a Word document, with <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, to rework and put in your organization's style. It grows with what you fill in: the <a href="#process-identity">process identity</a> at the top, the RACI matrix when activities have a <a href="#responsibilities">RACI</a>, the AI potential, the risks and controls and the compliance matrix when they are filled in.</p>
-        <h3 id="ai-potential"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity (AI adoption)</h3>
+      </section>
+
+      <section id="ai-potential" class="expert-part">
+        <h2><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity (AI adoption)</h2>
         <p>Where does AI pay off in this process, and with what safeguard? In Expert mode, the Process panel of an activity gains the <span class="ui">AI adoption</span> group: <span class="ui">AI potential</span> (Automatable, by an AI agent with human review; AI-assisted; Human) and <span class="ui">Why, and safeguard</span>. You can fill them by hand, or choose <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span> in the Expert menu: the co-pilot rates each activity from its name, lane, documentation, assignee and systems, saves its rating and reason, then sums up where AI pays off first and the risks to frame. For each automatable or AI-assisted activity, it also adds the risks of handing it to AI and the matching controls, in the <a href="#risks-compliance">Risks and Controls</a> fields, without erasing those already written. The process report lists these ratings in a table, with their reasons.</p>
-        <figure><img src="/src/help/img/en-menu-expert-complet.webp" width="225" height="306" alt="Expert menu: Simulation, Process report in PDF, Markdown and Word, Propose probabilities, AI potential by activity, Co-pilot analysis, Leave expert mode." loading="lazy" /><figcaption>The full Expert menu.</figcaption></figure>
-        <h3 id="risks-compliance">Risks, controls and requirements (compliance)</h3>
+        <p>This function needs the <span class="ui">AI potential</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
+      </section>
+
+      <section id="risks-compliance" class="expert-part">
+        <h2><span class="ico" data-icon="lock" aria-hidden="true"></span>Risks, controls and requirements (compliance)</h2>
         <p>To prepare an audit, or to frame a step handed to AI, the Process panel of an activity gains the <span class="ui">Risks and compliance</span> group in Expert mode:</p>
         <ul>
           <li><span class="ui">Risks</span>: what can go wrong at this step, one per line.</li>
@@ -753,7 +842,11 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <h3 id="process-identity">Process identity</h3>
         <p>Who answers for the process, and which version is this? In Expert mode, when nothing is selected, the Process panel shows the <span class="ui">Process identity</span> group: <span class="ui">Process owner</span>, <span class="ui">Version</span>, <span class="ui">Status</span> (Draft, In review, Approved, Retired), <span class="ui">Approved on</span> and <span class="ui">Scope</span>. The identity opens the process report and the procedure sheets, in PDF, Markdown and Word. The co-pilot and MCP agents can fill it from your documents.</p>
         <figure><img src="/src/help/img/en-fiche-identite.webp" width="300" height="660" alt="Process panel of the collaboration in Expert mode: Process identity group with the owner Finance director, version 1.2, status In review, the approval date and the scope." loading="lazy" /><figcaption>The process identity, on the diagram with no selection.</figcaption></figure>
-        <h3 id="camunda-export"><span class="ico" data-icon="engine" aria-hidden="true"></span>Export for Camunda (8 and 7)</h3>
+        <p>This function needs the <span class="ui">Risks and compliance</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
+      </section>
+
+      <section id="camunda-export" class="expert-part">
+        <h2><span class="ico" data-icon="engine" aria-hidden="true"></span>Export for Camunda (8 and 7)</h2>
         <p>In Expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span> offers <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 8</span> and <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 7</span>. The file opens in Camunda Modeler on the right platform, with what BPMN Pilot can already translate for the engine:</p>
         <ul>
           <li>the platform and its version are set, and each process is marked executable;</li>
@@ -762,40 +855,76 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li>a rule the engine could not read ("If the customer is loyal") is not written as a condition: it stays in the label, and the final message counts it among the conditions to write in Camunda Modeler, with the unlabelled branches. Forms, connectors and variables are still defined in Camunda.</li>
         </ul>
         <p>The open diagram is not changed: only the exported file carries these additions.</p>
-        <h3 id="ai-checks">Review, checks and traceability</h3>
-        <p>Around each answer, the co-pilot shows what it understood, what the editor checked and where the result comes from.</p>
-        <figure><img src="/src/help/img/en-ia-controles.webp" width="380" height="1175" alt="AI co-pilot panel after a purchase request: three points to clarify marked Blocking, Important and Minor, the answer with its assumptions, the report 6/6 checks passed with 1 correction requested and 1 kept, the provider, model, duration and date line, the Retry from the same source button and the destination line above the input." loading="lazy" /><figcaption>Points to clarify, check report, traceability and destination, around an answer.</figcaption></figure>
+        <p>This function needs the <span class="ui">Camunda export</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
+      </section>
+
+      <section id="dmn-decisions" class="expert-part">
+        <h2><span class="ico" data-icon="table" aria-hidden="true"></span>Decision tables (DMN)</h2>
+        <p>A business rule task applies a decision: grant a loan, pick a price, route a request. The DMN standard (Decision Model and Notation, from the OMG, like BPMN) describes that decision as a table: inputs, outputs, and one rule per row. The editor links each business rule task to its table, opens it in dmn-js, the DMN editor from bpmn.io, and stores the decisions in the .bpmn file itself.</p>
+        <p>Everything below needs the <span class="ui">Decision tables (DMN)</span> module, turned on from <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>. The browser remembers the setting.</p>
+        <figure><img src="/src/help/img/en-dmn-task.webp" width="1250" height="538" alt="An Assess the risk business rule task with its Table marker, and the Decision (DMN) group of the Process panel: linked decision, table summary, Open the table and Unlink buttons." loading="lazy" /><figcaption>A task linked to its table: the marker on the canvas, the Decision (DMN) group in the panel.</figcaption></figure>
+        <h3 id="dmn-link">Link a task to its table</h3>
         <ul>
-          <li><strong>Review of the request.</strong> Before drawing a description (200 characters or more, or an attached file), the model lists what is ambiguous or missing: actors, trigger, results, decisions, exceptions and deadlines, loops, documents exchanged, vague wording. Each point has a severity (<span class="ui">Blocking</span>, <span class="ui">Important</span>, <span class="ui">Minor</span>), the question to settle and, when there is one, the passage quoted. The drawing starts right away, with assumptions the model lists at the end of its answer. Answer the questions in your next message to refine the diagram.</li>
-          <li><strong>Check report.</strong> After each answer that changed the diagram, the editor checks it itself, without calling the model. The report gives the counts (pools, lanes, activities, gateways, events, flows) and six checks: well-formed XML, conformance to the BPMN 2.0 metamodel (known elements and attributes), references and scopes (a sequence flow stays in its process, a message flow connects two pools), every element drawn (complete DI), reimport by bpmn-js without warnings, no bpmnlint error. Click the report line to unfold the details.</li>
-          <li><strong>Automatic correction.</strong> When a check fails, the problems go back to the model, which fixes them on its own, two rounds at most. A correction that does not reduce the number of problems is undone. The report says so, for example "1 correction requested, 1 kept".</li>
-          <li><strong>Traceability.</strong> Under each answer: provider, model, duration, date and time, and the source (message length, names of the attached files). <span class="uib">Retry from the same source</span>, on the last answer, puts the diagram back as it was before that answer and sends the same request again to the model chosen at that time, for example to compare two models.</li>
-          <li><strong>Destination.</strong> A line above the input says where the message goes, to which provider and model: from your browser in the online version, through your server in the Docker version. A provider on your network, such as Ollama, is shown as such. The message, the attached files and the current diagram are sent with each message.</li>
+          <li>Each business rule task has a marker at its bottom left. Filled, <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Table</span> opens the linked table. Dashed, <span class="uib">+ Table</span> selects the task and opens the Process panel on its <span class="ui">Decision (DMN)</span> group. Red, the linked decision is no longer in the diagram.</li>
+          <li>Without a link, the group offers <span class="uib">+ Create a decision table</span> (one input, one output, named after the task), the <span class="ui">Link a decision of this diagram</span> list, <span class="uib">Import a .dmn file…</span>, the <span class="ui">Take from My diagrams</span> list, and <span class="uib">✦ Draft it with the co-pilot</span> when a model is chosen.</li>
+          <li>Once linked, the group shows the decision, a summary of the table (inputs, outputs, rules, hit policy) and its findings, with <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Open the table</span> and <span class="uib">Unlink</span>. Each link is undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd>.</li>
         </ul>
-        <p>The review and the automatic correction send extra requests to the model: they take time and are billed like the others. The <span class="ui">Review the request and correct automatically</span> box, in <span class="uib">Options</span>, turns both off. The report, the traceability and the destination line stay.</p>
-        <p>What each of the six checks detects:</p>
-        <div class="table-wrap"><table class="checks-table">
-          <thead><tr><th>Check</th><th>Reports for example</th></tr></thead>
-          <tbody>
-            <tr><td>Well-formed XML</td><td>unclosed tag, forbidden character, empty document</td></tr>
-            <tr><td>BPMN 2.0 metamodel</td><td>unknown element or attribute in the BPMN namespace, unreadable value (extensions from other tools are accepted)</td></tr>
-            <tr><td>References and scopes</td><td>duplicate or missing id, sequence flow leaving its process or subprocess, message flow inside a single pool, boundary event attached outside its container, default flow that does not start from its gateway, lane listing an element of another process</td></tr>
-            <tr><td>Diagram (DI)</td><td>model element never drawn, shape without bounds, flow with fewer than two points, element drawn twice, drawing pointing to a missing element</td></tr>
-            <tr><td>bpmn-js reimport</td><td>bpmn-js warning when reading the document again, beyond those already raised by the metamodel</td></tr>
-            <tr><td>bpmnlint</td><td>error from the recommended rules: isolated element, missing start or end, element without a name, superfluous gateway… (warnings are counted without failing the check)</td></tr>
-          </tbody>
-        </table></div>
-        <h3 id="experts-mcp">With an MCP agent</h3>
-        <p>In the <a href="#docker">Docker version</a>, an MCP agent gets the same checks and the same report:</p>
+        <h3 id="dmn-window">The decision window</h3>
+        <p>The table opens full screen. The <span class="ui">Decision table</span> tab edits it as in Camunda Modeler: add a rule or a column, set the type of an input, give its allowed values, choose the hit policy (<span class="ui">Unique</span>, <span class="ui">First</span>, <span class="ui">Priority</span>, <span class="ui">Any</span>, <span class="ui">Collect</span>…). The <span class="ui">Requirements (DRD)</span> tab shows the decision requirements diagram: decisions, input data, knowledge sources and their links. Values are written in FEEL, the expression language of DMN: <code>"Pro"</code> between straight double quotes, <code>&lt; 1000</code>, <code>[1000..5000]</code>, <code>-</code> for "any value".</p>
+        <p><span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Back to the process</span>, the cross or <kbd>Esc</kbd> closes the window and stores the changes in the diagram in one step, which <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes in the editor. <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Save to My diagrams</span> keeps a copy, to reuse in other processes. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export .dmn</span> downloads the DMN 1.3 document. The bpmn.io watermark of dmn-js stays visible, as its licence requires.</p>
+        <figure><img src="/src/help/img/en-dmn-table.webp" width="1408" height="364" alt="The decision window, full screen: Decision table and Requirements (DRD) tabs, the Assess the risk table with its Amount and Category inputs, its Risk output and three rules." loading="lazy" /><figcaption>The decision table in its window, edited with dmn-js.</figcaption></figure>
+        <h3 id="dmn-test">Test and compare a table</h3>
+        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Test</span>, at the top of the window, opens the test bench to the right of the table. Enter one value per input (a list when the input has allowed values), then <span class="uib">Evaluate</span>: the bench gives the rules that apply and the result under the hit policy, and highlights them in the table. Under <span class="ui">Unique</span>, two rules applying together are flagged. <span class="uib">One case per rule</span> builds, for each rule with simple entries, values that trigger it, and checks that it does apply: a rule hidden by another one, or in conflict, is marked to check. Nothing is saved.</p>
+        <figure><img src="/src/help/img/en-dmn-bench.webp" width="1408" height="524" alt="The test bench to the right of the Assess the risk table: Amount 500, Category Individual, and the result of One case per rule, three cases as expected." loading="lazy" /><figcaption>The test bench: one case per rule, all as expected.</figcaption></figure>
+        <p><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare</span> lists what changed in the decisions since the window opened, or against a .dmn file (<span class="uib">With a .dmn file…</span>): rules added, removed, changed cell by cell or moved, columns and hit policy. Added rules are highlighted in green in the table, changed rules in orange.</p>
+        <figure><img src="/src/help/img/en-dmn-compare.webp" width="1408" height="384" alt="The comparison to the right of the table: one changed rule, Risk from low to medium, highlighted in orange in the table." loading="lazy" /><figcaption>A rule changed since the window opened.</figcaption></figure>
+        <h3 id="dmn-checks">Table checks</h3>
+        <p>The editor reads each table, without AI, and flags:</p>
         <ul>
-          <li><code>validate_diagram</code> returns the check report: element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues with element, rule and message;</li>
+          <li>a table with no input, no output or no rule, a decision with no logic;</li>
+          <li>text without quotes, which FEEL would read as a variable name;</li>
+          <li>an output that gives a value outside its allowed values;</li>
+          <li>two rules that can both apply under the <span class="ui">Unique</span> hit policy, or with different outputs under <span class="ui">Any</span>;</li>
+          <li>an allowed value of a text input that no rule covers;</li>
+          <li>a business rule task with no decision, or linked to a decision missing from the diagram.</li>
+        </ul>
+        <p>Overlaps are computed on numbers (comparisons, ranges), quoted text and booleans. A more complex FEEL expression is not compared. The findings show in the <span class="ui">Decision (DMN)</span> group, in the <a href="#process-report">process report</a>, section <span class="ui">Decisions (DMN)</span>, and in the result of <code>validate_diagram</code>.</p>
+        <h3 id="dmn-files">Files, My diagrams and Camunda 8</h3>
+        <ul>
+          <li>Decisions travel with the .bpmn: autosave, My diagrams, export, Compare. The DMN document is stored in an extension of the process (<code>bpmnpilot:decisionModel</code>), and each linked task carries <code>bpmnpilot:decisionRef</code>. Other BPMN tools ignore them without error.</li>
+          <li>For Camunda 8, the linked task also gets <code>zeebe:calledDecision</code> (decision id, result variable named after the output when there is only one, <code>result</code> otherwise): the file opens already linked in Camunda Modeler. A file from Camunda, linked by <code>zeebe:calledDecision</code> only, counts as linked.</li>
+          <li><span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>.dmn file (decisions)…</span>, adds the decisions of a file to the open diagram. DMN 1.1 and 1.2 files are converted to DMN 1.3, and an id already in use is renamed, references included. <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions (.dmn file)</span>, saves the decisions of the diagram in a separate file, for Camunda Modeler or a decision engine.</li>
+          <li><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span>, opens all the decisions of the diagram on their DRD.</li>
+          <li>In <a href="#saving">My diagrams</a>, decision models carry the <span class="ui">DMN</span> tag. Opened on its own, a model is edited and saved with <span class="uib">Save</span>, and <span class="uib">Add to the open diagram</span> copies it into the current process. In the Docker version, they are .dmn files, next to the .bpmn files, in the data folder of the server.</li>
+        </ul>
+        <h3 id="dmn-copilot">With the AI co-pilot</h3>
+        <p>The co-pilot reads and writes the tables. <span class="uib">✦ Draft it with the co-pilot</span>, in the <span class="ui">Decision (DMN)</span> group, asks it for the table of a task, from its label, its documentation and the rest of the process. You can also ask in the chat:</p>
+        <div class="note">"Write the decision table of the Assess the risk task: amount requested and customer category as inputs, risk level low, medium or high as output, one rule per case."</div>
+        <p>It names the inputs and outputs in business words, gives their allowed values, chooses the hit policy and links the table to the task. Its changes are marked like the others, and undone in one click.</p>
+        <p>The table can also come from a document: attach the procedure, price grid or policy (PDF, Word, Excel) to your message.</p>
+        <div class="note">"From the attached procedure, write the decision table of the Grant the discount task: one input per criterion, one output for the discount rate, and quote in the annotation the passage each rule comes from."</div>
+        <p>On a linked task, <span class="uib">✦ Explain and test with the co-pilot</span> asks it to sum up the table in plain words, try it (one case per rule, then edge cases) and report gaps, overlaps and surprising results, without changing it. It uses the <code>test_decision</code> tool for this, which evaluates the table without changing it.</p>
+      </section>
+
+      <section id="experts-mcp" class="expert-part">
+        <h2>MCP agents in Expert mode</h2>
+        <p>In the <a href="#docker">Docker version</a>, an MCP agent also gets the report, the probabilities and the decision tables:</p>
+        <ul>
           <li><code>get_process_report</code> returns the <a href="#process-report">process report</a> in Markdown. With <code>simulate</code>, it first computes 100 tokens following the branch probabilities;</li>
           <li><code>update_elements</code> also sets the <span class="ui">Documentation</span> field and the probability of a branch, marked as proposed by the AI until reviewed;</li>
           <li><code>set_report_commentary</code> saves the analysis of the process in the file, for the report;</li>
-          <li>the <code>critique_description</code> prompt lists what is ambiguous or missing in a description, before drawing.</li>
+          <li><code>get_decisions</code> returns the decisions of the diagram (inputs, outputs, rules, hit policy), the tasks that call them and the findings;</li>
+          <li><code>set_decision_table</code> creates or replaces a decision table, and links it to a task with <code>linkTo</code>;</li>
+          <li><code>link_decision</code> links a business rule task to a decision, or unlinks it;</li>
+          <li><code>test_decision</code> evaluates a table on input cases, or one case per rule, without changing it.</li>
         </ul>
-        <p>The agent has no automatic correction loop: calling <code>validate_diagram</code> and fixing the problems is up to it. The modeling rules the server gives it ask for this at the end of each drawing.</p>
+        <p>These tools answer even when Expert mode is off in the open tab: the mode only sets what the editor shows.</p>
       </section>
+
+      <div class="part-banner" id="setup-part">
+        <p class="part-title"><span class="ico" data-icon="install" aria-hidden="true"></span>Install and administer</p>
+        <p>Where your data goes, how to install the editor on your machine or as an app, use on small screens, and answers to frequent questions.</p>
+      </div>
 
       <section id="privacy">
         <h2><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 5 6v5c0 4.4 3 8.3 7 10 4-1.7 7-5.6 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Privacy</h2>

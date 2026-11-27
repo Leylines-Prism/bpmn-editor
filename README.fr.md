@@ -74,9 +74,26 @@ Chez vous, sur votre machine ou votre serveur, avec le serveur MCP qui relie vos
 </tr>
 </table>
 
-**Pour les experts BPMN**, le bouton **Expert** de la barre ouvre de quoi éprouver un modèle et en
-rendre compte : la simulation de jetons et le rapport de processus. Il passe en bleu tant que le mode
-est actif, et l'éditeur garde une barre sobre pour les autres (voir la
+**Pour dessiner, rien de plus.** La palette, le menu contextuel et le co-pilote IA suffisent pour un
+schéma de processus lisible, sans connaître BPMN. Viennent ensuite :
+
+**Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
+un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
+une onde au clic et un curseur masqué à l'arrêt (touches 1 à 4). En mode Expert, la simulation de jetons s'y lance aussi.
+
+**Documentation des éléments** : saisie en Markdown avec aperçu immédiat, modèles par type d'élément, dictée sur
+l'appareil, ou première version rédigée par le co-pilote IA d'après le diagramme. Des pastilles signalent les éléments
+documentés avec un aperçu au survol, la recherche porte aussi sur la documentation, un clic en présentation affiche la
+fiche de l'élément, et le menu Exporter produit des fiches de procédure (PDF ou Markdown), une par activité dans l'ordre
+du flux (voir l'[aide](https://bpmn.leylines.fr/aide.html#documenter)).
+
+**Contrôles à chaque réponse du co-pilote** : critique de la demande avant le dessin (ambiguïtés,
+manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
+bpmnlint), avec autocorrection.
+
+**Mode Expert, pour éprouver un modèle.** Rien de ce qui suit n'est nécessaire pour dessiner. Le bouton
+**Expert** de la barre l'active, et **Choisir les modules…** n'allume que les fonctions dont vous vous
+servez : l'éditeur reste sobre pour les autres (voir la
 [section dédiée de l'aide](https://bpmn.leylines.fr/aide.html#experts-bpmn)) :
 
 - **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
@@ -90,22 +107,12 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
   statut, périmètre) en tête du rapport et des fiches de procédure. Le rapport ajoute un tableau des
   risques et contrôles et une matrice de conformité.
 - **BPMN pour Camunda 8 ou 7** : plateforme indiquée, processus exécutable, conditions des passerelles
-  en FEEL ou en JUEL, assignations sur les tâches utilisateur.
-- **Contrôles à chaque réponse du co-pilote**, dans les deux modes : critique de la demande avant le dessin (ambiguïtés,
-  manques), puis six contrôles (XML, métamodèle BPMN 2.0, références et portées, DI, réimport,
-  bpmnlint), avec autocorrection.
+  en FEEL ou en JUEL, tâches utilisateur avec leur personne assignée.
+- **Tables de décision DMN** : chaque tâche de règle métier se relie à une
+  table de décision modifiable et à son diagramme d'exigences (dmn-js), rangées dans le .bpmn avec le lien Camunda 8
+  (`zeebe:calledDecision`), contrôlées (chevauchements, valeurs non couvertes), et rédigées par le co-pilote ou un agent MCP à la demande.
 
-**Présentation** (bouton de la barre d'outils) : le schéma seul, en plein écran et en lecture, pour dérouler
-un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
-une onde au clic et un curseur masqué à l'arrêt (touches 1 à 4). En mode Expert, la simulation de jetons s'y lance aussi.
-
-**Documentation des éléments** : saisie en Markdown avec aperçu immédiat, modèles par type d'élément, dictée sur
-l'appareil, ou première version rédigée par le co-pilote IA d'après le diagramme. Des pastilles signalent les éléments
-documentés avec un aperçu au survol, la recherche porte aussi sur la documentation, un clic en présentation affiche la
-fiche de l'élément, et le menu Exporter produit des fiches de procédure (PDF ou Markdown), une par activité dans l'ordre
-du flux (voir l'[aide](https://bpmn.leylines.fr/aide.html#documenter)).
-
-Les outils experts sur un processus d'achat interne à quatre couloirs :
+Sur un processus d'achat interne à quatre couloirs :
 
 <table>
 <tr>
@@ -467,6 +474,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 
 ## Ce que fait l'éditeur
 
+### Pour tous
+
 - **Fichiers** : nom, nouveau, ouvrir (fichier, XML collé, ou glisser-déposer), exporter (.bpmn,
   .xml, SVG, PNG, PDF, fichier .bpmn chiffré par mot de passe), copier en image, imprimer le diagramme seul, sur une page. Le diagramme en
   cours est restauré quand vous revenez.
@@ -479,11 +488,6 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
-- **Mode expert : simulation de jetons, carte de chaleur et rapport de processus** : faire
-  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
-  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
-  probabilités des branches. Exporter un rapport de processus (PDF ou Markdown) : constats en trois
-  niveaux, axes d'amélioration, séquence des éléments et, après une simulation, carte de chaleur.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
@@ -497,6 +501,27 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   annule toute la réponse.
 - **Interface** : thème clair ou sombre, anglais ou français, panneaux latéraux redimensionnables.
   Pensé pour un écran d'ordinateur : sur un téléphone, il sert surtout à regarder un diagramme.
+
+### Mode Expert
+
+Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
+
+- **Simulation de jetons, carte de chaleur et rapport de processus** : faire
+  circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
+  le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
+  probabilités des branches. Exporter un rapport de processus (PDF, Markdown ou Word) : constats en trois
+  niveaux, axes d'amélioration, séquence des éléments, matrice RACI et, après une simulation, carte de chaleur.
+- **Potentiel d'IA, risques et conformité** : pour chaque activité, son potentiel d'IA (automatisable, assistée
+  par IA ou humaine, avec la raison et le garde-fou), ses risques et contrôles, et ses références réglementaires ;
+  une fiche d'identité du processus (propriétaire, version, statut, date de validation, périmètre). Le rapport
+  ajoute un tableau des risques et contrôles, une matrice de conformité et un constat pour chaque risque sans contrôle.
+- **Export pour Camunda 8 et 7** : plateforme indiquée, processus exécutables, conditions des passerelles en FEEL
+  ou en JUEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur.
+- **Tables de décision DMN** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,
+  avec le DRD, l'import et l'export .dmn, les modèles de décision dans Mes diagrammes, `zeebe:calledDecision` pour Camunda 8,
+  les contrôles des tables (chevauchements en politique Unique, valeurs non couvertes, textes sans guillemets), un banc d'essai
+  (règles qui s'appliquent, un cas par règle), la comparaison de deux versions, des jetons calculés qui suivent les tables aux passerelles,
+  et les outils MCP `get_decisions`, `set_decision_table`, `link_decision`, `test_decision`.
 
 ## En quoi il diffère de draw.io ou Lucidchart
 

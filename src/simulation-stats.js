@@ -13,6 +13,8 @@
 //   - les événements en bordure ne se déclenchent pas ;
 //   - événement de fin de type Terminate : arrête l'instance.
 // Le résultat compte, pour chaque élément et chaque flux, le nombre de passages.
+// options.branchHint(passerelle, sortants, entrants) peut donner les poids d'une passerelle
+// exclusive (tables de décision DMN, src/dmn/decision-routing.js) ; null garde le tirage habituel.
 
 const MAX_STEPS = 5000 // par instance : une boucle sans sortie ne bloque pas la page
 
@@ -80,7 +82,7 @@ export function flowIndex(containers) {
   return { outgoing: (node) => outgoing.get(node) || [], incoming: (node) => incoming.get(node) || [] }
 }
 
-export function runBatch(definitions, runs = 100, random = Math.random) {
+export function runBatch(definitions, runs = 100, random = Math.random, { branchHint = null } = {}) {
   const nodes = {}
   const flows = {}
   const add = (map, id) => { map[id] = (map[id] || 0) + 1 }
@@ -141,7 +143,7 @@ export function runBatch(definitions, runs = 100, random = Math.random) {
       let taken
       if (outgoing.length === 1) taken = outgoing
       else if (isA(node, 'bpmn:ExclusiveGateway') || isA(node, 'bpmn:EventBasedGateway') || isA(node, 'bpmn:ComplexGateway')) {
-        taken = [outgoing[pick(branchWeights(outgoing), random)]]
+        taken = [outgoing[pick((branchHint && branchHint(node, outgoing, incoming)) || branchWeights(outgoing), random)]]
       } else if (isA(node, 'bpmn:InclusiveGateway')) {
         const weights = branchWeights(outgoing)
         taken = outgoing.filter((f) => random() < (probabilityOf(f) ?? weights[outgoing.indexOf(f)] * 100) / 100)

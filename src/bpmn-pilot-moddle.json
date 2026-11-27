@@ -67,6 +67,21 @@
         { "name": "elements", "isAttr": true, "type": "String" },
         { "name": "text", "isBody": true, "type": "String" }
       ]
+    },
+    {
+      "name": "DecisionLink",
+      "extends": ["bpmn:BusinessRuleTask"],
+      "properties": [
+        { "name": "decisionRef", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "DecisionModel",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["bpmn:Process", "bpmn:Collaboration"] },
+      "properties": [
+        { "name": "xml", "isBody": true, "type": "String" }
+      ]
     }
   ]
 }

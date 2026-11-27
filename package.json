@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",
+    "@bpmn-io/dmn-migrate": "0.8.0",
     "@bpmn-io/properties-panel": "3.60.2",
     "@fontsource/urbanist": "5.3.0",
     "altcha": "3.7.0",
@@ -33,10 +34,14 @@
     "bpmnlint": "12.2.0",
     "diagram-js-grid": "2.1.0",
     "diagram-js-minimap": "5.6.0",
+    "dmn-js": "18.1.0",
+    "dmn-moddle": "12.2.1",
+    "feelin": "8.2.0",
     "htm": "3.1.1",
     "jspdf": "4.2.1",
     "jspdf-autotable": "5.0.9",
     "svg2pdf.js": "2.9.0",
+    "zeebe-bpmn-moddle": "2.0.0",
     "zod": "4.6.7"
   },
   "devDependencies": {
