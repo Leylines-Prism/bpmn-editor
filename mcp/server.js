@@ -251,6 +251,7 @@ app.post('/chat/models', chatCors, async (req, res) => {
 // Les messages avec pièces jointes (images, PDF) dépassent la limite de 100 Ko du
 // lecteur JSON général : ils arrivent avec leur propre type, lu ici jusqu'à 34 Mo.
 const chatBody = express.json({ type: 'application/vnd.bpmn-chat+json', limit: '34mb' })
+const KEEPALIVE_MS = 20000 // signal de vie du flux du chat
 
 app.post('/chat', chatCors, chatBody, async (req, res) => {
   const { conversationId, tabId, text, model } = req.body ?? {}
@@ -269,10 +270,17 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
   res.set({ 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Accel-Buffering': 'no' })
   res.flushHeaders()
   const emit = (event) => res.write(`data: ${JSON.stringify(event)}\n\n`)
+  // Signal de vie : un commentaire SSE à intervalle régulier, ignoré par la page. Sans lui, un
+  // modèle lent qui lit la demande ou réfléchit longtemps laisse le flux muet, et un proxy coupe
+  // la connexion (nginx au bout de proxy_read_timeout, 10 min dans l'image Docker).
+  const alive = setInterval(() => res.write(': alive\n\n'), KEEPALIVE_MS)
 
   // Le bouton « Arrêter » de l'éditeur coupe la requête : on interrompt l'appel en cours.
   const abort = new AbortController()
-  res.on('close', () => abort.abort())
+  res.on('close', () => {
+    clearInterval(alive)
+    abort.abort()
+  })
 
   try {
     await chat.send({
@@ -295,6 +303,7 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
       emit({ type: 'error', message: custom ? describeProviderError(relayError(err), { label: custom.label, providerId: custom.provider, baseUrl: custom.baseUrl, lang: langOf(req) }) : chatErrorMessage(err, langOf(req)) })
     }
   }
+  clearInterval(alive)
   res.end()
 })
 
