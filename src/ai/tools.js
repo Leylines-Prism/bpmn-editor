@@ -81,26 +81,40 @@ export function buildTools(z) {
     .regex(/^(#?[0-9a-fA-F]{6}|#?[0-9a-fA-F]{3}|)$/)
     .describe('Hexadecimal color such as #1E88E5, or an empty string')
 
+  // Annotations MCP (readOnlyHint, destructiveHint, idempotentHint, openWorldHint) : des indices
+  // pour les clients, qui peuvent par exemple demander confirmation avant un outil destructif.
+  // Seul le serveur MCP les transmet. Tous les outils agissent sur l'onglet ouvert, jamais au-delà.
+  const READ = { readOnlyHint: true, openWorldHint: false }
+  const edit = (destructive, idempotent) => ({ readOnlyHint: false, destructiveHint: destructive, idempotentHint: idempotent, openWorldHint: false })
+
   return [
     {
       name: 'get_shapes',
       title: 'Read the diagram elements',
       description:
-        'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows) and connections (id, type, name, source, target).',
+        'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows) and connections (id, type, name, source, target). ' +
+        'Call it before changing an existing diagram: the other tools take these ids. Read-only. ' +
+        'For the full BPMN content (conditions, documentation, extensions) use get_diagram_xml; to see the layout, get_diagram_image.',
       inputSchema: {},
+      annotations: READ,
     },
     {
       name: 'get_diagram_xml',
       title: 'Read the BPMN XML',
-      description: 'Returns the open diagram as BPMN 2.0 XML.',
+      description:
+        'Returns the open diagram as BPMN 2.0 XML, with its diagram layout. Read-only. ' +
+        'Use it to keep or pass on the exact file, or to read details get_shapes leaves out; to list ids before an edit, get_shapes is shorter.',
       inputSchema: {},
+      annotations: READ,
     },
     {
       name: 'get_diagram_image',
       title: 'See the diagram',
       description:
-        'Returns a PNG image of the open diagram, as drawn on the canvas. Use it to check the layout visually (overlaps, crossing flows, readability), or to show the diagram to the user.',
+        'Returns a PNG image of the open diagram, as drawn on the canvas. Use it to check the layout visually (overlaps, crossing flows, readability), or to show the diagram to the user. ' +
+        'Read-only: nothing is saved. To give the user an image file, use export_diagram.',
       inputSchema: {},
+      annotations: READ,
     },
     {
       name: 'export_diagram',
@@ -109,7 +123,8 @@ export function buildTools(z) {
         'Exports the open diagram as a file, exactly like the editor\'s Export menu: bpmn (BPMN 2.0 XML), svg, png (2x, white background) or pdf (vector). ' +
         'When the editor runs with its server, the file is saved in the exports folder of the server; an existing file is never replaced ' +
         '("Name (2).pdf" is added next to it). The editor also shows the user a Download button: nothing is downloaded unless they click it. ' +
-        'The file content is not returned. Use it only when the user asks for a file.',
+        'The file content is not returned: to read the XML use get_diagram_xml, to look at the diagram get_diagram_image. ' +
+        'The diagram itself is not changed. Use it only when the user asks for a file.',
       inputSchema: {
         format: z.enum(['bpmn', 'svg', 'png', 'pdf']).describe('File format'),
         name: z
@@ -118,12 +133,16 @@ export function buildTools(z) {
           .optional()
           .describe('File name without extension. Default: the name of the diagram in the editor'),
       },
+      annotations: edit(false, false),
     },
     {
       name: 'set_diagram_xml',
       title: 'Replace the diagram',
       description:
-        "Replaces the whole open diagram with the given BPMN 2.0 XML. The user can undo it in one step, but not the earlier changes one by one.",
+        "Replaces the whole open diagram with the given BPMN 2.0 XML, for example to load a file or to start over. Everything not in the XML is lost. " +
+        'Unreadable XML, or XML without a drawn diagram (BPMNDiagram), is rejected and the diagram stays unchanged. ' +
+        'The user can undo it in one step, but not the earlier changes one by one. To change part of a diagram, prefer add_shapes, update_elements or remove_elements.',
+      annotations: edit(true, true),
       inputSchema: {
         xml: z.string().min(1).describe('Complete BPMN 2.0 XML document, with its diagram layout (BPMNDiagram)'),
       },
@@ -135,7 +154,10 @@ export function buildTools(z) {
         'Adds one or more shapes. With "after", the shape is placed to the right of the given element and connected to it. ' +
         'With x and y, it is placed at that position without a connection. With neither, it is placed to the right of the diagram. ' +
         'A Lane is added at the bottom of its participant, which grows to make room. ' +
-        'Returns the id created for each shape, and for each "key" given.',
+        'With "attachTo", the shape becomes a boundary event on a task or subprocess. ' +
+        'Returns the id created for each shape, and for each "key" given. To connect existing shapes, use connect_shapes. ' +
+        'If one shape fails, the whole call is undone. The user can undo the call with Ctrl+Z.',
+      annotations: edit(false, false),
       inputSchema: {
         shapes: z
           .array(
@@ -163,8 +185,8 @@ export function buildTools(z) {
                 .boolean()
                 .optional()
                 .describe('Boundary event only: false for a non-interrupting event (the activity goes on). Default: true'),
-              x: z.number().optional(),
-              y: z.number().optional(),
+              x: z.number().optional().describe('Horizontal position of the shape centre, in diagram pixels. Give x and y together, without "after"'),
+              y: z.number().optional().describe('Vertical position of the shape centre, in diagram pixels'),
               parent: elementId
                 .optional()
                 .describe(
@@ -182,13 +204,16 @@ export function buildTools(z) {
       title: 'Connect shapes',
       description:
         'Creates connections between existing shapes. The type follows the BPMN rules: sequence flow within a process, ' +
-        'message flow between participants, association to an annotation. Returns the id of each connection.',
+        'message flow between participants, association to an annotation. Returns the id of each connection. ' +
+        'Shapes added with "after" in add_shapes are already connected. To rename a connection later, use update_elements; ' +
+        'to remove one, remove_elements. The user can undo the call with Ctrl+Z.',
+      annotations: edit(false, false),
       inputSchema: {
         connections: z
           .array(
             z.object({
-              source: elementId,
-              target: elementId,
+              source: elementId.describe('Id of the shape the connection starts from'),
+              target: elementId.describe('Id of the shape the connection goes to'),
               name: z.string().optional().describe('Connection label, for example "Yes" after a gateway'),
             }),
           )
@@ -199,7 +224,10 @@ export function buildTools(z) {
       name: 'update_elements',
       title: 'Update elements',
       description:
-        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, or sets the probability of a gateway branch. A type change can produce a new id, returned in the result.',
+        'Renames elements, changes their type (for example Task to UserTask), fills in their Documentation field, or sets the probability of a gateway branch. ' +
+        'Only the fields given change. A type change can produce a new id, returned in the result. ' +
+        'For colors and fonts use style_elements; to move shapes, auto_layout. The user can undo the call with Ctrl+Z.',
+      annotations: edit(false, false),
       inputSchema: {
         elements: z
           .array(
@@ -230,7 +258,8 @@ export function buildTools(z) {
         'Colors are hexadecimal, for example #1E88E5. A connection only has a stroke. ' +
         'For a dark fill, set textColor to "auto" (or #FFFFFF) so the label stays readable. ' +
         'reset: true removes every color and text formatting of the element first. ' +
-        'Returns the resulting style of each element. The user can undo it in one step.',
+        'Returns the resulting style of each element. Names and types are changed with update_elements. The user can undo it in one step.',
+      annotations: edit(false, true),
       inputSchema: {
         elements: z
           .array(
@@ -259,9 +288,11 @@ export function buildTools(z) {
       description:
         'Recalculates the position of every shape and the route of every connection, like the editor\'s "Tidy up" button. ' +
         'Handles pools, lanes, message flows, boundary events, expanded subprocesses, annotations and groups. ' +
-        'Colors are kept. Returns the layout warnings, if any. ' +
+        'Colors, names and connections are kept: only positions and routes change. Returns the layout warnings, if any. ' +
+        'Call it once the drawing is complete, then check the result with get_diagram_image. ' +
         'The user can undo it in one step.',
       inputSchema: {},
+      annotations: edit(false, true),
     },
     {
       name: 'validate_diagram',
@@ -272,15 +303,21 @@ export function buildTools(z) {
         'every element is drawn (diagram interchange complete); bpmn-js reimports the document without warnings; ' +
         'the recommended bpmnlint rules raise no error (isolated element, missing start or end event, element without a label, superfluous gateway…). ' +
         'Returns the element counts, each check with its problems, the number of errors and warnings, and the bpmnlint issues ' +
-        'with the id of the element concerned, the rule and the message.',
+        'with the id of the element concerned, the rule and the message. Read-only: fix the problems with the editing tools, then validate again. ' +
+        'For an analysis of how the process runs, use get_process_report.',
       inputSchema: {},
+      annotations: READ,
     },
     {
       name: 'remove_elements',
       title: 'Remove elements',
-      description: 'Removes shapes or connections. Removing a shape also removes its connections.',
+      description:
+        'Removes shapes or connections from the diagram. Removing a shape also removes its connections and, for a pool or an expanded subprocess, what it contains. ' +
+        'Read the ids with get_shapes first. To change an element rather than delete it, use update_elements; to replace the whole diagram, set_diagram_xml. ' +
+        'If one id is unknown, nothing is removed. The user can undo the call with Ctrl+Z.',
+      annotations: edit(true, true),
       inputSchema: {
-        ids: z.array(elementId).min(1),
+        ids: z.array(elementId).min(1).describe('Ids of the shapes and connections to remove, as returned by get_shapes'),
       },
     },
     {
@@ -291,7 +328,9 @@ export function buildTools(z) {
         'modeling findings by level (error, warning, to complete) with their source (bpmnlint, model check, simulation), ' +
         'improvement areas by priority with the expected effect, end events, activities by lane, and the element sequence ' +
         '(type, lane, documentation, outgoing flows with their conditions). Use it to review a model, write a procedure, or ' +
-        'propose improvements; the improvement areas you add are your own analysis, to be validated by the process owner.',
+        'propose improvements; the improvement areas you add are your own analysis, to be validated by the process owner. ' +
+        'Read-only. To check conformance only, validate_diagram is shorter; to store your analysis in the report, set_report_commentary.',
+      annotations: READ,
       inputSchema: {
         simulate: z
           .boolean()
@@ -310,6 +349,7 @@ export function buildTools(z) {
         '(a branch or end seldom or never reached), risk (a missing exception, a dead end, a gap in the model), or improvement ' +
         '(a concrete change and its expected effect). Cite the elements concerned by id. ' +
         'Write in the language of the user. An empty summary with no points removes the analysis. The user can undo it with Ctrl+Z.',
+      annotations: edit(true, true),
       inputSchema: {
         summary: z.string().max(2000).describe('Two to five sentences on how the process runs and what matters most'),
         points: z
