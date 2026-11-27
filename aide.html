@@ -38,6 +38,7 @@
           <li><a href="#premiers-pas">Premiers pas</a></li>
           <li><a href="#dessiner">Dessiner</a></li>
           <li><a href="#proprietes">Panneau Processus</a></li>
+          <li><a href="#documenter">Documenter les éléments</a></li>
           <li><a href="#couleurs-texte">Couleurs et texte</a></li>
           <li><a href="#verifier">Vérifier et ranger</a></li>
           <li><a href="#enregistrer">Enregistrer et Mes diagrammes</a></li>
@@ -161,7 +162,7 @@
         </ul>
         <p>Sur le canevas, la grille aide à aligner les formes, qui s'y accrochent.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</h3>
-        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
+        <p>Le bouton <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Présentation</span> de la barre d'outils affiche le schéma seul, en plein écran : ni palette, ni panneaux, ni grille. Faites glisser pour vous déplacer, zoomez avec <kbd>Ctrl</kbd>+molette, au pincement ou avec <kbd>+</kbd> et <kbd>−</kbd>. <kbd>0</kbd> ajuste le schéma à l'écran, et <kbd>1</kbd> à <kbd>4</kbd> règlent les effets du pointeur. Un clic sur un élément affiche sa <a href="#documenter">fiche de documentation</a>, et <kbd>D</kbd> active ou coupe les fiches. Le diagramme n'est pas modifiable dans ce mode. En mode expert, le bouton Simulation de la barre y lance la simulation de jetons, avec ses commandes : départ, choix aux passerelles, pause, journal et vitesse. <kbd>Échap</kbd> ou la croix ramène à l'éditeur, avec la vue d'avant.</p>
         <figure class="fig-anim"><p class="fig-title">Le mode Présentation</p><img src="/docs/presentation.fr.gif" width="1280" height="720" alt="Le processus d'achat en mode Présentation : zoom, déplacement, ajustement, puis un jeton qui circule à 2×" loading="lazy" /><figcaption>Zoom, déplacement, ajustement à la fenêtre, puis une simulation à 2×.</figcaption></figure>
         <p>Le bouton <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointeur</span> de la barre de présentation ouvre quatre interrupteurs, que l'on cumule à volonté. Chacun a sa touche, qui l'active ou le coupe sans ouvrir le menu, et un bref message en rappelle l'état.</p>
         <div class="table-wrap">
@@ -204,7 +205,7 @@
           <table>
             <thead><tr><th>Groupe</th><th>Affiché pour</th><th>Contenu</th></tr></thead>
             <tbody>
-              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte libre qui décrit l'élément, enregistré dans le fichier. Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
+              <tr><td>Documentation</td><td>Tous les éléments</td><td>Un texte qui décrit l'élément, en Markdown, enregistré dans le fichier (voir <a href="#documenter">Documenter les éléments</a>). Un « pool » a deux champs, l'un pour lui-même, l'autre pour son processus.</td></tr>
               <tr><td>Message, Signal, Erreur, Escalade</td><td>Les événements de ce type (et les tâches de réception ou d'envoi pour Message)</td><td>Le message, signal, erreur ou escalade utilisé, choisi dans une liste commune à tout le schéma. Deux événements qui partagent la même référence désignent le même message.</td></tr>
               <tr><td>Minuteur</td><td>Les événements minuteur</td><td>Le type (date, durée ou cycle) et la valeur au format ISO 8601, par exemple <code>PT1H</code> pour une heure.</td></tr>
               <tr><td>Lien</td><td>Les événements de lien</td><td>Le nom du lien. Un événement d'émission rejoint l'événement de capture qui porte le même nom.</td></tr>
@@ -214,6 +215,49 @@
           </table>
         </div>
         <p>Tout ce que vous saisissez dans le panneau est enregistré dans le fichier .bpmn et suit les exports XML.</p>
+      </section>
+
+      <section id="documenter">
+        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenter les éléments</h2>
+        <p>Chaque élément a un champ <span class="ui">Documentation</span>, enregistré dans le fichier .bpmn. L'éditeur en fait une vraie fiche : saisie en Markdown, modèles par type d'élément, dictée, rédaction par le co-pilote IA, repérage sur le canevas, recherche, fiche en présentation et export en fiches de procédure.</p>
+        <h3>La fenêtre de documentation</h3>
+        <p>Elle s'ouvre par le bouton <span class="ui">Ouvrir l'éditeur en grand</span> du champ Documentation, dans le <a href="#proprietes">panneau Processus</a>, ou d'un clic sur la pastille bleue de l'élément (voir plus bas). Le texte s'enregistre à mesure que vous écrivez, et <kbd>Ctrl</kbd>+<kbd>Z</kbd> l'annule comme toute modification.</p>
+        <ul>
+          <li>En haut, trois vues : <span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> (la saisie à gauche, l'aperçu mis en forme à droite) et <span class="uib">Aperçu</span>. Le navigateur retient la dernière.</li>
+          <li>La barre de mise en forme ajoute gras, italique, titre, liste à puces, liste numérotée et lien. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> et <kbd>Ctrl</kbd>+<kbd>K</kbd> font de même au clavier.</li>
+          <li><span class="uib">Modèle ▾</span> insère les titres d'un modèle, celui du type de l'élément en premier : objectif, acteurs, entrées, sorties, règles et références pour une activité ; question posée et critère de chaque branche pour une passerelle, avec une ligne par branche à son nom ; déclencheur, délai ou résultat pour un événement ; finalité, périmètre, propriétaire et indicateurs pour le processus.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit votre voix à l'endroit du curseur, avec la reconnaissance vocale sur l'appareil du co-pilote : ni le son ni le texte ne quittent le navigateur. Le bouton n'apparaît que dans les navigateurs qui le permettent.</li>
+          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> demande au co-pilote IA une première version, d'après le diagramme (couloir, éléments voisins, conditions, documentation des autres éléments) et votre conversation. Il écrit « à confirmer » là où il ne sait pas, garde le texte déjà présent, et son texte apparaît aussitôt dans la fenêtre pour relecture. Le bouton reste grisé tant qu'aucun modèle n'est réglé.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-documentation.webp" width="1400" height="880" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
+            <tbody>
+              <tr><td><code>## Règles</code></td><td>Un titre (de <code>#</code> à <code>######</code>)</td></tr>
+              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Gras, italique</td></tr>
+              <tr><td><code>- Assuré</code>, <code>1. Vérifier</code></td><td>Liste à puces, liste numérotée (deux espaces devant pour une sous-liste)</td></tr>
+              <tr><td><code>[Procédure](https://example.com)</code></td><td>Un lien. Seules les adresses https, http et mailto sont gardées</td></tr>
+              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>Une citation, du code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Le Markdown reste du texte lisible : Camunda, Signavio et les autres outils BPMN le montrent tel quel dans leur champ Documentation, et un texte écrit sans mise en forme garde ses retours à la ligne.</p>
+        <h3>Repérer et retrouver la documentation</h3>
+        <ul>
+          <li>Une pastille bleue, en haut à droite, marque chaque élément documenté. Au survol, elle montre un aperçu de sa documentation ; un clic ouvre la fenêtre.</li>
+          <li>En <a href="#experts-bpmn">mode Expert</a>, une pastille en pointillé marque aussi les activités sans documentation, celles que le rapport de processus signale « à compléter ». Un clic ouvre la fenêtre pour la rédiger.</li>
+          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, en haut à gauche du canevas, ou <kbd>Ctrl</kbd>+<kbd>F</kbd> sur le canevas, cherche dans les libellés, les identifiants et la documentation. Sous chaque résultat, l'extrait de documentation qui correspond. <kbd>Entrée</kbd> centre le diagramme sur l'élément et le sélectionne.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-pastilles.webp" width="1400" height="731" alt="Le processus d'achat avec une pastille bleue sur chaque élément documenté, et l'aperçu de la documentation de Valider en comité au survol de sa pastille." loading="lazy" /><figcaption>Les pastilles, et l'aperçu au survol.</figcaption></figure>
+        <h3>Utiliser la documentation</h3>
+        <ul>
+          <li>En <a href="#dessiner">mode Présentation</a>, un clic sur un élément affiche sa fiche à droite de l'écran. Le bouton <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Fiches</span> de la barre, ou la touche <kbd>D</kbd>, active ou coupe les fiches. <kbd>Échap</kbd> ferme la fiche ouverte.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Exporter</span>, puis <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Fiches de procédure (PDF)</span> ou <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Fiches de procédure (Markdown)</span>, produit une fiche par activité dans l'ordre du flux : son type, son couloir, ce qui la précède et ce qui la suit, puis sa documentation mise en forme. Les passerelles et les événements documentés ont aussi leur fiche, et une activité sans documentation est marquée « à compléter ». Le PDF commence par la documentation du processus et un sommaire cliquable.</li>
+          <li>Le <a href="#rapport-processus">rapport de processus</a> reprend la documentation sur une ligne dans sa séquence des éléments, et en entier à la fin du rapport en Markdown.</li>
+          <li>Le co-pilote IA et les agents MCP lisent la documentation de chaque élément avec le diagramme : posez-leur une question sur le processus, ils s'appuient dessus pour répondre.</li>
+        </ul>
+        <figure><img src="/src/help/img/fr-doc-presentation.webp" width="1600" height="956" alt="Le processus d'achat en mode Présentation, avec la fiche de la tâche Valider en comité ouverte à droite : objectif, acteurs, entrées, sorties, règles et références." loading="lazy" /><figcaption>La fiche d'une activité, en mode Présentation.</figcaption></figure>
       </section>
 
       <section id="couleurs-texte">
@@ -340,6 +384,7 @@
               <tr><td>Image SVG</td><td>Une image nette à toutes les tailles, pour le web ou un logiciel de dessin</td></tr>
               <tr><td>Image PNG</td><td>Une image à coller dans un document, un e-mail ou une présentation</td></tr>
               <tr><td>Document PDF</td><td>Envoyer le schéma ou l'archiver</td></tr>
+              <tr><td>Fiches de procédure (PDF ou Markdown)</td><td>Une fiche par activité, dans l'ordre du flux, avec sa documentation (voir <a href="#documenter">Documenter les éléments</a>)</td></tr>
               <tr><td>Code XML à copier…</td><td>Copier le code pour le coller ailleurs, ou le télécharger</td></tr>
               <tr><td>Imprimer…</td><td>Imprimer le schéma seul, sans l'éditeur autour : il tient sur une page, l'orientation suit sa forme</td></tr>
             </tbody>

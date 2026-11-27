@@ -76,6 +76,12 @@ est actif, et l'éditeur garde une barre sobre pour les autres (voir la
 un processus en réunion. Le menu Pointeur cumule un pointeur laser, la surbrillance de l'élément survolé et de ses flux,
 une onde au clic et un curseur masqué à l'arrêt (touches 1 à 4). En mode Expert, la simulation de jetons s'y lance aussi.
 
+**Documentation des éléments** : saisie en Markdown avec aperçu immédiat, modèles par type d'élément, dictée sur
+l'appareil, ou première version rédigée par le co-pilote IA d'après le diagramme. Des pastilles signalent les éléments
+documentés avec un aperçu au survol, la recherche porte aussi sur la documentation, un clic en présentation affiche la
+fiche de l'élément, et le menu Exporter produit des fiches de procédure (PDF ou Markdown), une par activité dans l'ordre
+du flux (voir l'[aide](https://bpmn.leylines.fr/aide.html#documenter)).
+
 Les outils experts sur un processus d'achat interne à quatre couloirs :
 
 <table>

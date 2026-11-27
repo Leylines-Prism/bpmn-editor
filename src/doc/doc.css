@@ -1,0 +1,145 @@
+/* Documentation des éléments : fenêtre enrichie, pastilles du canevas, aperçu au survol,
+   fiche du mode Présentation et rendu Markdown commun. */
+
+/* ── Rendu Markdown (aperçu, infobulle, fiche) ───────────────────────── */
+
+.doc-md { color: var(--ink); font-size: 14px; line-height: 21px; overflow-wrap: anywhere; }
+.doc-md > :first-child { margin-top: 0; }
+.doc-md h1, .doc-md h2, .doc-md h3, .doc-md h4, .doc-md h5, .doc-md h6 {
+  margin: 14px 0 4px; color: var(--accent); font-weight: 700; line-height: 22px;
+}
+.doc-md h1 { font-size: 18px; } .doc-md h2 { font-size: 16px; } .doc-md h3 { font-size: 15px; }
+.doc-md h4, .doc-md h5, .doc-md h6 { font-size: 14px; }
+.doc-md p, .doc-md ul, .doc-md ol, .doc-md blockquote { margin: 0 0 8px; }
+.doc-md ul, .doc-md ol { padding-left: 22px; }
+.doc-md li > ul { margin: 2px 0 0; }
+.doc-md blockquote { padding-left: 10px; border-left: 3px solid var(--line-strong); color: var(--ink-muted); }
+.doc-md code { font-family: var(--font-mono); font-size: 12.5px; padding: 1px 4px; border-radius: 4px; background: var(--surface-sunken); }
+.doc-md a { color: var(--accent); }
+.doc-md .doc-empty { color: var(--ink-muted); font-style: italic; }
+
+/* ── Fenêtre de documentation ────────────────────────────────────────── */
+
+.bio-properties-panel-popup.doc-editor { display: flex; flex-direction: column; }
+.doc-editor .bio-properties-panel-popup__header { gap: var(--space-2); }
+.doc-editor .bio-properties-panel-popup__title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-views { display: flex; gap: 4px; margin-right: var(--space-2); flex: none; }
+.doc-view {
+  height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: var(--radius-pill);
+  background: transparent; color: var(--ink-muted); font: 600 13px/18px var(--font-sans); cursor: pointer;
+}
+.doc-view:hover { background: var(--surface-sunken); color: var(--ink); }
+.doc-view[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.doc-view:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 1px; }
+
+.doc-toolbar {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line); background: var(--surface-raised);
+}
+.doc-toolbar .btn { height: 30px; padding: 0 9px; font-size: 13px; }
+.doc-toolbar .doc-fmt b, .doc-toolbar .doc-fmt i { font-size: 14px; min-width: 10px; text-align: center; }
+.doc-toolbar .doc-mic svg { flex: none; }
+.doc-toolbar .doc-mic[data-state="listening"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+.doc-toolbar .doc-mic[data-state="preparing"] { opacity: 0.7; }
+.doc-sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+/* Même trait leyline que le bouton du Co-pilote IA. */
+.doc-toolbar .doc-ai {
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
+}
+.doc-toolbar .doc-ai:disabled { opacity: 0.55; cursor: not-allowed; }
+.doc-template-wrap { position: relative; }
+.doc-template-menu {
+  position: absolute; top: calc(100% + 4px); left: 0; z-index: 5; width: 320px; padding: 6px;
+  background: var(--surface-raised); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(5, 7, 13, 0.22);
+}
+.doc-template-menu button {
+  display: block; width: 100%; padding: 7px 10px; border: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--ink); text-align: left; font: 500 14px/20px var(--font-sans); cursor: pointer;
+}
+.doc-template-menu button small { display: block; color: var(--ink-muted); font-size: 12.5px; line-height: 17px; }
+.doc-template-menu button.suggested { background: var(--accent-soft); }
+.doc-template-menu button:hover, .doc-template-menu button:focus-visible { background: var(--surface-sunken); outline: none; }
+
+.bio-properties-panel-popup.doc-editor .doc-body {
+  flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: minmax(0, 1fr); align-items: stretch; gap: var(--space-3); position: relative;
+}
+.doc-editor[data-view="write"] .doc-body { grid-template-columns: 1fr; }
+.doc-editor[data-view="write"] .doc-preview { display: none; }
+.doc-editor[data-view="preview"] .doc-body { grid-template-columns: 1fr; }
+.doc-editor[data-view="preview"] .doc-body > textarea { display: none; }
+.doc-editor .doc-body > textarea.bio-properties-panel-input { font-family: var(--font-mono); font-size: 13px; line-height: 21px; }
+.doc-preview { min-height: 0; overflow: auto; padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.doc-interim {
+  position: absolute; left: var(--space-4); bottom: var(--space-4); max-width: 60%;
+  padding: 4px 10px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent);
+  font-size: 13px; font-style: italic; pointer-events: none;
+}
+.doc-foot {
+  display: flex; justify-content: space-between; gap: var(--space-3);
+  padding: 6px var(--space-3); border-top: 1px solid var(--line);
+  color: var(--ink-muted); font-size: 12.5px; line-height: 18px;
+}
+.doc-foot .doc-note[data-kind="error"] { color: var(--warm); }
+.doc-foot .doc-note[data-kind="notice"] { color: var(--accent); }
+.doc-foot .doc-count { flex: none; }
+@media (max-width: 640px) {
+  .doc-views .doc-view { padding: 0 7px; font-size: 12px; }
+  .doc-toolbar .doc-fmt[data-fmt="heading"], .doc-toolbar .doc-sep { display: none; }
+}
+
+/* ── Pastilles du canevas ────────────────────────────────────────────── */
+
+.doc-badge {
+  width: 20px; height: 20px; border-radius: 50%; padding: 0; display: grid; place-items: center;
+  border: 0; background: #0F6FAD; color: #FFFFFF; cursor: pointer;
+  box-shadow: 0 0 0 2px #FFFFFF; font: 700 12px/1 var(--font-sans);
+}
+.doc-badge svg { display: block; }
+.doc-badge:hover, .doc-badge:focus-visible { background: #0B5A8D; outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px rgba(15, 111, 173, 0.35); }
+.doc-badge.missing { background: #FFFFFF; color: #5A6578; border: 1.5px dashed #7A869A; box-shadow: none; font-size: 14px; }
+.doc-badge.missing:hover, .doc-badge.missing:focus-visible { color: #0F6FAD; border-color: #0F6FAD; }
+/* Pastilles « à compléter » : seulement en mode Expert, et jamais pendant une simulation. */
+html:not(.expert) .doc-badge.missing { display: none; }
+body.presenting .doc-badge, .djs-container.simulation .doc-badge { display: none; }
+
+.doc-tip {
+  position: fixed; z-index: 50; width: max-content; max-width: min(380px, calc(100vw - 24px)); max-height: 260px; overflow: hidden;
+  padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--surface-raised); box-shadow: 0 10px 30px rgba(5, 7, 13, 0.2); pointer-events: none;
+}
+.doc-tip .doc-tip-title { font-weight: 700; margin-bottom: 2px; color: var(--ink); }
+.doc-tip .doc-md { font-size: 13px; line-height: 19px; }
+.doc-tip .doc-md h1, .doc-tip .doc-md h2, .doc-tip .doc-md h3, .doc-tip .doc-md h4 { font-size: 13px; margin: 6px 0 0; line-height: 18px; }
+.doc-tip .doc-md p, .doc-tip .doc-md ul, .doc-tip .doc-md ol { margin-bottom: 2px; }
+.doc-tip .doc-tip-more { margin-top: 6px; color: var(--accent); font-weight: 600; font-size: 12.5px; }
+.doc-tip.clipped .doc-md { max-height: 170px; overflow: hidden; -webkit-mask-image: linear-gradient(#000 75%, transparent); mask-image: linear-gradient(#000 75%, transparent); }
+
+/* ── Fiche du mode Présentation ──────────────────────────────────────── */
+
+#presentation-doc {
+  position: fixed; right: 24px; top: 112px; z-index: 30;
+  width: min(400px, calc(100vw - 48px)); max-height: calc(100vh - 140px); overflow: auto;
+  padding: 16px 18px; border-radius: 14px;
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box;
+  box-shadow: 0 12px 30px rgba(5, 7, 13, 0.22);
+}
+#presentation-doc[hidden] { display: none; }
+#presentation-doc .pres-doc-head { display: flex; align-items: flex-start; gap: var(--space-2); margin-bottom: 6px; }
+#presentation-doc h3 { flex: 1; font-size: 18px; line-height: 24px; color: var(--ink); margin: 0; }
+#presentation-doc .pres-doc-close {
+  flex: none; width: 28px; height: 28px; border: 0; border-radius: var(--radius-sm);
+  background: #B04E08; color: #FFFFFF; font-size: 18px; line-height: 1; cursor: pointer;
+}
+#presentation-doc .pres-doc-type { color: var(--ink-muted); font-size: 12.5px; margin: -2px 0 8px; }
+#presentation-doc .doc-md h1, #presentation-doc .doc-md h2, #presentation-doc .doc-md h3 {
+  font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; margin: 12px 0 2px;
+}
+#presentation-doc .doc-empty { color: var(--ink-muted); font-style: italic; }
+
+/* Recherche (Ctrl+F) : l'extrait de documentation sous le libellé, en texte courant. */
+.djs-search-container .djs-search-result-secondary { font-family: var(--font-sans); }
+/* Élément dont la fiche est ouverte en présentation. */
+.djs-element.pres-doc-shown .djs-visual > :first-child { stroke: #1483C9 !important; stroke-width: 3px !important; filter: drop-shadow(0 0 6px rgba(43, 184, 255, 0.55)); }

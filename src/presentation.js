@@ -11,6 +11,7 @@
 // onde au clic et curseur masqué à l'arrêt, avec les touches 1 à 4.
 import { T } from './i18n/lang.js'
 import { setupPresentationPointer } from './presentation-pointer.js'
+import { setupPresentationDoc } from './doc/presentation-doc.js'
 
 const PRIORITY = 3000
 
@@ -42,7 +43,7 @@ export function setupPresentation({ button, modeler, onExit }) {
   const hint = document.createElement('div')
   hint.id = 'presentation-hint'
   hint.hidden = true
-  hint.textContent = T('Drag to move · Ctrl + wheel or pinch to zoom · 1 to 4: pointer effects · Esc to exit', 'Glisser pour déplacer · Ctrl + molette ou pincement pour zoomer · 1 à 4 : effets du pointeur · Échap pour quitter')
+  hint.textContent = T('Drag to move · Ctrl + wheel or pinch to zoom · Click an element: its sheet (D) · 1 to 4: pointer effects · Esc to exit', 'Glisser pour déplacer · Ctrl + molette ou pincement pour zoomer · Clic sur un élément : sa fiche (D) · 1 à 4 : effets du pointeur · Échap pour quitter')
   document.body.append(bar, hint)
   const hintText = hint.textContent
   let flashTimer = null
@@ -54,6 +55,7 @@ export function setupPresentation({ button, modeler, onExit }) {
     flashTimer = setTimeout(() => hint.classList.add('fade'), 1500)
   }
   const pointer = setupPresentationPointer({ modeler, bar, flash })
+  const sheets = setupPresentationDoc({ modeler, bar, flash })
 
   function fit() {
     const { inner } = canvas.viewbox()
@@ -76,11 +78,24 @@ export function setupPresentation({ button, modeler, onExit }) {
 
   // Tout geste de souris sur le schéma déplace la vue, comme l'outil Main, sans jamais
   // déplacer un élément. Le clic et le double-clic (sélection, saisie du nom) sont bloqués.
+  // Un appui relâché sans déplacement vaut un clic : il ouvre la fiche de l'élément
+  // (src/doc/presentation-doc.js), sans le sélectionner. Le déplacement de la vue
+  // empêche le navigateur d'émettre le clic lui-même.
+  let press = null
   eventBus.on('element.mousedown', PRIORITY, (event) => {
     if (!active) return
+    const { clientX: x, clientY: y } = event.originalEvent || {}
+    press = { element: event.element, x, y }
     handTool.activateMove(event.originalEvent, true)
     return false
   })
+  window.addEventListener('mouseup', (e) => {
+    const p = press
+    press = null
+    if (!active || !p || e.button !== 0) return
+    if (Math.hypot(e.clientX - p.x, e.clientY - p.y) > 4) return
+    sheets.onElementClick(p.element)
+  }, true)
   for (const name of ['element.click', 'element.dblclick', 'element.contextmenu', 'contextPad.open', 'directEditing.activate', 'popupMenu.open']) {
     eventBus.on(name, PRIORITY, () => (active ? false : undefined))
   }
@@ -88,7 +103,7 @@ export function setupPresentation({ button, modeler, onExit }) {
   // Clavier et coller : rien n'atteint l'éditeur pendant la présentation, sauf Échap.
   const onKey = (e) => {
     if (!active) return
-    if (pointer.onKey(e)) {
+    if (pointer.onKey(e) || sheets.onKey(e)) {
       e.stopImmediatePropagation()
       e.preventDefault()
       return
@@ -142,6 +157,7 @@ export function setupPresentation({ button, modeler, onExit }) {
     hint.classList.remove('fade')
     clearTimeout(flashTimer)
     pointer.exit()
+    sheets.exit()
     window.removeEventListener('keydown', onKey, true)
     for (const type of ['paste', 'cut', 'copy', 'drop']) window.removeEventListener(type, block, true)
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {})

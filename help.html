@@ -38,6 +38,7 @@
           <li><a href="#getting-started">Getting started</a></li>
           <li><a href="#drawing">Drawing</a></li>
           <li><a href="#properties">Process panel</a></li>
+          <li><a href="#documenting">Documenting elements</a></li>
           <li><a href="#colors-text">Colors and text</a></li>
           <li><a href="#checking">Check and tidy up</a></li>
           <li><a href="#saving">Saving and My diagrams</a></li>
@@ -161,7 +162,7 @@
         </ul>
         <p>On the canvas, the grid helps you line shapes up, and they snap to it.</p>
         <h3><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</h3>
-        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="present" aria-hidden="true"></span>Presentation</span> button in the toolbar shows the diagram alone, full screen: no palette, panels or grid. Drag to move around, zoom with <kbd>Ctrl</kbd>+wheel, by pinching or with <kbd>+</kbd> and <kbd>−</kbd>. <kbd>0</kbd> fits the diagram to the screen, and <kbd>1</kbd> to <kbd>4</kbd> set the pointer effects. A click on an element shows its <a href="#documenting">documentation sheet</a>, and <kbd>D</kbd> turns the sheets on or off. The diagram cannot be edited in this mode. In expert mode, the Simulation button in the bar runs the token simulation there, with its controls: start, gateway choices, pause, log and speed. <kbd>Esc</kbd> or the cross returns to the editor, with the previous view.</p>
         <figure class="fig-anim"><p class="fig-title">Presentation mode</p><img src="/docs/presentation.gif" width="1280" height="720" alt="The purchase process in presentation mode: zoom, move, fit, then a token runs at 2×" loading="lazy" /><figcaption>Zoom, move, fit to the window, then a simulation at 2×.</figcaption></figure>
         <p>The <span class="uib"><span class="ico" data-icon="pointer" aria-hidden="true"></span>Pointer</span> button in the presentation bar opens four switches, which can be combined freely. Each has its own key, which turns it on or off without opening the menu, and a short message shows its state.</p>
         <div class="table-wrap">
@@ -204,7 +205,7 @@
           <table>
             <thead><tr><th>Group</th><th>Shown for</th><th>Content</th></tr></thead>
             <tbody>
-              <tr><td>Documentation</td><td>All elements</td><td>Free text describing the element, saved in the file. A pool has two fields, one for itself and one for its process.</td></tr>
+              <tr><td>Documentation</td><td>All elements</td><td>Text describing the element, in Markdown, saved in the file (see <a href="#documenting">Documenting elements</a>). A pool has two fields, one for itself and one for its process.</td></tr>
               <tr><td>Message, Signal, Error, Escalation</td><td>Events of that type (and receive or send tasks for Message)</td><td>The message, signal, error or escalation used, picked from a list shared by the whole diagram. Two events with the same reference point to the same message.</td></tr>
               <tr><td>Timer</td><td>Timer events</td><td>The type (date, duration or cycle) and the value in ISO 8601 format, for example <code>PT1H</code> for one hour.</td></tr>
               <tr><td>Link</td><td>Link events</td><td>The link name. A throw event jumps to the catch event with the same name.</td></tr>
@@ -214,6 +215,49 @@
           </table>
         </div>
         <p>Everything you enter in the panel is saved in the .bpmn file and carried over to XML exports.</p>
+      </section>
+
+      <section id="documenting">
+        <h2><span class="ico" data-icon="doc" aria-hidden="true"></span>Documenting elements</h2>
+        <p>Every element has a <span class="ui">Documentation</span> field, saved in the .bpmn file. The editor turns it into a proper sheet: Markdown editing, templates per element type, dictation, drafting by the AI co-pilot, markers on the canvas, search, sheets in presentation mode and export as procedure sheets.</p>
+        <h3>The documentation window</h3>
+        <p>It opens from the <span class="ui">Open pop-up editor</span> button of the Documentation field, in the <a href="#properties">Process panel</a>, or with a click on the blue marker of the element (see below). The text is saved as you type, and <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it like any change.</p>
+        <ul>
+          <li>At the top, three views: <span class="uib">Write</span>, <span class="uib">Side by side</span> (editing on the left, formatted preview on the right) and <span class="uib">Preview</span>. The browser remembers the last one.</li>
+          <li>The formatting bar adds bold, italic, heading, bulleted list, numbered list and link. <kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>I</kbd> and <kbd>Ctrl</kbd>+<kbd>K</kbd> do the same from the keyboard.</li>
+          <li><span class="uib">Template ▾</span> inserts the headings of a template, the one for the element type first: purpose, actors, inputs, outputs, rules and references for an activity; question asked and criterion of each branch for a gateway, with one line per branch under its name; trigger, time limit or result for an event; purpose, scope, owner and indicators for the process.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> types what you say at the cursor, with the co-pilot's on-device speech recognition: neither the audio nor the text leaves the browser. The button only appears in browsers that allow it.</li>
+          <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Write with the co-pilot</span> asks the AI co-pilot for a first version, based on the diagram (lane, neighbouring elements, conditions, documentation of the other elements) and your conversation. It writes "to be confirmed" where it does not know, keeps the text already there, and its text shows up in the window at once for review. The button stays greyed out until a model is set.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-documentation.webp" width="1400" height="880" alt="Documentation window of the Approve in committee task, Side by side view: Markdown on the left with the headings Purpose, Actors, Inputs, Outputs, Rules, References, formatted preview on the right. At the top, the formatting bar, Template, Dictate and Write with the co-pilot." loading="lazy" /><figcaption>The documentation window, Side by side view.</figcaption></figure>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>You type</th><th>You get</th></tr></thead>
+            <tbody>
+              <tr><td><code>## Rules</code></td><td>A heading (<code>#</code> to <code>######</code>)</td></tr>
+              <tr><td><code>**48 h**</code>, <code>*urgent*</code></td><td>Bold, italic</td></tr>
+              <tr><td><code>- Policyholder</code>, <code>1. Check</code></td><td>Bulleted list, numbered list (two spaces in front for a sub-list)</td></tr>
+              <tr><td><code>[Procedure](https://example.com)</code></td><td>A link. Only https, http and mailto addresses are kept</td></tr>
+              <tr><td><code>&gt; Note</code>, <code>`code`</code></td><td>A quote, code</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Markdown stays readable text: Camunda, Signavio and the other BPMN tools show it as it is in their Documentation field, and text written without formatting keeps its line breaks.</p>
+        <h3>Spotting and finding documentation</h3>
+        <ul>
+          <li>A blue marker, top right, flags each documented element. On hover it shows a preview of the documentation; a click opens the window.</li>
+          <li>In <a href="#bpmn-experts">Expert mode</a>, a dotted marker also flags the activities without documentation, the ones the process report lists as "to complete". A click opens the window to write it.</li>
+          <li><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Search</span>, top left of the canvas, or <kbd>Ctrl</kbd>+<kbd>F</kbd> on the canvas, searches labels, ids and documentation. Under each result, the matching excerpt of the documentation. <kbd>Enter</kbd> centres the diagram on the element and selects it.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-doc-pastilles.webp" width="1400" height="731" alt="The purchase process with a blue marker on each documented element, and the preview of the documentation of Approve in committee when hovering its marker." loading="lazy" /><figcaption>The markers, and the preview on hover.</figcaption></figure>
+        <h3>Using the documentation</h3>
+        <ul>
+          <li>In <a href="#drawing">Presentation mode</a>, a click on an element shows its sheet on the right of the screen. The <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Sheets</span> button of the bar, or the <kbd>D</kbd> key, turns the sheets on or off. <kbd>Esc</kbd> closes the open sheet.</li>
+          <li><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Procedure sheets (PDF)</span> or <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Procedure sheets (Markdown)</span>, produces one sheet per activity in the order of the flow: its type, its lane, what comes before and after, then its formatted documentation. Documented gateways and events get a sheet too, and an activity without documentation is marked "to complete". The PDF starts with the documentation of the process and a clickable table of contents.</li>
+          <li>The <a href="#process-report">process report</a> shows the documentation on one line in its element sequence, and in full at the end of the Markdown report.</li>
+          <li>The AI co-pilot and MCP agents read the documentation of each element along with the diagram: ask them a question about the process, they use it to answer.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-doc-presentation.webp" width="1600" height="956" alt="The purchase process in Presentation mode, with the sheet of the Approve in committee task open on the right: purpose, actors, inputs, outputs, rules and references." loading="lazy" /><figcaption>The sheet of an activity, in Presentation mode.</figcaption></figure>
       </section>
 
       <section id="colors-text">
@@ -340,6 +384,7 @@
               <tr><td>SVG image</td><td>A sharp image at any size, for the web or a drawing program</td></tr>
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
+              <tr><td>Procedure sheets (PDF or Markdown)</td><td>One sheet per activity, in the order of the flow, with its documentation (see <a href="#documenting">Documenting elements</a>)</td></tr>
               <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
