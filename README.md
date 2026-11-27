@@ -174,7 +174,7 @@ some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the 
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
 The stable page measures its audience anonymously, without cookies: visits (help pages included), referrers, app version and the use of each function (diagram created, opened or exported,
-expert mode, installation and opening as an app, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
+expert mode, installation and opening as a PWA, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
 error classes, feedback, prompt examples copied, GitHub and support links, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
@@ -182,19 +182,19 @@ flag in the browser storage excludes your own visits (see [src/analytics.js](src
 Docker image nor `npm run dev` measure anything. The measurement is configured according to the
 [recommendations of the CNIL](https://www.cnil.fr/fr/cookies-solutions-pour-les-outils-de-mesure-daudience) (the French data protection authority, page in French) for audience measurement exempt from consent.
 
-### Install it as an app
+### Install it as a PWA
 
-Chrome and Edge (computer and Android) offer to install the editor as an app: Install button in
-the toolbar, or icon at the right of the address bar. On iPhone and iPad: Share, Add to Home Screen. In
-Safari on a Mac: File, Add to Dock. Firefox on a computer does not install web apps. The app opens
+The online version is a PWA (Progressive Web App), with a web app manifest. Chrome and Edge
+(computer and Android) offer to install it: Install button in the toolbar, or icon at the right of the address bar. On iPhone and iPad: Share, Add to Home Screen. In
+Safari on a Mac: File, Add to Dock. Firefox on a computer does not support installing PWAs. The PWA opens
 in its own window.
 
 After a first visit, the editor and its user guide also work offline, installed or not: a service
-worker ([src/pwa/sw.js](src/pwa/sw.js)) keeps a copy of the site's files in the browser. It
+worker ([src/pwa/sw.js](src/pwa/sw.js)) caches the site's files (Cache API). It
 handles only requests to the site itself: calls to AI providers and audience measurement never go
 through it. The AI co-pilot needs a connection to reach its provider. A new version is announced by
-a banner with a Reload button: nothing reloads on its own. On iPhone and iPad, the installed app has
-its own storage, separate from Safari: to move a diagram from one to the other, use a .bpmn file.
+a banner with a Reload button: nothing reloads on its own. On iPhone and iPad, the installed PWA has
+its own storage (localStorage and IndexedDB), separate from Safari: to move a diagram from one to the other, use a .bpmn file.
 
 ## Run it with Docker
 
@@ -253,13 +253,13 @@ docker compose up -d --build
 Here the API keys go in `mcp/.env` (copy `mcp/.env.example`), the other settings in a `.env` file
 next to `docker-compose.yml`. **Update**: `git pull`, then `docker compose up -d --build`.
 
-### Install it as an app
+### Install it as a PWA
 
-On `http://localhost:8080`, Chrome and Edge offer to install the editor as an app (icon in the
+On `http://localhost:8080`, Chrome and Edge offer to install the editor as a PWA (icon in the
 address bar, or menu > Install). It opens in its own window, which you can keep open for an agent
 to draw in. Browsers offer installation only over HTTPS or on localhost: from another machine, use
 an HTTPS address (see [Reach it from other machines](#reach-it-from-other-machines)). The Docker
-version does not work offline: the AI co-pilot, the MCP server and saved diagrams need the server.
+version has no service worker and does not work offline: the AI co-pilot, the MCP server and saved diagrams need the server.
 
 ## Your files (Docker version)
 

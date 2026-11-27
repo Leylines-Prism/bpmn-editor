@@ -49,7 +49,7 @@
           <li><a href="#experts-bpmn">Pour les experts BPMN</a></li>
           <li><a href="#confidentialite">Confidentialité</a></li>
           <li><a href="#docker">Version Docker et agents MCP</a></li>
-          <li><a href="#installer-app">Installer comme une application</a></li>
+          <li><a href="#installer-app">Installer en PWA</a></li>
           <li><a href="#petits-ecrans">Sur téléphone et tablette</a></li>
           <li><a href="#faq">Questions fréquentes</a></li>
           <li><a href="#feedback">Donner votre avis</a></li>
@@ -784,24 +784,24 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
       </section>
 
       <section id="installer-app">
-        <h2>Installer comme une application</h2>
-        <p>BPMN-Pilot s'installe comme une application : il s'ouvre alors dans sa propre fenêtre, sans barre d'adresse, depuis le menu Démarrer, le Dock ou l'écran d'accueil.</p>
+        <h2>Installer en PWA</h2>
+        <p>BPMN-Pilot est une PWA (Progressive Web App) : grâce à son manifeste d'application web, le navigateur l'installe dans sa propre fenêtre, sans barre d'adresse, lancée depuis le menu Démarrer, le Dock ou l'écran d'accueil.</p>
         <ul>
           <li><strong>Chrome et Edge</strong> (ordinateur et Android) : le bouton <span class="uib"><span class="ico" data-icon="install" aria-hidden="true"></span>Installer</span> de la barre d'outils, qui n'apparaît que quand le navigateur propose l'installation, ou l'icône d'installation à droite de la barre d'adresse.</li>
           <li><strong>Safari sur Mac</strong> : menu <strong>Fichier</strong>, <strong>Ajouter au Dock</strong>.</li>
           <li><strong>iPhone et iPad</strong> : bouton <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong>.</li>
-          <li><strong>Firefox</strong> sur ordinateur n'installe pas les applications web.</li>
+          <li><strong>Firefox</strong> sur ordinateur ne prend pas en charge l'installation des PWA.</li>
         </ul>
-        <figure><img src="/src/help/img/fr-installer.webp" width="386" height="54" alt="Bout droit de la barre d'outils : le bouton Installer, avant Aide, langue, thème et panneau." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois l'application installée.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-installer.webp" width="386" height="54" alt="Bout droit de la barre d'outils : le bouton Installer, avant Aide, langue, thème et panneau." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois la PWA installée.</figcaption></figure>
         <!-- online -->
-        <h3 id="hors-ligne">Hors connexion</h3>
-        <p>Après une première visite, l'éditeur, cette aide et la page vitrine s'ouvrent sans connexion, installés ou non : le navigateur garde une copie des fichiers du site. Les images animées de l'aide sont gardées une fois vues. Le Co-pilote IA a besoin du réseau pour joindre son fournisseur : hors connexion, il le dit.</p>
-        <p>Quand une nouvelle version est publiée, un bandeau au-dessus du canevas propose de <span class="uib">Recharger</span>. Rien ne se recharge tout seul, et recharger garde le diagramme en cours.</p>
+        <h3 id="hors-ligne">Hors connexion (service worker)</h3>
+        <p>Après une première visite, l'éditeur, cette aide et la page vitrine s'ouvrent sans connexion, installés ou non : un service worker met en cache (Cache API) les fichiers du site. Les GIF de l'aide sont mis en cache une fois affichés. Le Co-pilote IA a besoin du réseau pour joindre l'API de son fournisseur : hors connexion, il le signale.</p>
+        <p>Quand une nouvelle version est publiée, son service worker attend : un bandeau au-dessus du canevas propose de <span class="uib">Recharger</span>. Rien ne se recharge tout seul, et recharger garde le diagramme en cours.</p>
         <figure><img src="/src/help/img/fr-mise-a-jour.webp" width="980" height="66" alt="Bandeau sous la barre d'outils : une nouvelle version de BPMN-Pilot est disponible, avec un bouton Recharger et une croix." loading="lazy" /><figcaption>Le bandeau d'une nouvelle version. La croix le ferme : la nouvelle version s'applique à la prochaine ouverture de l'éditeur.</figcaption></figure>
-        <div class="note">Sur iPhone et iPad, l'application installée a son propre stockage, séparé de Safari : les diagrammes de <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span> dans Safari n'y apparaissent pas. Pour passer un diagramme de l'un à l'autre, exportez-le en fichier .bpmn et ouvrez-le de l'autre côté.</div>
+        <div class="note">Sur iPhone et iPad, la PWA installée a son propre stockage (localStorage et IndexedDB), séparé de Safari : les diagrammes de <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span> dans Safari n'y apparaissent pas. Pour passer un diagramme de l'un à l'autre, exportez-le en fichier .bpmn et ouvrez-le de l'autre côté.</div>
         <!-- /online -->
         <!-- docker -->
-        <p>Version Docker : l'installation est proposée sur localhost ou en HTTPS. L'application installée ne fonctionne pas hors ligne, le Co-pilote IA, le serveur MCP et les diagrammes enregistrés passant par le serveur.</p>
+        <p>Version Docker : la PWA s'installe sur localhost ou en HTTPS (contexte sécurisé exigé par les navigateurs). Sans service worker, elle ne fonctionne pas hors ligne : le Co-pilote IA, le serveur MCP et les diagrammes enregistrés passent par le serveur.</p>
         <!-- /docker -->
       </section>
 
