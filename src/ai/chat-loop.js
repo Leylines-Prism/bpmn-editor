@@ -173,6 +173,8 @@ export async function runAnthropicTurn({ client, APIError, model, effort = 'medi
   let jsonRetries = 0
   try {
     for (let step = 0; step < MAX_STEPS; step++) {
+      // Jusqu'à son premier morceau de réponse, le modèle lit la demande (ou le résultat des outils).
+      emit({ type: 'status', phase: 'waiting', step })
       const stream = client.beta.messages.stream(
         {
           model,
@@ -294,6 +296,8 @@ export async function runOpenAITurn({ client, model, providerId = null, reasonin
 
   try {
     for (let step = 0; step < MAX_STEPS; step++) {
+      // Jusqu'à son premier morceau de réponse, le modèle lit la demande (ou le résultat des outils).
+      emit({ type: 'status', phase: 'waiting', step })
       let toolName = null
       let lastStatus = 0
       let result

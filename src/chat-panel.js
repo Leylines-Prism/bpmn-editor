@@ -793,6 +793,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         const label = TOOL_LABELS[event.tool] || event.tool
         if (event.phase === 'critique') statusText = T('reviewing the request', 'relecture de la demande')
         else if (event.phase === 'correcting') statusText = T(`automatic correction, round ${event.round}`, `autocorrection, tour ${event.round}`)
+        else if (event.phase === 'waiting')
+          statusText = event.step ? T('the model is reading the tool results', 'le modèle lit le résultat des outils') : T('the model is reading the request', 'le modèle lit la demande')
         else if (event.phase === 'thinking') statusText = T('thinking', 'réflexion')
         else if (event.phase === 'preparing')
           statusText = T(`preparing: ${label}`, `prépare : ${label}`) + (event.size ? ` (${(event.size / 1024).toFixed(1)} ${T('KB', 'Ko')})` : '')
@@ -830,6 +832,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
         'You are offline. The AI co-pilot needs a connection to reach its provider. The editor itself still works.',
         "Vous êtes hors connexion. Le Co-pilote IA a besoin du réseau pour joindre son fournisseur. L'éditeur, lui, reste utilisable.",
       ))
+      else if (err?.streamCut) add('error', err.message)
       else if (conn && mode === 'online') add('error', describeProviderError(err, { label: conn.label, providerId: conn.provider, browser: true, origin: location.origin, lang }))
       else add('error', T(`Sending failed: ${err.message}`, `Échec de l'envoi : ${err.message}`))
     } finally {
@@ -1027,25 +1030,53 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     })
     if (res.status === 413) throw new Error(T('the attached files are too large for the server', 'les fichiers joints sont trop volumineux pour le serveur'))
     if (!res.ok) throw new Error(T(`the server answered ${res.status}`, `le serveur a répondu ${res.status}`))
-    // Flux SSE : des blocs « data: {json} » séparés par une ligne vide.
+    // Flux SSE : des blocs « data: {json} » séparés par une ligne vide. Les blocs qui commencent
+    // par « : » sont le signal de vie du serveur, sans contenu.
     const reader = res.body.pipeThrough(new TextDecoderStream()).getReader()
+    const opened = Date.now()
     let buffer = ''
+    let finished = false // « done » ou « error » reçu : le serveur a fermé le tour lui-même
     for (;;) {
-      const { value, done } = await reader.read()
-      if (done) break
-      buffer += value
+      let chunk
+      try {
+        chunk = await reader.read()
+      } catch (err) {
+        if (signal.aborted) throw err
+        throw streamCut(opened)
+      }
+      if (chunk.done) break
+      buffer += chunk.value
       let cut
       while ((cut = buffer.indexOf('\n\n')) !== -1) {
         const block = buffer.slice(0, cut)
         buffer = buffer.slice(cut + 2)
+        if (block.startsWith(':')) continue
         const data = block.replace(/^data: /, '')
+        let event
         try {
-          handle(JSON.parse(data))
+          event = JSON.parse(data)
         } catch (err) {
           console.warn('[chat] événement illisible :', data, err)
+          continue
         }
+        if (event.type === 'done' || event.type === 'error') finished = true
+        handle(event)
       }
     }
+    if (!finished && !signal.aborted) throw streamCut(opened)
+  }
+
+  // Connexion au serveur coupée en plein tour : un message qui dit quand et pourquoi, plutôt que
+  // « network error ».
+  function streamCut(opened) {
+    const s = Math.round((Date.now() - opened) / 1000)
+    const after = s < 120 ? `${s} s` : `${Math.round(s / 60)} min`
+    const err = new Error(T(
+      `The connection to the server was cut after ${after}, before the reply was complete. A proxy may have closed it, or the server stopped. If the model is slow on this machine, try a lighter one.`,
+      `La connexion au serveur a été coupée au bout de ${after}, avant la fin de la réponse. Un proxy a pu la fermer, ou le serveur s'est arrêté. Si le modèle est lent sur cette machine, essayez-en un plus léger.`,
+    ))
+    err.streamCut = true
+    return err
   }
 
   // Version en ligne : la boucle tourne ici, les outils agissent sur cette page.
