@@ -79,7 +79,7 @@ a.btn { text-decoration: none; }
 
 #autosave-status { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--ink-muted); margin-left: auto; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 #toolbar > .btn, #toolbar > .brand, #mcp-status { flex-shrink: 0; }
-#toolbar #btn-chat.push-right { margin-left: auto; }
+#toolbar #btn-chat.push-right, #toolbar #btn-properties.push-right { margin-left: auto; }
 
 /* Nom du fichier, repris par l'enregistrement et les exports. Le pictogramme
    de document et l'extension en gris montrent que c'est un nom de fichier. */
@@ -263,6 +263,21 @@ a.btn { text-decoration: none; }
 #canvas .bjsl-button-error .icon { color: var(--bio-danger-marker, var(--magenta)); }
 #canvas .bjsl-button:hover { border-color: var(--leyline-sky-deep); }
 #canvas .bjsl-button-inactive { color: var(--night-800); opacity: 0.7; }
+/* Barre du compteur (src/lint-navigator.js) : le compteur mène au constat suivant, l'œil masque
+   ou affiche les pastilles. La barre prend la place du compteur, centrée en bas du canevas. */
+#canvas .lint-bar {
+  position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10;
+  display: flex; align-items: center; gap: 6px; max-width: calc(100% - 40px);
+}
+#canvas .lint-bar .bjsl-button { position: static; transform: none; cursor: pointer; white-space: nowrap; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+#canvas .lint-bar .lint-where { margin-left: 0.35em; font-weight: 400; color: var(--ink-muted, var(--night-600)); overflow: hidden; text-overflow: ellipsis; }
+#canvas .lint-eye {
+  flex: none; display: grid; place-items: center; width: 34px; height: 34px; padding: 0; cursor: pointer;
+  border-radius: 50%; background: var(--white); color: var(--night-800);
+  border: 1px solid var(--mist); box-shadow: var(--elevation-1);
+}
+#canvas .lint-eye:hover { border-color: var(--leyline-sky-deep); }
+#canvas .lint-eye[aria-pressed="true"] { opacity: 0.7; }
 
 /* Erreurs du processus lui-même : badge fixe en bas à gauche du canevas, hors du diagramme */
 #canvas .lint-process-badge { position: absolute; left: 20px; bottom: 44px; z-index: 500; }
@@ -313,7 +328,7 @@ a.btn { text-decoration: none; }
    validation montent au-dessus du filigrane et des boutons Votre avis et Confidentialité. */
 @container canvas (max-width: 560px) {
   #credit { display: none; }
-  #canvas .bjsl-button,
+  #canvas .lint-bar,
   #canvas .lint-process-badge { bottom: 148px; }
 }
 /* Boutons « Votre avis » et « Confidentialité », en bas à droite du canevas : même forme et
@@ -1675,7 +1690,7 @@ body.presenting.pres-idle #presentation-bar { opacity: 0; }
 
 /* Pendant la simulation, la commande de vitesse (en bas au centre) prend la place de la
    pastille « Aucun problème » de la vérification, qui la couvrait : le diagramme n'est pas modifiable à ce moment. */
-#canvas .bjs-container.simulation .bjsl-button { display: none; }
+#canvas .bjs-container.simulation .lint-bar { display: none; }
 
 /* Glissière de vitesse de la simulation (src/simulation-speed.js), dans le cadre de l'extension. */
 #canvas .bts-set-animation-speed .sim-speed { display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; cursor: pointer; }

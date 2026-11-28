@@ -208,7 +208,7 @@ pour les tâches, objet + état pour les événements, une question sur chaque p
 séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
 que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
 
-Le serveur propose aussi douze prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client. Les trois premiers du bloc Expert envoient la même demande que les commandes correspondantes du menu Expert du Co-pilote IA :
+Le serveur propose aussi treize prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client. Les trois premiers du bloc Expert envoient la même demande que les commandes correspondantes du menu Expert du Co-pilote IA :
 
 | Prompt | Arguments | Rôle |
 |---|---|---|
@@ -224,6 +224,7 @@ Le serveur propose aussi douze prompts MCP (`src/ai/prompts.js`), que l'utilisat
 | `analyze_process` | aucun | lance 100 jetons, lit le rapport et enregistre son analyse avec `set_report_commentary` (Expert > Analyse du Co-pilote) |
 | `assess_compliance` | `framework` (facultatif) | rédige les risques, contrôles et exigences de chaque activité, et propose la fiche d'identité du processus |
 | `model_from_event_log` | aucun | dessine le processus à partir du journal chargé, puis confronte le journal au diagramme (conformité, écarts, parts réelles) |
+| `fill_decision_table` | `task` (facultatif) | rédige la table de décision DMN d'une tâche de règle métier (entrées, sorties, politique de résultat, règles annotées), la lie et la teste avec `test_decision` (fenêtre de décision > Remplir avec le Co-pilote) |
 
 ## Diagrammes enregistrés
 
