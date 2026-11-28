@@ -1,9 +1,9 @@
-// Groupes « Forme » et « Texte » du panneau de propriétés : couleurs de la
-// forme, puis libellé et mise en forme du texte de l'élément sélectionné.
+// Groupe « Style » du panneau de propriétés, en trois parties : couleurs de
+// la forme, mise en forme du texte de l'élément sélectionné, puis Copier le style.
 //
 // Le pinceau et le bouton A du menu contextuel ouvrent un petit menu de
-// couleurs qui mène à ces groupes. Leurs menus complets restent pour une
-// sélection multiple. Ces groupes passent par les mêmes commandes : chaque geste s'annule par Ctrl+Z
+// couleurs qui mène à la partie Forme ou Texte. Leurs menus complets restent pour une
+// sélection multiple. Ces réglages passent par les mêmes commandes : chaque geste s'annule par Ctrl+Z
 // et le .bpmn reste au format standard (BPMN in Color, bpmndi:BPMNLabelStyle).
 //
 // Construit comme l'exemple officiel « properties-panel-extension » de
@@ -28,9 +28,10 @@ import {
 
 const html = htm.bind(h)
 const LOW_PRIORITY = 500
-const STYLE_GROUP = 'appearance-style'
-const SHAPE_GROUP = 'appearance-shape'
-const TEXT_GROUP = 'appearance-text'
+// Un seul groupe Style, avec trois parties : Forme, Texte, puis Copier le style.
+const APPEARANCE_GROUP = 'appearance'
+const SHAPE_PART = 'shape'
+const TEXT_PART = 'text'
 
 const targetOf = (element) => (element.type === 'label' ? element.labelTarget : element)
 // Couleur lue dans le diagramme, en majuscules. Elle finit dans le HTML des menus : une
@@ -153,7 +154,7 @@ function Swatch({ title, fill, stroke, text, active, onClick, className = '' }) 
 }
 
 // Pastille ronde d'une couleur de la palette, sans lettre : la lettre se lit mal en
-// petite taille. Les styles déjà dans le diagramme restent dans le groupe Style.
+// petite taille. Les styles déjà dans le diagramme restent dans la partie Copier et coller du groupe Style.
 const TextDot = ({ color, ...props }) =>
   html`<${Swatch} ...${props} fill=${color} stroke="var(--line-strong)" className="is-dot" />`
 
@@ -280,7 +281,7 @@ function pasteStyle(commandStack, elements, style = copied) {
 
 // ── Styles du diagramme ─────────────────────────────────────────────────────
 // Chaque style posé à la main sur un élément est repris automatiquement dans
-// une ligne du groupe Style : un clic l'applique à l'élément sélectionné. La
+// une ligne de la partie Copier et coller : un clic l'applique à l'élément sélectionné. La
 // liste se lit dans le diagramme (elle suit donc le fichier), les styles
 // modifiés le plus récemment en tête.
 
@@ -405,6 +406,15 @@ function PaintedIcon({ style, paths, viewBox }) {
     style=${{ background: style.fill || '#FFFFFF', borderColor: style.stroke || '#22242A' }}>
     ${svg(style.textColor || style.stroke || '#22242A')}
   </span>`
+}
+
+// Intertitre d'une partie du groupe Style (icône en CSS, comme le menu du canevas).
+const partTitles = {}
+function partTitle(part, label) {
+  partTitles[part] ||= function PartTitle({ id }) {
+    return html`<h4 class=${'appearance-part-title is-' + part} data-entry-id=${id} data-part=${part}>${label()}</h4>`
+  }
+  return partTitles[part]
 }
 
 function CopyPasteEntry({ element, id }) {
@@ -542,26 +552,21 @@ AppearancePropertiesProvider.prototype.getGroups = function (element) {
   return (groups) => {
     if (!hasAppearance(element)) return groups
     const target = targetOf(element)
-    const added = [{
-      // Copier et coller portent sur la forme et le texte : groupe à part, avant les deux.
-      id: STYLE_GROUP,
-      label: 'Style',
-      shouldOpen: true,
-      entries: [{ id: 'appearance-copy-paste', component: CopyPasteEntry }],
-    }, {
-      id: SHAPE_GROUP,
-      label: T('Shape', 'Forme'),
-      entries: [{ id: 'appearance-shape-color', component: ShapeColorEntry, isEdited: () => !!(fillOf(target) || strokeOf(target)) }],
-    }]
+    const entries = [
+      { id: 'appearance-title-shape', component: partTitle(SHAPE_PART, () => T('Shape', 'Forme')) },
+      { id: 'appearance-shape-color', component: ShapeColorEntry, isEdited: () => !!(fillOf(target) || strokeOf(target)) },
+    ]
     if (hasText(target)) {
-      added.push({
-        id: TEXT_GROUP,
-        label: T('Text', 'Texte'),
-        entries: [
-          { id: 'appearance-text', component: TextStyleEntry, isEdited: () => !!(fontOf(target) || textColorOf(target)) },
-        ],
-      })
+      entries.push(
+        { id: 'appearance-title-text', component: partTitle(TEXT_PART, () => T('Text', 'Texte')) },
+        { id: 'appearance-text', component: TextStyleEntry, isEdited: () => !!(fontOf(target) || textColorOf(target)) },
+      )
     }
+    entries.push(
+      { id: 'appearance-title-style', component: partTitle('style', () => T('Copy and paste', 'Copier et coller')) },
+      { id: 'appearance-copy-paste', component: CopyPasteEntry },
+    )
+    const added = [{ id: APPEARANCE_GROUP, label: T('Style', 'Style'), entries }]
     const general = groups.findIndex((g) => g.id === 'general')
     groups.splice(general + 1, 0, ...added)
     return groups
@@ -596,14 +601,15 @@ function AppearanceContextPad(contextPad, eventBus, propertiesPanel, commandStac
   let layout = {}
   eventBus.on('propertiesPanel.layoutChanged', ({ layout: current }) => { layout = current || {} })
 
-  this._open = (groupId) => {
+  this._open = (part) => {
     if (document.body.classList.contains('properties-hidden')) document.getElementById('btn-properties')?.click()
-    propertiesPanel.setLayout({ ...layout, groups: { ...(layout.groups || {}), [groupId]: { open: true } } })
+    propertiesPanel.setLayout({ ...layout, groups: { ...(layout.groups || {}), [APPEARANCE_GROUP]: { open: true } } })
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const group = document.querySelector(`#properties-panel [data-group-id="group-${groupId}"]`)
+      const group = document.querySelector(`#properties-panel [data-group-id="group-${APPEARANCE_GROUP}"]`)
       if (!group) return
+      const title = group.querySelector(`.appearance-part-title[data-part="${part}"]`) || group
       const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-      group.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+      title.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
       group.querySelector('.bio-properties-panel-group-header')?.focus?.({ preventScroll: true })
     }))
   }
@@ -626,7 +632,7 @@ AppearanceContextPad.prototype._openMenu = function (element, menu, title, event
 }
 
 // Bas du menu : revenir à la couleur par défaut, ou ouvrir le panneau.
-AppearanceContextPad.prototype._moreEntries = function (prefix, groupId, reset, isDefault) {
+AppearanceContextPad.prototype._moreEntries = function (prefix, part, reset, isDefault) {
   const group = { id: 'more' }
   return {
     [prefix + '-default']: {
@@ -640,7 +646,7 @@ AppearanceContextPad.prototype._moreEntries = function (prefix, groupId, reset, 
       label: T('More…', 'Plus…'),
       title: T('More options in the panel', "Plus d'options dans le panneau"),
       group,
-      action: () => { this._popupMenu.close(); this._open(groupId) },
+      action: () => { this._popupMenu.close(); this._open(part) },
     },
   }
 }
@@ -665,7 +671,7 @@ AppearanceContextPad.prototype._shapeEntries = function (element) {
       group: used, action: set({ fill: value.fill, stroke: value.stroke }),
     }
   })
-  return { ...entries, ...this._moreEntries('quick-shape', SHAPE_GROUP, set({ fill: undefined, stroke: undefined }), !fill && !stroke) }
+  return { ...entries, ...this._moreEntries('quick-shape', SHAPE_PART, set({ fill: undefined, stroke: undefined }), !fill && !stroke) }
 }
 
 AppearanceContextPad.prototype._textEntries = function (element) {
@@ -686,7 +692,7 @@ AppearanceContextPad.prototype._textEntries = function (element) {
       group: used, action: set(value),
     }
   })
-  return { ...entries, ...this._moreEntries('quick-text', TEXT_GROUP, set(null), !color) }
+  return { ...entries, ...this._moreEntries('quick-text', TEXT_PART, set(null), !color) }
 }
 
 // Pipette : retient le style de l'élément, comme Copier le style du panneau.

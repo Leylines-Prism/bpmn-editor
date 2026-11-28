@@ -85,7 +85,7 @@ ProbabilityPropertiesProvider.prototype.getGroups = function (element) {
     if (!isBranchFlow(element)) return groups
     groups.push({
       id: 'bpmn-pilot-simulation',
-      label: 'Simulation',
+      label: T('Token simulation', 'Simulation de jetons'),
       entries: [
         { id: 'bpmn-pilot-probability', component: ProbabilityEntry, isEdited: isNumberFieldEntryEdited },
         ...(isAiProbability(getBusinessObject(element)) ? [{ id: 'bpmn-pilot-probability-review', component: ReviewEntry }] : []),

@@ -37,6 +37,12 @@
   padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--line); background: var(--surface-raised);
 }
 .doc-toolbar .btn { height: 30px; padding: 0 9px; font-size: 13px; }
+/* Comme la barre de présentation : chaque commande a un cadre léger, lisible en clair comme en sombre.
+   Le bouton du Co-pilote garde son trait leyline. */
+.doc-toolbar .btn:not(.doc-ai) { border: 1px solid var(--line); background: var(--surface); }
+.doc-toolbar .btn:not(.doc-ai):hover { border-color: var(--accent); background: var(--surface-sunken); color: var(--ink); }
+.doc-toolbar .btn:not(.doc-ai):active { transform: translateY(1px); }
+.doc-toolbar .btn[aria-expanded="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .doc-toolbar .doc-fmt b, .doc-toolbar .doc-fmt i { font-size: 14px; min-width: 10px; text-align: center; }
 .doc-toolbar .doc-mic svg { flex: none; }
 .doc-toolbar .doc-mic[data-state="listening"] { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }

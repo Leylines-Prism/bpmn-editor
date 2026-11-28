@@ -3,7 +3,7 @@
 //   - Pastille « Table » en bas à gauche de chaque tâche de règle métier : pleine si la tâche
 //     est liée à une décision (un clic ouvre la table), en pointillé sinon (un clic choisit
 //     la tâche et ouvre le groupe Décision du panneau).
-//   - Groupe « Décision (DMN) » du panneau de propriétés : décision liée, résumé de la table et
+//   - Groupe « Table de décision (DMN) » du panneau de propriétés : décision liée, résumé de la table et
 //     constats, Ouvrir la table, Délier ; sans lien : créer, lier, importer, reprendre de Mes
 //     diagrammes, ou demander au Co-pilote.
 // Rien en mode Présentation (sauf la pastille d'une tâche liée, qui ouvre la table) ni hors
@@ -122,7 +122,7 @@ DecisionPropertiesProvider.prototype.getGroups = function (element) {
     if (!is(element, 'bpmn:BusinessRuleTask')) return groups
     const group = {
       id: DECISION_GROUP,
-      label: T('Decision (DMN)', 'Décision (DMN)'),
+      label: T('Decision table (DMN)', 'Table de décision (DMN)'),
       shouldOpen: true,
       entries: [{ id: 'bpmn-pilot-decision-link', component: DecisionEntry, isEdited: () => !!getBusinessObject(element).get('bpmnpilot:decisionRef') }],
     }

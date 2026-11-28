@@ -1,7 +1,7 @@
 // Module « Tables de décision (DMN) » du mode Expert (src/expert-modules.js).
 //
 // Allumé (et en mode Expert), il montre la pastille des tâches de règle métier, le groupe
-// Décision (DMN) du panneau et les entrées .dmn des menus Ouvrir et Exporter. Éteint, ces
+// Table de décision (DMN) du panneau et les entrées .dmn des menus Ouvrir et Exporter. Éteint, ces
 // commandes disparaissent ; les décisions déjà rangées dans le diagramme restent dans le
 // fichier, intactes. Les outils du Co-pilote et du serveur MCP marchent dans les deux cas.
 // Le choix est retenu avec les autres modules (éteint par défaut) ; la classe html.dmn
