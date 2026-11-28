@@ -94,6 +94,8 @@ uncluttered for everyone else (see the
 
 - **Token simulation with a heatmap**: run as many instances as you like at once, following branch probabilities, and see
   which paths are taken, never reached, or looped through.
+- **Process goals** on end events and activities (at least 80 % of requests accepted, at most 15 reworks per 100), checked
+  against the token simulation in the report.
 - **Process report** as PDF, Markdown or Word: key figures, findings by level, improvement areas, end events,
   activities by lane, RACI matrix.
 - **AI potential by activity**: automatable, AI-assisted or human, with the reason and the safeguard,
@@ -467,6 +469,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
   checking, grid, minimap, and the Process panel for the properties of each
   element.
+- **AI agent steps**: an ad-hoc sub-process marked as an AI agent, with its tools inside, a human review after it
+  and an exit if the agent fails. The checks flag a missing review or exit, and one click completes the pattern.
 - **Compare**: two versions side by side, with what was added, removed or changed in color and the
   list of differences, from a .bpmn file or from before the AI's answer.
 - **Colors and text**: any fill, stroke or text color, from ready-made palettes or the system color
@@ -488,7 +492,8 @@ Each function is turned on separately in **Expert** > **Choose modules…**.
 - **Token simulation, heatmap and process report**: run tokens through the
   process, with a speed slider. During the simulation, color the diagram by the number of tokens
   through each element, played by hand or computed from branch probabilities. Export a process report
-  (PDF, Markdown or Word) with the findings in three levels, improvement areas, the element sequence, the RACI matrix and, after a simulation, the heatmap.
+  (PDF, Markdown or Word) with the findings in three levels, improvement areas, the element sequence, the RACI matrix and, after a simulation, the heatmap
+  and the process goals set on end events and activities, reached or not.
 - **AI potential, risks and compliance**: for each activity, its AI potential (automatable, AI-assisted or human,
   with the reason and the safeguard), its risks and controls, and its regulatory references; a process identity
   (owner, version, status, validation date, scope). The report adds a risk and control table, a compliance

@@ -201,7 +201,7 @@ the tools and give modeling rules: start and end events, verb + object for tasks
 events, a question on each exclusive gateway, no implicit split or join, the happy path from left to right.
 Most of them match what `validate_diagram` checks. The built-in chat sends the same text.
 
-The server also offers five MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
+The server also offers six MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
 
 | Prompt | Arguments | Purpose |
 |---|---|---|
@@ -211,6 +211,7 @@ The server also offers five MCP prompts (`src/ai/prompts.js`), which the user pi
 | `tidy_diagram` | none | renames elements to the conventions, fixes validation errors and lays the diagram out, keeping its meaning |
 | `critique_description` | `description` | lists what is ambiguous or missing in a description (severity, quoted passage, question) before drawing |
 | `write_user_stories` | none | writes user stories and acceptance criteria for each activity, saved in the diagram |
+| `add_agent_step` | `goal`, `tools` (optional), `after` (optional) | adds an AI agent step: an ad-hoc sub-process with the agent's tools inside, a human review after it and an exit if the agent fails |
 
 ## Saved diagrams
 

@@ -49,6 +49,7 @@
               <li><a href="#presenting">Presenting</a></li>
               <li><a href="#documenting">Documenting elements</a></li>
               <li><a href="#properties">Process panel</a></li>
+              <li><a href="#ai-agent-step">Model an AI agent</a></li>
               <li><a href="#assistant">AI co-pilot</a></li>
               <li><a href="#ai-checks">Review, checks and traceability</a></li>
               <li><a href="#prompt-examples">Prompt examples</a></li>
@@ -355,6 +356,8 @@
               <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Messages, signals, errors and escalations have a unique name and are used somewhere.</td><td>Best practice</td><td>Warning</td></tr>
               <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Every process element has a shape on the diagram.</td><td>Standard</td><td>Error</td></tr>
               <tr><td><code>bpmnpilot/event-triggers</code></td><td>Each event has only a trigger the standard allows for its kind: no timer end event, no error start event outside an event subprocess, no non-interrupting error, cancel only in a transaction. See the <a href="#event-matrix">event matrix</a>.</td><td>Standard</td><td>Error</td></tr>
+              <tr><td><code>bpmnpilot/agent-review</code></td><td>The result of an <a href="#ai-agent-step">AI agent step</a> goes through a person (user or manual task) on every path, before an end.</td><td>Good practice</td><td>Warning</td></tr>
+              <tr><td><code>bpmnpilot/agent-escalation</code></td><td>An <a href="#ai-agent-step">AI agent step</a> has an exit if the agent fails or takes too long: a boundary event (timer, error, escalation…).</td><td>Good practice</td><td>Warning</td></tr>
               </tbody>
             </table>
           </div>
@@ -425,7 +428,7 @@
           <li>You can also drop a .bpmn file onto the page.</li>
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Compare with a file…</span> shows the differences between a file from your disk and the open diagram, without changing anything (see below).</li>
         </ul>
-        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening. An <a href="#encrypted-file">encrypted file</a> (.bpmn.enc) opens the same way, after its password.</p>
+        <p>The editor reads BPMN 2.0 files from other tools (Camunda, Bizagi, Signavio…). If a file has no layout, the editor computes one on opening. The other way round, a file saved here opens in other BPMN 2.0 editors, Camunda Modeler included, to complete it or run it in an engine. What is specific to BPMN Pilot (probabilities, goals, AI agent steps, user stories, sub-levels, co-pilot analysis) is ignored there without error, and Camunda Modeler and the other editors built on bpmn.io keep it when they save the file again. An <a href="#encrypted-file">encrypted file</a> (.bpmn.enc) opens the same way, after its password.</p>
         <h3 id="from-table">Create from a table (no AI)<span class="ico" data-icon="table" aria-hidden="true"></span></h3>
         <p>Many procedures already exist as a list of steps in Excel. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Open</span>, then <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>From a table…</span>, turns them into a diagram: copy the rows in Excel, header included, and paste them into the window, or choose a .csv, .tsv or .xlsx file. The conversion runs in the page, with no AI and nothing sent. A preview counts the steps, links, decisions and lanes before creation, and flags errors (next step not found, duplicate ID).</p>
         <div class="table-wrap">
@@ -625,6 +628,22 @@
         <!-- /example -->
       </section>
 
+      <section id="ai-agent-step">
+        <h2>Model an AI agent (ad-hoc sub-process)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
+        <p>When a step of the process is handed to an AI agent (an LLM, an assistant, a bot that decides its own actions), BPMN 2.0 already has the right shape: the <strong>ad-hoc sub-process</strong>. Its inner activities are not connected by flows: whoever runs it picks which ones to start, and in which order. For an agent, these are its tools. The file stays standard BPMN, readable by any tool.</p>
+        <h3>Mark an AI agent step</h3>
+        <ol>
+          <li>Select a task or a sub-process. In the <a href="#properties">Process panel</a>, <span class="ui">AI agent</span> group, tick <span class="ui">AI agent step</span>. A task or a plain sub-process becomes an ad-hoc sub-process. An <strong>AI agent</strong> badge marks it on the canvas.</li>
+          <li>Expand it and place inside one task per tool of the agent, with no flows between them and no start or end event: for example a service task "Look up the customer file".</li>
+          <li>Describe in the <span class="ui">Documentation</span> field what the agent decides alone and what it must not do.</li>
+        </ol>
+        <h3>Human review and exit</h3>
+        <p>A safe agent step has two safeguards drawn in the process: a person reviews its result before it is used, and a path exists if the agent fails or takes too long. The <a href="#checking">checks</a> flag a missing one (rules <code>bpmnpilot/agent-review</code> and <code>bpmnpilot/agent-escalation</code>, as warnings), and the <a href="#process-report">process report</a> turns it into an improvement area.</p>
+        <p>Under the box, the panel says what is missing. <span class="uib">Complete the pattern</span> adds it in one go: a user task "Review the agent's proposal" right after the step (what follows moves to the right), and a "Time limit exceeded" timer on its boundary, leading to "Handle it manually". Then rename and adjust these elements to your case. <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it all.</p>
+        <figure><img src="/src/help/img/en-agent-ia.webp" width="1400" height="425" alt="The ad-hoc sub-process Qualify the request, marked with the AI agent badge, with three service tasks inside: Read the attachments, Look up the customer file, Compute the score. After it, the user task Review the agent's proposal; on its boundary, a Time limit exceeded timer leads to Handle it manually. On the right, the AI agent group of the panel, box ticked, with the note Review and exit are in place." loading="lazy" /><figcaption>A completed AI agent step: its tools, the review by a person and the exit on a time limit.</figcaption></figure>
+        <p>The AI co-pilot and MCP agents can draw this pattern: ask them to add an AI agent step, or see the <a href="#prompt-examples">prompt example</a>. The mark is saved as the <code>bpmnpilot:agent</code> attribute, which other BPMN tools ignore: they read a plain ad-hoc sub-process.</p>
+      </section>
+
       <section id="assistant">
         <h2>AI co-pilot<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>The <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> button in the toolbar opens a chat panel. Describe a process there, and the co-pilot draws it straight into the editor. It can also change the open diagram, color it, format the labels, tidy it up and check it. You can then touch up its work by hand, like everything else. On wide enough screens, the button shows the model chosen in <span class="uib">Options</span> and shortens to <span class="ui">AI</span>.</p>
@@ -752,7 +771,7 @@
         <figure><p class="fig-title">One prompt, one diagram</p><img src="/docs/prompt-example.png" width="1400" height="1083" alt="Diagram drawn by the co-pilot from the prompt: a Company pool with Employee, Manager, Purchasing and Accounting lanes, a Request approved? decision, and message flows to a Supplier pool." loading="lazy" /><figcaption>"Draw a purchase request: the employee enters the request, their manager accepts or rejects it. If accepted, purchasing orders from the supplier, then accounting pays the invoice. If rejected, the employee is told." One message, one pass.</figcaption></figure>
 
         <details class="faq prompts-list">
-          <summary>18 demo prompts, ready to copy and paste</summary>
+          <summary>19 demo prompts, ready to copy and paste</summary>
         <h3>Model</h3>
         <div class="prompt">
           <p class="prompt-title">From a description</p>
@@ -771,6 +790,11 @@
         <div class="prompt">
           <p class="prompt-title">Collaboration between organizations</p>
           <p class="prompt-text">Model the exchanges between the customer, our company and the carrier, with one pool each. The customer places an order. We confirm it and book the carrier. The carrier picks up the parcel, delivers it, and sends us the proof of delivery. We then invoice the customer.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">A step handed to an AI agent</p>
+          <p class="prompt-text">After "Request received", add an AI agent step "Qualify the request". The agent can read the attachments, look up the customer file and compute the score. An advisor reviews its proposal before the decision. If the agent does not answer within 10 minutes, the request is handled manually.</p>
+          <p class="prompt-tip">See <a href="#ai-agent-step">Model an AI agent</a>.</p>
         </div>
 
         <h3>Bulk changes</h3>
@@ -930,6 +954,14 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><strong>Parallel gateway and uncontrolled flows:</strong> every flow is taken, and the field does not appear.</li>
         </ul>
         <p>The value is saved in the .bpmn file as the <code>bpmnpilot:probability</code> attribute (namespace <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), which other BPMN tools ignore without error. The co-pilot and MCP agents set it with the <code>update_elements</code> tool.</p>
+        <h3 id="process-goals">Process goals</h3>
+        <p>A figure goal is set on the element it measures, in the <span class="ui">Simulation</span> group of the Process panel, in expert mode:</p>
+        <ul>
+          <li>on an <strong>end event</strong>, the share of instances that should end there, for example at least 80 % of requests accepted;</li>
+          <li>on an <strong>activity</strong>, the number of passes per 100 instances, each rework counting as one more pass, for example at most 15 requests for documents per 100 files.</li>
+        </ul>
+        <p><span class="ui">Goal is</span> says whether it is a minimum or a maximum. After <span class="uib">Run</span> N tokens, the <a href="#process-report">process report</a> compares each goal with the result: reached, not reached (a warning and an improvement area), or not measured until a run has taken place. The AI co-pilot reads the goals in the report and cites them in its analysis, without changing them: they remain your choices. They are saved as the <code>bpmnpilot:goalShare</code> and <code>bpmnpilot:goalOp</code> attributes, which other tools ignore.</p>
+        <figure><img src="/src/help/img/en-objectif.webp" width="298" height="499" alt="Simulation group of the Process panel for the end event Request accepted: Goal, share of instances (%) set to 80, and Goal is a minimum (at least)." loading="lazy" /><figcaption>A goal on an end event.</figcaption></figure>
         <h3 id="heatmap">Heatmap</h3>
         <p>The heatmap shows where the instances of a process go. It colors each element and each sequence flow by the number of tokens that went through it, from pale blue to red. Without reading the model element by element, you see the paths never taken, the activities almost every instance goes through, and the rework loops that run the same activity several times. Use it to validate a model before sharing it, and to find where a process repeats or concentrates before discussing a redesign.</p>
         <ol>
@@ -958,6 +990,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li>key figures and the diagram, with each element concerned by a finding outlined in the color of its level;</li>
           <li>modeling findings, in three levels: <strong>Error</strong> in red (bpmnlint rule broken, unreachable element, instance that cannot complete), <strong>Warning</strong> in orange (departure from good practice, frequent rework), <strong>To complete</strong> in yellow (no documentation, unlabeled conditions, lane with a single activity). Their source is given: bpmnlint, model check or simulation;</li>
           <li>improvement areas, by priority, with the expected effect;</li>
+          <li>the <a href="#process-goals">process goals</a>, reached or not according to the last run of tokens;</li>
           <li>the AI co-pilot's analysis, if one was made (see below);</li>
           <li>after a simulation, the heatmap and its figures: most traversed activities, passes and observed share of each gateway branch, elements never reached;</li>
           <li>the six <a href="#ai-checks">quality checks</a>, computed in the editor, without AI;</li>
@@ -1161,7 +1194,9 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><code>model_collaboration</code>: draws one pool per organization, with the messages between them,</li>
           <li><code>review_diagram</code>: lists what to improve in the open diagram, without changing anything,</li>
           <li><code>tidy_diagram</code>: renames to the conventions, fixes the errors and tidies up, keeping the meaning,</li>
-          <li><code>critique_description</code>: lists what is ambiguous or missing in a description, with severity, quoted passage and question, before drawing.</li>
+          <li><code>critique_description</code>: lists what is ambiguous or missing in a description, with severity, quoted passage and question, before drawing,</li>
+          <li><code>add_agent_step</code>: adds an <a href="#ai-agent-step">AI agent step</a> with its tools, its human review and its exit,</li>
+          <li><code>write_user_stories</code>: writes the <a href="#user-stories">user stories</a> and acceptance criteria of each activity.</li>
         </ul>
         <p>The check and report tools are described in <a href="#experts-mcp">With an MCP agent</a>.</p>
         <p>The <a href="#prompt-examples">Prompt examples</a> also work with an MCP agent.</p>

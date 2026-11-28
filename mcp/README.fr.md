@@ -203,7 +203,7 @@ pour les tâches, objet + état pour les événements, une question sur chaque p
 séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
 que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
 
-Le serveur propose aussi cinq prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
+Le serveur propose aussi six prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
 
 | Prompt | Arguments | Rôle |
 |---|---|---|
@@ -213,6 +213,7 @@ Le serveur propose aussi cinq prompts MCP (`src/ai/prompts.js`), que l'utilisate
 | `tidy_diagram` | aucun | renomme selon les conventions, corrige les erreurs de validation et range, sans changer le sens |
 | `critique_description` | `description` | relève ce qui est ambigu ou manquant dans une description (gravité, passage cité, question) avant de dessiner |
 | `write_user_stories` | aucun | rédige les récits utilisateur et les critères d'acceptation de chaque activité, enregistrés dans le diagramme |
+| `add_agent_step` | `goal`, `tools` (facultatif), `after` (facultatif) | ajoute une étape d'agent IA : un sous-processus ad hoc avec les outils de l'agent à l'intérieur, une revue humaine après lui et une sortie si l'agent échoue |
 
 ## Diagrammes enregistrés
 

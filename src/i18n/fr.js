@@ -417,6 +417,9 @@ export default {
   'Trigger not allowed on a boundary event': "Déclencheur interdit par la norme sur un événement de bordure",
   'Trigger not allowed on an end event': "Déclencheur interdit par la norme sur un événement de fin",
   'Cancel event only belongs to a transaction': "Un événement d'annulation n'a sa place que dans une transaction",
+  // Règles maison bpmnpilot/agent-review et agent-escalation (src/lint/agent-steps.js)
+  'AI agent step without human review: route its result to a user or manual task': "Étape d'agent IA sans revue humaine : faites passer son résultat par une tâche utilisateur ou manuelle",
+  'AI agent step without an exit if the agent fails: add a timer, error or escalation boundary event': "Étape d'agent IA sans sortie si l'agent échoue : ajoutez un événement en bordure de minuterie, d'erreur ou d'escalade",
   // bpmn-js-token-simulation
   'Token Simulation': 'Simulation de jetons',
   'Play Simulation': 'Lancer la simulation',

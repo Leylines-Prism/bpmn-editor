@@ -7,8 +7,8 @@ import { buildPrompts } from '../src/ai/prompts.js'
 const prompts = buildPrompts(z)
 const byName = Object.fromEntries(prompts.map((p) => [p.name, p]))
 
-test('the five prompts are there, with unique names', () => {
-  assert.deepEqual(Object.keys(byName).sort(), ['critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram', 'write_user_stories'])
+test('the seven prompts are there, with unique names', () => {
+  assert.deepEqual(Object.keys(byName).sort(), ['add_agent_step', 'critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram', 'write_user_stories'])
   for (const p of prompts) assert.ok(p.title && p.description, p.name)
 })
 
@@ -39,4 +39,16 @@ test('critique_description requires a description and asks before drawing', () =
   assert.match(text, /Handle a refund/)
   assert.match(text, /Do not draw anything yet/)
   assert.match(text, /blocking/)
+})
+
+test('add_agent_step asks for the agent mark, a review and an exit', () => {
+  const p = byName.add_agent_step
+  assert.equal(z.object(p.argsSchema).safeParse({}).success, false)
+  const text = p.text({ goal: 'Qualify the request', tools: 'CRM search, Credit score' })
+  assert.match(text, /Qualify the request/)
+  assert.match(text, /Tools: CRM search, Credit score/)
+  assert.match(text, /agent: true/)
+  assert.match(text, /UserTask/)
+  assert.match(text, /boundary event/)
+  assert.doesNotMatch(p.text({ goal: 'X' }), /Tools:/)
 })
