@@ -564,6 +564,14 @@ body #chat-input:focus-visible { outline: 2px solid var(--focus-ring); outline-o
 #toolbar .menu-row:has(> .btn:disabled) .copilot-help { display: block; }
 #toolbar .menu-row:has(> .btn:disabled) > .btn { padding-right: 32px; }
 #toolbar .menu-sep { height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
+/* Menu Expert en groupes (simulation, analyses par activité, rapport, réglages), séparés par un trait.
+   Le trait d'un groupe ne s'affiche que si un groupe allumé le précède (voir les modules plus bas). */
+#toolbar .menu-group { display: flex; flex-direction: column; gap: 2px; }
+#toolbar .menu-group::before { content: ""; height: 1px; margin: var(--space-1) var(--space-2); background: var(--line); }
+#toolbar .menu-group:first-child::before { display: none; }
+#toolbar .menu-subtitle { padding: var(--space-1) var(--space-2) 2px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
+#toolbar .menu-formats { display: flex; gap: 4px; padding: 0 var(--space-1) 2px; }
+#toolbar .menu .menu-formats > .btn { flex: 1; justify-content: center; border: 1px solid var(--line); }
 /* Destination des exports (version docker) : un choix à faire avant de cliquer, souligné
    par le même trait leyline que le bouton Co-pilote. */
 #toolbar .export-destination { margin: 0; padding: var(--space-1) var(--space-2) var(--space-2); border: 0; min-width: 0; }
@@ -1689,14 +1697,18 @@ html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none 
    La règle .mod-<id>-only est écrite par le module lui-même. */
 html:not(.mod-simulation) [data-group-id="group-bpmn-pilot-simulation"],
 html:not(.mod-heatmap) #canvas .heatmap-bar,
-html:not(.mod-heatmap) #canvas .heatmap-legend,
-html.mod-none #expert-menu .menu-sep { display: none !important; }
+html:not(.mod-heatmap) #canvas .heatmap-legend { display: none !important; }
+/* Menu Expert : un groupe vide disparaît, et son trait ne s'affiche que si un groupe allumé le précède. */
+html:not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-analyses { display: none; }
+html:not(.mod-simulation) #expert-menu .menu-group-analyses::before,
+html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-report::before,
+html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn):not(.mod-report) #expert-menu .menu-group-end::before { display: none; }
 /* Simulation en cours : « Quitter le mode Expert », les entrées du Co-pilote (le canevas est
    verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
 #expert-menu.simulating #btn-expert-off,
 #expert-menu.simulating #btn-expert-modules,
 #expert-menu.simulating .menu-row,
-#expert-menu.simulating .menu-sep { display: none !important; }
+#expert-menu.simulating .menu-group::before { display: none !important; }
 
 /* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
    présentation : dans un petit carré au trait orange de la charte. */
