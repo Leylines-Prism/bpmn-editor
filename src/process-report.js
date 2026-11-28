@@ -22,6 +22,7 @@
 import { buildRaci, raciRows } from './raci.js'
 import { buildCompliance, identityHolder, identityOf, identityRows, splitLines, splitRefs } from './compliance.js'
 import { lang, T, num } from './i18n/lang.js'
+import { deviationText, formatDuration, formatDate } from './mining/texts.js'
 import { flowIndex } from './simulation-stats.js'
 import { heatColor, heatBadge } from './heatmap.js'
 import { readAnalysis, structureFingerprint, isAiProbability } from './copilot-analysis.js'
@@ -172,7 +173,7 @@ function allLanes(laneSets, out = []) {
 
 // options : { name (nom du fichier), simulation (résultat de la carte de chaleur), lint (résultats
 // bpmnlint), checks (rapport de checkDiagram, src/diagram-checks.js) }
-export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null, decisions = null } = {}) {
+export async function buildReport(modeler, { name = '', simulation = null, lint = null, checks = null, decisions = null, mining = null } = {}) {
   const definitions = modeler.getDefinitions()
   const translate = modeler.get('translate')
   const { processes, participants } = collectContainers(definitions)
@@ -554,6 +555,31 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     points: saved.points.map((p) => ({ kind: p.kind, label: POINT_LABEL[p.kind](), elements: p.elements.map(nameOf), elementIds: p.elements, text: p.text })),
   }
 
+  // ── Comportement réel : analyse d'un journal d'événements (src/mining/), en totaux ──
+  const realLife = mining && {
+    source: mining.source,
+    cases: mining.cases,
+    events: mining.events,
+    from: mining.from,
+    to: mining.to,
+    stale: !!mining.stale,
+    saved: !mining.live,
+    savedDate: mining.savedDate || '',
+    hasDuration: !!mining.hasDuration,
+    cycle: mining.cycle?.median ?? null,
+    fitting: mining.conformance.fitting,
+    total: mining.conformance.total,
+    fitness: mining.conformance.fitness,
+    deviations: mining.conformance.deviations.map((d) => ({ text: deviationText(d, nameOf), cases: d.cases })),
+    timing: Object.entries(mining.timing || {})
+      .map(([id, t]) => ({ name: nameOf(id), passes: mining.nodes[id] || 0, wait: t.wait?.median ?? null, waitP90: t.wait?.p90 ?? null, duration: mining.hasDuration && t.duration?.median ? t.duration.median : null }))
+      .sort((a, b) => (b.wait ?? -1) - (a.wait ?? -1)),
+    bottlenecks: (mining.bottlenecks || []).map(nameOf),
+    variants: (mining.variants || []).slice(0, 5).map((v) => ({ steps: v.steps.join(' → '), cases: v.cases, fits: v.fits })),
+    outside: mining.outside || [],
+    heat: { runs: mining.cases, source: 'log', nodes: mining.nodes, flows: mining.flows },
+  }
+
   const title = clean(participants.map((p) => p.name).filter(Boolean).join(' · '))
     || clean(processes.map((p) => p.name).filter(Boolean).join(' · '))
     || clean(name) || T('Process', 'Processus')
@@ -596,6 +622,7 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     processDocs: [...participants, ...processes]
       .map((bo) => ({ name: clean(bo.name) || typeLabel(bo), markdown: docSource(bo) }))
       .filter((d) => d.markdown),
+    realLife,
     simulation: simulation?.runs
       ? { runs: simulation.runs, source: simulation.source, truncated: simulation.truncated || 0, nodes: { ...simulation.nodes }, flows: { ...simulation.flows } }
       : null,
@@ -867,6 +894,29 @@ export function reportToMarkdown(r) {
     lines.push('', `${T('**Never reached**:', '**Jamais atteints** :')} ${h.never.length ? mdCell(h.never.join(' · ')) : T('none', 'aucun')}.`)
     if (r.simulation.truncated) lines.push('', truncatedText(r.simulation.truncated))
   }
+  if (r.realLife) {
+    const m = r.realLife
+    lines.push('', `## ${T('What really happens (event log)', 'Ce qui se passe réellement (journal d\'événements)')}`, '')
+    lines.push(realLifeIntro(m))
+    if (m.stale) lines.push('', `> ${T('The diagram changed since this analysis: load the log again for up-to-date figures.', 'Le diagramme a changé depuis cette analyse : rechargez le journal pour des chiffres à jour.')}`)
+    lines.push('', `### ${T('Deviations from the diagram', 'Écarts au schéma')}`, '')
+    lines.push(conformanceText(m))
+    if (m.deviations.length) {
+      lines.push('', `| ${T('Deviation', 'Écart')} | ${T('Cases', 'Dossiers')} |`, '|---|---|')
+      for (const d of m.deviations) lines.push(`| ${mdCell(d.text)} | ${num(d.cases)} |`)
+    }
+    if (m.timing.length) {
+      lines.push('', `### ${T('Waits and durations', 'Attentes et durées')}`, '')
+      lines.push(`| ${T('Step', 'Étape')} | ${T('Passes', 'Passages')} | ${T('Median wait before', 'Attente médiane avant')} | ${T('90% wait under', '90 % des attentes sous')} |${m.hasDuration ? ` ${T('Median duration', 'Durée médiane')} |` : ''}`, `|---|---|---|---|${m.hasDuration ? '---|' : ''}`)
+      for (const t of m.timing) lines.push(`| ${mdCell(t.name)} | ${num(t.passes)} | ${formatDuration(t.wait)} | ${formatDuration(t.waitP90)} |${m.hasDuration ? ` ${formatDuration(t.duration)} |` : ''}`)
+      if (m.bottlenecks.length) lines.push('', `${T('**Longest waits (bottlenecks)**:', '**Attentes les plus longues (goulets d\'étranglement)** :')} ${mdCell(m.bottlenecks.join(' · '))}.`)
+    }
+    if (m.variants.length) {
+      lines.push('', `### ${T('Most frequent paths (variants)', 'Chemins les plus fréquents (variantes)')}`, '')
+      lines.push(`| ${T('Steps', 'Étapes')} | ${T('Cases', 'Dossiers')} | ${T('Follows the diagram', 'Suit le schéma')} |`, '|---|---|---|')
+      for (const v of m.variants) lines.push(`| ${mdCell(v.steps)} | ${num(v.cases)} | ${v.fits ? T('yes', 'oui') : T('no', 'non')} |`)
+    }
+  }
   if (r.checks.length) {
     lines.push('', `## ${T('Quality checks', 'Contrôles de qualité')}`, '')
     lines.push(`| ${T('Check', 'Contrôle')} | ${T('Result', 'Résultat')} | ${T('First problems', 'Premiers problèmes')} |`, '|---|---|---|')
@@ -968,6 +1018,12 @@ const staleText = () => T('The diagram has changed since this analysis: run it a
 const heatIntro = (sim) => sim.source === 'batch'
   ? T(`${num(sim.runs)} tokens computed from the gateway probabilities.`, `${num(sim.runs)} jetons calculés selon les probabilités des passerelles.`)
   : T(`${num(sim.runs)} token(s) played during the simulation.`, `${num(sim.runs)} jeton(s) joué(s) pendant la simulation.`)
+const realLifeIntro = (m) => T(
+  `From the event log ${m.source}: ${num(m.cases)} cases, ${num(m.events)} events, ${formatDate(m.from)} to ${formatDate(m.to)}${m.cycle !== null ? `, median case ${formatDuration(m.cycle)}` : ''}.${m.saved ? ' Totals saved in the diagram file.' : ''}`,
+  `D'après le journal d'événements ${m.source} : ${num(m.cases)} dossiers, ${num(m.events)} événements, du ${formatDate(m.from)} au ${formatDate(m.to)}${m.cycle !== null ? `, durée médiane d'un dossier ${formatDuration(m.cycle)}` : ''}.${m.saved ? ' Totaux enregistrés dans le fichier du diagramme.' : ''}`)
+const conformanceText = (m) => T(
+  `${Math.round((m.total ? m.fitting / m.total : 1) * 100)} % of cases follow the diagram (${num(m.fitting)} of ${num(m.total)}), fitness ${m.fitness.toFixed(2)}.`,
+  `${Math.round((m.total ? m.fitting / m.total : 1) * 100)} % des dossiers suivent le schéma (${num(m.fitting)} sur ${num(m.total)}), conformité ${m.fitness.toFixed(2).replace('.', ',')}.`)
 const truncatedText = (n) => T(`${num(n)} instance(s) stopped after 5,000 steps: check for a loop without exit.`, `${num(n)} instance(s) arrêtée(s) après 5 000 étapes : vérifiez qu'aucune boucle n'est sans sortie.`)
 const branchText = (b) => [b.branch, b.target].filter(Boolean).join(' → ')
 const probabilityText = (b) => (b.probability === null ? T('shared', 'partagée') : `${num(b.probability)} %${b.ai ? T(' (AI, to review)', ' (IA, à revoir)') : ''}`)
@@ -1265,6 +1321,53 @@ export async function reportToPdf(modeler, r) {
       })
     }
     if (h) note(T('Never reached: ', 'Jamais atteints : ') + (h.never.length ? h.never.join(' · ') : T('none', 'aucun')) + '.')
+  }
+
+  // Comportement réel (journal d'événements), sur sa propre page.
+  if (r.realLife) {
+    const m = r.realLife
+    doc.addPage()
+    y = M + 4
+    section(T('What really happens (event log)', 'Ce qui se passe réellement (journal d\'événements)'))
+    doc.setFont('helvetica', 'normal').setFontSize(8.5).setTextColor(...ink)
+    doc.text(doc.splitTextToSize(pdfText(realLifeIntro(m) + ' ' + conformanceText(m)), W - 2 * M), M, y + 2)
+    y += 9
+    if (m.stale) {
+      doc.setTextColor(...hex(COLORS.warning.strong))
+      doc.text(pdfText(T('The diagram changed since this analysis: load the log again for up-to-date figures.', 'Le diagramme a changé depuis cette analyse : rechargez le journal pour des chiffres à jour.')), M, y)
+      y += 6
+    } else {
+      await drawDiagram(await heatSvg(modeler, m.heat), H - y - M - 16, 0.6)
+      doc.setFont('helvetica', 'normal').setFontSize(7.5).setTextColor(...muted)
+      doc.text(pdfText(T('Real passes per element, from pale blue to red. Flow width follows the count. Dashed grey: never reached.',
+        'Passages réels par élément, du bleu pâle au rouge. Épaisseur des flux selon le nombre de passages. Gris pointillé : jamais atteint.')), M, y + 2)
+      y += 8
+    }
+    if (m.deviations.length) {
+      subsection(T('Deviations from the diagram', 'Écarts au schéma'))
+      table({
+        head: [[T('Deviation', 'Écart'), T('Cases', 'Dossiers')]],
+        body: m.deviations.map((d) => [pdfText(d.text), num(d.cases)]),
+        columnStyles: { 1: { cellWidth: 30, halign: 'right' } },
+      })
+    }
+    if (m.timing.length) {
+      subsection(T('Waits and durations', 'Attentes et durées'))
+      table({
+        head: [[T('Step', 'Étape'), T('Passes', 'Passages'), T('Median wait before', 'Attente médiane avant'), T('90% wait under', '90 % des attentes sous'), ...(m.hasDuration ? [T('Median duration', 'Durée médiane')] : [])]],
+        body: m.timing.map((t) => [pdfText(t.name), num(t.passes), pdfText(formatDuration(t.wait)), pdfText(formatDuration(t.waitP90)), ...(m.hasDuration ? [pdfText(formatDuration(t.duration))] : [])]),
+        columnStyles: { 0: { fontStyle: 'bold' }, 1: { cellWidth: 24, halign: 'right' }, 2: { cellWidth: 40, halign: 'right' }, 3: { cellWidth: 40, halign: 'right' }, 4: { cellWidth: 32, halign: 'right' } },
+      })
+      if (m.bottlenecks.length) note(T('Longest waits (bottlenecks): ', 'Attentes les plus longues (goulets d\'étranglement) : ') + m.bottlenecks.join(' · ') + '.')
+    }
+    if (m.variants.length) {
+      subsection(T('Most frequent paths (variants)', 'Chemins les plus fréquents (variantes)'))
+      table({
+        head: [[T('Steps', 'Étapes'), T('Cases', 'Dossiers'), T('Follows the diagram', 'Suit le schéma')]],
+        body: m.variants.map((v) => [pdfText(v.steps), num(v.cases), v.fits ? T('yes', 'oui') : T('no', 'non')]),
+        columnStyles: { 1: { cellWidth: 24, halign: 'right' }, 2: { cellWidth: 32 } },
+      })
+    }
   }
 
   section(T('Improvement areas', 'Axes d\'amélioration'))

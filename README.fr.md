@@ -100,6 +100,11 @@ servez : l'éditeur reste sobre pour les autres (voir la
   15 reprises pour 100), confrontés à la simulation de jetons dans le rapport.
 - **Rapport de processus** en PDF, en Markdown ou en Word : chiffres clés, constats par niveau, axes
   d'amélioration, événements de fin, activités par couloir, matrice RACI.
+- **Analyse d'un journal d'événements (process mining)** : chargez un export CSV ou XES de votre ERP,
+  CRM ou outil de tickets et voyez sur le diagramme ce qui se passe vraiment : passages, attentes et
+  durées, goulets d'étranglement, dossiers qui s'écartent du modèle. Le journal est lu dans le
+  navigateur et n'est envoyé nulle part. Sans diagramme, tirez du journal une première version du
+  processus. Un exemple fictif de 412 commandes est fourni.
 - **Potentiel d'IA par activité** : automatisable, assistée par IA ou humaine, avec la raison et le
   garde-fou, noté par le co-pilote ou à la main, et repris dans le rapport.
 - **Risques, contrôles et conformité** : risques et contrôles de chaque activité, références
@@ -215,7 +220,7 @@ dit ce qui sort du navigateur, et
 
 La page stable compte son audience de façon anonyme, sans cookie :
 visites (pages d'aide comprises), provenance, version de l'app et usage de chaque fonction (diagramme créé, ouvert
-ou exporté, mode Expert, installation et ouverture en PWA, simulation, carte de chaleur, mise en page, comparaison, co-pilote ouvert ou utilisé,
+ou exporté, mode Expert, installation et ouverture en PWA, simulation, carte de chaleur, analyse de journal, mise en page, comparaison, co-pilote ouvert ou utilisé,
 fournisseur connecté, types de fichiers joints, classes d'erreur, Votre avis, exemples de prompts copiés, liens
 GitHub et de soutien, temps actif par tranche). Aucun script tiers n'est chargé : la page envoie
 elle-même ces événements ([src/analytics.js](src/analytics.js)), jamais le contenu des diagrammes, des
@@ -526,6 +531,8 @@ Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
   probabilités des branches. Exporter un rapport de processus (PDF, Markdown ou Word) : constats en trois
   niveaux, axes d'amélioration, séquence des éléments, matrice RACI et, après une simulation, carte de chaleur et
   objectifs du processus posés sur les fins et les activités, atteints ou non.
+- **Process mining** : confronter un journal d'événements (CSV ou XES) au diagramme, appliquer les
+  parts réelles des branches, trouver attentes, goulets et écarts, ou tirer le processus du journal.
 - **Potentiel d'IA, risques et conformité** : pour chaque activité, son potentiel d'IA (automatisable, assistée
   par IA ou humaine, avec la raison et le garde-fou), ses risques et contrôles, et ses références réglementaires ;
   une fiche d'identité du processus (propriétaire, version, statut, date de validation, périmètre). Le rapport

@@ -182,6 +182,11 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `move_elements` | places shapes at a given centre, or shifts them, without touching the rest; connections follow |
 | `duplicate_elements` | copies shapes with the connections between them, below the originals or shifted |
 | `undo`, `redo` | step back or forward through the editor's history, like Ctrl+Z and Ctrl+Y: one tool call or one gesture per step |
+| `load_event_log` | loads an event log (CSV or XES text) into the editor for process mining, guesses the columns (case, step, start, end, resource) and matches the steps with the diagram's elements. Returns totals only |
+| `get_log_summary` | summarizes the loaded log: steps and their passes, which step follows which with the median wait, start and end steps, most frequent variants, median case duration. `activities` and `paths` (0 to 1) hide rare steps and paths, to draw a first diagram from the log |
+| `map_log_activities` | corrects the matching between log steps and diagram elements (`null`: not in the diagram) |
+| `apply_log_frequencies` | writes the shares observed in the log on the gateway branches, marked as observed, and returns the real passes, the waits and durations, and the bottlenecks |
+| `check_conformance` | compares the log with the diagram: share of cases that follow it, fitness, deviations (skipped step, wrong order, step outside the model, unfinished case) with their number of cases |
 | `validate_diagram` | returns a check report: element counts and six checks (well-formed XML, BPMN 2.0 metamodel, references and scopes, complete DI, bpmn-js reimport, bpmnlint), with errors and warnings element by element; with decisions in the file, their findings too |
 | `get_process_report` | returns the process report in Markdown, like the Export menu: findings by level, improvement areas, end events, activities by lane, element sequence. With `simulate`, first computes 100 tokens following the branch probabilities |
 | `set_report_commentary` | saves your analysis of the process (summary, bottlenecks, rare paths, risks, improvements, each tied to elements) in the diagram file; the process report shows it as written by the AI co-pilot |

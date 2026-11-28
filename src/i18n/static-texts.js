@@ -25,6 +25,7 @@ const FR = {
   '#btn-export': { text: 'Exporter', title: 'Exporter en BPMN, XML, SVG, PNG ou PDF, en fiches de procédure (PDF, Word, Markdown), en page de documentation HTML, ou imprimer' },
   '#btn-save': { text: 'Fichier .bpmn', title: 'Fichier BPMN 2.0, lisible par les autres outils BPMN' },
   '#btn-save-xml': { text: 'Fichier .xml', title: 'Même contenu que le .bpmn, avec l\'extension .xml' },
+  '#btn-mining': { text: 'Analyser un journal d\'événements (process mining)…', title: 'Charger un journal d\'événements exporté de votre ERP, CRM ou outil de tickets, et voir sur le diagramme ce qui se passe vraiment : passages, durées, écarts' },
   '#btn-camunda-8': { text: 'BPMN pour Camunda 8', title: 'Fichier BPMN préparé pour Camunda 8 : plateforme indiquée, processus exécutable, conditions des passerelles en FEEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur' },
   '#btn-camunda-7': { text: 'BPMN pour Camunda 7', title: 'Fichier BPMN préparé pour Camunda 7 : plateforme indiquée, processus exécutable, conditions des passerelles en JUEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur' },
   '#btn-save-encrypted': { text: 'Fichier .bpmn chiffré…', title: 'Le fichier .bpmn chiffré dans votre navigateur par un mot de passe (AES-256), pour envoyer un processus sensible' },
