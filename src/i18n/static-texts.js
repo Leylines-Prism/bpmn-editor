@@ -23,6 +23,7 @@ const FR = {
   '#btn-redo': { title: 'Rétablir (Ctrl+Y)', 'aria-label': 'Rétablir' },
   '#btn-search': { title: 'Rechercher dans les libellés et la documentation (Ctrl+F)', 'aria-label': 'Rechercher' },
   '#zoom-buttons': { 'aria-label': 'Zoom' },
+  '#btn-plan': { title: 'Plan du diagramme : sous-processus, sous-niveaux et tables de décision', 'aria-label': 'Plan du diagramme' },
   '#btn-zoom-out': { title: 'Dézoomer (Ctrl+−)', 'aria-label': 'Dézoomer' },
   '#btn-zoom-level': { title: 'Niveau de zoom : clic pour la glissière de zoom', 'aria-label': 'Niveau de zoom, clic pour la glissière de zoom' },
   '#btn-zoom-in': { title: 'Zoomer (Ctrl++)', 'aria-label': 'Zoomer' },

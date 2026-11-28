@@ -28,6 +28,7 @@ import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
 import { setupHistory } from './history.js'
 import { setupZoomButtons } from './zoom-buttons.js'
+import { setupDiagramPlan } from './diagram-plan.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -201,6 +202,7 @@ setupHistory({
   redoButton: document.getElementById('btn-redo'),
 })
 setupZoomButtons(modeler, document.getElementById('zoom-buttons'))
+const diagramPlan = setupDiagramPlan(modeler, { button: document.getElementById('btn-plan') })
 
 // Onglet invisible du mode sans navigateur (version Docker) : le serveur l'ouvre avec ?headless=<clé>.
 // Il part d'un diagramme vide, sans reprendre le travail gardé par ce navigateur.
@@ -901,6 +903,18 @@ setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modele
 setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'), save: () => autosave({ quiet: true }) })
 setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
+// Le plan du diagramme reste à portée en présentation, dans la barre, avant le zoom.
+{
+  const presBar = document.getElementById('presentation-bar')
+  const planButton = document.createElement('button')
+  planButton.type = 'button'
+  planButton.className = 'btn'
+  planButton.dataset.icon = 'levels'
+  planButton.textContent = T('Map', 'Plan')
+  planButton.title = T('Diagram map: subprocesses, sub-levels and decision tables', 'Plan du diagramme : sous-processus, sous-niveaux et tables de décision')
+  presBar?.querySelector('[data-act="out"]')?.before(planButton)
+  diagramPlan.attach(planButton)
+}
 setupSimulationSpeed(modeler)
 // Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
 const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
