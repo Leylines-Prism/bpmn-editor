@@ -52,6 +52,8 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
+import { setupSimulationAutopilot } from './simulation-autopilot.js'
+import PaletteProfilesModule from './palette-profiles.js'
 import { setupMining } from './mining/mining-ui.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
@@ -177,6 +179,7 @@ const modeler = new BpmnModeler({
     minimapModule,
     TokenSimulationModule,
     CreateAppendAnythingModule,
+    PaletteProfilesModule,
     BpmnColorPickerModule,
     CustomColorModule,
     LabelStyleModule,
@@ -901,6 +904,8 @@ setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 // Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
 const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
+// Pilote automatique : les passerelles choisissent leur branche pendant l'animation, selon les mêmes règles.
+setupSimulationAutopilot(modeler, { branchHint: () => decisions.routing() })
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
