@@ -15,6 +15,17 @@
 body.presenting .level-badge.empty, body.presenting .level-badge.broken,
 .djs-container.simulation .level-badge { display: none; }
 
+/* Bouton de bpmn-js qui ouvre un sous-processus replié : orange de la charte (le bleu est
+   déjà pris par les pastilles de documentation et de niveau), liseré blanc, un peu plus grand,
+   pour qu'on le remarque. */
+.bjs-drilldown {
+  width: 24px; height: 24px; margin-left: -24px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px; background-color: #D9620A; fill: #FFFFFF;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 1px 4px rgba(15, 23, 42, 0.35);
+}
+.bjs-drilldown svg { width: 16px; height: 16px; }
+.bjs-drilldown:hover, .bjs-drilldown:focus-visible { background-color: #B04E08; outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px rgba(217, 98, 10, 0.35); }
+
 /* Groupe « Sous-niveau » du panneau de propriétés. */
 #properties-panel .level-entry { display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
 #properties-panel .level-entry .bio-properties-panel-label { margin-bottom: -4px; }
@@ -61,6 +72,9 @@ body.presenting .level-badge.empty, body.presenting .level-badge.broken,
 }
 /* En présentation, le fil reste pour remonter devant le public (Annuler et Rétablir sont masqués). */
 body.presenting #canvas > #level-trail:not([hidden]) { display: inline-flex !important; left: 20px; }
-/* En présentation, les autres pastilles sont masquées ; celles des niveaux liés restent pour descendre. */
-body.presenting #canvas .bjs-container:not(.simulation) .djs-container > .djs-overlay-container:has(.djs-overlay-level-badge) { display: block !important; }
-body.presenting #canvas .bjs-container:not(.simulation) .djs-overlay:not(.djs-overlay-level-badge) { display: none !important; }
+/* En présentation, les autres pastilles sont masquées ; celles des niveaux liés et le bouton
+   d'ouverture des sous-processus repliés restent pour descendre, et le fil d'Ariane de bpmn-js
+   pour en revenir (en haut à gauche, la palette étant masquée). */
+body.presenting #canvas .bjs-container:not(.simulation) .djs-container > .djs-overlay-container:has(.djs-overlay-level-badge, .djs-overlay-drilldown) { display: block !important; }
+body.presenting #canvas .bjs-container:not(.simulation) .djs-overlay:not(.djs-overlay-level-badge):not(.djs-overlay-drilldown) { display: none !important; }
+body.presenting #canvas .bjs-container:not(.simulation) .djs-container.bjs-breadcrumbs-shown > .bjs-breadcrumbs { display: flex !important; left: 20px; }

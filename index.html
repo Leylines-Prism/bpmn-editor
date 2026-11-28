@@ -91,6 +91,7 @@
     <button class="btn" id="btn-layout" data-icon="layout" title="Tidy up the layout">Tidy up</button>
     <button class="btn" id="btn-present" data-icon="present" title="Presentation: the diagram alone, full screen">Presentation</button>
     <button class="btn" id="btn-expert" data-icon="expert" popovertarget="expert-menu" aria-haspopup="menu" title="Expert mode: token simulation and process report">Expert</button>
+    <button type="button" class="expert-switch" id="expert-switch" role="switch" aria-checked="false" aria-label="Expert mode" title="Turn expert mode on"><span class="expert-switch-knob" aria-hidden="true"></span></button>
     <div id="expert-menu" class="menu" popover role="menu">
       <div class="menu-group menu-group-simulation mod-simulation-only" role="group">
         <button class="btn" id="btn-simulation" data-icon="play" title="Run tokens through the process, with the heatmap and branch probabilities" role="menuitem">Simulation</button>
@@ -113,7 +114,6 @@
       </div>
       <div class="menu-group menu-group-end" role="group">
         <button class="btn" id="btn-expert-modules" data-icon="modules" title="Turn each expert function on or off" role="menuitem">Choose modules…</button>
-        <button class="btn expert-only" id="btn-expert-off" data-icon="close" title="Hide all expert functions" role="menuitem">Leave expert mode</button>
       </div>
     </div>
     <span id="autosave-status">Autosave: —</span>
@@ -130,10 +130,11 @@
           <button type="button" id="btn-undo" data-icon="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled></button>
           <button type="button" id="btn-redo" data-icon="redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled></button>
           <button type="button" id="btn-search" data-icon="search" title="Search the labels and the documentation (Ctrl+F)" aria-label="Search"></button>
+          <button type="button" id="btn-plan" data-icon="levels" title="Diagram map: subprocesses, sub-levels and decision tables" aria-label="Diagram map"></button>
         </div>
         <div id="zoom-buttons" role="group" aria-label="Zoom">
           <button type="button" id="btn-zoom-out" data-zoom="out" data-icon="zoom-out" title="Zoom out (Ctrl+−)" aria-label="Zoom out"></button>
-          <button type="button" id="btn-zoom-reset" data-zoom="reset" class="zoom-level" title="Back to 100 % (Ctrl+0)" aria-label="Zoom level, click to go back to 100 %">100 %</button>
+          <button type="button" id="btn-zoom-level" data-zoom="level" class="zoom-level" title="Zoom level: click for the zoom slider" aria-label="Zoom level, click for the zoom slider" aria-controls="zoom-slider" aria-expanded="false">100 %</button>
           <button type="button" id="btn-zoom-in" data-zoom="in" data-icon="zoom-in" title="Zoom in (Ctrl++)" aria-label="Zoom in"></button>
           <button type="button" id="btn-zoom-fit" data-zoom="fit" data-icon="zoom-fit" title="Fit the diagram to the screen" aria-label="Fit the diagram to the screen"></button>
         </div>

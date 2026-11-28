@@ -5,6 +5,16 @@ import { exportPdf } from './export-pdf.js'
 
 export const EXPORT_FORMATS = ['bpmn', 'svg', 'png', 'pdf']
 
+// Documents du menu Exporter tirés du diagramme, produits par src/main.js (buildDocument) :
+// décisions, BPMN pour Camunda, rapport, fiches de procédure, page HTML, récits utilisateur, RACI.
+// Recopiés dans l'outil export_diagram (src/ai/tools.js, qui n'importe rien) : un test les compare.
+export const DOCUMENT_FORMATS = [
+  'dmn', 'camunda8', 'camunda7',
+  'report-pdf', 'report-md', 'report-docx',
+  'sheets-pdf', 'sheets-md', 'sheets-docx',
+  'doc-html', 'stories-md', 'raci-xlsx',
+]
+
 const TYPES = {
   bpmn: 'application/xml',
   xml: 'application/xml',

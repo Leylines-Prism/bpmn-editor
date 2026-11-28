@@ -109,7 +109,16 @@ export function setupDocEditor(modeler) {
     bar.innerHTML = `
       <button type="button" class="btn doc-fmt" data-fmt="bold" title="${T('Bold (Ctrl+B)', 'Gras (Ctrl+B)')}" aria-label="${T('Bold', 'Gras')}"><b>${T('B', 'G')}</b></button>
       <button type="button" class="btn doc-fmt" data-fmt="italic" title="${T('Italic (Ctrl+I)', 'Italique (Ctrl+I)')}" aria-label="${T('Italic', 'Italique')}"><i>I</i></button>
-      <button type="button" class="btn doc-fmt" data-fmt="heading" title="${T('Heading', 'Titre')}" aria-label="${T('Heading', 'Titre')}">H</button>
+      <span class="doc-template-wrap doc-heading-wrap">
+        <button type="button" class="btn doc-heading-btn" aria-haspopup="menu" aria-expanded="false" title="${T('Heading level', 'Niveau de titre')}" aria-label="${T('Heading level', 'Niveau de titre')}">H ▾</button>
+        <div class="doc-template-menu doc-heading-menu" role="menu" hidden>
+          <button type="button" role="menuitem" data-fmt="h1" class="h1">${T('Heading 1', 'Titre 1')}</button>
+          <button type="button" role="menuitem" data-fmt="h2" class="h2">${T('Heading 2', 'Titre 2')}</button>
+          <button type="button" role="menuitem" data-fmt="h3" class="h3">${T('Heading 3', 'Titre 3')}</button>
+          <button type="button" role="menuitem" data-fmt="h4" class="h4">${T('Heading 4', 'Titre 4')}</button>
+          <button type="button" role="menuitem" data-fmt="text">${T('Plain text', 'Texte normal')}</button>
+        </div>
+      </span>
       <button type="button" class="btn doc-fmt" data-fmt="bullet" title="${T('Bulleted list', 'Liste à puces')}" aria-label="${T('Bulleted list', 'Liste à puces')}">${BULLET_ICON}</button>
       <button type="button" class="btn doc-fmt" data-fmt="ordered" title="${T('Numbered list', 'Liste numérotée')}" aria-label="${T('Numbered list', 'Liste numérotée')}">${NUMBER_ICON}</button>
       <button type="button" class="btn doc-fmt" data-fmt="link" title="${T('Link (Ctrl+K)', 'Lien (Ctrl+K)')}">${T('Link', 'Lien')}</button>
@@ -211,7 +220,8 @@ export function setupDocEditor(modeler) {
     function format(kind) {
       if (kind === 'bold') wrap('**', T('bold text', 'texte en gras'))
       else if (kind === 'italic') wrap('*', T('italic text', 'texte en italique'))
-      else if (kind === 'heading') prefixLines(() => '## ')
+      else if (/^h[1-4]$/.test(kind)) prefixLines(() => `${'#'.repeat(Number(kind[1]))} `)
+      else if (kind === 'text') prefixLines(() => '')
       else if (kind === 'bullet') prefixLines(() => '- ')
       else if (kind === 'ordered') prefixLines((i) => `${i + 1}. `)
       else if (kind === 'link') {
@@ -222,9 +232,26 @@ export function setupDocEditor(modeler) {
         })
       }
     }
+    // Niveau de titre : un menu déroulant, de Titre 1 à Titre 4, ou Texte normal.
+    const headingButton = bar.querySelector('.doc-heading-btn')
+    const headingMenu = bar.querySelector('.doc-heading-menu')
+    const showHeadings = (show) => {
+      headingMenu.hidden = !show
+      headingButton.setAttribute('aria-expanded', String(show))
+      if (show) headingMenu.querySelector('button')?.focus()
+    }
+    headingButton.addEventListener('click', () => showHeadings(headingMenu.hidden))
+    headingMenu.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.stopPropagation(); showHeadings(false); headingButton.focus() }
+    })
+    popup.addEventListener('pointerdown', (e) => {
+      if (!headingMenu.hidden && !e.target.closest('.doc-heading-wrap')) showHeadings(false)
+    })
     bar.addEventListener('click', (e) => {
       const kind = e.target.closest('[data-fmt]')?.dataset.fmt
-      if (kind) format(kind)
+      if (!kind) return
+      if (!headingMenu.hidden) showHeadings(false)
+      format(kind)
     })
     textarea.addEventListener('keydown', (e) => {
       if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
@@ -236,7 +263,7 @@ export function setupDocEditor(modeler) {
 
     // ── Modèles ──
     const templateButton = bar.querySelector('.doc-template-btn')
-    const templateMenu = bar.querySelector('.doc-template-menu')
+    const templateMenu = templateButton.nextElementSibling
     const suggested = templateFor(bo)
     const ordered = [...TEMPLATES].sort((a, b) => (a.id === suggested ? -1 : b.id === suggested ? 1 : 0))
     templateMenu.innerHTML = ordered.map((t) => `

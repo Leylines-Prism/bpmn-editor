@@ -171,7 +171,7 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
 | `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with OpenAI-compatible providers, Mistral included, the built-in AI co-pilot cannot receive it) |
-| `export_diagram` | exports the diagram as a file (`bpmn`, `svg`, `png` or `pdf`), like the Export menu. The file is saved in `EXPORTS_DIR`, never replacing another one, and the editor shows a Download button: nothing is downloaded unless the user clicks it. With `returnFile`, the file is also returned to the client (PNG as an image, SVG and BPMN as text, PDF as an embedded resource, 10 MB at most) |
+| `export_diagram` | produces a file like the Export menu: the diagram (`bpmn`, `svg`, `png`, `pdf`) or one of its documents (`dmn` decisions, `camunda8` and `camunda7` BPMN, process report `report-pdf`, `report-md`, `report-docx`, procedure sheets `sheets-pdf`, `sheets-md`, `sheets-docx`, `doc-html` documentation page, `stories-md` user stories, `raci-xlsx` RACI matrix). Only the encrypted file stays out of it: a password has no place with an agent. The file is saved in `EXPORTS_DIR`, never replacing another one, and the editor shows a Download button: nothing is downloaded unless the user clicks it. With `returnFile`, the file is also returned to the client (PNG as an image, BPMN, SVG, DMN, Markdown and HTML as text, PDF, Word and Excel as an embedded resource, 10 MB at most) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
@@ -206,7 +206,7 @@ the tools and give modeling rules: start and end events, verb + object for tasks
 events, a question on each exclusive gateway, no implicit split or join, the happy path from left to right.
 Most of them match what `validate_diagram` checks. The built-in chat sends the same text.
 
-The server also offers six MCP prompts (`src/ai/prompts.js`), which the user picks in their client:
+The server also offers twelve MCP prompts (`src/ai/prompts.js`), which the user picks in their client. The first three of the Expert block send the same request as the matching Expert menu commands of the AI co-pilot:
 
 | Prompt | Arguments | Purpose |
 |---|---|---|
@@ -217,6 +217,11 @@ The server also offers six MCP prompts (`src/ai/prompts.js`), which the user pic
 | `critique_description` | `description` | lists what is ambiguous or missing in a description (severity, quoted passage, question) before drawing |
 | `write_user_stories` | none | writes user stories and acceptance criteria for each activity, saved in the diagram |
 | `add_agent_step` | `goal`, `tools` (optional), `after` (optional) | adds an AI agent step: an ad-hoc sub-process with the agent's tools inside, a human review after it and an exit if the agent fails |
+| `propose_probabilities` | none | sets realistic probabilities on the branches of each gateway (Expert > Propose probabilities) |
+| `rate_ai_potential` | none | rates each activity automate, assist or human, with the reason, and adds the risks and controls of handing it to AI (Expert > Which activities to hand to AI?) |
+| `analyze_process` | none | runs 100 tokens, reads the report and saves its analysis with `set_report_commentary` (Expert > Co-pilot analysis) |
+| `assess_compliance` | `framework` (optional) | writes the risks, controls and requirements of each activity, and proposes the process identity |
+| `model_from_event_log` | none | draws the process from the loaded event log, then checks the log against it (fitness, deviations, real shares) |
 
 ## Saved diagrams
 
@@ -230,8 +235,8 @@ into the folder by hand is added to the list under its file name. Size and date 
 
 `POST /exports?format=pdf&name=Order%20process` saves an export (body `application/octet-stream`,
 20 MB at most) in `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` in docker), for the "Server" and
-"Both" destinations of the Export menu. Formats: `bpmn`, `xml`, `svg`, `png`, `pdf` and `md` (process report), with a check that
-the content matches. A file is never replaced: the answer gives the name chosen, such as
+"Both" destinations of the Export menu, and for the `export_diagram` tool. Formats: `bpmn`, `xml`, `dmn`, `svg`, `png`, `pdf`, `md` (report, procedure sheets, user stories),
+`html` (documentation page), `docx`, `xlsx` and `bpmn.enc` (encrypted file), with a check that the content matches. A file is never replaced: the answer gives the name chosen, such as
 `{"file": "Order process (2).pdf"}`.
 
 ## Security

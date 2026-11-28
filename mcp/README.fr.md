@@ -172,7 +172,7 @@ onglets de l'éditeur, et son journal part sur la sortie d'erreur. Les contrôle
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
 | `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, le co-pilote intégré ne peut pas la recevoir) |
-| `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Avec `returnFile`, le fichier est aussi renvoyé au client (PNG en image, SVG et BPMN en texte, PDF en ressource intégrée, 10 Mo au plus) |
+| `export_diagram` | produit un fichier comme le menu Exporter : le diagramme (`bpmn`, `svg`, `png`, `pdf`) ou l'un de ses documents (décisions `dmn`, BPMN `camunda8` et `camunda7`, rapport de processus `report-pdf`, `report-md`, `report-docx`, fiches de procédure `sheets-pdf`, `sheets-md`, `sheets-docx`, page de documentation `doc-html`, récits utilisateur `stories-md`, matrice RACI `raci-xlsx`). Seul le fichier chiffré en reste exclu : un mot de passe n'a rien à faire chez un agent. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Avec `returnFile`, le fichier est aussi renvoyé au client (PNG en image, BPMN, SVG, DMN, Markdown et HTML en texte, PDF, Word et Excel en ressource intégrée, 10 Mo au plus) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
@@ -208,7 +208,7 @@ pour les tâches, objet + état pour les événements, une question sur chaque p
 séparation ni de jonction implicite, le chemin nominal de gauche à droite. La plupart correspondent à ce
 que vérifie `validate_diagram`. Le chat intégré envoie le même texte.
 
-Le serveur propose aussi six prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client :
+Le serveur propose aussi douze prompts MCP (`src/ai/prompts.js`), que l'utilisateur choisit dans son client. Les trois premiers du bloc Expert envoient la même demande que les commandes correspondantes du menu Expert du Co-pilote IA :
 
 | Prompt | Arguments | Rôle |
 |---|---|---|
@@ -219,6 +219,11 @@ Le serveur propose aussi six prompts MCP (`src/ai/prompts.js`), que l'utilisateu
 | `critique_description` | `description` | relève ce qui est ambigu ou manquant dans une description (gravité, passage cité, question) avant de dessiner |
 | `write_user_stories` | aucun | rédige les récits utilisateur et les critères d'acceptation de chaque activité, enregistrés dans le diagramme |
 | `add_agent_step` | `goal`, `tools` (facultatif), `after` (facultatif) | ajoute une étape d'agent IA : un sous-processus ad hoc avec les outils de l'agent à l'intérieur, une revue humaine après lui et une sortie si l'agent échoue |
+| `propose_probabilities` | aucun | règle des probabilités réalistes sur les branches de chaque passerelle (Expert > Proposer les probabilités) |
+| `rate_ai_potential` | aucun | note chaque activité automate, assist ou human, avec la raison, et ajoute les risques et contrôles de la confier à l'IA (Expert > Quelles activités confier à l'IA ?) |
+| `analyze_process` | aucun | lance 100 jetons, lit le rapport et enregistre son analyse avec `set_report_commentary` (Expert > Analyse du Co-pilote) |
+| `assess_compliance` | `framework` (facultatif) | rédige les risques, contrôles et exigences de chaque activité, et propose la fiche d'identité du processus |
+| `model_from_event_log` | aucun | dessine le processus à partir du journal chargé, puis confronte le journal au diagramme (conformité, écarts, parts réelles) |
 
 ## Diagrammes enregistrés
 
@@ -234,8 +239,9 @@ fichier. Taille et date viennent du fichier.
 
 `POST /exports?format=pdf&name=Mon%20processus` enregistre un export (corps `application/octet-stream`,
 20 Mo au plus) dans `EXPORTS_DIR` (`mcp/data/exports`, `/data/exports` en docker), pour les
-destinations « Serveur » et « Les deux » du menu Exporter, et pour l'outil `export_diagram`. Formats : `bpmn`, `xml`, `svg`, `png`,
-`pdf` et `md` (rapport de processus), avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
+destinations « Serveur » et « Les deux » du menu Exporter, et pour l'outil `export_diagram`. Formats : `bpmn`, `xml`, `dmn`, `svg`, `png`,
+`pdf`, `md` (rapport, fiches de procédure, récits utilisateur), `html` (page de documentation), `docx`, `xlsx` et `bpmn.enc`
+(fichier chiffré), avec un contrôle du contenu. Un fichier n'est jamais remplacé : la réponse donne le nom retenu,
 par exemple `{"file": "Mon processus (2).pdf"}`.
 
 ## Sécurité

@@ -282,6 +282,9 @@ a.btn { text-decoration: none; }
 .djs-popup .entry:hover { background: var(--mist) !important; color: var(--night-800) !important; }
 .djs-popup-header .entry { color: var(--night-800) !important; }
 .djs-popup .search input { color: var(--night-800) !important; background: var(--white) !important; font-family: var(--font-sans); }
+/* Recherche du canevas (Ctrl+F) : le canevas reste clair dans les deux thèmes, la saisie aussi,
+   sinon le texte blanc du thème sombre se perd sur le fond bleu pâle. */
+.djs-search-container input { color: var(--night-800) !important; caret-color: var(--night-800); font-family: var(--font-sans); }
 .djs-popup .group-title { color: var(--night-800) !important; opacity: 0.7; }
 
 #credit {
@@ -1472,8 +1475,26 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #history-buttons button:focus-visible, #zoom-buttons button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
 /* Canevas étroit : la minicarte occupe le haut à droite, les boutons passent juste en dessous,
    le zoom sous l'historique. */
+/* Glissière de zoom, ouverte par un clic sur le niveau de zoom, sous le groupe. */
+#zoom-slider {
+  position: absolute; top: calc(100% + 6px);
+  display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 10px;
+  border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); box-shadow: var(--elevation-1);
+}
+#zoom-slider[hidden] { display: none; }
+#zoom-slider input[type=range] { width: 180px; margin: 0; accent-color: var(--leyline-sky-deep); cursor: pointer; }
+#zoom-slider .zoom-slider-end { font: 500 11px/1 var(--font-sans); color: var(--ink-muted); white-space: nowrap; }
+#zoom-slider .zoom-slider-reset {
+  height: 27px; padding: 0 8px; border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: none; color: var(--night-800); font: 500 12px/1 var(--font-sans); cursor: pointer; white-space: nowrap;
+}
+#zoom-slider .zoom-slider-reset:hover { color: var(--leyline-sky-deep); background: var(--mist); }
+#zoom-slider .zoom-slider-reset:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: 1px; }
+#zoom-buttons .zoom-level[aria-expanded="true"] { color: var(--leyline-sky-deep); background: var(--mist); }
 @container canvas (max-width: 560px) {
   #canvas-tools { left: auto; right: 20px; top: 66px; flex-direction: column; align-items: flex-end; }
+  #zoom-slider { left: auto !important; right: 0; }
 }
 /* La pilule de l'IA, centrée en haut, descend d'un cran quand elle toucherait ces boutons. */
 @container canvas (max-width: 1100px) {
@@ -1525,7 +1546,7 @@ dialog .dlg-head h2 { flex: 1; min-width: 0; margin-bottom: 0; }
 dialog .dlg-close { flex: none; font-size: 20px; }
 
 /* ── Mode présentation (src/presentation.js) : le schéma seul, en plein écran ── */
-body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(#presentation-fx):not(#presentation-doc):not(dialog) { display: none !important; }
+body.presenting > :not(#main):not(#presentation-bar):not(#presentation-hint):not(#presentation-fx):not(#presentation-doc):not(#plan-panel):not(dialog) { display: none !important; }
 body.presenting #main { padding: 0; gap: 0; }
 body.presenting #main > :not(#canvas) { display: none !important; }
 body.presenting #canvas { border: 0; border-radius: 0; box-shadow: none; }
@@ -1538,6 +1559,11 @@ body.presenting #canvas .layer-djs-grid { display: none !important; }
 body.presenting #canvas .simulation .djs-container > :not(svg):not(.djs-overlay-container):not(.bts-scopes):not(.bts-notifications):not(.bts-palette):not(.bts-log):not(.bts-set-animation-speed):not(.heatmap-legend),
 body.presenting #canvas .simulation .djs-overlay:not([class*="bts"]):not(.djs-overlay-heatmap) { display: none !important; }
 body.presenting #canvas .djs-container { cursor: grab; }
+/* Lecture seule : ni la poignée qui suit la souris sur les flux (déplacer un segment ou
+   un coude), ni le contour de survol des éléments. */
+body.presenting #canvas .djs-segment-dragger,
+body.presenting #canvas .djs-bendpoint,
+body.presenting #canvas .djs-element.hover .djs-outline { display: none !important; }
 #presentation-bar {
   position: fixed; top: var(--space-4); right: var(--space-4); z-index: 20;
   display: flex; gap: var(--space-1); padding: 4px;
@@ -1703,9 +1729,8 @@ html:not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(
 html:not(.mod-simulation) #expert-menu .menu-group-analyses::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-report::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn):not(.mod-report) #expert-menu .menu-group-end::before { display: none; }
-/* Simulation en cours : « Quitter le mode Expert », les entrées du Co-pilote (le canevas est
+/* Simulation en cours : « Choisir les modules », les entrées du Co-pilote (le canevas est
    verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
-#expert-menu.simulating #btn-expert-off,
 #expert-menu.simulating #btn-expert-modules,
 #expert-menu.simulating .menu-row,
 #expert-menu.simulating .menu-group::before { display: none !important; }
@@ -1734,23 +1759,25 @@ dialog .dlg-close:focus-visible,
 .pv-close:focus-visible,
 .pres-close:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
 
-/* Mode Sapin de Noël de la simulation (simulation-glow.js) : sur chaque étape où entre un
-   jeton, contour au dégradé Leylines qui tourne, lueur douce et trait de lumière qui en fait le tour. */
-#canvas .sim-glow-toggle { display: flex; align-items: center; gap: 4px; padding: 0 8px 0 4px; font-size: 18px; line-height: 1; cursor: pointer; opacity: 0.75; transition: opacity 0.2s; }
-#canvas .sim-glow-toggle:hover, #canvas .sim-glow-toggle:has(input:checked), #canvas .sim-glow-toggle:focus-within { opacity: 1; }
-#canvas .sim-glow-toggle input { width: 14px; height: 14px; margin: 0; accent-color: var(--leyline-magenta); cursor: pointer; }
-.djs-visual > .sim-glow { pointer-events: none; animation: sim-glow 2.8s ease-in-out forwards; }
-.djs-visual > .sim-glow > * { fill: none !important; stroke: url(#sim-glow-gradient) !important; }
-.djs-visual > .sim-glow > .sim-glow-line { stroke-width: 2px !important; opacity: 0.85; }
-.djs-visual > .sim-glow > .sim-glow-comet { stroke-width: 3.5px !important; stroke-linecap: round; stroke-dasharray: 0.22 0.78; animation: sim-glow-comet 2.4s linear forwards; }
-@keyframes sim-glow-comet { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1; } }
-@media (prefers-reduced-motion: reduce) { .djs-visual > .sim-glow > .sim-glow-comet { display: none; } }
-.djs-visual > .sim-glow > .sim-glow-blur { stroke-width: 6px !important; filter: url(#sim-glow-blur); opacity: 0.8; }
-@keyframes sim-glow { 0% { opacity: 0; } 20%, 50% { opacity: 1; } 100% { opacity: 0; } }
-
 /* ── Bouton Expert (src/expert-mode.js), « .btn » pour passer devant « #toolbar > .btn.active:not(#btn-chat) » : plein en orange quand le mode est actif, avec un
    point lumineux tant qu'une simulation tourne. ── */
 #toolbar > #btn-expert { position: relative; }
+/* Interrupteur du mode Expert, collé à droite du bouton (src/expert-mode.js) : un clic allume
+   ou éteint le mode, sans passer par le menu. */
+#toolbar > .expert-switch {
+  position: relative; flex: none; width: 30px; height: 18px; margin-left: -2px; padding: 0;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface-sunken); cursor: pointer;
+  transition: background-color .15s, border-color .15s;
+}
+#toolbar > .expert-switch .expert-switch-knob {
+  position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--ink-muted); transition: transform .15s, background-color .15s;
+}
+#toolbar > .expert-switch[aria-checked="true"] { background: var(--accent); border-color: var(--accent); }
+#toolbar > .expert-switch[aria-checked="true"] .expert-switch-knob { transform: translateX(12px); background: var(--on-accent); }
+#toolbar > .expert-switch:hover { border-color: var(--ink-muted); }
+#toolbar > .expert-switch:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { #toolbar > .expert-switch, #toolbar > .expert-switch .expert-switch-knob { transition: none; } }
 #toolbar > #btn-expert.btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 #toolbar > #btn-expert.btn.active:hover { filter: brightness(1.08); }
 #toolbar > #btn-expert.running::after {
@@ -1879,4 +1906,31 @@ dialog .dlg-close:focus-visible,
 #canvas .mining-deviation { fill: rgba(185, 28, 28, 0.1); stroke: #B91C1C; stroke-width: 3px; }
 @media (max-width: 560px) {
   #canvas .mining-panel { left: 8px; right: 8px; width: auto; bottom: 72px; }
+}/* Plan du diagramme (src/diagram-plan.js) : arborescence des sous-processus, sous-niveaux
+   et tables de décision, ouverte par le bouton Plan. */
+#plan-panel {
+  position: fixed; inset: auto; margin: 0; width: 320px; max-height: min(70vh, 560px); overflow: auto;
+  padding: 8px; border: 1px solid var(--line); border-radius: var(--radius-md);
+  background: var(--surface-raised); color: var(--ink); box-shadow: var(--elevation-1);
 }
+#plan-panel .plan-title { margin: 2px 6px 6px; font-size: 12px; font-weight: 600; color: var(--ink-muted); }
+#plan-panel .plan-note { margin: 6px 6px 2px; padding-top: 6px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.45; color: var(--ink-muted); }
+#plan-panel .plan-empty { margin: 6px; font-size: 12px; line-height: 1.45; color: var(--ink-muted); }
+#plan-panel ul { list-style: none; margin: 0; padding: 0; }
+#plan-panel ul ul { margin-left: 12px; padding-left: 8px; border-left: 1px solid var(--line); }
+#plan-panel .plan-node {
+  display: flex; align-items: center; gap: 8px; width: 100%; min-height: 30px; padding: 4px 8px;
+  border: 0; border-radius: var(--radius-sm); background: none; color: inherit; font: inherit; font-size: 13px;
+  text-align: left; cursor: pointer;
+}
+#plan-panel .plan-node:hover { background: var(--surface-sunken); }
+#plan-panel .plan-node:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+#plan-panel .plan-node.current { background: var(--accent-soft); font-weight: 600; }
+#plan-panel .plan-icon { flex: none; display: inline-flex; width: 16px; height: 16px; }
+#plan-panel .plan-icon svg { width: 16px; height: 16px; }
+#plan-panel .plan-process .plan-icon { color: var(--ink-muted); }
+#plan-panel .plan-sub .plan-icon { color: #D9620A; }
+#plan-panel .plan-level .plan-icon, #plan-panel .plan-dmn .plan-icon { color: var(--accent); }
+#plan-panel .plan-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#plan-panel .plan-detail { margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--ink-muted); }
+

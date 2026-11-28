@@ -436,7 +436,10 @@ utilisé : gardez-le ouvert.
 
 L'agent lit et dessine le diagramme, le range (`layout_diagram`), déplace ou duplique des formes
 précises (`move_elements`, `duplicate_elements`), et reprend un appel raté avec `undo` et `redo`, comme
-Ctrl+Z et Ctrl+Y. La liste complète des outils est dans [mcp/README.fr.md](mcp/README.fr.md).
+Ctrl+Z et Ctrl+Y. Il remplit les champs experts (RACI, potentiel d'IA, risques et contrôles, récits utilisateur,
+fiche d'identité du processus), et `export_diagram` produit tous les fichiers du menu Exporter : rapport, fiches
+de procédure, page de documentation HTML, matrice RACI, récits utilisateur, décisions et BPMN pour Camunda. Douze
+prompts MCP, dont cinq pour le mode Expert, sont prêts à choisir dans l'agent. La liste complète des outils est dans [mcp/README.fr.md](mcp/README.fr.md).
 
 Un jeton protège cet accès : la même fenêtre en génère un et dit où le mettre. Il est facultatif
 sur `localhost`, et obligatoire dès que l'éditeur est servi sous un autre nom (voir
@@ -633,7 +636,14 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 
+## Référencé sur
+
 [![Serveur MCP bpmn-pilot : note de qualité et de maintenance sur Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
+
+<a href="https://alternativeto.net/software/bpmn-pilot/about/?utm_source=badge&utm_medium=referral"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://alternativeto.net/static/badges/badge-compact-dark.svg">
+  <img src="https://alternativeto.net/static/badges/badge-compact-light.svg" alt="BPMN-Pilot sur AlternativeTo" width="171" height="58">
+</picture></a>
 
 ## Soutenir le développement
 

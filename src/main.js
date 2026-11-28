@@ -22,12 +22,13 @@ import { setupPanelPopup } from './panel-popup.js'
 import { applyStaticTexts } from './i18n/static-texts.js'
 import { autoLayout } from './auto-layout.js'
 import { importDiagram, setupXmlDialog, setupXmlExport, setupFileDrop } from './import-xml.js'
-import { EXPORT_FORMATS, exportSize, hasShapes, renderExport } from './export-files.js'
+import { DOCUMENT_FORMATS, EXPORT_FORMATS, exportSize, hasShapes, renderExport } from './export-files.js'
 import { createExportOffer } from './export-offer.js'
 import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
 import { setupHistory } from './history.js'
 import { setupZoomButtons } from './zoom-buttons.js'
+import { setupDiagramPlan } from './diagram-plan.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -54,7 +55,6 @@ import { setupMining } from './mining/mining-ui.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
-import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import { RulesPanelModule } from './rules-panel.js'
 import { AgentStepModule } from './agent-step.js'
@@ -85,6 +85,7 @@ import { setupDocSearch } from './doc/doc-search.js'
 import { setupTableDialog } from './table-dialog.js'
 import { rowsToXlsx } from './sheet-io.js'
 import { setupGridDialog } from './grid-dialog.js'
+import { EXPERT_ASKS } from './ai/prompts.js'
 
 const EMPTY_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -202,6 +203,7 @@ setupHistory({
   redoButton: document.getElementById('btn-redo'),
 })
 setupZoomButtons(modeler, document.getElementById('zoom-buttons'))
+const diagramPlan = setupDiagramPlan(modeler, { button: document.getElementById('btn-plan') })
 
 // Onglet invisible du mode sans navigateur (version Docker) : le serveur l'ouvre avec ?headless=<clé>.
 // Il part d'un diagramme vide, sans reprendre le travail gardé par ce navigateur.
@@ -517,43 +519,14 @@ document.getElementById('btn-pdf').addEventListener('click', async (e) => {
   }
 })
 
-// Exporter > BPMN pour Camunda 8 ou 7 (mode Expert) : même diagramme, préparé pour le moteur.
-async function exportCamunda(target, button) {
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ toCamunda }, { xml }] = await Promise.all([import('./export-camunda.js'), modeler.saveXML({ format: true })])
-    const { xml: out, summary } = await toCamunda(modeler.get('moddle'), xml, target)
-    await deliver(out, `${baseName()} - Camunda ${target}`, 'bpmn', 'application/xml')
-    let msg = T(`Exported for Camunda ${target}: ${summary.conditions} condition(s) written`, `Exporté pour Camunda ${target} : ${summary.conditions} condition(s) écrite(s)`)
-    if (summary.converted) msg += T(`, ${summary.converted} assigned task(s) turned into user tasks`, `, ${summary.converted} tâche(s) assignée(s) passée(s) en tâche utilisateur`)
-    if (summary.left) msg += T(`, ${summary.left} branch condition(s) to write in Camunda Modeler`, `, ${summary.left} condition(s) de branche à écrire dans Camunda Modeler`)
-    setStatus(msg)
-    track('export', { format: `camunda-${target}` })
-  } catch (err) {
-    console.error('Camunda export error:', err)
-    alert(T('Camunda export failed: ', 'Export Camunda impossible : ') + err.message)
-  } finally {
-    button.disabled = false
-  }
+// Fichiers du menu Exporter tirés du diagramme : Camunda, rapport, fiches, page HTML, récits,
+// RACI et décisions. Les boutons et l'outil export_diagram passent par buildDocument, pour que
+// l'IA produise exactement le fichier d'un export à la main.
+// Un fichier qui n'a rien à montrer (aucun RACI, aucun récit, aucune décision) lève une erreur
+// marquée notice : le bouton l'affiche telle quelle, l'outil la renvoie à l'agent.
+function nothingToExport(en, fr) {
+  return Object.assign(new Error(en), { notice: T(en, fr) })
 }
-// Exporter > Fichier .bpmn chiffré : le XML chiffré dans la page avec un mot de passe.
-document.getElementById('btn-save-encrypted').addEventListener('click', async () => {
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const { encryptText, askPassword, ENCRYPTED_EXT } = await import('./encrypted-file.js')
-    const password = await askPassword({ confirm: true })
-    if (password === null) return
-    const { xml } = await modeler.saveXML({ format: true })
-    await deliver(await encryptText(xml, password), baseName(), ENCRYPTED_EXT, 'application/json')
-    track('export', { format: 'bpmn-chiffre' })
-  } catch (err) {
-    console.error('Encryption error:', err)
-    alert(T('Encrypted export failed: ', 'Export chiffré impossible : ') + err.message)
-  }
-})
-document.getElementById('btn-camunda-8').addEventListener('click', (e) => exportCamunda(8, e.currentTarget))
-document.getElementById('btn-camunda-7').addEventListener('click', (e) => exportCamunda(7, e.currentTarget))
 
 // Rapport de processus (menu Expert et outil get_process_report). Il reprend les comptes
 // de la dernière simulation, s'il y en a une.
@@ -569,6 +542,7 @@ async function processReport({ simulate = false } = {}) {
 
 // Export Word : le texte de l'export Markdown, en styles Word, avec l'image du diagramme.
 const DOCX_TYPE = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+const XLSX_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 async function wordFile(markdown, report) {
   const [{ markdownToDocx }, { content }] = await Promise.all([import('./export-docx.js'), renderExport(modeler, 'png')])
   const png = new Uint8Array(await content.arrayBuffer())
@@ -576,114 +550,130 @@ async function wordFile(markdown, report) {
   return new Blob([bytes], { type: DOCX_TYPE })
 }
 
-async function exportReport(format, button) {
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const report = await processReport()
-    if (format === 'md') await deliver(reportToMarkdown(report), reportName(), 'md', 'text/markdown')
-    else if (format === 'docx') await deliver(await wordFile(reportToMarkdown(report), report), reportName(), 'docx', DOCX_TYPE)
-    else await deliver(await reportToPdf(modeler, report), reportName(), 'pdf', 'application/pdf')
-    track('export', { format: `report-${format}` })
-  } catch (err) {
-    console.error('Process report error:', err)
-    alert(T('Process report failed: ', 'Rapport de processus impossible : ') + err.message)
-  } finally {
-    button.disabled = false
+// Renvoie { content, name, ext, type, summary? } pour un format de DOCUMENT_FORMATS.
+async function buildDocument(format) {
+  if (format === 'dmn') {
+    const xml = decisions.service.getXml()
+    if (!xml) throw nothingToExport('This diagram has no decision yet: create one from a business rule task.', 'Ce diagramme n\'a pas encore de décision : créez-en une depuis une tâche de règle métier.')
+    return { content: xml, name: baseName(), ext: 'dmn', type: 'application/xml' }
   }
-}
-// Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
-document.getElementById('btn-report-pdf').addEventListener('click', (e) => { setExpert(true); exportReport('pdf', e.currentTarget) })
-document.getElementById('btn-report-md').addEventListener('click', (e) => { setExpert(true); exportReport('md', e.currentTarget) })
-document.getElementById('btn-report-docx').addEventListener('click', (e) => { setExpert(true); exportReport('docx', e.currentTarget) })
-
-// Exporter > Fiches de procédure : une fiche par activité, avec sa documentation.
-async function exportSheets(format, button) {
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ sheetsToMarkdown, sheetsToPdf }, report] = await Promise.all([import('./doc/procedure-sheets.js'), processReport()])
+  if (!hasShapes(modeler)) throw nothingToExport('The diagram is empty: nothing to export.', 'Le diagramme est vide : rien à exporter.')
+  if (format === 'camunda8' || format === 'camunda7') {
+    const target = format === 'camunda8' ? 8 : 7
+    const [{ toCamunda }, { xml }] = await Promise.all([import('./export-camunda.js'), modeler.saveXML({ format: true })])
+    const { xml: out, summary } = await toCamunda(modeler.get('moddle'), xml, target)
+    return { content: out, name: `${baseName()} - Camunda ${target}`, ext: 'bpmn', type: 'application/xml', summary: { target, ...summary } }
+  }
+  const report = await processReport()
+  if (format.startsWith('report-')) {
+    const kind = format.slice(7)
+    if (kind === 'md') return { content: reportToMarkdown(report), name: reportName(), ext: 'md', type: 'text/markdown' }
+    if (kind === 'docx') return { content: await wordFile(reportToMarkdown(report), report), name: reportName(), ext: 'docx', type: DOCX_TYPE }
+    return { content: await reportToPdf(modeler, report), name: reportName(), ext: 'pdf', type: 'application/pdf' }
+  }
+  if (format.startsWith('sheets-')) {
+    const kind = format.slice(7)
+    const { sheetsToMarkdown, sheetsToPdf } = await import('./doc/procedure-sheets.js')
     const name = `${baseName()} - ${T('procedure sheets', 'fiches de procédure')}`
-    if (format === 'md') await deliver(sheetsToMarkdown(report), name, 'md', 'text/markdown')
-    else if (format === 'docx') await deliver(await wordFile(sheetsToMarkdown(report), report), name, 'docx', DOCX_TYPE)
-    else await deliver(await sheetsToPdf(report), name, 'pdf', 'application/pdf')
-    track('export', { format: `sheets-${format}` })
-  } catch (err) {
-    console.error('Procedure sheets error:', err)
-    alert(T('Procedure sheets failed: ', 'Fiches de procédure impossibles : ') + err.message)
-  } finally {
-    button.disabled = false
+    if (kind === 'md') return { content: sheetsToMarkdown(report), name, ext: 'md', type: 'text/markdown' }
+    if (kind === 'docx') return { content: await wordFile(sheetsToMarkdown(report), report), name, ext: 'docx', type: DOCX_TYPE }
+    return { content: await sheetsToPdf(report), name, ext: 'pdf', type: 'application/pdf' }
   }
-}
-document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => exportSheets('pdf', e.currentTarget))
-document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
-document.getElementById('btn-sheets-docx').addEventListener('click', (e) => exportSheets('docx', e.currentTarget))
-
-// Exporter > Page de documentation (HTML) : une page autonome, diagramme et fiches (src/doc/doc-page.js).
-document.getElementById('btn-doc-html').addEventListener('click', async (e) => {
-  const button = e.currentTarget
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ docPageHtml }, report, { svg }] = await Promise.all([import('./doc/doc-page.js'), processReport(), modeler.saveSVG()])
-    const html = docPageHtml({ report, svg })
-    await deliver(html, `${baseName()} - ${T('documentation', 'documentation')}`, 'html', 'text/html')
-    track('export', { format: 'doc-html' })
-  } catch (err) {
-    console.error('Documentation page error:', err)
-    alert(T('Documentation page failed: ', 'Page de documentation impossible : ') + err.message)
-  } finally {
-    button.disabled = false
+  if (format === 'doc-html') {
+    const [{ docPageHtml }, { svg }] = await Promise.all([import('./doc/doc-page.js'), modeler.saveSVG()])
+    return { content: docPageHtml({ report, svg }), name: `${baseName()} - ${T('documentation', 'documentation')}`, ext: 'html', type: 'text/html' }
   }
-})
-
-const mining = setupMining(modeler, { menuButton: document.getElementById('btn-mining'), isSimulating: () => !!modeler.get('toggleMode')._active })
-// Exporter > Récits utilisateur (Markdown), module Expert « Récits utilisateur ».
-document.getElementById('btn-stories-md').addEventListener('click', async (e) => {
-  const button = e.currentTarget
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ storiesToMarkdown, activitiesWithStories }, report] = await Promise.all([import('./user-stories.js'), processReport()])
+  if (format === 'stories-md') {
+    const { storiesToMarkdown, activitiesWithStories } = await import('./user-stories.js')
     if (!activitiesWithStories(report).length) {
-      alert(T('No activity has a user story or an acceptance criterion yet. Select an activity and fill in the User stories group of the Process panel, or ask the co-pilot (Expert > User stories by activity).',
-        'Aucune activité n\'a encore de récit utilisateur ni de critère d\'acceptation. Sélectionnez une activité et remplissez le groupe Récits utilisateur du panneau Processus, ou demandez au Co-pilote (Expert > Récits utilisateur par activité).'))
-      return
+      throw nothingToExport('No activity has a user story or an acceptance criterion yet. Select an activity and fill in the User stories group of the Process panel, or ask the co-pilot (Expert > User stories by activity).',
+        'Aucune activité n\'a encore de récit utilisateur ni de critère d\'acceptation. Sélectionnez une activité et remplissez le groupe Récits utilisateur du panneau Processus, ou demandez au Co-pilote (Expert > Récits utilisateur par activité).')
     }
-    await deliver(storiesToMarkdown(report), `${baseName()} - ${T('user stories', 'récits utilisateur')}`, 'md', 'text/markdown')
-    track('export', { format: 'stories-md' })
-  } catch (err) {
-    console.error('User stories error:', err)
-    alert(T('User stories failed: ', 'Récits utilisateur impossibles : ') + err.message)
-  } finally {
-    button.disabled = false
+    return { content: storiesToMarkdown(report), name: `${baseName()} - ${T('user stories', 'récits utilisateur')}`, ext: 'md', type: 'text/markdown' }
   }
-})
-
-// Exporter > Matrice RACI (Excel) : une ligne par activité, une colonne par rôle.
-document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => {
-  const button = e.currentTarget
-  button.disabled = true
-  try {
-    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
-    const [{ raciRows }, report] = await Promise.all([import('./raci.js'), processReport()])
+  if (format === 'raci-xlsx') {
     // Cas normal d'un diagramme sans RACI : on dit quoi remplir, sans parler d'échec.
     if (!report.raci) {
-      alert(T('No activity has an Accountable (A), Consulted (C) or Informed (I) role yet. Select an activity and fill in the Responsibilities (RACI) group of the Process panel.',
-        'Aucune activité n\'a encore de rôle Approbateur (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.'))
-      return
+      throw nothingToExport('No activity has an Accountable (A), Consulted (C) or Informed (I) role yet. Select an activity and fill in the Responsibilities (RACI) group of the Process panel.',
+        'Aucune activité n\'a encore de rôle Approbateur (A), Consultés (C) ou Informés (I). Sélectionnez une activité et remplissez le groupe Responsabilités (RACI) du panneau Processus.')
     }
+    const { raciRows } = await import('./raci.js')
     const bytes = await rowsToXlsx(raciRows(report.raci, T), 'RACI')
-    const type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    await deliver(new Blob([bytes], { type }), `${baseName()} - ${T('RACI matrix', 'matrice RACI')}`, 'xlsx', type)
-    track('export', { format: 'raci-xlsx' })
+    return { content: new Blob([bytes], { type: XLSX_TYPE }), name: `${baseName()} - ${T('RACI matrix', 'matrice RACI')}`, ext: 'xlsx', type: XLSX_TYPE }
+  }
+  throw new Error(`Unknown export format: ${format}`)
+}
+
+// Message d'état après un export pour Camunda : conditions écrites, tâches converties, reste à faire.
+function camundaSummary({ target, conditions, converted, left }) {
+  let msg = T(`Exported for Camunda ${target}: ${conditions} condition(s) written`, `Exporté pour Camunda ${target} : ${conditions} condition(s) écrite(s)`)
+  if (converted) msg += T(`, ${converted} assigned task(s) turned into user tasks`, `, ${converted} tâche(s) assignée(s) passée(s) en tâche utilisateur`)
+  if (left) msg += T(`, ${left} branch condition(s) to write in Camunda Modeler`, `, ${left} condition(s) de branche à écrire dans Camunda Modeler`)
+  return msg
+}
+
+// Bouton du menu Exporter : produit le fichier, le livre selon la destination choisie.
+// failure : début du message d'échec, dans la langue de l'interface.
+function exportButton(id, format, failure, { expert = false } = {}) {
+  document.getElementById(id).addEventListener('click', async (e) => {
+    const button = e.currentTarget
+    if (expert) setExpert(true)
+    button.disabled = true
+    try {
+      const file = await buildDocument(format)
+      await deliver(file.content, file.name, file.ext, file.type)
+      if (file.summary) setStatus(camundaSummary(file.summary))
+      track('export', { format: format.startsWith('camunda') ? `camunda-${format.slice(7)}` : format })
+    } catch (err) {
+      if (err.notice) {
+        alert(err.notice)
+        return
+      }
+      console.error(`Export ${format} error:`, err)
+      alert(failure() + err.message)
+    } finally {
+      button.disabled = false
+    }
+  })
+}
+
+// Exporter > Fichier .bpmn chiffré : le XML chiffré dans la page avec un mot de passe.
+// Il reste hors de l'outil export_diagram : un mot de passe n'a rien à faire chez un agent.
+document.getElementById('btn-save-encrypted').addEventListener('click', async () => {
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const { encryptText, askPassword, ENCRYPTED_EXT } = await import('./encrypted-file.js')
+    const password = await askPassword({ confirm: true })
+    if (password === null) return
+    const { xml } = await modeler.saveXML({ format: true })
+    await deliver(await encryptText(xml, password), baseName(), ENCRYPTED_EXT, 'application/json')
+    track('export', { format: 'bpmn-chiffre' })
   } catch (err) {
-    console.error('RACI export error:', err)
-    alert(T('RACI matrix failed: ', 'Matrice RACI impossible : ') + err.message)
-  } finally {
-    button.disabled = false
+    console.error('Encryption error:', err)
+    alert(T('Encrypted export failed: ', 'Export chiffré impossible : ') + err.message)
   }
 })
+// BPMN pour Camunda 8 ou 7 (mode Expert) : même diagramme, préparé pour le moteur.
+exportButton('btn-camunda-8', 'camunda8', () => T('Camunda export failed: ', 'Export Camunda impossible : '))
+exportButton('btn-camunda-7', 'camunda7', () => T('Camunda export failed: ', 'Export Camunda impossible : '))
+// Rapport de processus : dans le menu Expert, il active le mode s'il ne l'était pas.
+const reportFailure = () => T('Process report failed: ', 'Rapport de processus impossible : ')
+exportButton('btn-report-pdf', 'report-pdf', reportFailure, { expert: true })
+exportButton('btn-report-md', 'report-md', reportFailure, { expert: true })
+exportButton('btn-report-docx', 'report-docx', reportFailure, { expert: true })
+// Fiches de procédure : une fiche par activité, avec sa documentation.
+const sheetsFailure = () => T('Procedure sheets failed: ', 'Fiches de procédure impossibles : ')
+exportButton('btn-sheets-pdf', 'sheets-pdf', sheetsFailure)
+exportButton('btn-sheets-md', 'sheets-md', sheetsFailure)
+exportButton('btn-sheets-docx', 'sheets-docx', sheetsFailure)
+// Page de documentation (HTML) : une page autonome, diagramme et fiches (src/doc/doc-page.js).
+exportButton('btn-doc-html', 'doc-html', () => T('Documentation page failed: ', 'Page de documentation impossible : '))
+
+const mining = setupMining(modeler, { menuButton: document.getElementById('btn-mining'), isSimulating: () => !!modeler.get('toggleMode')._active })
+// Récits utilisateur (Markdown), module Expert « Récits utilisateur ».
+exportButton('btn-stories-md', 'stories-md', () => T('User stories failed: ', 'Récits utilisateur impossibles : '))
+// Matrice RACI (Excel) : une ligne par activité, une colonne par rôle.
+exportButton('btn-raci-xlsx', 'raci-xlsx', () => T('RACI matrix failed: ', 'Matrice RACI impossible : '))
 
 // Entrées du menu Expert qui passent par le Co-pilote IA (visibles quand un modèle est choisi) :
 // une demande toute prête part dans le chat (src/chat-panel.js), dans la langue de l'interface.
@@ -705,13 +695,7 @@ document.getElementById('btn-ai-probabilities').addEventListener('click', () => 
       'Aucune passerelle à plusieurs flux sortants (exclusive, inclusive, complexe ou basée sur les événements) : pas de probabilité à proposer.'))
     return
   }
-  askCopilot(T(
-    'Propose realistic probabilities for the branches of each gateway of this diagram, from the labels, conditions and documentation. ' +
-      'Set them with update_elements (the branches of one gateway add up to 100 %), without changing anything else. ' +
-      'Then give, in one line per gateway, what justifies your values.',
-    'Propose des probabilités réalistes pour les branches de chaque passerelle de ce diagramme, d\'après les libellés, les conditions et la documentation. ' +
-      'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
-      'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.'))
+  askCopilot(T(EXPERT_ASKS.probabilities.en, EXPERT_ASKS.probabilities.fr))
 })
 document.getElementById('btn-ai-potential').addEventListener('click', () => {
   setExpert(true)
@@ -719,17 +703,7 @@ document.getElementById('btn-ai-potential').addEventListener('click', () => {
     alert(T('The diagram has no activity to rate.', 'Le diagramme n\'a aucune activité à noter.'))
     return
   }
-  askCopilot(T(
-    'Rate the AI potential of each activity of this diagram, from its name, lane, documentation, assignee and systems: ' +
-      'automate (an AI agent or automation performs it, with a human review), assist (a human performs it with AI help) or human (judgment, relationship or accountability). ' +
-      'Save it with update_elements (aiPotential and aiPotentialReason: one or two sentences on why and the safeguard needed), without changing anything else. ' +
-      'For each automate or assist activity, also add to its risks field the risks of handing it to AI (error, personal data, missing review…), one per line, and to its controls field the matching controls, one per line, keeping the risks and controls already written. ' +
-      'Then sum up in three lines where AI pays off first, and the risks to frame.',
-    'Note le potentiel d\'IA de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes : ' +
-      'automate (un agent IA ou une automatisation la réalise, avec une revue humaine), assist (un humain la réalise aidé par l\'IA) ou human (jugement, relation ou responsabilité). ' +
-      'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
-      'Pour chaque activité automate ou assist, ajoute aussi dans son champ risks les risques de la confier à l\'IA (erreur, données personnelles, absence de revue…), un par ligne, et dans son champ controls les contrôles correspondants, un par ligne, en gardant les risques et contrôles déjà écrits. ' +
-      'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.'))
+  askCopilot(T(EXPERT_ASKS.aiPotential.en, EXPERT_ASKS.aiPotential.fr))
 })
 document.getElementById('btn-ai-stories').addEventListener('click', () => {
   setExpert(true)
@@ -753,13 +727,7 @@ document.getElementById('btn-ai-analysis').addEventListener('click', () => {
     alert(T('The diagram is empty: nothing to analyze.', 'Le diagramme est vide : rien à analyser.'))
     return
   }
-  askCopilot(T(
-    'Analyze this process for its report: read get_process_report with simulate, then save your analysis with set_report_commentary ' +
-      '(summary, bottlenecks, rare paths, risks, improvements, each tied to the elements concerned and to the figures of the report). ' +
-      'Do not change the diagram. Finish with a short summary of what you saved.',
-    'Analyse ce processus pour son rapport : lis get_process_report avec simulate, puis enregistre ton analyse avec set_report_commentary ' +
-      '(synthèse, goulots, chemins rares, risques, pistes d\'amélioration, chacun relié aux éléments concernés et aux chiffres du rapport). ' +
-      'Ne modifie pas le diagramme. Termine par un court résumé de ce que tu as enregistré.'))
+  askCopilot(T(EXPERT_ASKS.analysis.en, EXPERT_ASKS.analysis.fr))
 })
 
 async function processReportForAi({ simulate } = {}) {
@@ -783,15 +751,18 @@ async function returnedFile(file, name, bytes) {
 }
 
 async function exportForAi({ format, name, returnFile = false }) {
-  if (!EXPORT_FORMATS.includes(format)) throw new Error(`Unknown format: ${format}. Use one of: ${EXPORT_FORMATS.join(', ')}.`)
-  if (format !== 'bpmn' && !hasShapes(modeler)) throw new Error('The diagram is empty: nothing to export.')
-  const base = (name !== undefined ? cleanName(name) : '') || baseName()
+  const isDocument = DOCUMENT_FORMATS.includes(format)
+  if (!isDocument && !EXPORT_FORMATS.includes(format)) throw new Error(`Unknown format: ${format}. Use one of: ${[...EXPORT_FORMATS, ...DOCUMENT_FORMATS].join(', ')}.`)
+  if (format !== 'bpmn' && format !== 'dmn' && !hasShapes(modeler)) throw new Error('The diagram is empty: nothing to export.')
   let file
   try {
-    file = await renderExport(modeler, format)
+    file = isDocument ? await buildDocument(format) : await renderExport(modeler, format)
   } catch (err) {
+    // Rien à exporter (aucun RACI, aucun récit…) : le message dit quoi remplir, tel quel.
+    if (err.notice) throw err
     throw new Error(err.message === 'png-unavailable' ? 'The browser could not draw the diagram as a PNG image.' : `Export failed: ${err.message}`, { cause: err })
   }
+  const base = (name !== undefined ? cleanName(name) : '') || file.name || baseName()
   const bytes = exportSize(file.content)
   let saved = null
   let serverError = null
@@ -808,7 +779,9 @@ async function exportForAi({ format, name, returnFile = false }) {
   return {
     ...(returned ? { file: returned } : {}),
     format,
+    fileName: saved || `${base}.${file.ext}`,
     bytes,
+    ...(file.summary ? { camunda: { conditionsWritten: file.summary.conditions, tasksTurnedIntoUserTasks: file.summary.converted || 0, conditionsLeftToWrite: file.summary.left || 0 } } : {}),
     ...(saved ? { savedOnServer: `exports/${saved}` } : {}),
     ...(serverError ? { serverSaveFailed: serverError } : {}),
     downloadOffered: true,
@@ -858,8 +831,7 @@ modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.classList.toggle('active', !!active)
   document.getElementById('btn-expert').classList.toggle('running', !!active)
   // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
-  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités. « Quitter
-  // le mode Expert » revient une fois la simulation arrêtée.
+  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités.
   document.getElementById('expert-menu').classList.toggle('simulating', !!active)
 })
 simButton.addEventListener('click', () => {
@@ -887,7 +859,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
-setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
+setupExpertMode({ button: document.getElementById('btn-expert'), switchButton: document.getElementById('expert-switch') })
 setupExpertModules(document.getElementById('btn-expert-modules'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
@@ -903,10 +875,21 @@ setupSmallScreenNotice({ before: document.getElementById('main'), canvas: modele
 setupPwa({ before: document.getElementById('main'), canvas: modeler.get('canvas'), save: () => autosave({ quiet: true }) })
 setupInstallButton(document.getElementById('btn-install'))
 setupPresentation({ button: document.getElementById('btn-present'), modeler })
+// Le plan du diagramme reste à portée en présentation, dans la barre, avant le zoom.
+{
+  const presBar = document.getElementById('presentation-bar')
+  const planButton = document.createElement('button')
+  planButton.type = 'button'
+  planButton.className = 'btn'
+  planButton.dataset.icon = 'levels'
+  planButton.textContent = T('Map', 'Plan')
+  planButton.title = T('Diagram map: subprocesses, sub-levels and decision tables', 'Plan du diagramme : sous-processus, sous-niveaux et tables de décision')
+  presBar?.querySelector('[data-act="out"]')?.before(planButton)
+  diagramPlan.attach(planButton)
+}
 setupSimulationSpeed(modeler)
 // Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
 const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
-setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))

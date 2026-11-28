@@ -8,9 +8,10 @@ import { ExportStore, MAX_EXPORT_BYTES } from '../mcp/exports.js'
 import { safeBaseName } from '../mcp/files.js'
 
 const XML = '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"/>'
+const ZIP = Buffer.from([0x50, 0x4b, 0x03, 0x04])
 const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(16)])
 
-test('only the six formats are accepted, with matching content', () => {
+test('only the known formats are accepted, with matching content', () => {
   assert.ok(ExportStore.validContent('bpmn', Buffer.from(XML)))
   assert.ok(ExportStore.validContent('xml', Buffer.from('﻿' + XML)))
   assert.ok(ExportStore.validContent('svg', Buffer.from('<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"/>')))
@@ -18,6 +19,18 @@ test('only the six formats are accepted, with matching content', () => {
   assert.ok(ExportStore.validContent('pdf', Buffer.from('%PDF-1.7\n')))
   assert.ok(ExportStore.validContent('md', Buffer.from('# Rapport de processus\n\n| Niveau | Élément |\n')))
 
+  assert.ok(ExportStore.validContent('dmn', Buffer.from('<?xml version="1.0"?><definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="d"/>')))
+  assert.ok(ExportStore.validContent('html', Buffer.from('<!doctype html>\n<html lang="fr"><title>x</title></html>')))
+  assert.ok(ExportStore.validContent('docx', Buffer.concat([ZIP, Buffer.from('....word/document.xml....')])))
+  assert.ok(ExportStore.validContent('xlsx', Buffer.concat([ZIP, Buffer.from('....xl/workbook.xml....')])))
+  assert.ok(ExportStore.validContent('bpmn.enc', Buffer.from(JSON.stringify({ format: 'bpmn-pilot-encrypted', version: 1, data: 'AAAA' }))))
+
+  assert.equal(ExportStore.validContent('dmn', Buffer.from(XML)), false)
+  assert.equal(ExportStore.validContent('html', Buffer.from('<svg/>')), false)
+  assert.equal(ExportStore.validContent('docx', Buffer.concat([ZIP, Buffer.from('xl/workbook.xml')])), false)
+  assert.equal(ExportStore.validContent('xlsx', PNG), false)
+  assert.equal(ExportStore.validContent('bpmn.enc', Buffer.from('{"format":1}')), false)
+  assert.equal(ExportStore.validContent('bpmn.enc', Buffer.from('not json')), false)
   assert.equal(ExportStore.validContent('exe', PNG), false)
   assert.equal(ExportStore.validContent('__proto__', PNG), false)
   assert.equal(ExportStore.validContent('png', Buffer.from('%PDF-1.7')), false)

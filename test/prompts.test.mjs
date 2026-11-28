@@ -2,13 +2,17 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import * as z from 'zod'
-import { buildPrompts } from '../src/ai/prompts.js'
+import { EXPERT_ASKS, buildPrompts } from '../src/ai/prompts.js'
 
 const prompts = buildPrompts(z)
 const byName = Object.fromEntries(prompts.map((p) => [p.name, p]))
 
-test('the seven prompts are there, with unique names', () => {
-  assert.deepEqual(Object.keys(byName).sort(), ['add_agent_step', 'critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram', 'write_user_stories'])
+test('the twelve prompts are there, with unique names', () => {
+  assert.equal(prompts.length, 12)
+  assert.deepEqual(Object.keys(byName).sort(), [
+    'add_agent_step', 'analyze_process', 'assess_compliance', 'critique_description', 'model_collaboration', 'model_from_event_log',
+    'model_process', 'propose_probabilities', 'rate_ai_potential', 'review_diagram', 'tidy_diagram', 'write_user_stories',
+  ])
   for (const p of prompts) assert.ok(p.title && p.description, p.name)
 })
 
@@ -51,4 +55,32 @@ test('add_agent_step asks for the agent mark, a review and an exit', () => {
   assert.match(text, /UserTask/)
   assert.match(text, /boundary event/)
   assert.doesNotMatch(p.text({ goal: 'X' }), /Tools:/)
+})
+
+test('the Expert menu prompts send the same request as the co-pilot commands', () => {
+  for (const [name, key] of [['propose_probabilities', 'probabilities'], ['rate_ai_potential', 'aiPotential'], ['analyze_process', 'analysis']]) {
+    const text = byName[name].text()
+    assert.ok(text.startsWith(EXPERT_ASKS[key].en), name)
+    assert.match(text, /get_shapes/, name)
+    assert.ok(EXPERT_ASKS[key].fr && EXPERT_ASKS[key].fr !== EXPERT_ASKS[key].en, name)
+  }
+  assert.match(byName.rate_ai_potential.text(), /aiPotentialReason/)
+  assert.match(byName.analyze_process.text(), /set_report_commentary/)
+})
+
+test('assess_compliance names the frameworks only when given, and keeps what is written', () => {
+  const p = byName.assess_compliance
+  assert.equal(z.object(p.argsSchema).safeParse({}).success, true)
+  assert.doesNotMatch(p.text({}), /Frameworks:/)
+  const text = p.text({ framework: 'GDPR, ISO 9001' })
+  assert.match(text, /Frameworks: GDPR, ISO 9001/)
+  assert.match(text, /risks/)
+  assert.match(text, /controls/)
+  assert.match(text, /requirements/)
+  assert.match(text, /keeping what is already written/)
+})
+
+test('model_from_event_log goes from the log summary to the conformance check', () => {
+  const text = byName.model_from_event_log.text()
+  for (const tool of ['load_event_log', 'get_log_summary', 'layout_diagram', 'map_log_activities', 'check_conformance', 'apply_log_frequencies']) assert.match(text, new RegExp(tool))
 })
