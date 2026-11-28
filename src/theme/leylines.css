@@ -1703,9 +1703,8 @@ html:not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(
 html:not(.mod-simulation) #expert-menu .menu-group-analyses::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-report::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn):not(.mod-report) #expert-menu .menu-group-end::before { display: none; }
-/* Simulation en cours : « Quitter le mode Expert », les entrées du Co-pilote (le canevas est
+/* Simulation en cours : « Choisir les modules », les entrées du Co-pilote (le canevas est
    verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
-#expert-menu.simulating #btn-expert-off,
 #expert-menu.simulating #btn-expert-modules,
 #expert-menu.simulating .menu-row,
 #expert-menu.simulating .menu-group::before { display: none !important; }
@@ -1751,6 +1750,22 @@ dialog .dlg-close:focus-visible,
 /* ── Bouton Expert (src/expert-mode.js), « .btn » pour passer devant « #toolbar > .btn.active:not(#btn-chat) » : plein en orange quand le mode est actif, avec un
    point lumineux tant qu'une simulation tourne. ── */
 #toolbar > #btn-expert { position: relative; }
+/* Interrupteur du mode Expert, collé à droite du bouton (src/expert-mode.js) : un clic allume
+   ou éteint le mode, sans passer par le menu. */
+#toolbar > .expert-switch {
+  position: relative; flex: none; width: 30px; height: 18px; margin-left: -2px; padding: 0;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--surface-sunken); cursor: pointer;
+  transition: background-color .15s, border-color .15s;
+}
+#toolbar > .expert-switch .expert-switch-knob {
+  position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--ink-muted); transition: transform .15s, background-color .15s;
+}
+#toolbar > .expert-switch[aria-checked="true"] { background: var(--accent); border-color: var(--accent); }
+#toolbar > .expert-switch[aria-checked="true"] .expert-switch-knob { transform: translateX(12px); background: var(--on-accent); }
+#toolbar > .expert-switch:hover { border-color: var(--ink-muted); }
+#toolbar > .expert-switch:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { #toolbar > .expert-switch, #toolbar > .expert-switch .expert-switch-knob { transition: none; } }
 #toolbar > #btn-expert.btn.active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
 #toolbar > #btn-expert.btn.active:hover { filter: brightness(1.08); }
 #toolbar > #btn-expert.running::after {

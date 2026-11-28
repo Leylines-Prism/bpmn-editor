@@ -858,8 +858,7 @@ modeler.on('tokenSimulation.toggleMode', ({ active }) => {
   simButton.classList.toggle('active', !!active)
   document.getElementById('btn-expert').classList.toggle('running', !!active)
   // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
-  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités. « Quitter
-  // le mode Expert » revient une fois la simulation arrêtée.
+  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités.
   document.getElementById('expert-menu').classList.toggle('simulating', !!active)
 })
 simButton.addEventListener('click', () => {
@@ -887,7 +886,7 @@ function download(content, filename, type) {
 }
 
 setupThemeToggle(document.getElementById('btn-theme'))
-setupExpertMode({ button: document.getElementById('btn-expert'), offButton: document.getElementById('btn-expert-off') })
+setupExpertMode({ button: document.getElementById('btn-expert'), switchButton: document.getElementById('expert-switch') })
 setupExpertModules(document.getElementById('btn-expert-modules'))
 applyStaticTexts(() => { clearTimeout(saveTimer); return autosave({ quiet: true }) })
 // Le logo de la barre ouvre la page vitrine Leylines dans un nouvel onglet (index.html) :
