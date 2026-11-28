@@ -156,6 +156,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     <div id="chat-log" aria-live="polite"></div>
     <div id="chat-attachments" hidden></div>
     <div id="chat-destination" hidden></div>
+    <div id="chat-voice-meter" hidden></div>
     <div id="chat-voice-interim" aria-live="polite" hidden></div>
     <form id="chat-form">
       <div class="chat-input-wrap">
@@ -204,12 +205,14 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
   toggleModel.hidden = true
   toggle.append(toggleModel)
   // À droite de la barre, juste après le badge MCP (version docker), ou en tête
-  // du groupe de droite quand il n'y a pas de badge (version en ligne).
+  // du groupe de droite quand il n'y a pas de badge (version en ligne). Le bouton
+  // du panneau Processus le suit, puis l'état de la sauvegarde.
   const badge = document.getElementById('mcp-status')
   const autosave = document.getElementById('autosave-status')
+  const anchor = document.getElementById('btn-properties') || autosave
   if (badge) badge.after(toggle)
-  else if (autosave) {
-    autosave.before(toggle)
+  else if (anchor) {
+    anchor.before(toggle)
     toggle.classList.add('push-right')
     autosave.style.marginLeft = '8px'
   } else document.getElementById('btn-expert').after(toggle)
@@ -301,7 +304,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     // Entrées du menu Expert qui passent par le Co-pilote (.copilot-only) : grisées sans modèle.
     document.documentElement.classList.toggle('copilot-ready', !!model)
     // L'icône d'aide à côté de chacune dit pourquoi (index.html, .copilot-help).
-    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model
+    const simulating = document.getElementById('expert-menu')?.classList.contains('simulating')
+    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model || !!simulating
     // En-tête du panneau : « Co-pilote » et le modèle dessous, ou « Co-pilote IA » sans modèle.
     titleName.textContent = model ? T('Co-pilot', 'Co-pilote') : T('AI co-pilot', 'Co-pilote IA')
     titleModel.textContent = model ? model.label : ''
@@ -674,6 +678,7 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     interim: panel.querySelector('#chat-voice-interim'),
     notify: add,
     onText: fitInput,
+    meter: panel.querySelector('#chat-voice-meter'),
   })
   if (micButton) panel.classList.add('has-mic')
 

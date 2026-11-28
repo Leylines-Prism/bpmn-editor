@@ -7,6 +7,11 @@
 //
 // Le texte dicté s'ajoute à la zone de saisie, et rien ne part sans un clic sur Envoyer.
 // La langue de dictée suit celle de l'interface.
+//
+// Pendant l'écoute, un vu-mètre montre le niveau du micro (getUserMedia + AnalyserNode,
+// calcul fait dans la page, rien n'est enregistré ni envoyé). Il prouve que le son arrive,
+// et la dictée prévient quand le micro reste muet ou quand la parole entendue ne donne
+// aucun texte, au lieu de rester silencieuse.
 
 import { lang, T } from './i18n/lang.js'
 
@@ -17,7 +22,9 @@ const Recognition = globalThis.SpeechRecognition || globalThis.webkitSpeechRecog
 // Vrai quand le navigateur sait au moins dire si la reconnaissance locale est possible.
 export const voiceSupported = () => typeof Recognition === 'function' && typeof Recognition.available === 'function'
 
-const LANG_TAG = lang === 'fr' ? 'fr-FR' : 'en-US'
+// Langue sans région (fr, en) : avec fr-FR, Chrome 158 sous Windows annonce le modèle local
+// comme disponible, entend la parole, mais ne renvoie jamais de texte. Avec fr, il transcrit.
+const LANG_TAG = lang === 'fr' ? 'fr' : 'en'
 const OPTIONS = { langs: [LANG_TAG], processLocally: true }
 
 // Ajoute un morceau de texte dicté à la suite de ce qui est déjà écrit.
@@ -28,13 +35,102 @@ function join(before, piece) {
   return /\s$/.test(before) ? before + text : `${before} ${text}`
 }
 
+// Délais des contrôles : micro muet, puis parole entendue sans texte reconnu.
+const SILENCE_MS = 4000
+const NO_TEXT_MS = 8000
+// Niveau (valeur RMS) sous lequel le micro est tenu pour muet.
+const SILENCE_LEVEL = 0.004
+const BARS = 24
+
+// Vu-mètre : rond rouge, barres du niveau des dernières secondes, nom du micro.
+// meter : conteneur vide fourni par l'appelant. Le niveau se lit sur un flux du micro
+// ouvert à part, dans la page, et fermé à l'arrêt de la dictée.
+function createMeter(meter) {
+  meter.classList.add('voice-meter')
+  meter.hidden = true
+  meter.innerHTML = '<span class="voice-meter-dot" aria-hidden="true"></span><canvas class="voice-meter-wave" aria-hidden="true"></canvas><span class="voice-meter-label"></span>'
+  const canvas = meter.querySelector('canvas')
+  const label = meter.querySelector('.voice-meter-label')
+  let stream = null
+  let context = null
+  let timer = 0
+  let levels = []
+  let loudest = 0
+
+  function draw() {
+    const ratio = globalThis.devicePixelRatio || 1
+    const w = canvas.clientWidth || 72
+    const h = canvas.clientHeight || 18
+    if (canvas.width !== Math.round(w * ratio)) { canvas.width = Math.round(w * ratio); canvas.height = Math.round(h * ratio) }
+    const g = canvas.getContext('2d')
+    g.setTransform(ratio, 0, 0, ratio, 0, 0)
+    g.clearRect(0, 0, w, h)
+    g.fillStyle = getComputedStyle(canvas).color
+    const step = w / BARS
+    levels.forEach((level, i) => {
+      // Échelle racine : la voix parlée reste lisible sans saturer.
+      const bar = Math.max(2, Math.min(h, Math.sqrt(level) * h * 2.6))
+      g.fillRect(i * step + 1, (h - bar) / 2, Math.max(1.5, step - 2), bar)
+    })
+  }
+
+  return {
+    get loudest() { return loudest },
+    async start() {
+      levels = new Array(BARS).fill(0)
+      loudest = 0
+      label.textContent = T('Listening', 'Écoute')
+      meter.hidden = false
+      draw()
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const name = stream.getAudioTracks()[0]?.label.replace(/\s*\([0-9a-f]{4}:[0-9a-f]{4}\)$/i, '')
+      if (name) {
+        label.textContent = name
+        meter.title = T(`Microphone used: ${name}`, `Micro utilisé : ${name}`)
+      }
+      context = new AudioContext()
+      const analyser = context.createAnalyser()
+      analyser.fftSize = 1024
+      context.createMediaStreamSource(stream).connect(analyser)
+      const samples = new Float32Array(analyser.fftSize)
+      timer = setInterval(() => {
+        analyser.getFloatTimeDomainData(samples)
+        let sum = 0
+        for (const v of samples) sum += v * v
+        const level = Math.sqrt(sum / samples.length)
+        loudest = Math.max(loudest, level)
+        levels.push(level)
+        levels.shift()
+        draw()
+      }, 80)
+      return name
+    },
+    stop() {
+      clearInterval(timer)
+      timer = 0
+      stream?.getTracks().forEach((t) => t.stop())
+      stream = null
+      context?.close().catch(() => {})
+      context = null
+      meter.hidden = true
+      meter.removeAttribute('title')
+    },
+  }
+}
+
 // button : le bouton micro. input : la zone de saisie. interim : élément qui montre le
 // texte provisoire. notify(kind, text) : message dans le fil du chat. onText() : après
-// chaque ajout, pour que la zone de saisie s'ajuste à son contenu.
-export function setupVoiceInput({ button, input, interim, notify, onText }) {
+// chaque ajout, pour que la zone de saisie s'ajuste à son contenu. meter : conteneur du
+// vu-mètre, rempli ici.
+export function setupVoiceInput({ button, input, interim, notify, onText, meter }) {
   let recognition = null
   let active = false // l'utilisateur veut dicter, même entre deux redémarrages
   let preparing = false
+  const level = meter ? createMeter(meter) : null
+  let silenceTimer = 0
+  let noTextTimer = 0
+  let warnedNoText = false
+  const clearChecks = () => { clearTimeout(silenceTimer); clearTimeout(noTextTimer) }
 
   const setState = (state) => {
     button.dataset.state = state
@@ -54,6 +150,8 @@ export function setupVoiceInput({ button, input, interim, notify, onText }) {
 
   function stop() {
     active = false
+    clearChecks()
+    level?.stop()
     showInterim('')
     setState('idle')
     if (recognition) {
@@ -69,7 +167,19 @@ export function setupVoiceInput({ button, input, interim, notify, onText }) {
     r.continuous = true
     r.interimResults = true
     r.processLocally = true
+    // Parole détectée : si aucun texte ne revient, on le dit au lieu de rester muet.
+    r.onspeechstart = () => {
+      clearTimeout(noTextTimer)
+      if (warnedNoText) return
+      noTextTimer = setTimeout(() => {
+        warnedNoText = true
+        notify('error', T(
+          'Speech is heard, but the browser returns no text. Stop and start dictation again. If it persists, restart the browser: its on-device speech model may be updating.',
+          "La voix est entendue, mais le navigateur ne renvoie aucun texte. Arrêtez puis relancez la dictée. Si cela persiste, redémarrez le navigateur : son modèle de reconnaissance local est peut-être en cours de mise à jour."))
+      }, NO_TEXT_MS)
+    }
     r.onresult = (e) => {
+      clearTimeout(noTextTimer)
       let provisional = ''
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const result = e.results[i]
@@ -106,6 +216,30 @@ export function setupVoiceInput({ button, input, interim, notify, onText }) {
     setState('listening')
   }
 
+  // Vu-mètre et contrôle du micro muet. Un échec ici n'arrête pas la dictée : la
+  // reconnaissance a son propre accès au micro et signale ses erreurs elle-même.
+  async function watchLevel() {
+    if (!level) return
+    let name = ''
+    try {
+      name = await level.start()
+    } catch (err) {
+      if (!active) return
+      notify('error', err?.name === 'NotAllowedError'
+        ? T('Microphone access refused. Allow it in the site settings of the browser, then try again.', "Accès au micro refusé. Autorisez-le dans les réglages du site du navigateur, puis réessayez.")
+        : T(`Microphone level unavailable: ${err?.message || err}`, `Niveau du micro indisponible : ${err?.message || err}`))
+      return
+    }
+    if (!active) { level.stop(); return }
+    silenceTimer = setTimeout(() => {
+      if (!active || level.loudest >= SILENCE_LEVEL) return
+      const mic = name ? `« ${name} »` : ''
+      notify('error', T(
+        `The microphone ${name ? `"${name}" ` : ''}picks up no sound. Check that it is not muted, or choose another microphone in the browser settings (site settings, Microphone).`,
+        `Le micro ${mic ? `${mic} ` : ''}ne capte aucun son. Vérifiez qu'il n'est pas coupé, ou choisissez un autre micro dans les réglages du navigateur (paramètres du site, Micro).`))
+    }, SILENCE_MS)
+  }
+
   async function start() {
     if (preparing) return
     preparing = true
@@ -126,7 +260,9 @@ export function setupVoiceInput({ button, input, interim, notify, onText }) {
         return
       }
       active = true
+      warnedNoText = false
       listen()
+      watchLevel()
     } catch (err) {
       notify('error', T(`Dictation unavailable: ${err?.message || err}`, `Dictée indisponible : ${err?.message || err}`))
       stop()

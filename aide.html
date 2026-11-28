@@ -458,10 +458,11 @@
           <li><span class="uib">Écrire</span>, <span class="uib">Côte à côte</span> ou <span class="uib">Aperçu</span>, au choix. Le texte s'enregistre à mesure.</li>
           <li>La barre ajoute gras, italique, titre, listes et lien (<kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>I</kbd>, <kbd>K</kbd>).</li>
           <li><span class="uib">Modèle ▾</span> insère les titres adaptés au type : objectif, acteurs, entrées et sorties pour une activité, une ligne par branche pour une passerelle.</li>
-          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit la voix sur l'appareil, sans rien envoyer.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit la voix sur l'appareil, sans rien envoyer. Pendant l'écoute, un rond rouge marque le bouton et un vu-mètre montre le niveau du micro et son nom : s'il reste plat, le son n'arrive pas. Si la voix est entendue sans qu'aucun texte ne revienne, un message le dit au bout de quelques secondes.</li>
           <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Rédiger avec le Co-pilote</span> propose une première version d'après le diagramme, en écrivant « à confirmer » là où il ne sait pas.</li>
         </ul>
         <figure><img src="/src/help/img/fr-documentation.webp" width="1102" height="642" alt="Fenêtre de documentation de la tâche Valider en comité, en vue Côte à côte : le Markdown à gauche avec les titres Objectif, Acteurs, Entrées, Sorties, Règles, Références, l'aperçu mis en forme à droite. En haut, la barre de mise en forme, Modèle, Dicter et Rédiger avec le Co-pilote." loading="lazy" /><figcaption>La fenêtre de documentation, en vue Côte à côte.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-dictee.webp" width="782" height="55" alt="Barre de la fenêtre de documentation pendant une dictée : le bouton Dicter en orange avec un rond rouge, puis le vu-mètre du micro et son nom." loading="lazy" /><figcaption>Pendant la dictée : le rond rouge et le niveau du micro.</figcaption></figure>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Vous écrivez</th><th>Vous obtenez</th></tr></thead>
@@ -489,7 +490,7 @@
 
       <section id="proprietes">
         <h2>Panneau Processus<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
-        <p>Le panneau de droite montre les propriétés de l'élément sélectionné, ou du processus quand rien n'est sélectionné. Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span>, au bout de la barre d'outils, le masque. Tirez son bord gauche pour l'élargir, double-cliquez pour revenir à la largeur d'origine.</p>
+        <p>Le panneau de droite montre les propriétés de l'élément sélectionné, ou du processus quand rien n'est sélectionné. Le bouton <span class="ico" data-icon="panel" aria-hidden="true"></span>, juste après <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Co-pilote IA</span> dans la barre d'outils, le masque. Tirez son bord gauche pour l'élargir, double-cliquez pour revenir à la largeur d'origine.</p>
         <h3>Nom, Identifiant et Exécutable</h3>
         <p>Le groupe <span class="ui">Général</span> donne le <span class="ui">Nom</span> affiché, l'<span class="ui">Identifiant</span> technique (unique, sans espace, à ne changer que si un outil externe l'exige) et, pour le processus, la case <span class="ui">Exécutable</span> (<code>isExecutable</code>), utile seulement pour un moteur de workflow. Avec des pools, les réglages du processus sont dans le groupe Général du pool.</p>
         <h3>Les autres groupes</h3>
@@ -573,7 +574,7 @@
         <p>Écrivez comme à un collègue : qui fait quoi, dans quel ordre, avec quelles décisions.</p>
         <div class="note">« Dessine le traitement d'une note de frais. Le salarié la saisit, son manager la valide ou la refuse. Si elle dépasse 500 €, la comptabilité la valide aussi. Une fois validée, elle est remboursée sous 5 jours. Mets un couloir par acteur. »</div>
         <p>Demandez ensuite des retouches (« ajoute un rappel si le manager ne répond pas sous 3 jours »), ou faites-les vous-même. <kbd>Ctrl</kbd>+<kbd>Entrée</kbd> envoie, <span class="uib">Arrêter</span> interrompt, <span class="uib">Nouvelle discussion</span> repart de zéro sans toucher au schéma.</p>
-        <p><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit la voix dans la zone de saisie, sur votre appareil : rien ne part avant <span class="uib">Envoyer</span>. Il faut Chrome ou Edge 139, ou Firefox 160, sur ordinateur. Ailleurs, le bouton n'apparaît pas.</p>
+        <p><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dicter</span> transcrit la voix dans la zone de saisie, sur votre appareil : rien ne part avant <span class="uib">Envoyer</span>. Il faut Chrome ou Edge 139, ou Firefox 160, sur ordinateur. Ailleurs, le bouton n'apparaît pas. Pendant l'écoute, un vu-mètre au-dessus de la saisie montre le niveau et le nom du micro. Il se calcule dans la page : rien n'est enregistré.</p>
 
         <h3>3. Partir d'un fichier</h3>
         <p>Collez, glissez ou joignez avec le trombone une photo de tableau blanc, une procédure, un tableur ou des e-mails, cinq fichiers au plus par message.</p>
@@ -788,7 +789,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
 
       <section id="simulation" class="expert-part">
         <h2>Simulation et carte de chaleur<span class="ico" data-icon="play" aria-hidden="true"></span></h2>
-        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> place un bouton de lecture sur chaque événement de début. Cliquez dessus : un jeton suit les flux, et vous choisissez le chemin aux passerelles exclusives. La glissière en bas du canevas règle la vitesse, le journal liste les étapes. Le canevas est verrouillé pendant la simulation : <span class="uib">Arrêter la simulation</span> rend la main.</p>
+        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> place un bouton de lecture sur chaque événement de début. Cliquez dessus : un jeton suit les flux, et vous choisissez le chemin aux passerelles exclusives. La glissière en bas du canevas règle la vitesse, le journal liste les étapes. Le canevas est verrouillé pendant la simulation : <span class="uib">Arrêter la simulation</span> rend la main. D'ici là, les commandes du Co-pilote du menu Expert restent grisées, car elles écrivent dans le diagramme.</p>
         <div class="fig-pair">
           <figure class="fig-anim"><p class="fig-title">Ralenti puis accéléré</p><img src="/docs/token-simulation.fr.gif" width="1280" height="720" alt="Un jeton parcourt le processus d'achat, à 0,5× puis à 3×" loading="lazy" /><figcaption>Un jeton ralenti puis accéléré avec la glissière de vitesse.</figcaption></figure>
           <figure><p class="fig-title">Un jeton en route</p><img src="/src/help/img/fr-simulation.webp" width="1060" height="440" alt="Simulation en cours : un jeton est sur la première tâche, et le bouton de la passerelle choisit le chemin." loading="lazy" /><figcaption>Une simulation en cours : le jeton avance de tâche en tâche.</figcaption></figure>
@@ -1014,7 +1015,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><strong>iPhone et iPad :</strong> <strong>Partager</strong>, <strong>Sur l'écran d'accueil</strong>.</li>
           <li><strong>Firefox</strong> sur ordinateur n'installe pas les PWA.</li>
         </ul>
-        <figure><img src="/src/help/img/fr-installer.webp" width="321" height="55" alt="Bout droit de la barre d'outils : le bouton Installer, avant Aide, langue, thème et panneau." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois la PWA installée.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-installer.webp" width="214" height="56" alt="Bout droit de la barre d'outils : Aide, thème, langue, puis le bouton Installer, en dernier." loading="lazy" /><figcaption>Le bouton Installer, dans Chrome et Edge. Il disparaît une fois la PWA installée.</figcaption></figure>
         <!-- online -->
         <h3 id="hors-ligne">Hors connexion (service worker)</h3>
         <p>Après une première visite, l'éditeur et l'aide s'ouvrent sans réseau. Le co-pilote, lui, en a besoin. Quand une version sort, un bandeau propose de <span class="uib">Recharger</span>, sans perdre le diagramme en cours.</p>

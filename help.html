@@ -458,10 +458,11 @@
           <li><span class="uib">Write</span>, <span class="uib">Side by side</span> or <span class="uib">Preview</span>, as you like. The text saves as you type.</li>
           <li>The toolbar adds bold, italic, heading, lists and link (<kbd>Ctrl</kbd>+<kbd>B</kbd>, <kbd>I</kbd>, <kbd>K</kbd>).</li>
           <li><span class="uib">Template ▾</span> inserts headings suited to the type: goal, actors, inputs and outputs for an activity, one line per branch for a gateway.</li>
-          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> transcribes your voice on the device, without sending anything.</li>
+          <li><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> transcribes your voice on the device, without sending anything. While it listens, a red dot marks the button and a level meter shows the microphone level and its name: if it stays flat, no sound arrives. If your voice is heard but no text comes back, a message says so after a few seconds.</li>
           <li><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Write with the co-pilot</span> drafts a first version from the diagram, writing "to be confirmed" where it does not know.</li>
         </ul>
         <figure><img src="/src/help/img/en-documentation.webp" width="1102" height="642" alt="Documentation window of the Approve in committee task, Side by side view: Markdown on the left with the headings Purpose, Actors, Inputs, Outputs, Rules, References, formatted preview on the right. At the top, the formatting bar, Template, Dictate and Write with the co-pilot." loading="lazy" /><figcaption>The documentation window, Side by side view.</figcaption></figure>
+        <figure><img src="/src/help/img/en-dictee.webp" width="783" height="55" alt="Toolbar of the documentation window during dictation: the Dictate button in orange with a red dot, then the microphone level meter and its name." loading="lazy" /><figcaption>While dictating: the red dot and the microphone level.</figcaption></figure>
         <div class="table-wrap">
           <table>
             <thead><tr><th>You type</th><th>You get</th></tr></thead>
@@ -489,7 +490,7 @@
 
       <section id="properties">
         <h2>Process panel<span class="ico" data-icon="panel" aria-hidden="true"></span></h2>
-        <p>The right-hand panel shows the properties of the selected element, or of the process when nothing is selected. The <span class="ico" data-icon="panel" aria-hidden="true"></span> button, at the end of the toolbar, hides it. Drag its left edge to widen it, double-click to restore the default width.</p>
+        <p>The right-hand panel shows the properties of the selected element, or of the process when nothing is selected. The <span class="ico" data-icon="panel" aria-hidden="true"></span> button, right after <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI co-pilot</span> in the toolbar, hides it. Drag its left edge to widen it, double-click to restore the default width.</p>
         <h3>Name, ID and Executable</h3>
         <p>The <span class="ui">General</span> group gives the displayed <span class="ui">Name</span>, the technical <span class="ui">ID</span> (unique, no spaces, to change only when an external tool requires it) and, for the process, the <span class="ui">Executable</span> box (<code>isExecutable</code>), useful only for a workflow engine. With pools, the process settings are in the pool's General group.</p>
         <h3>Other groups</h3>
@@ -573,7 +574,7 @@
         <p>Write as you would to a colleague: who does what, in what order, with which decisions.</p>
         <div class="note">"Draw the handling of an expense claim. The employee enters it, their manager approves or rejects it. Above €500, accounting approves it too. Once approved, it is refunded within 5 days. One lane per actor."</div>
         <p>Then ask for changes ("add a reminder if the manager does not answer within 3 days"), or make them yourself. <kbd>Ctrl</kbd>+<kbd>Enter</kbd> sends, <span class="uib">Stop</span> interrupts, <span class="uib">New chat</span> starts over without touching the diagram.</p>
-        <p><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> transcribes your voice into the input box, on your device: nothing leaves before <span class="uib">Send</span>. It needs Chrome or Edge 139, or Firefox 160, on a computer. Elsewhere, the button does not appear.</p>
+        <p><span class="uib"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/></svg>Dictate</span> transcribes your voice into the input box, on your device: nothing leaves before <span class="uib">Send</span>. It needs Chrome or Edge 139, or Firefox 160, on a computer. Elsewhere, the button does not appear. While it listens, a level meter above the input box shows the level and the name of the microphone. It is computed in the page: nothing is recorded.</p>
 
         <h3>3. Start from a file</h3>
         <p>Paste, drop or attach with the paperclip a whiteboard photo, a procedure, a spreadsheet or emails, up to five files per message.</p>
@@ -788,7 +789,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
 
       <section id="simulation" class="expert-part">
         <h2>Simulation and heatmap<span class="ico" data-icon="play" aria-hidden="true"></span></h2>
-        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> puts a play button on each start event. Click it: a token follows the flows, and you pick the path at exclusive gateways. The slider at the bottom of the canvas sets the speed, the log lists the steps. The canvas is locked during the simulation: <span class="uib">Stop simulation</span> gives it back.</p>
+        <p><span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span> puts a play button on each start event. Click it: a token follows the flows, and you pick the path at exclusive gateways. The slider at the bottom of the canvas sets the speed, the log lists the steps. The canvas is locked during the simulation: <span class="uib">Stop simulation</span> gives it back. Until then, the co-pilot commands of the Expert menu stay greyed out, since they write into the diagram.</p>
         <div class="fig-pair">
           <figure class="fig-anim"><p class="fig-title">Slowed down, then sped up</p><img src="/docs/token-simulation.gif" width="1280" height="720" alt="A token runs through the purchase process, at 0.5× then 3×" loading="lazy" /><figcaption>A token slowed down, then sped up with the speed slider.</figcaption></figure>
           <figure><p class="fig-title">A token on its way</p><img src="/src/help/img/en-simulation.webp" width="1060" height="440" alt="Simulation running: a token is on the first task, and the gateway button picks the path." loading="lazy" /><figcaption>A simulation running: the token moves from task to task.</figcaption></figure>
@@ -1014,7 +1015,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
           <li><strong>iPhone and iPad:</strong> <strong>Share</strong>, <strong>Add to Home Screen</strong>.</li>
           <li><strong>Firefox</strong> on desktop does not install PWAs.</li>
         </ul>
-        <figure><img src="/src/help/img/en-installer.webp" width="333" height="55" alt="Right end of the toolbar: the Install button, before Help, language, theme and panel." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the PWA is installed.</figcaption></figure>
+        <figure><img src="/src/help/img/en-installer.webp" width="288" height="56" alt="Right end of the toolbar: Help, theme, language, then the Install button, last." loading="lazy" /><figcaption>The Install button, in Chrome and Edge. It disappears once the PWA is installed.</figcaption></figure>
         <!-- online -->
         <h3 id="offline">Offline (service worker)</h3>
         <p>After a first visit, the editor and the help open without a network. The co-pilot needs one. When a new version comes out, a banner offers to <span class="uib">Reload</span>, keeping the current diagram.</p>

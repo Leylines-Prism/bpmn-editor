@@ -749,7 +749,15 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #properties-panel .appearance-entry { display: flex; flex-direction: column; gap: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label { margin-top: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label:first-child { margin-top: 0; }
-#properties-panel .appearance-swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+/* Pastilles de 36 px au plus. Huit par ligne au moins : sur un panneau étroit elles rétrécissent.
+   Quand le panneau s'élargit, les pastilles de la 2e ligne remontent une à une sur la 1re.
+   Les deux groupes d'une même couleur forment une seule grille (display: contents). */
+#properties-panel .appearance-swatches,
+#properties-panel .appearance-swatch-flow {
+  display: grid; gap: 4px; justify-content: start;
+  grid-template-columns: repeat(auto-fill, min(36px, calc((100% - 28px) / 8)));
+}
+#properties-panel .appearance-swatch-flow > .appearance-swatches { display: contents; }
 #properties-panel .appearance-used { display: flex; flex-direction: column; gap: 4px; }
 #properties-panel .appearance-sublabel { font-size: 11px; color: var(--ink-muted); }
 #properties-panel .appearance-swatch {
@@ -1729,11 +1737,10 @@ html:not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(
 html:not(.mod-simulation) #expert-menu .menu-group-analyses::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-report::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn):not(.mod-report) #expert-menu .menu-group-end::before { display: none; }
-/* Simulation en cours : « Choisir les modules », les entrées du Co-pilote (le canevas est
-   verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
+/* Simulation en cours : « Choisir les modules » s'efface du menu. Les entrées du Co-pilote
+   restent visibles mais grisées, leur icône d'aide dit d'arrêter la simulation (src/main.js). */
 #expert-menu.simulating #btn-expert-modules,
-#expert-menu.simulating .menu-row,
-#expert-menu.simulating .menu-group::before { display: none !important; }
+#expert-menu.simulating .menu-group-end { display: none !important; }
 
 /* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
    présentation : dans un petit carré au trait orange de la charte. */
@@ -1803,6 +1810,16 @@ dialog .dlg-close:focus-visible,
   50% { box-shadow: 0 0 0 5px rgba(217, 48, 37, 0); }
 }
 @media (prefers-reduced-motion: reduce) { #chat-panel #chat-mic[data-state="listening"] { animation: none; } }
+#chat-panel #chat-voice-meter { padding: var(--space-1) var(--space-3); border-top: 1px solid var(--line); }
+
+/* Vu-mètre de la dictée (src/voice-input.js) : rond rouge, niveau du micro, nom du micro. */
+.voice-meter { display: inline-flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; color: var(--ink-muted); }
+.voice-meter[hidden] { display: none; }
+.voice-meter-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #E5251B; animation: voice-dot 1.2s ease-in-out infinite; }
+.voice-meter-wave { flex: none; width: 72px; height: 18px; color: var(--accent); }
+.voice-meter-label { min-width: 0; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes voice-dot { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .voice-meter-dot, .doc-toolbar .doc-mic[data-state="listening"]::after { animation: none; } }
 #chat-panel #chat-voice-interim {
   padding: var(--space-1) var(--space-3); border-top: 1px solid var(--line);
   color: var(--ink-muted); font-style: italic; font-size: 13px;

@@ -136,9 +136,10 @@ function createBadge() {
   badge.style.cssText =
     'font-size:11px;white-space:nowrap;margin-left:auto;padding:2px 8px;border-radius:10px;border:1px solid #0f3460'
   const autosave = document.getElementById('autosave-status')
-  if (autosave) {
-    autosave.style.marginLeft = '8px'
-    autosave.before(badge)
+  const anchor = document.getElementById('btn-properties') || autosave
+  if (anchor) {
+    if (autosave) autosave.style.marginLeft = '8px'
+    anchor.before(badge)
   } else {
     document.getElementById('toolbar')?.append(badge)
   }
