@@ -496,6 +496,26 @@ body #chat-log { padding: var(--space-4); gap: var(--space-3); font-size: 14px; 
 #chat-panel .chat-msg { border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); color: var(--ink); }
 #chat-panel .chat-msg.user { background: var(--accent-soft); border-bottom-right-radius: var(--radius-sm); }
 #chat-panel .chat-msg.assistant { background: var(--surface); border: 1px solid var(--line); border-bottom-left-radius: var(--radius-sm); }
+/* Réponse du Co-pilote rendue en Markdown (src/ai/markdown.js). */
+#chat-panel .chat-md { white-space: normal; }
+#chat-panel .chat-md > :first-child { margin-top: 0; }
+#chat-panel .chat-md > :last-child { margin-bottom: 0; }
+#chat-panel .chat-md p, #chat-panel .chat-md ul, #chat-panel .chat-md ol, #chat-panel .chat-md pre, #chat-panel .chat-md blockquote, #chat-panel .chat-md .md-table { margin: 0 0 var(--space-2); }
+#chat-panel .chat-md h4, #chat-panel .chat-md h5, #chat-panel .chat-md h6 { margin: var(--space-3) 0 var(--space-1); font-size: 13px; font-weight: 700; }
+#chat-panel .chat-md ul, #chat-panel .chat-md ol { padding-left: 1.3em; }
+#chat-panel .chat-md li + li { margin-top: 2px; }
+#chat-panel .chat-md li > ul, #chat-panel .chat-md li > ol { margin: 2px 0 0; }
+#chat-panel .chat-md strong { font-weight: 700; }
+#chat-panel .chat-md code { font-family: var(--font-family-monospace, ui-monospace, monospace); font-size: 12px; background: var(--surface-sunken); border-radius: var(--radius-sm); padding: 0 3px; }
+#chat-panel .chat-md pre { background: var(--surface-sunken); border-radius: var(--radius-sm); padding: var(--space-2); overflow-x: auto; white-space: pre; }
+#chat-panel .chat-md pre code { background: transparent; padding: 0; }
+#chat-panel .chat-md blockquote { border-left: 3px solid var(--line-strong); padding-left: var(--space-2); color: var(--ink-muted); }
+#chat-panel .chat-md hr { border: 0; border-top: 1px solid var(--line); margin: var(--space-2) 0; }
+#chat-panel .chat-md a { color: var(--accent); }
+#chat-panel .chat-md .md-table { overflow-x: auto; }
+#chat-panel .chat-md table { border-collapse: collapse; font-size: 12px; line-height: 1.35; overflow-wrap: normal; }
+#chat-panel .chat-md th, #chat-panel .chat-md td { border: 1px solid var(--line); padding: 3px 6px; text-align: left; vertical-align: top; }
+#chat-panel .chat-md th { background: var(--surface-sunken); font-weight: 600; }
 #chat-panel .chat-msg.notice { color: var(--ink-muted); font-size: 12px; line-height: 16px; background: transparent; border: 0; padding: 0 2px; }
 #chat-panel .chat-msg.error { color: var(--magenta); font-size: 12px; line-height: 16px; background: transparent; border: 1px solid var(--magenta); }
 #chat-panel .chat-tools span {

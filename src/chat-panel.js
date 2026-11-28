@@ -23,6 +23,7 @@ import { isLocalAddress } from './ai/local-address.js'
 import { addDialogClose } from './dialog-close.js'
 import { setChatModel } from './copilot-analysis.js'
 import { MIC_ICON, setupVoiceInput, voiceSupported } from './voice-input.js'
+import { renderMarkdownInto } from './ai/markdown.js'
 
 const TOOL_LABELS = {
   get_shapes: T('reading the diagram', 'lecture du diagramme'),
@@ -760,6 +761,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     const reply = add('assistant')
     reply.hidden = true // affichée au premier texte ou au premier outil
     let tools = null
+    let replyBody = null
+    let replyText = ''
     let gotText = false
     let toolSinceText = false
     let failed = false
@@ -790,13 +793,17 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
       } else if (event.type === 'text') {
         reply.hidden = false
         // Un paragraphe par étape : le texte qui suit des appels d'outils repart à la ligne.
-        const hasText = [...reply.childNodes].some((n) => n.nodeType === Node.TEXT_NODE)
-        const chunk = (toolSinceText && hasText ? '\n\n' : '') + event.text
+        replyText += (toolSinceText && replyText ? '\n\n' : '') + event.text
         gotText = true
         toolSinceText = false
-        // Le texte s'ajoute avant la ligne des outils.
-        if (tools) reply.insertBefore(document.createTextNode(chunk), tools)
-        else reply.append(chunk)
+        // Le texte (Markdown rendu, src/ai/markdown.js) se place avant la ligne des outils.
+        if (!replyBody) {
+          replyBody = document.createElement('div')
+          replyBody.className = 'chat-md'
+          if (tools) reply.insertBefore(replyBody, tools)
+          else reply.append(replyBody)
+        }
+        renderMarkdownInto(replyBody, replyText)
       } else if (event.type === 'tool') {
         usage.tools++
         reply.hidden = false
