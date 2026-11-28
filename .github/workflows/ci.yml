@@ -67,3 +67,24 @@ jobs:
           file: ${{ matrix.file }}
           build-args: ${{ matrix.build-args }}
           push: false
+
+  # Navigateur du mode sans écran : construit, lancé avec les réglages de docker-compose.headless.yml
+  # (lecture seule, /tmp en mémoire, aucune capacité), puis interrogé par l'interface DevTools.
+  renderer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: docker build -f renderer/Dockerfile -t bpmn-pilot-renderer:ci .
+      - name: Start the renderer and open a page
+        run: |
+          docker run -d --name renderer -p 127.0.0.1:9222:9222 --read-only --tmpfs /tmp:size=512m \
+            --cap-drop ALL --security-opt no-new-privileges:true bpmn-pilot-renderer:ci
+          for i in $(seq 1 30); do curl -fs http://127.0.0.1:9222/json/version && break; sleep 1; done
+          curl -fs -X PUT 'http://127.0.0.1:9222/json/new?about:blank' | tee /tmp/target.json
+          grep -q '"id"' /tmp/target.json
+          docker exec renderer id -u | grep -qx 1000
+          docker exec renderer ls /usr/share/fonts/truetype/liberation | grep -q LiberationSans-Regular.ttf
+      - if: failure()
+        run: docker logs renderer
