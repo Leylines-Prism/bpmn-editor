@@ -1,0 +1,158 @@
+# L'éditeur et son serveur MCP, à partir des images publiées, AVEC LE MODE SANS NAVIGATEUR :
+# un agent MCP dessine, exporte (PNG, SVG, PDF) et lit le rapport sans qu'aucun onglet de l'éditeur
+# soit ouvert. Le serveur ouvre alors l'éditeur dans un onglet invisible du service renderer
+# (Chromium sans écran), et enregistre chaque diagramme ainsi dessiné dans « Mes diagrammes ».
+# Sans ce besoin, préférez docker-compose.image.yml : même chose sans Chromium (environ 300 Mo de
+# moins à télécharger, et 300 à 600 Mo de mémoire en moins pendant l'usage).
+#
+# ⚠ À NE PAS EXPOSER SUR INTERNET SANS AUTHENTIFICATION.
+# Son serveur n'a pas de comptes : quiconque l'atteint peut utiliser les clés d'API du serveur,
+# lire et supprimer tous les diagrammes enregistrés, faire appeler par le serveur des adresses
+# de votre réseau, et piloter l'éditeur.
+# Par défaut, le site n'est joignable que depuis cette machine (127.0.0.1).
+#
+# Ce fichier se suffit à lui-même : téléchargez-le seul, ou collez-le dans votre outil de gestion
+# de conteneurs. Puis :
+#   docker compose -f docker-compose.headless.yml up -d
+#   et ouvrir http://localhost:8080
+#
+# Réglages et clés d'API : dans un fichier .env placé à côté de ce fichier, ou dans les variables
+# d'environnement de votre outil. Tous sont facultatifs (liste dans le README).
+# Mise à jour : changer le numéro de version des trois images, puis
+#   docker compose -f docker-compose.headless.yml pull
+#   docker compose -f docker-compose.headless.yml up -d
+
+services:
+  editor:
+    image: ghcr.io/leylines-prism/bpmn-pilot:1.4.5
+    networks:
+      - default
+      - headless
+    ports:
+      - "${BPMN_BIND:-127.0.0.1}:${BPMN_PORT:-8080}:8080"
+    environment:
+      # off : coupe la page vitrine (about.html) et ses fonds d'écran. Le logo de la barre
+      # d'outils ouvre alors la fenêtre « Votre avis ».
+      SHOWCASE: ${SHOWCASE:-on}
+    depends_on:
+      - mcp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+  # Prépare le dossier de données avant le serveur, puis s'arrête (état « Exited 0 » attendu) :
+  # le crée s'il manque, avec diagrams/ et exports/, et le donne à l'utilisateur du serveur.
+  # Sans lui, un dossier créé par Docker appartient à root et le serveur ne peut pas y écrire.
+  data-init:
+    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.4.5
+    user: "0:0"
+    entrypoint:
+      - sh
+      - -c
+      - >-
+        mkdir -p /data/diagrams /data/exports &&
+        chown -R "$$PUID:$$PGID" /data ||
+        echo "data-init - could not prepare /data, check the owner of the data folder"
+    environment:
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}
+    volumes:
+      - ${BPMN_DATA_DIR:-./bpmn-data}:/data
+    read_only: true
+    network_mode: none
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+
+  mcp:
+    image: ghcr.io/leylines-prism/bpmn-pilot-mcp:1.4.5
+    environment:
+      # Fournisseurs du chat intégré (voir mcp/.env.example pour le détail).
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODELS: ${ANTHROPIC_MODELS:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODELS: ${OPENAI_MODELS:-}
+      OPENAI_LABEL: ${OPENAI_LABEL:-}
+      OPENAI_REASONING_EFFORT: ${OPENAI_REASONING_EFFORT:-}
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY:-}
+      MISTRAL_MODELS: ${MISTRAL_MODELS:-}
+      MISTRAL_BASE_URL: ${MISTRAL_BASE_URL:-}
+      MISTRAL_REASONING_EFFORT: ${MISTRAL_REASONING_EFFORT:-}
+      CHAT_MODEL: ${CHAT_MODEL:-}
+      CHAT_EFFORT: ${CHAT_EFFORT:-}
+      # off : coupe les fournisseurs réglés dans la fenêtre Options (le serveur n'appelle plus
+      # d'adresse envoyée par la page).
+      CHAT_RELAY: ${CHAT_RELAY:-}
+      # Jeton demandé aux clients MCP (fenêtre « Connecter un agent »).
+      MCP_TOKEN: ${MCP_TOKEN:-}
+      # off : ouvre /mcp sans jeton sous un autre nom que localhost (réseau de confiance, ou proxy
+      # qui authentifie /mcp). Sans jeton ni off, /mcp répond 401 hors localhost.
+      MCP_AUTH: ${MCP_AUTH:-}
+      # Pour un autre nom ou une autre adresse (proxy, nom de domaine), voir le README.
+      BPMN_EDITOR_ORIGINS: ${BPMN_EDITOR_ORIGINS:-http://localhost:${BPMN_PORT:-8080},http://127.0.0.1:${BPMN_PORT:-8080}}
+      MCP_ALLOWED_HOSTS: ${MCP_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      # Mode sans navigateur : actif dans ce fichier. Le serveur ferme l'onglet invisible après
+      # HEADLESS_IDLE_SECONDS sans appel (300 par défaut).
+      MCP_HEADLESS: "on"
+      HEADLESS_IDLE_SECONDS: ${HEADLESS_IDLE_SECONDS:-300}
+    # Dossier de données, à ouvrir dans un explorateur de fichiers : diagrams/ (« Mes diagrammes »)
+    # et exports/ (menu Exporter réglé sur « Serveur » ou « Les deux »). Par défaut ./bpmn-data, à
+    # côté de ce fichier. Le service data-init le crée et le prépare au démarrage.
+    volumes:
+      - ${BPMN_DATA_DIR:-./bpmn-data}:/data
+    # Le serveur tourne sous cet utilisateur, sans root : les fichiers créés lui appartiennent.
+    # Sous Linux, mettez votre uid et votre gid (commande id) si ce ne sont pas 1000.
+    user: "${PUID:-1000}:${PGID:-1000}"
+    # Durcissement : système de fichiers en lecture seule hors du dossier de données, aucune
+    # capacité Linux, pas d'élévation de privilèges.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Ollama lancé sur la machine hôte : http://host.docker.internal:11434/v1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - default
+      - headless
+    depends_on:
+      data-init:
+        condition: service_completed_successfully
+      renderer:
+        condition: service_started
+    restart: unless-stopped
+
+  # Chromium sans écran, piloté par le serveur MCP sur le réseau interne « headless » : il n'a pas
+  # accès à Internet, ne publie aucun port, ne voit ni les clés d'API ni le dossier de données.
+  # Il n'ouvre que l'éditeur de ce compose (http://editor:8080).
+  renderer:
+    image: ghcr.io/leylines-prism/bpmn-pilot-renderer:1.4.5
+    networks:
+      - headless
+    read_only: true
+    tmpfs:
+      - /tmp:size=512m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    # Plafond de mémoire du navigateur.
+    mem_limit: ${HEADLESS_MEMORY:-1g}
+    restart: unless-stopped
+
+networks:
+  default:
+  # Réseau sans sortie vers Internet, entre le navigateur, l'éditeur et le serveur.
+  headless:
+    internal: true

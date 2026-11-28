@@ -1225,6 +1225,16 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         </ul>
         <p>The check and report tools are described in <a href="#experts-mcp">With an MCP agent</a>.</p>
         <p>The <a href="#prompt-examples">Prompt examples</a> also work with an MCP agent.</p>
+        <h3 id="without-browser">Without an open browser (headless mode)</h3>
+        <p>By default, the agent draws in an editor tab, which must stay open. The optional headless mode lifts this condition: an agent draws, checks, exports and reads the report with no tab open, for example to model in one run the processes of your documentation.</p>
+        <ul>
+          <li>It is turned on by installing the <code>docker-compose.headless.yml</code> file instead of <code>docker-compose.image.yml</code> (see the repository README). It adds a <code>renderer</code> service: a headless Chromium, isolated on an internal network, with no access to the internet or to the API keys.</li>
+          <li>When an agent calls a tool and no tab is open, the server opens the editor in an invisible tab of that browser. The tools work there exactly the same, images and PDF included. The tab closes after 5 minutes without a call.</li>
+          <li>Each diagram drawn this way is saved in <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>My diagrams</span>, on the server, under a name such as "Agent 2026-11-28 14h05".</li>
+          <li>If you open the editor while the agent is working, a banner says so at the top of the canvas. <span class="uib">Open</span> loads the diagram in your tab, and the agent's next calls arrive there. Without this click, the agent goes on in its invisible tab: it never switches by itself to the diagram in front of you.</li>
+          <li>With the <code>returnFile</code> option, <code>export_diagram</code> returns the file to the agent (PNG, SVG, PDF or BPMN), which can use it directly, with or without an open tab.</li>
+        </ul>
+        <figure><img src="/src/help/img/en-bandeau-agent.webp" width="1200" height="600" alt="Banner at the top of the canvas: The agent is drawing “Agent 2026-11-28 01h10” without an open editor, with an Open button and a cross." loading="lazy" /><figcaption>The banner that announces a diagram drawn without an open editor. <span class="uib">Open</span> loads it in this tab.</figcaption></figure>
         <h3>Your files in the Docker version</h3>
         <p>The server keeps everything in a <code>bpmn-data</code> folder, next to its compose file (or in the folder set by <code>BPMN_DATA_DIR</code>). Open it with your file explorer to get your work back:</p>
         <ul>
@@ -1300,7 +1310,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <!-- docker -->
         <details class="faq">
           <summary>My MCP agent does not draw.</summary>
-          <p>The agent draws in the last editor tab you used: keep it open. The MCP badge in the toolbar should read "MCP: ready": the tab is linked to the server and waits for an agent. As soon as an agent connects, it shows its name instead, for example "MCP: Claude Code", and hovering it gives its version and the time of its last call. After 15 minutes without activity from the agent, the badge goes back to "MCP: ready", and hovering it still shows the last agent's name. The MCP protocol only sends this name and version: neither the model in use nor the account. Click it to get the address and the settings to paste into the agent again.</p>
+          <p>The agent draws in the last editor tab you used: keep it open, or switch to the <a href="#without-browser">headless mode</a>. The MCP badge in the toolbar should read "MCP: ready": the tab is linked to the server and waits for an agent. As soon as an agent connects, it shows its name instead, for example "MCP: Claude Code", and hovering it gives its version and the time of its last call. After 15 minutes without activity from the agent, the badge goes back to "MCP: ready", and hovering it still shows the last agent's name. The MCP protocol only sends this name and version: neither the model in use nor the account. Click it to get the address and the settings to paste into the agent again.</p>
           <p>If the agent gets a 401 error "MCP is closed", the editor is served under a name other than localhost without a token, so the server closes MCP access. Generate a token in the <span class="ui">Connect an agent</span> window, add it to the server variables (<code>MCP_TOKEN</code>), restart, then paste the new setting into the agent.</p>
         </details>
         <details class="faq">

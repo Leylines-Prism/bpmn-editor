@@ -71,6 +71,8 @@ import { makeResizable } from './panel-resize.js'
 import { fitView } from './fit-view.js'
 import { setupDeepLink } from './deep-link.js'
 import { setupDiagramLibrary } from './diagram-library.js'
+import { MAX_RETURNED_FILE_BYTES } from './ai/file-result.js'
+import { createHeadlessOffer } from './headless-offer.js'
 import { setupFeedback } from './feedback.js'
 import { setupAnalytics, track } from './analytics.js'
 import { setupUsageEvents } from './usage-events.js'
@@ -197,15 +199,37 @@ setupHistory({
   redoButton: document.getElementById('btn-redo'),
 })
 
+// Onglet invisible du mode sans navigateur (version Docker) : le serveur l'ouvre avec ?headless=<clé>.
+// Il part d'un diagramme vide, sans reprendre le travail gardé par ce navigateur.
+const HEADLESS_KEY = (() => {
+  try {
+    const key = new URLSearchParams(location.search).get('headless')
+    return key && /^[0-9a-f]{32}$/.test(key) ? key : null
+  } catch {
+    return null
+  }
+})()
+
+// Toile vraiment vide, pour l'onglet invisible : l'agent part de rien, sans le trio Début, Tâche, Fin.
+const BLANK_DIAGRAM = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  targetNamespace="http://bpmn.io/schema/bpmn">
+  <process id="Process_1" isExecutable="false"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1"/>
+  </bpmndi:BPMNDiagram>
+</definitions>`
+
 async function loadInitial() {
-  const saved = localStorage.getItem(LS_KEY)
+  const saved = HEADLESS_KEY ? BLANK_DIAGRAM : localStorage.getItem(LS_KEY)
   let savedName = null
   try { savedName = localStorage.getItem(NAME_KEY) } catch {}
-  nameInput.value = (saved && savedName && cleanName(savedName)) || DEFAULT_NAME
+  nameInput.value = (saved && savedName && !HEADLESS_KEY && cleanName(savedName)) || DEFAULT_NAME
   try {
     await modeler.importXML(saved || EMPTY_DIAGRAM)
     fitView(modeler.get('canvas'))
-    setStatus(saved ? T('previous work restored', 'travail précédent restauré') : T('New diagram', 'Nouveau diagramme'))
+    setStatus(saved && !HEADLESS_KEY ? T('previous work restored', 'travail précédent restauré') : T('New diagram', 'Nouveau diagramme'))
   } catch (e) {
     console.error('Import error:', e)
     await modeler.importXML(EMPTY_DIAGRAM)
@@ -744,7 +768,17 @@ async function processReportForAi({ simulate } = {}) {
 // bannière du canevas. Il ne se télécharge que sur un clic de l'utilisateur.
 const exportOffer = createExportOffer({ container: document.getElementById('canvas'), download })
 
-async function exportForAi({ format, name }) {
+// Fichier renvoyé à l'agent (export_diagram avec returnFile) : texte pour bpmn et svg, base64 sinon.
+async function returnedFile(file, name, bytes) {
+  if (bytes > MAX_RETURNED_FILE_BYTES) throw new Error(`The file is too large to be returned (${Math.round(bytes / 1048576)} MB, 10 MB at most). It was still exported.`)
+  if (typeof file.content === 'string') return { name, mimeType: file.type, text: file.content }
+  const buffer = new Uint8Array(await file.content.arrayBuffer())
+  let binary = ''
+  for (let i = 0; i < buffer.length; i += 0x8000) binary += String.fromCharCode(...buffer.subarray(i, i + 0x8000))
+  return { name, mimeType: file.type, data: btoa(binary) }
+}
+
+async function exportForAi({ format, name, returnFile = false }) {
   if (!EXPORT_FORMATS.includes(format)) throw new Error(`Unknown format: ${format}. Use one of: ${EXPORT_FORMATS.join(', ')}.`)
   if (format !== 'bpmn' && !hasShapes(modeler)) throw new Error('The diagram is empty: nothing to export.')
   const base = (name !== undefined ? cleanName(name) : '') || baseName()
@@ -766,7 +800,9 @@ async function exportForAi({ format, name }) {
     }
   }
   exportOffer.show({ content: file.content, filename: saved || `${base}.${file.ext}`, type: file.type, savedOnServer: !!saved })
+  const returned = returnFile ? await returnedFile(file, saved || `${base}.${file.ext}`, bytes) : null
   return {
+    ...(returned ? { file: returned } : {}),
     format,
     bytes,
     ...(saved ? { savedOnServer: `exports/${saved}` } : {}),
@@ -943,7 +979,23 @@ if (import.meta.env.MODE === 'online') {
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service, mining: mining.toolApi })
+      let bridge = null
+      const headlessOffer = HEADLESS_KEY ? null : createHeadlessOffer({
+        container: document.getElementById('canvas'),
+        open: async (id) => {
+          const opened = await library.openServer(id)
+          if (opened) bridge?.takeHeadless?.(id)
+          return opened
+        },
+      })
+      bridge = connectMcpBridge(modeler, mcpBridgeUrl, {
+        exportDiagram: exportForAi,
+        processReport: processReportForAi,
+        decisions: decisions.service,
+        mining: mining.toolApi,
+        headlessKey: HEADLESS_KEY,
+        onHeadlessDiagram: (item) => headlessOffer?.show(item),
+      })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

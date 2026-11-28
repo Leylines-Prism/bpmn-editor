@@ -160,7 +160,8 @@ export function buildTools(z) {
         'Exports the open diagram as a file, exactly like the editor\'s Export menu: bpmn (BPMN 2.0 XML), svg, png (2x, white background) or pdf (vector). ' +
         'When the editor runs with its server, the file is saved in the exports folder of the server; an existing file is never replaced ' +
         '("Name (2).pdf" is added next to it). The editor also shows the user a Download button: nothing is downloaded unless they click it. ' +
-        'The file content is not returned: to read the XML use get_diagram_xml, to look at the diagram get_diagram_image. ' +
+        'With returnFile, the file itself is also returned to you (png as an image, bpmn and svg as text, pdf as an embedded resource), ' +
+        'so you can pass it on or attach it elsewhere; without it, only the file name and size come back. ' +
         'The diagram itself is not changed. Use it only when the user asks for a file.',
       inputSchema: {
         format: z.enum(['bpmn', 'svg', 'png', 'pdf']).describe('File format'),
@@ -169,6 +170,10 @@ export function buildTools(z) {
           .max(120)
           .optional()
           .describe('File name without extension. Default: the name of the diagram in the editor'),
+        returnFile: z
+          .boolean()
+          .optional()
+          .describe('true to receive the file content in the result (10 MB at most), for example to use the image or the PDF directly'),
       },
       annotations: edit(false, false),
     },
