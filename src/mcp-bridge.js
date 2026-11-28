@@ -10,7 +10,7 @@ import { isBranchFlow } from './probability-panel.js'
 import { isConditionalFlow } from './rules-panel.js'
 import { IDENTITY_FIELDS, identityHolder } from './compliance.js'
 
-const PILOT_FIELDS = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements', 'probability']
+const PILOT_FIELDS = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements', 'userStories', 'acceptanceCriteria', 'probability']
 import { analysisUpdates, structureFingerprint, getChatModel, AI_SOURCE } from './copilot-analysis.js'
 
 import { autoLayout } from './auto-layout.js'
@@ -278,6 +278,9 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
       const v = bo.get?.(`bpmnpilot:${k}`)
       if (v !== undefined && v !== null && v !== '') out[k] = v
     }
+    // Activité appelante liée à un diagramme de Mes diagrammes (carte à plusieurs niveaux).
+    const linked = bo.get?.('bpmnpilot:linkedDiagramName')
+    if (linked) out.linkedDiagram = linked
     const condition = bo.conditionExpression?.body?.trim()
     if (condition) out.condition = condition
     if (element.waypoints) {
@@ -683,7 +686,7 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
             if (!name || name === previous) props.name = text || undefined
             modeling.updateProperties(element, props)
           }
-          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements'].filter((k) => spec[k] !== undefined)
+          const activityFields = ['assignee', 'systems', 'accountable', 'consulted', 'informed', 'aiPotential', 'aiPotentialReason', 'risks', 'controls', 'requirements', 'userStories', 'acceptanceCriteria'].filter((k) => spec[k] !== undefined)
           if (activityFields.length) {
             if (!is(element, 'bpmn:Activity')) throw new Error(`${activityFields.join(', ')} apply only to activities: ${spec.id}`)
             const bo = getBusinessObject(element)

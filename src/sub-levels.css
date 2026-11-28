@@ -1,0 +1,66 @@
+/* Carte à plusieurs niveaux (src/sub-levels.js) : pastilles des activités d'appel, groupe
+   « Sous-niveau » du panneau, fil d'Ariane en haut du canevas. Le canevas reste clair dans les
+   deux thèmes : les pastilles gardent leurs couleurs. */
+
+.level-badge {
+  display: inline-flex; align-items: center; gap: 4px; height: 20px; padding: 0 8px;
+  border: 0; border-radius: 9999px; background: #0F6FAD; color: #FFFFFF; cursor: pointer;
+  font: 600 11px/1 var(--font-sans); white-space: nowrap; box-shadow: 0 0 0 2px #FFFFFF;
+}
+.level-badge svg { display: block; }
+.level-badge:hover, .level-badge:focus-visible { background: #0B5A8D; outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px rgba(15, 111, 173, 0.35); }
+.level-badge.empty { background: #FFFFFF; color: #0F6FAD; border: 1.5px dashed #0F6FAD; box-shadow: none; }
+.level-badge.empty:hover, .level-badge.empty:focus-visible { background: #E3F4FD; }
+.level-badge.broken { background: #B42318; }
+body.presenting .level-badge.empty, body.presenting .level-badge.broken,
+.djs-container.simulation .level-badge { display: none; }
+
+/* Groupe « Sous-niveau » du panneau de propriétés. */
+#properties-panel .level-entry { display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
+#properties-panel .level-entry .bio-properties-panel-label { margin-bottom: -4px; }
+#properties-panel .level-select {
+  width: 100%; min-height: 32px; padding: 4px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 13px;
+}
+#properties-panel .level-hint, #properties-panel .level-message { margin: 0; font-size: 12px; line-height: 18px; color: var(--ink-muted); }
+#properties-panel .level-warning { margin: 0; font-size: 12px; line-height: 18px; color: var(--danger, #B42318); }
+#properties-panel .level-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+#properties-panel .level-actions.column { flex-direction: column; align-items: stretch; }
+#properties-panel .level-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 32px; padding: 4px 10px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-sm);
+  background: var(--surface-raised); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer;
+}
+#properties-panel .level-button:hover:not(:disabled) { background: var(--surface-sunken); }
+#properties-panel .level-button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+#properties-panel .level-button.primary:hover:not(:disabled) { background: var(--accent); filter: brightness(1.08); }
+#properties-panel .level-button:disabled { opacity: 0.6; cursor: default; }
+#properties-panel .level-ico { display: inline-flex; }
+
+/* Fil d'Ariane : en haut du canevas, à droite d'Annuler et Rétablir. */
+#level-trail {
+  position: absolute; top: 20px; left: 136px; z-index: 100; max-width: calc(100% - 380px);
+  display: inline-flex; align-items: center; gap: 2px; padding: 0 4px 0 0; overflow: hidden;
+  border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); box-shadow: var(--elevation-1);
+  font: 500 13px/1 var(--font-sans); color: var(--night-800);
+}
+#level-trail[hidden] { display: none; }
+#level-trail button {
+  height: 33px; padding: 0 10px; border: 0; background: none; color: inherit; font: inherit; cursor: pointer;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px;
+}
+#level-trail .level-up { font-weight: 600; color: var(--leyline-sky-deep); border-right: 1px solid var(--mist); margin-right: 4px; }
+#level-trail button:hover { background: var(--mist); color: var(--leyline-sky-deep); }
+#level-trail button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
+#level-trail .level-crumb { padding: 0 6px; color: var(--leyline-sky-deep); }
+#level-trail .level-sep { color: var(--night-500, #6B7785); }
+#level-trail .level-here { padding: 0 8px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+@container canvas (max-width: 560px) {
+  #level-trail { left: 20px; top: 112px; max-width: calc(100% - 40px); }
+}
+/* En présentation, le fil reste pour remonter devant le public (Annuler et Rétablir sont masqués). */
+body.presenting #canvas > #level-trail:not([hidden]) { display: inline-flex !important; left: 20px; }
+/* En présentation, les autres pastilles sont masquées ; celles des niveaux liés restent pour descendre. */
+body.presenting #canvas .bjs-container:not(.simulation) .djs-container > .djs-overlay-container:has(.djs-overlay-level-badge) { display: block !important; }
+body.presenting #canvas .bjs-container:not(.simulation) .djs-overlay:not(.djs-overlay-level-badge) { display: none !important; }

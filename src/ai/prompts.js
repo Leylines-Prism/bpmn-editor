@@ -94,6 +94,21 @@ Reply in the language of the diagram's names.`,
 - Finally, list what you changed. I can undo everything with Ctrl+Z.`,
     },
     {
+      name: 'write_user_stories',
+      title: 'Write the user stories of each activity',
+      description:
+        'Writes user stories and acceptance criteria for each activity of the open diagram, saved in the diagram, for the team that will tool the process.',
+      argsSchema: {},
+      text: () =>
+        `Write the user stories and acceptance criteria of each activity of the BPMN diagram open in the editor, as a product owner would for the team that will tool the process.
+
+- Read it with get_shapes: name, lane, documentation, assignee, systems, and the stories and criteria already written.
+- Save them with update_elements, keeping what is already written: userStories, one per line, "As a <role>, I want <action>, so that <benefit>"; acceptanceCriteria, one per line, testable, "Given <context>, when <event>, then <result>".
+- Two or three stories and three to five criteria per activity at most. Change nothing else in the diagram.
+- Then list the activities whose need is still unclear, with the question to ask.
+Write in the language of the diagram's names. I can undo everything with Ctrl+Z, and export the backlog with Export > User stories (Markdown).`,
+    },
+    {
       name: 'critique_description',
       title: 'Review a description before modeling it',
       description:

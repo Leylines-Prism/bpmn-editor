@@ -12,6 +12,8 @@ import { lang, T } from './i18n/lang.js'
 import { addDialogClose } from './dialog-close.js'
 
 const LINK_KEY = 'bpmn-editor-library-link'
+// Le diagramme ouvert n'est plus lié à un enregistrement (Nouveau, fichier, autre diagramme).
+export const UNLINKED_EVENT = 'bpmn-pilot-library-unlinked'
 const PLACES = {
   browser: () => T('This browser', 'Ce navigateur'),
   server: () => T('Server', 'Serveur'),
@@ -450,6 +452,54 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
     unlink() {
       link = null
       writeLink(null)
+      window.dispatchEvent(new CustomEvent(UNLINKED_EVENT))
+    },
+    // ── Carte à plusieurs niveaux (src/sub-levels.js) ──
+    // Enregistrement lié au diagramme ouvert : { place, id, name } ou null.
+    async current() {
+      if (!link) return null
+      try {
+        const item = await stores[link.place].get(link.id)
+        return item ? { place: link.place, id: link.id, name: item.name } : null
+      } catch { return null }
+    },
+    // Diagrammes BPMN enregistrés, dans tous les lieux joignables : [{ key, place, id, name }].
+    async listDiagrams() {
+      const found = []
+      for (const store of Object.values(stores)) {
+        try {
+          for (const item of await store.list()) if ((item.kind || 'bpmn') === 'bpmn') found.push({ key: `${store.place}:${item.id}`, place: store.place, id: item.id, name: item.name })
+        } catch { /* lieu injoignable */ }
+      }
+      return found.sort((a, b) => a.name.localeCompare(b.name))
+    },
+    // Garde le diagramme ouvert dans Mes diagrammes avant d'en ouvrir un autre : met à jour
+    // l'enregistrement lié s'il a changé, sinon en crée un. Renvoie la référence, ou null.
+    async keepCurrent() {
+      if (link && !isDirty()) return { ...link }
+      const ok = await save({ quiet: true })
+      return ok && link ? { ...link } : null
+    },
+    // Ouvre un diagramme enregistré sans demander (le diagramme ouvert a été gardé avant).
+    async openRef(ref) {
+      const store = stores[ref?.place]
+      if (!store) throw new Error(T('this place is not available here', 'ce lieu n\'est pas disponible ici'))
+      const item = await store.get(ref.id)
+      if (!item) throw new Error(T('this diagram no longer exists in My diagrams', 'ce diagramme n\'existe plus dans Mes diagrammes'))
+      const failure = await openXml(item.xml, item.name)
+      if (failure) throw new Error(failure)
+      link = { place: ref.place, id: ref.id }
+      writeLink(link)
+      markClean()
+      return { place: ref.place, id: ref.id, name: item.name }
+    },
+    // Crée un diagramme dans Mes diagrammes, au même endroit que le diagramme ouvert.
+    async createDiagram(name, xml) {
+      const place = link?.place && stores[link.place] ? link.place : 'browser'
+      const id = newId()
+      const clean = cleanName(name || '') || T('Sub-process', 'Sous-processus')
+      await stores[place].put(id, clean, xml)
+      return { place, id, name: clean }
     },
     // Modèles de décision enregistrés : [{ key, place, id, name }].
     async listDecisionModels() {

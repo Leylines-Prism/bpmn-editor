@@ -104,6 +104,8 @@ servez : l'éditeur reste sobre pour les autres (voir la
   réglementaires (RGPD, ISO 9001, AI Act…), et une fiche d'identité du processus (propriétaire, version,
   statut, périmètre) en tête du rapport et des fiches de procédure. Le rapport ajoute un tableau des
   risques et contrôles et une matrice de conformité.
+- **Récits utilisateur et critères d'acceptation** de chaque activité, rédigés à la main ou par le
+  co-pilote, exportés en carnet Markdown pour un outil de suivi.
 - **BPMN pour Camunda 8 ou 7** : plateforme indiquée, processus exécutable, conditions des passerelles
   en FEEL ou en JUEL, tâches utilisateur avec leur personne assignée.
 - **Tables de décision DMN** : chaque tâche de règle métier se relie à une
@@ -483,10 +485,14 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
   cours est restauré quand vous revenez.
 - **Mes diagrammes** : enregistrer plusieurs diagrammes, les rouvrir, renommer, supprimer. Ctrl+S
   enregistre.
+- **Carte à plusieurs niveaux** : une activité d'appel se lie au diagramme de Mes diagrammes qui la
+  détaille. Un clic y descend, et un fil d'Ariane fait remonter, en mode Présentation aussi.
 - **Sans IA** : construire un processus depuis un tableau d'étapes (collé depuis Excel, .csv ou .xlsx,
   colonnes de Visio Data Visualizer lues telles quelles), ou depuis une grille rôles × tâches en atelier.
 - **Responsabilités** : personne assignée, systèmes utilisés et RACI de chaque activité, conditions en
-  clair sur les branches des décisions. Fiches de procédure en PDF, Markdown ou Word, matrice RACI en Excel.
+  clair sur les branches des décisions. Fiches de procédure en PDF, Markdown ou Word, matrice RACI en Excel,
+  et une page de documentation HTML en un seul fichier : le diagramme en lecture seule, où un clic sur un
+  élément ouvre sa fiche.
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
@@ -517,6 +523,9 @@ Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
   par IA ou humaine, avec la raison et le garde-fou), ses risques et contrôles, et ses références réglementaires ;
   une fiche d'identité du processus (propriétaire, version, statut, date de validation, périmètre). Le rapport
   ajoute un tableau des risques et contrôles, une matrice de conformité et un constat pour chaque risque sans contrôle.
+- **Récits utilisateur** : récits et critères d'acceptation (Étant donné, quand, alors) de chaque activité,
+  rédigés par le co-pilote à la demande, exportés en Markdown, et repris dans le rapport, les fiches de
+  procédure et la page de documentation.
 - **Export pour Camunda 8 et 7** : plateforme indiquée, processus exécutables, conditions des passerelles en FEEL
   ou en JUEL tirées du champ Condition ou du libellé du flux, tâches assignées en tâches utilisateur.
 - **Tables de décision DMN** : relier les tâches de règle métier à des tables de décision éditées avec dmn-js,

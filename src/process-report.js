@@ -400,15 +400,15 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     const rule = conditionText(f)
     const name = clean(f.name)
     const shown = name && rule && name !== rule ? `${name} (${rule})` : name || rule
-    const label = shown ? `${shown} : ` : ''
+    const label = shown ? `${shown}${T(': ', ' : ')}` : ''
     if (isGateway(t) && depth < 3 && out(t).length) {
       const inner = describeNext(t, depth + 1)
-      if (is(t, 'bpmn:ParallelGateway') && out(t).length > 1) return `${label}${T('in parallel', 'en parallèle')} : ${inner}`
+      if (is(t, 'bpmn:ParallelGateway') && out(t).length > 1) return `${label}${T('in parallel', 'en parallèle')}${T(': ', ' : ')}${inner}`
       if (out(t).length > 1) return `${label}${clean(t.name) || T('Choice', 'Choix')} ${inner}`
       return label + inner
     }
     return label + ref(t)
-  }).filter(Boolean).join(' ; ')
+  }).filter(Boolean).join(T('; ', ' ; '))
 
   const sequence = order.map((n) => ({
     number: number.get(n.id),
@@ -427,6 +427,9 @@ export async function buildReport(modeler, { name = '', simulation = null, lint 
     risks: isActivity(n) ? splitLines(n.get?.('bpmnpilot:risks')) : [],
     controls: isActivity(n) ? splitLines(n.get?.('bpmnpilot:controls')) : [],
     requirements: isActivity(n) ? splitRefs(n.get?.('bpmnpilot:requirements')) : [],
+    userStories: isActivity(n) ? splitLines(n.get?.('bpmnpilot:userStories')) : [],
+    acceptanceCriteria: isActivity(n) ? splitLines(n.get?.('bpmnpilot:acceptanceCriteria')) : [],
+    linkedDiagram: is(n, 'bpmn:CallActivity') ? clean(n.get?.('bpmnpilot:linkedDiagramName')) : '',
     documentation: docOf(n),
     docMarkdown: docSource(n),
     previous: [...incomingOf(n).map((f) => f.sourceRef), ...(n.attachedToRef ? [n.attachedToRef] : [])].filter(Boolean).map((p) => (isGateway(p) ? clean(p.name) || typeLabel(p) : ref(p))),
@@ -846,6 +849,15 @@ export function reportToMarkdown(r) {
     lines.push('', `## ${T('Compliance matrix', 'Matrice de conformité')}`, '')
     lines.push(`| ${T('Requirement', 'Exigence')} | ${T('Activities concerned', 'Activités concernées')} |`, '|---|---|')
     for (const q of r.compliance.requirements) lines.push(`| ${mdCell(q.ref)} | ${mdCell(q.activities.join(' · '))} |`)
+  }
+  const stories = r.sequence.filter((s) => s.userStories.length || s.acceptanceCriteria.length)
+  if (stories.length) {
+    lines.push('', `## ${T('User stories and acceptance criteria', 'Récits utilisateur et critères d\'acceptation')}`)
+    for (const s of stories) {
+      lines.push('', `### ${s.number}. ${s.name}`)
+      if (s.userStories.length) lines.push('', ...s.userStories.map((t) => `- ${t}`))
+      if (s.acceptanceCriteria.length) lines.push('', `*${T('Acceptance criteria', 'Critères d\'acceptation')}*`, '', ...s.acceptanceCriteria.map((t) => `- [ ] ${t}`))
+    }
   }
   lines.push('', `## ${T('Element sequence', 'Séquence des éléments')}`, '')
   lines.push(`| N° | ${T('Element', 'Élément')} | Type | ${T('Lane', 'Couloir')} | Documentation | ${T('Outgoing flows', 'Flux sortants')} |${r.simulation ? ` ${T('Instances', 'Instances')} |` : ''}`,
@@ -1330,6 +1342,16 @@ export async function reportToPdf(modeler, r) {
       head: [[T('Requirement', 'Exigence'), T('Activities concerned', 'Activités concernées')]],
       body: r.compliance.requirements.map((q) => [pdfText(q.ref), pdfText(q.activities.join('\n'))]),
       columnStyles: { 0: { cellWidth: 70, fontStyle: 'bold' } },
+    })
+  }
+
+  const stories = r.sequence.filter((s) => s.userStories.length || s.acceptanceCriteria.length)
+  if (stories.length) {
+    section(T('User stories and acceptance criteria', 'Récits utilisateur et critères d\'acceptation'))
+    table({
+      head: [['N°', T('Activity', 'Activité'), T('User stories', 'Récits utilisateur'), T('Acceptance criteria', 'Critères d\'acceptation')]],
+      body: stories.map((x) => [String(x.number), pdfText(x.name), pdfText(x.userStories.map((t) => `• ${t}`).join('\n') || '–'), pdfText(x.acceptanceCriteria.map((t) => `• ${t}`).join('\n') || '–')]),
+      columnStyles: { 0: { cellWidth: 9 }, 1: { cellWidth: 40, fontStyle: 'bold' } },
     })
   }
 

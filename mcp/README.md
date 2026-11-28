@@ -175,7 +175,7 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
-| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, sets the assignee, systems used and RACI of an activity, the plain-words condition of a gateway branch, its AI potential with the reason, its risks, controls and regulatory requirements, the process identity on the diagram root (owner, version, status, scope), or the probability of a gateway branch, marked as proposed by the AI until the user reviews it |
+| `update_elements` | renames elements or changes their type (Task to UserTask, timer event…), fills in their Documentation field, sets the assignee, systems used and RACI of an activity, the plain-words condition of a gateway branch, its AI potential with the reason, its risks, controls and regulatory requirements, its user stories and acceptance criteria, the process identity on the diagram root (owner, version, status, scope), or the probability of a gateway branch, marked as proposed by the AI until the user reviews it |
 | `style_elements` | sets the fill, stroke, text color and font (bold, italic, underline, size, typeface) of elements |
 | `remove_elements` | removes shapes or connections |
 | `layout_diagram` | tidies up the whole diagram, like the "Tidy up" button. One Ctrl+Z brings back the previous layout. Its former name, `auto_layout`, still works |
@@ -210,6 +210,7 @@ The server also offers five MCP prompts (`src/ai/prompts.js`), which the user pi
 | `review_diagram` | none | reviews the open diagram against the rules and the validator, without changing anything |
 | `tidy_diagram` | none | renames elements to the conventions, fixes validation errors and lays the diagram out, keeping its meaning |
 | `critique_description` | `description` | lists what is ambiguous or missing in a description (severity, quoted passage, question) before drawing |
+| `write_user_stories` | none | writes user stories and acceptance criteria for each activity, saved in the diagram |
 
 ## Saved diagrams
 

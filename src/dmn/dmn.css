@@ -43,7 +43,7 @@ body.presenting .dmn-badge:not(:has(svg)), body.presenting .dmn-badge.broken,
 }
 #properties-panel .dmn-button:hover:not(:disabled) { background: var(--surface-sunken); }
 #properties-panel .dmn-button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
-#properties-panel .dmn-button.primary:hover:not(:disabled) { filter: brightness(1.08); }
+#properties-panel .dmn-button.primary:hover:not(:disabled) { background: var(--accent); filter: brightness(1.08); }
 #properties-panel .dmn-button.ai { border-color: transparent; background: linear-gradient(var(--surface-raised), var(--surface-raised)) padding-box, var(--leyline) border-box; }
 #properties-panel .dmn-button:disabled { opacity: 0.6; cursor: default; }
 #properties-panel .dmn-ico { display: inline-flex; }

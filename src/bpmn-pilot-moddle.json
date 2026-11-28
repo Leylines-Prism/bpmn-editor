@@ -26,7 +26,17 @@
         { "name": "aiPotentialReason", "isAttr": true, "type": "String" },
         { "name": "risks", "isAttr": true, "type": "String" },
         { "name": "controls", "isAttr": true, "type": "String" },
-        { "name": "requirements", "isAttr": true, "type": "String" }
+        { "name": "requirements", "isAttr": true, "type": "String" },
+        { "name": "userStories", "isAttr": true, "type": "String" },
+        { "name": "acceptanceCriteria", "isAttr": true, "type": "String" }
+      ]
+    },
+    {
+      "name": "LinkedDiagram",
+      "extends": ["bpmn:CallActivity"],
+      "properties": [
+        { "name": "linkedDiagram", "isAttr": true, "type": "String" },
+        { "name": "linkedDiagramName", "isAttr": true, "type": "String" }
       ]
     },
     {

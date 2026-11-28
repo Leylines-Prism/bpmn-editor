@@ -11,9 +11,9 @@
 //   libellé reprend l'ancienne condition), le libellé suit la condition, pour la voir sur
 //   le diagramme. Le flux par défaut n'a pas de condition.
 //
-// En mode Expert seulement : le groupe « Adoption de l'IA » et le groupe « Risques et
-// conformité » des activités, et la « Fiche d'identité du processus » sur la racine du
-// diagramme (voir src/compliance.js).
+// En mode Expert seulement : le groupe « Adoption de l'IA », le groupe « Risques et
+// conformité » et le groupe « Récits utilisateur (user stories) » des activités, et la
+// « Fiche d'identité du processus » sur la racine du diagramme (voir src/compliance.js).
 //
 // Chaque saisie passe par modeling : Ctrl+Z l'annule.
 
@@ -102,6 +102,14 @@ const ControlsEntry = attrEntry('controls', () => T('Controls', 'Contrôles'),
   () => T('One per line: what prevents or detects these risks (review, double check, threshold, log…).', 'Un par ligne : ce qui prévient ou détecte ces risques (relecture, double contrôle, seuil, trace…).'), { multiline: true })
 const RequirementsEntry = attrEntry('requirements', () => T('Requirements', 'Exigences'),
   () => T('References separated by semicolons: GDPR art. 30; ISO 9001 §8.5; AI Act art. 14.', 'Références séparées par des points-virgules : RGPD art. 30 ; ISO 9001 §8.5 ; AI Act art. 14.'))
+
+// Récits utilisateur et critères d'acceptation (mode Expert) : le besoin que l'activité
+// porte pour une équipe qui l'outille, un par ligne. Repris par le rapport, les fiches et
+// l'export Markdown « Récits utilisateur » (src/user-stories.js).
+const StoriesEntry = attrEntry('userStories', () => T('User stories', 'Récits utilisateur'),
+  () => T('One per line: As a <role>, I want <action>, so that <benefit>.', 'Un par ligne : En tant que <rôle>, je veux <action>, afin de <bénéfice>.'), { multiline: true })
+const CriteriaEntry = attrEntry('acceptanceCriteria', () => T('Acceptance criteria', 'Critères d\'acceptation'),
+  () => T('One per line, testable: Given <context>, when <event>, then <result>.', 'Un par ligne, vérifiable : Étant donné <contexte>, quand <événement>, alors <résultat>.'), { multiline: true })
 
 // Fiche d'identité du processus (mode Expert), montrée sur la racine du diagramme et
 // rangée sur le processus principal (voir src/compliance.js).
@@ -205,6 +213,16 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
             { id: 'bpmn-pilot-risks', component: RisksEntry, isEdited: isTextAreaEntryEdited },
             { id: 'bpmn-pilot-controls', component: ControlsEntry, isEdited: isTextAreaEntryEdited },
             { id: 'bpmn-pilot-requirements', component: RequirementsEntry, isEdited: isTextFieldEntryEdited },
+          ],
+        })
+      }
+      if (isExpert() && isModuleOn('user-stories')) {
+        groups.push({
+          id: 'bpmn-pilot-user-stories',
+          label: T('User stories', 'Récits utilisateur (user stories)'),
+          entries: [
+            { id: 'bpmn-pilot-user-stories-text', component: StoriesEntry, isEdited: isTextAreaEntryEdited },
+            { id: 'bpmn-pilot-acceptance-criteria', component: CriteriaEntry, isEdited: isTextAreaEntryEdited },
           ],
         })
       }
