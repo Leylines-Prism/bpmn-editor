@@ -15,6 +15,16 @@
 body.presenting .level-badge.empty, body.presenting .level-badge.broken,
 .djs-container.simulation .level-badge { display: none; }
 
+/* Bouton de bpmn-js qui ouvre un sous-processus replié : même bleu et même liseré blanc
+   que les pastilles de niveau, un peu plus grand, pour qu'on le remarque. */
+.bjs-drilldown {
+  width: 24px; height: 24px; margin-left: -24px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 6px; background-color: #0F6FAD; fill: #FFFFFF;
+  box-shadow: 0 0 0 2px #FFFFFF, 0 1px 4px rgba(15, 23, 42, 0.35);
+}
+.bjs-drilldown svg { width: 16px; height: 16px; }
+.bjs-drilldown:hover, .bjs-drilldown:focus-visible { background-color: #0B5A8D; outline: none; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px rgba(15, 111, 173, 0.35); }
+
 /* Groupe « Sous-niveau » du panneau de propriétés. */
 #properties-panel .level-entry { display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
 #properties-panel .level-entry .bio-properties-panel-label { margin-bottom: -4px; }
