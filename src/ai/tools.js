@@ -37,6 +37,7 @@ Gateway branch probabilities are set with update_elements (probability, in %); t
 They are marked as proposed by the AI until the user reviews them.
 set_report_commentary stores your analysis of the process (summary, bottlenecks, rare paths, risks, improvements)
 in the diagram file: it appears in the process report, under your name. Base each point on the report's figures.
+The process goals (at least or at most a share of instances ending on an end event, or of passes through an activity) are the user's own targets: the report says whether the simulation reaches them. Cite them in your analysis, never change them.
 
 Decisions (DMN): a business rule task can call a DMN decision kept in the diagram file (one DMN 1.3 model per diagram,
 with its decision requirements diagram). get_decisions lists the decisions, their tables and the tasks that call them.
@@ -60,6 +61,7 @@ Modeling rules (validate_diagram checks most of them):
 - Exceptions on a task: a boundary event (timer, error, message), not a gateway after the task.
 - Something that can happen at any time during a process or subprocess: an event subprocess (eventSubProcess: true) with a typed start event.
 - Repeated work: a marker (loop, parallel or sequential multi-instance) on the activity, not a loop back. Link events (throw and catch with the same name) only to avoid long flows across a large diagram.
+- Work done by an AI agent that decides its own steps (LLM, assistant, bot): an AI agent step. An expanded AdHocSubProcess with agent: true, named after its goal; its tools as ServiceTasks inside it (parent: its id, no sequence flows between them, no start or end event inside); then a UserTask that reviews its result before it is used; and a timer or error boundary event leading to manual handling. validate_diagram warns when the review or the exit is missing.
 - Lanes only when the user names roles or departments. Separate organizations are separate pools linked by message flows.
 - No retry loops for technical failures. A loop back is for a business reason ("Correct the request").
 - Keep default sizes. Use color only to convey meaning, and say what it means.`
@@ -218,6 +220,10 @@ export function buildTools(z) {
                 .boolean()
                 .optional()
                 .describe('SubProcess only: true for an event subprocess (dotted border, no incoming flow), started by its typed start event. Add its start event with parent: this subprocess'),
+              agent: z
+                .boolean()
+                .optional()
+                .describe('AdHocSubProcess only: true marks it as an AI agent step (the agent picks which inner activities, its tools, to run), false removes the mark'),
               expanded: z
                 .boolean()
                 .optional()
@@ -261,7 +267,7 @@ export function buildTools(z) {
       name: 'update_elements',
       title: 'Update elements',
       description:
-        'Renames elements, changes their type (for example Task to UserTask), sets an activity marker or whether an event interrupts, fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
+        'Renames elements, changes their type (for example Task to UserTask), sets an activity marker, whether an event interrupts or whether an ad-hoc sub-process is an AI agent step, fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
         'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls, regulatory requirements, user stories and acceptance criteria of an activity. ' +
         'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_shapes), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
@@ -277,6 +283,10 @@ export function buildTools(z) {
               eventDefinition: eventDefinition.optional(),
               interrupting: interrupting.optional(),
               marker: marker.optional(),
+              agent: z
+                .boolean()
+                .optional()
+                .describe('AdHocSubProcess only: true marks it as an AI agent step (the agent picks which inner activities, its tools, to run), false removes the mark'),
               documentation: z.string().max(4000).optional().describe('Text of the Documentation field, in Markdown (## headings, - lists, **bold**, [links](https://…)). It replaces the whole field: to complete a documentation, send the existing text with your additions. Empty string to clear it'),
               probability: z
                 .number()
@@ -553,7 +563,7 @@ export function buildTools(z) {
       description:
         'Returns the process report of the open diagram, in Markdown, as the editor\'s Export menu produces it: key figures, ' +
         'modeling findings by level (error, warning, to complete) with their source (bpmnlint, model check, simulation), ' +
-        'improvement areas by priority with the expected effect, end events, activities by lane, and the element sequence ' +
+        'improvement areas by priority with the expected effect, the process goals set by the user and whether the simulation reaches them, end events, activities by lane, and the element sequence ' +
         '(type, lane, documentation, outgoing flows with their conditions). Use it to review a model, write a procedure, or ' +
         'propose improvements; the improvement areas you add are your own analysis, to be validated by the process owner. ' +
         'Read-only. To check conformance only, validate_diagram is shorter; to store your analysis in the report, set_report_commentary.',

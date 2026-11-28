@@ -55,6 +55,8 @@ import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.
 import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import { RulesPanelModule } from './rules-panel.js'
+import { AgentStepModule } from './agent-step.js'
+import { GoalPanelModule } from './goal-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json'
 import { DecisionPanelModule } from './dmn/decision-links.js'
@@ -181,6 +183,8 @@ const modeler = new BpmnModeler({
     RulesPanelModule,
     DecisionPanelModule,
     SubLevelPanelModule,
+    AgentStepModule,
+    GoalPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })

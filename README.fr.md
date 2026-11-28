@@ -96,6 +96,8 @@ servez : l'éditeur reste sobre pour les autres (voir la
 
 - **Simulation de jetons avec carte de chaleur** : autant d'instances que vous voulez, calculées d'un
   coup selon les probabilités des branches, pour voir les chemins empruntés, jamais atteints ou parcourus en boucle.
+- **Objectifs du processus** posés sur les fins et les activités (au moins 80 % de demandes acceptées, au plus
+  15 reprises pour 100), confrontés à la simulation de jetons dans le rapport.
 - **Rapport de processus** en PDF, en Markdown ou en Word : chiffres clés, constats par niveau, axes
   d'amélioration, événements de fin, activités par couloir, matrice RACI.
 - **Potentiel d'IA par activité** : automatisable, assistée par IA ou humaine, avec la raison et le
@@ -498,6 +500,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 - **Dessin** : palette, menu contextuel, copier-coller, boutons Annuler et Rétablir, rangement,
   vérification des règles BPMN, grille, mini-carte, et le panneau Processus
   pour les propriétés de chaque élément.
+- **Étapes d'agent IA** : un sous-processus ad hoc marqué comme agent IA, avec ses outils à l'intérieur, une revue
+  humaine après lui et une sortie si l'agent échoue. La vérification signale une revue ou une sortie absente, et un clic complète le motif.
 - **Comparer** : deux versions côte à côte, avec en couleur ce qui a été ajouté, supprimé ou modifié,
   et la liste des différences, depuis un fichier .bpmn ou depuis l'avant de la réponse de l'IA.
 - **Couleurs et texte** : n'importe quelle couleur de fond, de contour ou de texte, dans des palettes
@@ -520,7 +524,8 @@ Chaque fonction s'allume à part dans **Expert** > **Choisir les modules…**.
   circuler des jetons dans le processus, avec une glissière de vitesse. Pendant la simulation, colorer le diagramme selon
   le nombre de jetons passés par chaque élément, joués à la main ou calculés d'après les
   probabilités des branches. Exporter un rapport de processus (PDF, Markdown ou Word) : constats en trois
-  niveaux, axes d'amélioration, séquence des éléments, matrice RACI et, après une simulation, carte de chaleur.
+  niveaux, axes d'amélioration, séquence des éléments, matrice RACI et, après une simulation, carte de chaleur et
+  objectifs du processus posés sur les fins et les activités, atteints ou non.
 - **Potentiel d'IA, risques et conformité** : pour chaque activité, son potentiel d'IA (automatisable, assistée
   par IA ou humaine, avec la raison et le garde-fou), ses risques et contrôles, et ses références réglementaires ;
   une fiche d'identité du processus (propriétaire, version, statut, date de validation, périmètre). Le rapport

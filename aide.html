@@ -49,6 +49,7 @@
               <li><a href="#presenter">Présenter</a></li>
               <li><a href="#documenter">Documenter les éléments</a></li>
               <li><a href="#proprietes">Panneau Processus</a></li>
+              <li><a href="#agent-ia">Modéliser un agent IA</a></li>
               <li><a href="#assistant">Co-pilote IA</a></li>
               <li><a href="#controles-ia">Critique, contrôles et traçabilité</a></li>
               <li><a href="#exemples-prompts">Exemples de prompts</a></li>
@@ -355,6 +356,8 @@
               <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/global.md" target="_blank" rel="noopener"><code>global</code></a></td><td>Les messages, signaux, erreurs et escalades ont un nom unique et servent quelque part.</td><td>Bonne pratique</td><td>Avertissement</td></tr>
               <tr><td><a href="https://github.com/bpmn-io/bpmnlint/blob/main/docs/rules/no-bpmndi.md" target="_blank" rel="noopener"><code>no-bpmndi</code></a></td><td>Chaque élément du processus a une forme sur le schéma.</td><td>Norme</td><td>Erreur</td></tr>
               <tr><td><code>bpmnpilot/event-triggers</code></td><td>Chaque événement n'a qu'un déclencheur admis par la norme pour sa sorte : pas de fin minuteur, pas de début d'erreur hors d'un sous-processus événementiel, pas d'erreur non interruptive, annulation seulement dans une transaction. Voir la <a href="#matrice-evenements">matrice des événements</a>.</td><td>Norme</td><td>Erreur</td></tr>
+              <tr><td><code>bpmnpilot/agent-review</code></td><td>Le résultat d'une <a href="#agent-ia">étape d'agent IA</a> passe par une personne (tâche utilisateur ou manuelle) sur chaque chemin, avant une fin.</td><td>Bonne pratique</td><td>Avertissement</td></tr>
+              <tr><td><code>bpmnpilot/agent-escalation</code></td><td>Une <a href="#agent-ia">étape d'agent IA</a> a une sortie si l'agent échoue ou tarde : un événement en bordure (minuterie, erreur, escalade…).</td><td>Bonne pratique</td><td>Avertissement</td></tr>
               </tbody>
             </table>
           </div>
@@ -426,7 +429,7 @@
           <li>Vous pouvez aussi glisser un fichier .bpmn sur la page.</li>
           <li><span class="uib"><span class="ico" data-icon="compare" aria-hidden="true"></span>Comparer avec un fichier…</span> montre les différences entre un fichier de votre disque et le diagramme ouvert, sans rien changer (voir ci-dessous).</li>
         </ul>
-        <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture. Un <a href="#fichier-chiffre">fichier chiffré</a> (.bpmn.enc) s'ouvre de la même façon, après son mot de passe.</p>
+        <p>L'éditeur lit les fichiers BPMN 2.0 des autres outils (Camunda, Bizagi, Signavio…). Si un fichier n'a pas de disposition graphique, il la calcule à l'ouverture. Dans l'autre sens, un fichier enregistré ici s'ouvre dans les autres éditeurs BPMN 2.0, Camunda Modeler compris, pour le compléter ou l'exécuter dans un moteur. Ce qui est propre à BPMN Pilot (probabilités, objectifs, étapes d'agent IA, récits utilisateur, sous-niveaux, analyse du co-pilote) y est ignoré sans erreur, et Camunda Modeler comme les autres éditeurs fondés sur bpmn.io le conservent quand ils réenregistrent le fichier. Un <a href="#fichier-chiffre">fichier chiffré</a> (.bpmn.enc) s'ouvre de la même façon, après son mot de passe.</p>
         <h3 id="depuis-tableau">Créer depuis un tableau (sans IA)<span class="ico" data-icon="table" aria-hidden="true"></span></h3>
         <p>Beaucoup de procédures existent déjà sous forme de liste d'étapes dans Excel. <span class="uib"><span class="ico" data-icon="open" aria-hidden="true"></span>Ouvrir</span>, puis <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Depuis un tableau…</span>, les transforme en diagramme : copiez les lignes dans Excel, en-tête compris, et collez-les dans la fenêtre, ou choisissez un fichier .csv, .tsv ou .xlsx. La conversion se fait dans la page, sans IA ni envoi. Un aperçu compte les étapes, les liens, les décisions et les couloirs avant la création, et signale les erreurs (étape suivante introuvable, identifiant en double).</p>
         <div class="table-wrap">
@@ -626,6 +629,22 @@
         <!-- /example -->
       </section>
 
+      <section id="agent-ia">
+        <h2>Modéliser un agent IA (sous-processus ad hoc)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
+        <p>Quand une étape du processus est confiée à un agent IA (un LLM, un assistant, un robot qui décide lui-même de ses actions), BPMN 2.0 a déjà la forme qui convient : le <strong>sous-processus ad hoc</strong>. Ses activités internes ne sont pas reliées par des flux : celui qui l'exécute choisit lesquelles lancer, et dans quel ordre. Pour un agent, ce sont ses outils. Le fichier reste du BPMN standard, lisible par tout outil.</p>
+        <h3>Marquer une étape d'agent IA</h3>
+        <ol>
+          <li>Sélectionnez une tâche ou un sous-processus. Dans le <a href="#proprietes">panneau Processus</a>, groupe <span class="ui">Agent IA</span>, cochez <span class="ui">Étape d'agent IA</span>. Une tâche ou un sous-processus ordinaire devient un sous-processus ad hoc. Une pastille <strong>Agent IA</strong> le signale sur le canevas.</li>
+          <li>Dépliez-le et placez à l'intérieur une tâche par outil de l'agent, sans flux entre elles et sans événement de début ni de fin : par exemple une tâche de service « Consulter le fichier client ».</li>
+          <li>Décrivez dans le champ <span class="ui">Documentation</span> ce que l'agent décide seul et ce qu'il ne doit pas faire.</li>
+        </ol>
+        <h3>Revue humaine et sortie</h3>
+        <p>Une étape d'agent sûre a deux garde-fous dessinés dans le processus : une personne revoit son résultat avant qu'il serve, et un chemin existe si l'agent échoue ou tarde. La <a href="#verifier">vérification</a> signale l'absence de l'un ou de l'autre (règles <code>bpmnpilot/agent-review</code> et <code>bpmnpilot/agent-escalation</code>, en avertissement), et le <a href="#rapport-processus">rapport de processus</a> en fait un axe d'amélioration.</p>
+        <p>Sous la case, le panneau dit ce qui manque. <span class="uib">Compléter le motif</span> l'ajoute en une fois : une tâche utilisateur « Revoir la proposition de l'agent » juste après l'étape (ce qui suit glisse vers la droite), et une minuterie « Délai dépassé » en bordure, qui mène à « Traiter à la main ». Renommez et réglez ensuite ces éléments selon votre cas. <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule l'ensemble.</p>
+        <figure><img src="/src/help/img/fr-agent-ia.webp" width="1400" height="425" alt="Le sous-processus ad hoc Qualifier la demande, marqué de la pastille Agent IA, avec trois tâches de service à l'intérieur : Lire les pièces jointes, Consulter le fichier client, Calculer le score. Après lui, la tâche utilisateur Revoir la proposition de l'agent ; en bordure, une minuterie Délai dépassé mène à Traiter à la main. À droite, le groupe Agent IA du panneau, case cochée, avec la mention Revue et sortie en place." loading="lazy" /><figcaption>Une étape d'agent IA complétée : ses outils, la revue par une personne et la sortie sur délai.</figcaption></figure>
+        <p>Le co-pilote IA et les agents MCP savent dessiner ce motif : demandez-leur d'ajouter une étape d'agent IA, ou voyez l'<a href="#exemples-prompts">exemple de prompt</a>. Le marquage est enregistré sous l'attribut <code>bpmnpilot:agent</code>, que les autres outils BPMN ignorent : ils y lisent un sous-processus ad hoc ordinaire.</p>
+      </section>
+
       <section id="assistant">
         <h2>Co-pilote IA<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
         <p>Le bouton <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Co-pilote IA</span>, dans la barre d'outils, ouvre un panneau de discussion. Vous y décrivez un processus, et le co-pilote le dessine directement dans l'éditeur. Il peut aussi modifier le schéma ouvert, colorer ses éléments, mettre en forme les libellés, le ranger et le vérifier. Son travail se retouche ensuite à la main, comme tout le reste. Sur les écrans assez larges, le bouton affiche le modèle choisi dans <span class="uib">Options</span> et se raccourcit en <span class="ui">IA</span>.</p>
@@ -753,7 +772,7 @@
         <figure><p class="fig-title">Un prompt, un diagramme</p><img src="/docs/prompt-example.fr.png" width="1400" height="1233" alt="Diagramme dessiné par le co-pilote depuis le prompt : un pool Entreprise avec les couloirs Salarié, Manager, Achats et Comptabilité, une décision Demande acceptée ?, et des flux de messages vers un pool Fournisseur." loading="lazy" /><figcaption>« Dessine une demande d'achat : le salarié saisit sa demande, son manager l'accepte ou la refuse. Si elle est acceptée, les achats commandent au fournisseur, puis la comptabilité paie la facture. En cas de refus, le salarié est prévenu. » Un seul message, un seul passage.</figcaption></figure>
 
         <details class="faq prompts-list">
-          <summary>18 prompts de démonstration, prêts à copier-coller</summary>
+          <summary>19 prompts de démonstration, prêts à copier-coller</summary>
         <h3>Modéliser</h3>
         <div class="prompt">
           <p class="prompt-title">À partir d'une description</p>
@@ -772,6 +791,11 @@
         <div class="prompt">
           <p class="prompt-title">Collaboration entre organisations</p>
           <p class="prompt-text">Modélise les échanges entre le client, notre entreprise et le transporteur, avec un pool chacun. Le client passe commande. Nous la confirmons et réservons le transporteur. Le transporteur enlève le colis, le livre et nous envoie la preuve de livraison. Nous facturons alors le client.</p>
+        </div>
+        <div class="prompt">
+          <p class="prompt-title">Une étape confiée à un agent IA</p>
+          <p class="prompt-text">Ajoute après « Demande reçue » une étape d'agent IA « Qualifier la demande ». L'agent peut lire les pièces jointes, consulter le fichier client et calculer le score. Un conseiller revoit sa proposition avant la décision. Si l'agent ne répond pas en 10 minutes, la demande est traitée à la main.</p>
+          <p class="prompt-tip">Voir <a href="#agent-ia">Modéliser un agent IA</a>.</p>
         </div>
 
         <h3>Modifications en masse</h3>
@@ -931,6 +955,14 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><strong>Passerelle parallèle et flux non contrôlés :</strong> tous les flux sont pris, le champ n'apparaît pas.</li>
         </ul>
         <p>La valeur est enregistrée dans le fichier .bpmn sous l'attribut <code>bpmnpilot:probability</code> (espace de noms <code>https://bpmn.leylines.fr/schema/bpmn-pilot/1.0</code>), que les autres outils BPMN ignorent sans erreur. Le co-pilote et les agents MCP la règlent avec l'outil <code>update_elements</code>.</p>
+        <h3 id="objectifs">Objectifs du processus</h3>
+        <p>Un objectif chiffré se pose sur l'élément qu'il mesure, dans le groupe <span class="ui">Simulation</span> du panneau Processus, en mode expert :</p>
+        <ul>
+          <li>sur un <strong>événement de fin</strong>, la part des instances qui devraient finir là, par exemple au moins 80 % de demandes acceptées ;</li>
+          <li>sur une <strong>activité</strong>, le nombre de passages pour 100 instances, une reprise comptant à chaque passage, par exemple au plus 15 demandes de pièces pour 100 dossiers.</li>
+        </ul>
+        <p><span class="ui">L'objectif est</span> dit s'il s'agit d'un minimum ou d'un maximum. Après <span class="uib">Lancer</span> N jetons, le <a href="#rapport-processus">rapport de processus</a> confronte chaque objectif au résultat : atteint, non atteint (un avertissement et un axe d'amélioration), ou non mesuré tant qu'aucune série n'a tourné. Le co-pilote IA lit les objectifs dans le rapport et les cite dans son analyse, sans les modifier : ils restent vos choix. Ils sont enregistrés sous les attributs <code>bpmnpilot:goalShare</code> et <code>bpmnpilot:goalOp</code>, que les autres outils ignorent.</p>
+        <figure><img src="/src/help/img/fr-objectif.webp" width="298" height="499" alt="Groupe Simulation du panneau Processus pour l'événement de fin Demande acceptée : Objectif, part des instances (%) à 80, et L'objectif est un minimum (au moins)." loading="lazy" /><figcaption>Un objectif sur un événement de fin.</figcaption></figure>
         <h3 id="carte-chaleur">Carte de chaleur</h3>
         <p>La carte de chaleur montre où passent les instances d'un processus. Elle colore chaque élément et chaque flux de séquence selon le nombre de jetons qui l'ont traversé, du bleu pâle au rouge. On voit ainsi, sans lire le modèle élément par élément, les chemins jamais empruntés, les activités par lesquelles passent presque toutes les instances, et les boucles de reprise qui font exécuter une même activité plusieurs fois. Elle sert à valider un modèle avant de le diffuser, et à repérer où un processus se répète ou se concentre avant d'en discuter la réorganisation.</p>
         <ol>
@@ -959,6 +991,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li>les chiffres clés et le diagramme, où chaque élément concerné par un constat est entouré de la couleur de son niveau ;</li>
           <li>les constats de modélisation, en trois niveaux : <strong>Erreur</strong> en rouge (règle bpmnlint enfreinte, élément inaccessible, instance qui ne peut pas se terminer), <strong>Avertissement</strong> en orange (écart aux bonnes pratiques, reprise fréquente), <strong>À compléter</strong> en jaune (documentation absente, conditions sans libellé, couloir à activité unique). Leur source est indiquée : bpmnlint, contrôle du modèle ou simulation ;</li>
           <li>les axes d'amélioration, par priorité, avec l'effet attendu ;</li>
+          <li>les <a href="#objectifs">objectifs du processus</a>, atteints ou non d'après la dernière série de jetons ;</li>
           <li>l'analyse du co-pilote IA, si elle a été faite (voir plus bas) ;</li>
           <li>après une simulation, la carte de chaleur et ses chiffres : activités les plus traversées, passages et part observée de chaque branche de passerelle, éléments jamais atteints ;</li>
           <li>les six <a href="#controles-ia">contrôles de qualité</a>, calculés dans l'éditeur, sans IA ;</li>
@@ -1162,7 +1195,9 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li><code>model_collaboration</code> : dessine un pool par organisation, avec les messages échangés,</li>
           <li><code>review_diagram</code> : liste ce qu'il faut améliorer dans le diagramme ouvert, sans rien modifier,</li>
           <li><code>tidy_diagram</code> : renomme selon les conventions, corrige les erreurs et range, sans changer le sens,</li>
-          <li><code>critique_description</code> : relève ce qui est ambigu ou manquant dans une description, avec gravité, passage cité et question, avant de dessiner.</li>
+          <li><code>critique_description</code> : relève ce qui est ambigu ou manquant dans une description, avec gravité, passage cité et question, avant de dessiner,</li>
+          <li><code>add_agent_step</code> : ajoute une <a href="#agent-ia">étape d'agent IA</a> avec ses outils, sa revue humaine et sa sortie,</li>
+          <li><code>write_user_stories</code> : rédige les <a href="#recits-utilisateur">récits utilisateur</a> et critères d'acceptation de chaque activité.</li>
         </ul>
         <p>Les outils de contrôle et de rapport sont détaillés dans <a href="#experts-mcp">Avec un agent MCP</a>.</p>
         <p>Les <a href="#exemples-prompts">Exemples de prompts</a> fonctionnent aussi avec un agent MCP.</p>
