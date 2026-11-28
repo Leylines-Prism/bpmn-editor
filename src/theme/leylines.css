@@ -1803,6 +1803,16 @@ dialog .dlg-close:focus-visible,
   50% { box-shadow: 0 0 0 5px rgba(217, 48, 37, 0); }
 }
 @media (prefers-reduced-motion: reduce) { #chat-panel #chat-mic[data-state="listening"] { animation: none; } }
+#chat-panel #chat-voice-meter { padding: var(--space-1) var(--space-3); border-top: 1px solid var(--line); }
+
+/* Vu-mètre de la dictée (src/voice-input.js) : rond rouge, niveau du micro, nom du micro. */
+.voice-meter { display: inline-flex; align-items: center; gap: 6px; min-width: 0; font-size: 12px; color: var(--ink-muted); }
+.voice-meter[hidden] { display: none; }
+.voice-meter-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: #E5251B; animation: voice-dot 1.2s ease-in-out infinite; }
+.voice-meter-wave { flex: none; width: 72px; height: 18px; color: var(--accent); }
+.voice-meter-label { min-width: 0; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@keyframes voice-dot { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .voice-meter-dot, .doc-toolbar .doc-mic[data-state="listening"]::after { animation: none; } }
 #chat-panel #chat-voice-interim {
   padding: var(--space-1) var(--space-3); border-top: 1px solid var(--line);
   color: var(--ink-muted); font-style: italic; font-size: 13px;

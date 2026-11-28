@@ -128,6 +128,7 @@ export function setupDocEditor(modeler) {
         <div class="doc-template-menu" role="menu" hidden></div>
       </span>
       <button type="button" class="btn doc-mic" hidden>${MIC_ICON}<span>${T('Dictate', 'Dicter')}</span></button>
+      <span class="doc-voice-meter" aria-live="polite" hidden></span>
       <span class="doc-sep" aria-hidden="true"></span>
       <button type="button" class="btn doc-ai" data-icon="assistant">${T('Write with the co-pilot', 'Rédiger avec le Co-pilote')}</button>`
     body.before(bar)
@@ -313,7 +314,7 @@ export function setupDocEditor(modeler) {
           textarea.setSelectionRange(before.length, before.length)
         },
       }
-      voice = setupVoiceInput({ button: mic, input: cursorInput, interim, notify: say, onText: commit })
+      voice = setupVoiceInput({ button: mic, input: cursorInput, interim, notify: say, onText: commit, meter: bar.querySelector('.doc-voice-meter') })
     }
 
     // ── Co-pilote ──

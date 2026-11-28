@@ -49,6 +49,15 @@
 .doc-toolbar .doc-mic[data-state="listening"] { background: #D9620A; color: #FFFFFF; border-color: #D9620A; }
 .doc-toolbar .doc-mic[data-state="listening"]:hover { background: #B04E08; border-color: #B04E08; color: #FFFFFF; }
 .doc-toolbar .doc-mic[data-state="preparing"] { opacity: 0.7; }
+/* Rond rouge pendant l'enregistrement, comme sur un enregistreur. */
+.doc-toolbar .doc-mic { position: relative; }
+.doc-toolbar .doc-mic[data-state="listening"]::after {
+  content: ""; position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; border-radius: 50%;
+  background: #E5251B; box-shadow: 0 0 0 2px var(--surface-raised); animation: voice-dot 1.2s ease-in-out infinite;
+}
+.doc-toolbar .doc-voice-meter { margin-left: 2px; }
+/* Le rond rouge est déjà sur le bouton. */
+.doc-toolbar .doc-voice-meter .voice-meter-dot { display: none; }
 .doc-sep { width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
 /* Même trait leyline que le bouton du Co-pilote IA. */
 .doc-toolbar .doc-ai {
