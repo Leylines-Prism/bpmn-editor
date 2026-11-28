@@ -304,7 +304,8 @@ export function createChatPanel({ mode, chatUrl, bridge, tools }) {
     // Entrées du menu Expert qui passent par le Co-pilote (.copilot-only) : grisées sans modèle.
     document.documentElement.classList.toggle('copilot-ready', !!model)
     // L'icône d'aide à côté de chacune dit pourquoi (index.html, .copilot-help).
-    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model
+    const simulating = document.getElementById('expert-menu')?.classList.contains('simulating')
+    for (const entry of document.querySelectorAll('.copilot-only')) entry.disabled = !model || !!simulating
     // En-tête du panneau : « Co-pilote » et le modèle dessous, ou « Co-pilote IA » sans modèle.
     titleName.textContent = model ? T('Co-pilot', 'Co-pilote') : T('AI co-pilot', 'Co-pilote IA')
     titleModel.textContent = model ? model.label : ''

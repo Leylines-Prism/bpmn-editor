@@ -830,9 +830,18 @@ modeler.on('tokenSimulation.toggleMode', ({ active }) => {
     : T('Run tokens through the process, with the heatmap and branch probabilities', 'Faire circuler des jetons dans le processus, avec la carte de chaleur et les probabilités des branches')
   simButton.classList.toggle('active', !!active)
   document.getElementById('btn-expert').classList.toggle('running', !!active)
-  // Pendant une simulation, le menu ne propose que « Arrêter la simulation » : le canevas
-  // est verrouillé, et l'arrêt garde le mode Expert pour régler les probabilités.
+  // Pendant une simulation, le canevas est verrouillé : les entrées du Co-pilote, qui écrivent
+  // dans le diagramme, restent visibles mais grisées, et leur icône d'aide dit pourquoi.
+  // L'arrêt garde le mode Expert pour régler les probabilités.
   document.getElementById('expert-menu').classList.toggle('simulating', !!active)
+  const ready = document.documentElement.classList.contains('copilot-ready')
+  for (const entry of document.querySelectorAll('#expert-menu .copilot-only')) entry.disabled = !!active || !ready
+  for (const help of document.querySelectorAll('#expert-menu .copilot-help')) {
+    help.dataset.label ??= help.getAttribute('aria-label')
+    help.setAttribute('aria-label', active
+      ? T('Stop the simulation first: this function writes into the diagram, which is locked during a simulation', 'Arrêtez d\'abord la simulation : cette fonction écrit dans le diagramme, verrouillé pendant une simulation')
+      : help.dataset.label)
+  }
 })
 simButton.addEventListener('click', () => {
   setExpert(true)

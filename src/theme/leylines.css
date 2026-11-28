@@ -1737,11 +1737,10 @@ html:not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(
 html:not(.mod-simulation) #expert-menu .menu-group-analyses::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn) #expert-menu .menu-group-report::before,
 html:not(.mod-simulation):not(.mod-process-mining):not(.mod-ai-potential):not(.mod-user-stories):not(.mod-dmn):not(.mod-report) #expert-menu .menu-group-end::before { display: none; }
-/* Simulation en cours : « Choisir les modules », les entrées du Co-pilote (le canevas est
-   verrouillé) et les séparateurs s'effacent du menu (src/main.js). */
+/* Simulation en cours : « Choisir les modules » s'efface du menu. Les entrées du Co-pilote
+   restent visibles mais grisées, leur icône d'aide dit d'arrêter la simulation (src/main.js). */
 #expert-menu.simulating #btn-expert-modules,
-#expert-menu.simulating .menu-row,
-#expert-menu.simulating .menu-group::before { display: none !important; }
+#expert-menu.simulating .menu-group-end { display: none !important; }
 
 /* Croix de fermeture des fenêtres, de la comparaison, de la confidentialité et de la
    présentation : dans un petit carré au trait orange de la charte. */
