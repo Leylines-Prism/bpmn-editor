@@ -20,6 +20,10 @@ import { markdownToHtml } from './markdown.js'
 import { TEMPLATES, templateFor, templateText } from './templates.js'
 import { docText, setDocText } from './documentation.js'
 import { MIC_ICON, setupVoiceInput, voiceSupported } from '../voice-input.js'
+// Icônes des listes : trois lignes précédées de puces, ou de 1, 2, 3.
+const SVG = (inner) => `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`
+const BULLET_ICON = SVG('<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.2" fill="currentColor" stroke="none"/>')
+const NUMBER_ICON = SVG('<path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 4.5l1.3-.8V8M3.6 10.6a1.3 1.3 0 0 1 2.5.4c0 .9-2.5 2.2-2.5 3h2.6M3.7 16.4h2.2l-1.2 1.5a1.2 1.2 0 1 1-1.1 1.7" stroke-width="1.3"/>')
 
 const DOC_ENTRIES = new Set(['documentation', 'processDocumentation'])
 const VIEW_KEY = 'bpmn-editor-doc-view'
@@ -106,8 +110,8 @@ export function setupDocEditor(modeler) {
       <button type="button" class="btn doc-fmt" data-fmt="bold" title="${T('Bold (Ctrl+B)', 'Gras (Ctrl+B)')}" aria-label="${T('Bold', 'Gras')}"><b>${T('B', 'G')}</b></button>
       <button type="button" class="btn doc-fmt" data-fmt="italic" title="${T('Italic (Ctrl+I)', 'Italique (Ctrl+I)')}" aria-label="${T('Italic', 'Italique')}"><i>I</i></button>
       <button type="button" class="btn doc-fmt" data-fmt="heading" title="${T('Heading', 'Titre')}" aria-label="${T('Heading', 'Titre')}">H</button>
-      <button type="button" class="btn doc-fmt" data-fmt="bullet" title="${T('Bulleted list', 'Liste à puces')}">• ${T('List', 'Liste')}</button>
-      <button type="button" class="btn doc-fmt" data-fmt="ordered" title="${T('Numbered list', 'Liste numérotée')}">1. ${T('List', 'Liste')}</button>
+      <button type="button" class="btn doc-fmt" data-fmt="bullet" title="${T('Bulleted list', 'Liste à puces')}" aria-label="${T('Bulleted list', 'Liste à puces')}">${BULLET_ICON}</button>
+      <button type="button" class="btn doc-fmt" data-fmt="ordered" title="${T('Numbered list', 'Liste numérotée')}" aria-label="${T('Numbered list', 'Liste numérotée')}">${NUMBER_ICON}</button>
       <button type="button" class="btn doc-fmt" data-fmt="link" title="${T('Link (Ctrl+K)', 'Lien (Ctrl+K)')}">${T('Link', 'Lien')}</button>
       <span class="doc-sep" aria-hidden="true"></span>
       <span class="doc-template-wrap">

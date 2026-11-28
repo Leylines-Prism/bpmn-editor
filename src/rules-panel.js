@@ -11,7 +11,7 @@
 //   libellé reprend l'ancienne condition), le libellé suit la condition, pour la voir sur
 //   le diagramme. Le flux par défaut n'a pas de condition.
 //
-// En mode Expert seulement : le groupe « Adoption de l'IA », le groupe « Risques et
+// En mode Expert seulement : le groupe « Potentiel d'IA », le groupe « Risques et
 // conformité » et le groupe « Récits utilisateur (user stories) » des activités, et la
 // « Fiche d'identité du processus » sur la racine du diagramme (voir src/compliance.js).
 //
@@ -81,7 +81,7 @@ function AiPotentialEntry(props) {
   return SelectEntry({
     element,
     id,
-    label: T('AI potential', 'Potentiel d\'IA'),
+    label: T('Rating', 'Évaluation'),
     getValue: () => bo.get('bpmnpilot:aiPotential') || '',
     setValue: (value) => modeling.updateModdleProperties(element, bo, { 'bpmnpilot:aiPotential': value || undefined }),
     getOptions: () => [
@@ -198,7 +198,7 @@ RulesPropertiesProvider.prototype.getGroups = function (element) {
       if (isExpert() && isModuleOn('ai-potential')) {
         groups.push({
           id: 'bpmn-pilot-ai-adoption',
-          label: T('AI adoption', 'Adoption de l\'IA'),
+          label: T('AI potential', 'Potentiel d\'IA'),
           entries: [
             { id: 'bpmn-pilot-ai-potential', component: AiPotentialEntry, isEdited: isSelectEntryEdited },
             { id: 'bpmn-pilot-ai-reason', component: AiReasonEntry, isEdited: isTextFieldEntryEdited },

@@ -22,7 +22,7 @@ html:not(.dmn) [data-group-id="group-bpmn-pilot-decision"] { display: none !impo
 body.presenting .dmn-badge:not(:has(svg)), body.presenting .dmn-badge.broken,
 .djs-container.simulation .dmn-badge { display: none; }
 
-/* Groupe « Décision (DMN) » du panneau de propriétés. */
+/* Groupe « Table de décision (DMN) » du panneau de propriétés. */
 #properties-panel .dmn-entry { display: flex; flex-direction: column; gap: 8px; padding-bottom: 6px; }
 #properties-panel .dmn-entry .bio-properties-panel-label { margin-bottom: -4px; }
 #properties-panel .dmn-select {

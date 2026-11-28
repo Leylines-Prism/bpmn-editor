@@ -68,7 +68,7 @@ GoalPropertiesProvider.prototype.getGroups = function (element) {
     if (!bo || !isGoalHolder(bo)) return groups
     const entries = [{ id: 'bpmn-pilot-goal-share', component: ShareEntry, isEdited: isNumberFieldEntryEdited }]
     if (goalOf(bo)) entries.push({ id: 'bpmn-pilot-goal-op', component: OpEntry })
-    groups.push({ id: 'bpmn-pilot-simulation', label: 'Simulation', entries })
+    groups.push({ id: 'bpmn-pilot-simulation', label: T('Token simulation', 'Simulation de jetons'), entries })
     return groups
   }
 }

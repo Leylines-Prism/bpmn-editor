@@ -62,6 +62,7 @@ import { GoalPanelModule } from './goal-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json'
 import { DecisionPanelModule } from './dmn/decision-links.js'
+import { PanelOrderModule } from './panel-order.js'
 import { SubLevelPanelModule, setupSubLevels } from './sub-levels.js'
 import { setupDecisions } from './dmn/setup.js'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
@@ -189,6 +190,7 @@ const modeler = new BpmnModeler({
     SubLevelPanelModule,
     AgentStepModule,
     GoalPanelModule,
+    PanelOrderModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
