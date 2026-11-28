@@ -18,7 +18,7 @@ MCP client  ──HTTP──▶  MCP server (Node, 127.0.0.1:3333)  ──WebSoc
 - The tab runs the tool with the bpmn-js modeling API (`src/mcp-bridge.js`) and sends back the result.
 - When several tabs are open, the last one used receives calls from MCP clients. The built-in chat
   always draws in the tab where the conversation takes place.
-- With no tab open, tools answer with an explicit error.
+- With no tab open, tools answer with an explicit error, unless the headless mode is on (below).
 - An "MCP" badge in the toolbar shows whether the editor is connected to the server.
 - Tools, instructions and the chat loop are defined in `src/ai/`, shared with the editor: the server
   runs from the full repository, not from the `mcp/` folder alone.
@@ -171,7 +171,7 @@ editor tabs, and its log goes to the error output. Directory checks use this mod
 | `get_shapes` | lists the diagram's shapes and connections (id, type, name, position, links) |
 | `get_diagram_xml` | returns the diagram as BPMN 2.0 XML |
 | `get_diagram_image` | returns a PNG image of the diagram, as drawn on the canvas, so the model can check the layout or show it (with OpenAI-compatible providers, Mistral included, the built-in AI co-pilot cannot receive it) |
-| `export_diagram` | exports the diagram as a file (`bpmn`, `svg`, `png` or `pdf`), like the Export menu. The file is saved in `EXPORTS_DIR`, never replacing another one, and the editor shows a Download button: nothing is downloaded unless the user clicks it. The file content is not returned to the client |
+| `export_diagram` | exports the diagram as a file (`bpmn`, `svg`, `png` or `pdf`), like the Export menu. The file is saved in `EXPORTS_DIR`, never replacing another one, and the editor shows a Download button: nothing is downloaded unless the user clicks it. With `returnFile`, the file is also returned to the client (PNG as an image, SVG and BPMN as text, PDF as an embedded resource, 10 MB at most) |
 | `set_diagram_xml` | replaces the whole diagram. Unreadable XML, or XML without a drawn diagram, is rejected and the diagram stays unchanged |
 | `add_shapes` | adds shapes, after an element (`after`, automatic placement and connection), at a position, or to the right of the diagram. Also adds pools (`Participant`) and their lanes (`Lane`), and places a shape in a lane with `parent`. With `attachTo`, adds a boundary event (timer, error…) on a task |
 | `connect_shapes` | connects two shapes. The connection type follows the bpmn-js BPMN rules |
@@ -296,8 +296,24 @@ They can also be placed in `mcp/.env`.
 | `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` in the docker image) | folder of the diagrams saved on the server |
 | `VITE_MCP_BRIDGE_URL` (editor side) | `ws://127.0.0.1:3333/bridge` in development, `/bridge` in the compose file | bridge address. A relative address points to the site itself |
 
+## Headless mode (no open browser)
+
+Off by default (`MCP_HEADLESS=on` turns it on; `docker-compose.headless.yml` does it for you). When an
+MCP client calls a tool and no editor tab is connected, the server opens the editor in an invisible tab
+of a headless Chromium (`HEADLESS_BROWSER_URL`, the `renderer` service, image `bpmn-pilot-renderer`),
+through the DevTools HTTP interface only (`/json/new`, `/json/close`): no browser automation library is
+bundled. The page loads `HEADLESS_EDITOR_URL/?headless=<key>` and presents the key to `/bridge`, so the
+server tells it apart from real tabs (`mcp/renderer.js`, `mcp/bridge.js`).
+
+- An open tab comes first. A series of calls started in the invisible tab stays there until that tab
+  closes (`HEADLESS_IDLE_SECONDS` without a call, 300 by default) or a user opens its diagram.
+- After each call that changes the diagram, its XML is saved in My diagrams (one file per series,
+  `Agent YYYY-MM-DD HHhMM`) and the open tabs show a banner with an **Open** button. Opening it closes
+  the invisible tab, and the next calls go to that tab.
+- `GET /healthz/headless` tells whether the server reaches the browser.
+
 ## Prototype limits
 
-- The editor tab must be open for the AI to draw.
+- Without the headless mode, the editor tab must be open for the AI to draw.
 - `layout_diagram` uses bpmn-auto-layout 2.0.0-alpha.2, which lays out pools, lanes, message flows
   and boundary events. It is still an alpha version: the result can change with its next releases.

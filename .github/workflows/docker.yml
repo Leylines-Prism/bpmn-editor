@@ -1,6 +1,7 @@
-# Publie les deux images Docker sur le GitHub Container Registry à chaque tag de version (vX.Y.Z) :
+# Publie les trois images Docker sur le GitHub Container Registry à chaque tag de version (vX.Y.Z) :
 #   ghcr.io/<propriétaire>/bpmn-pilot       l'éditeur (nginx)
 #   ghcr.io/<propriétaire>/bpmn-pilot-mcp  le serveur MCP et le chat intégré (Node)
+#   ghcr.io/<propriétaire>/bpmn-pilot-renderer  Chromium sans écran du mode sans navigateur (facultatif)
 #
 # Tags d'image pour v1.2.3 : 1.2.3, 1.2, 1 et latest. Une préversion (v1.3.0-rc.1) n'a que le sien.
 # Chaque push sur main publie aussi le tag edge : la dernière version de développement, non stable,
@@ -53,6 +54,12 @@ jobs:
             build-args: ''
             # Lu par le registre MCP officiel (voir server.json et le job registry plus bas).
             mcp-name: io.modelcontextprotocol.server.name=io.github.Leylines-Prism/bpmn-pilot
+          - name: bpmn-pilot-renderer
+            file: renderer/Dockerfile
+            title: BPMN-Pilot renderer
+            description: Headless Chromium for the headless mode of the BPMN-Pilot MCP server (optional).
+            build-args: ''
+            mcp-name: ''
     env:
       # Annotations posées aussi sur l'index multi-plateforme, où le registre lit la description.
       DOCKER_METADATA_ANNOTATIONS_LEVELS: manifest,index
@@ -134,7 +141,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - uses: sigstore/cosign-installer@881c63bd87e38389154debd8331404ce7ca8a3ab # v4.1.4
 
       # mcp-publisher, à une version fixe, vérifié par sa signature Sigstore avant usage.
       - name: Download and verify mcp-publisher

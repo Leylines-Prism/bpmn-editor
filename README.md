@@ -38,7 +38,7 @@ BPMN structure and on drawing by hand.
 BPMN-Pilot is a BPMN 2.0 editor in the browser (bpmn-js), in English and French:
 
 - **Connect an agent through MCP** (Docker version), such as Claude Code, Claude Desktop or GitHub Copilot in
-  VS Code. It drives the editor open in your browser.
+  VS Code. It drives the editor open in your browser, or, in the optional headless mode, an invisible one.
 - **Ask the built-in AI co-pilot** ([online](https://bpmn.leylines.fr) or Docker): describe a process
   or attach your documents (Word, Excel, PDF, emails…), and it draws it.
 - **Draw by hand**, with the bpmn-js modeler and its extensions.
@@ -415,6 +415,45 @@ optional on `localhost`, and required as soon as the editor is served under anot
 [Reach it from other machines](#reach-it-from-other-machines)). Without it, the window says that
 MCP is closed and the agent gets a 401 error that names `MCP_TOKEN`.
 
+### Without an open browser (headless mode)
+
+An advanced, optional mode, off by default. The agent draws, checks, exports and reads the report
+with no editor tab open: useful for an agent that models, in one run, the processes described in
+your documents, then hands you the result to review.
+
+To turn it on, use [`docker-compose.headless.yml`](docker-compose.headless.yml) instead of
+`docker-compose.image.yml`. It is the same file with a fourth service, `renderer`: a headless
+Chromium (image `bpmn-pilot-renderer`, about 160 MB to download) that the server drives over the
+DevTools protocol. Same `.env`, same data folder.
+
+```bash
+docker compose -f docker-compose.headless.yml up -d
+```
+
+How it works:
+
+- When an agent calls a tool and no editor tab is connected, the server opens the editor in an
+  invisible tab of `renderer`. All tools work there exactly as in a real tab, images and PDF
+  included. The tab closes after `HEADLESS_IDLE_SECONDS` without a call (300 by default).
+- Each diagram drawn this way is saved in My diagrams on the server (`bpmn-data/diagrams`), under a
+  name such as `Agent 2026-11-28 14h05`. Nothing stays only in memory.
+- An open tab always comes first. But a series of calls started without a tab stays in the invisible
+  tab, even if you open the editor meanwhile: the agent never switches by itself to the diagram in
+  front of you. A banner at the top of the canvas announces the agent's diagram, and **Open** loads
+  it in your tab: the agent's next calls then arrive there. Nothing is merged: if your diagram has
+  unsaved changes, the editor asks first.
+- With `returnFile`, `export_diagram` returns the file to the agent (PNG as an image, SVG and BPMN as
+  text, PDF as an embedded resource), with or without an open tab.
+
+Security: `renderer` sits on an internal Docker network with no internet access, publishes no port,
+and sees neither the API keys nor the data folder. It only opens the editor of the same compose
+file. Chromium runs as a non-root user, with no Linux capability and a read-only file system. It
+uses 300 to 600 MB of memory while a tab is open (capped by `HEADLESS_MEMORY`, 1 GB by default). The
+MCP token rules above still apply.
+
+Check it: `docker compose -f docker-compose.headless.yml exec mcp wget -qO- http://localhost:3333/healthz/headless`
+answers `"browser": true` when the server reaches Chromium.
+
 ## Where your API keys are kept
 
 **In the Docker version**, the safest place is the server: the `.env` file next to
@@ -453,6 +492,8 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
 | `BPMN_DATA_DIR` | Folder of the server files, My diagrams and exports (`./bpmn-data` by default). In a container manager, an absolute path. |
 | `PUID`, `PGID` | User and group the server runs as, and that own the data folder (1000 by default). |
 | `SHOWCASE` | `off` turns off the showcase page (`about.html`) and its wallpapers. The logo in the toolbar then opens the Feedback window. `on` by default. |
+| `MCP_HEADLESS` (`mcp/.env`) | `on` turns on the [headless mode](#without-an-open-browser-headless-mode). Off by default; `docker-compose.headless.yml` sets it. `HEADLESS_BROWSER_URL` (`http://renderer:9222`) and `HEADLESS_EDITOR_URL` (`http://editor:8080`) only change with a custom setup. |
+| `HEADLESS_IDLE_SECONDS`, `HEADLESS_MEMORY` | Headless mode: seconds without a call before the invisible tab closes (300), memory cap of `renderer` (`1g`). |
 
 ## What the editor does
 

@@ -38,6 +38,10 @@ const RETRY_MAX_MS = 15000
 // Renvoie l'état du pont : tabId est l'identifiant que le serveur a donné à
 // cet onglet, null tant que le pont n'est pas relié.
 // options.exportDiagram : voir createTools.
+// options.headlessKey : clé de l'onglet invisible du mode sans navigateur (paramètre headless de
+// l'adresse), présentée au serveur pour qu'il le reconnaisse.
+// options.onHeadlessDiagram({ id, name }) : le serveur a enregistré un diagramme dessiné sans
+// éditeur ouvert (onglets visibles seulement).
 export function connectMcpBridge(modeler, url, options = {}) {
   // Version docker : le pont est servi par le même site que la page.
   try {
@@ -61,7 +65,7 @@ export function connectMcpBridge(modeler, url, options = {}) {
     ws.addEventListener('open', () => {
       retryDelay = RETRY_MIN_MS
       setBadge(badge, 'connected', mcpClient)
-      send({ type: 'hello', title: document.title })
+      send({ type: 'hello', title: document.title, ...(options.headlessKey ? { headless: options.headlessKey } : {}) })
     })
 
     ws.addEventListener('message', async (event) => {
@@ -79,6 +83,10 @@ export function connectMcpBridge(modeler, url, options = {}) {
         mcpClient = { name: String(msg.name || ''), version: String(msg.version || ''), seenAt: Number(msg.seenAt) || null, lastCall: Number(msg.lastCall) || null }
         mcpClientName = mcpClient.name ? clientLabel(mcpClient.name) : ''
         if (badge.dataset.state === 'connected') setBadge(badge, 'connected', mcpClient)
+        return
+      }
+      if (msg.type === 'headless-diagram') {
+        if (typeof msg.id === 'string' && typeof msg.name === 'string') options.onHeadlessDiagram?.({ id: msg.id, name: msg.name })
         return
       }
       if (msg.type !== 'call') return
@@ -104,6 +112,9 @@ export function connectMcpBridge(modeler, url, options = {}) {
   function send(msg) {
     if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(msg))
   }
+  // L'utilisateur a ouvert ici le diagramme dessiné sans éditeur : le serveur ferme l'onglet
+  // invisible et les appels suivants de l'agent arrivent dans cet onglet.
+  state.takeHeadless = (id) => send({ type: 'headless-take', id })
 
   // Le serveur pilote l'onglet utilisé le plus récemment.
   const markActive = () => send({ type: 'active' })
@@ -510,9 +521,9 @@ function buildTools(modeler, exportDiagram, processReport, decisions) {
     },
 
     // Produit le fichier comme le menu Exporter. Rien ne se télécharge sans clic de l'utilisateur.
-    export_diagram({ format, name }) {
+    export_diagram({ format, name, returnFile }) {
       if (!exportDiagram) throw new Error('Exporting is not available in this editor.')
-      return exportDiagram({ format, name })
+      return exportDiagram({ format, name, returnFile })
     },
 
     async set_diagram_xml({ xml }) {

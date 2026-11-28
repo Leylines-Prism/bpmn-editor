@@ -1435,35 +1435,44 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .ai-changes-action[hidden] { display: none; }
 #canvas .ai-changes-action:hover { color: var(--leyline-magenta); }
 
-/* Annuler et Rétablir (src/history.js) : flottants en haut à gauche du canevas, au-dessus de la palette. */
-#history-buttons {
+/* Annuler, Rétablir et Rechercher (src/history.js), puis le zoom (src/zoom-buttons.js) :
+   flottants en haut à gauche du canevas, au-dessus de la palette. */
+#canvas-tools {
   position: absolute; top: 20px; left: 20px; z-index: 100;
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+#history-buttons, #zoom-buttons {
   display: inline-flex; overflow: hidden;
   border: 1px solid var(--mist); border-radius: var(--radius-sm);
   background: var(--white); box-shadow: var(--elevation-1);
 }
-#history-buttons button {
+#history-buttons button, #zoom-buttons button {
   display: inline-flex; align-items: center; justify-content: center;
   width: 34px; height: 33px; padding: 0; border: 0; background: none; color: var(--night-800); cursor: pointer;
 }
-#history-buttons button + button { border-left: 1px solid var(--mist); }
-#history-buttons button::before {
+#history-buttons button + button, #zoom-buttons button + button { border-left: 1px solid var(--mist); }
+#history-buttons button::before, #zoom-buttons button[data-icon]::before {
   content: ""; width: 18px; height: 18px; background: currentColor;
   -webkit-mask: var(--icon) center / contain no-repeat; mask: var(--icon) center / contain no-repeat;
 }
-#history-buttons button:hover:not(:disabled) { color: var(--leyline-sky-deep); background: var(--mist); }
+#zoom-buttons .zoom-level {
+  width: auto; min-width: 54px; padding: 0 6px;
+  font: 500 12px/1 var(--font-sans); font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+#history-buttons button:hover:not(:disabled), #zoom-buttons button:hover { color: var(--leyline-sky-deep); background: var(--mist); }
 #history-buttons button:disabled { opacity: 0.35; cursor: default; }
-#history-buttons button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
-/* Canevas étroit : la minicarte occupe le haut à droite, les boutons passent juste en dessous. */
+#history-buttons button:focus-visible, #zoom-buttons button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
+/* Canevas étroit : la minicarte occupe le haut à droite, les boutons passent juste en dessous,
+   le zoom sous l'historique. */
 @container canvas (max-width: 560px) {
-  #history-buttons { left: auto; right: 20px; top: 66px; }
+  #canvas-tools { left: auto; right: 20px; top: 66px; flex-direction: column; align-items: flex-end; }
 }
 /* La pilule de l'IA, centrée en haut, descend d'un cran quand elle toucherait ces boutons. */
-@container canvas (max-width: 1000px) {
+@container canvas (max-width: 1100px) {
   #canvas .ai-changes-pill { top: 66px; }
 }
 @container canvas (max-width: 560px) {
-  #canvas .ai-changes-pill { top: 112px; max-width: calc(100% - 32px); }
+  #canvas .ai-changes-pill { top: 158px; max-width: calc(100% - 32px); }
 }
 
 /* Bannière d'export de l'IA (src/export-offer.js) : en bas du canevas, même allure que la
@@ -1476,6 +1485,8 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px; color: var(--night-800);
 }
 #canvas .export-offer[hidden] { display: none; }
+/* Bannière du mode sans navigateur (src/headless-offer.js) : en haut, pour ne pas couvrir celle des exports. */
+#canvas .headless-offer { bottom: auto; top: 16px; }
 #canvas .export-offer-label { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 14px; min-width: 0; }
 #canvas .export-offer-label span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #canvas .export-offer-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--leyline-magenta); }
@@ -1490,6 +1501,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .export-offer button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
 @container canvas (max-width: 560px) {
   #canvas .export-offer { bottom: 260px; }
+  #canvas .headless-offer { bottom: auto; }
 }
 
 /* Croix de fermeture des fenêtres (src/dialog-close.js) : le titre et la croix restent

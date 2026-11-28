@@ -158,6 +158,8 @@
         <p>La clé à molette, ou la touche <kbd>R</kbd>, liste les types compatibles : une tâche devient tâche utilisateur, de service, activité d'appel, sous-processus. Tapez quelques lettres pour filtrer. Les icônes en haut à droite ajoutent ou retirent un marqueur : multi-instance parallèle <span class="ico bpmn-icon-parallel-mi-marker" aria-hidden="true"></span>, séquentielle <span class="ico bpmn-icon-sequential-mi-marker" aria-hidden="true"></span>, boucle <span class="ico bpmn-icon-loop-marker" aria-hidden="true"></span>.</p>
         <h3>Annuler et rétablir<span class="ico" data-icon="undo" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="undo" aria-hidden="true"></span>Annuler</span> et <span class="uib"><span class="ico" data-icon="redo" aria-hidden="true"></span>Rétablir</span>, en haut à gauche du canevas, reprennent un à un vos gestes et ceux du co-pilote. Après <span class="uib"><span class="ico" data-icon="layout" aria-hidden="true"></span>Ranger</span> ou une mise en page du co-pilote, Annuler revient d'un coup à l'état d'avant, et les gestes plus anciens ne s'annulent plus. Ouvrir un fichier repart d'un historique vide.</p>
+        <h3>Rechercher et zoomer<span class="ico" data-icon="search" aria-hidden="true"></span></h3>
+        <p><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, ou <kbd>Ctrl</kbd>+<kbd>F</kbd>, cherche dans les libellés, les identifiants et la documentation. <kbd>Entrée</kbd> sélectionne l'élément trouvé et centre la vue. À côté, <span class="uib"><span class="ico" data-icon="zoom-out" aria-hidden="true"></span>Dézoomer</span> et <span class="uib"><span class="ico" data-icon="zoom-in" aria-hidden="true"></span>Zoomer</span> changent le zoom d'un cran, le pourcentage entre les deux revient à 100 % au clic, et <span class="uib"><span class="ico" data-icon="zoom-fit" aria-hidden="true"></span>Ajuster</span> montre tout le diagramme.</p>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">
@@ -174,7 +176,8 @@
               <tr><td><kbd>A</kbd>, <kbd>N</kbd></td><td>Ajouter un élément après la sélection, créer un élément</td></tr>
               <tr><td><kbd>R</kbd></td><td>Changer le type de l'élément</td></tr>
               <tr><td><kbd>H</kbd>, <kbd>L</kbd>, <kbd>S</kbd>, <kbd>C</kbd></td><td>Outils main, lasso, espace et connexion</td></tr>
-              <tr><td><kbd>Ctrl</kbd>+molette</td><td>Zoomer</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+molette, <kbd>Ctrl</kbd>+<kbd>+</kbd>, <kbd>Ctrl</kbd>+<kbd>−</kbd></td><td>Zoomer, dézoomer</td></tr>
+              <tr><td><kbd>Ctrl</kbd>+<kbd>0</kbd></td><td>Revenir au zoom 100 %</td></tr>
               <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Mettre à jour l'enregistrement dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span></td></tr>
             </tbody>
           </table>
@@ -965,6 +968,10 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
           <li>un serveur MCP : Claude Code, Claude Desktop ou GitHub Copilot dans VS Code dessinent dans l'éditeur ouvert, mettent en forme, rangent, annulent. Le badge MCP de la barre d'outils donne l'adresse et les réglages à coller.</li>
         </ul>
         <p>Le serveur MCP donne aussi à l'agent des règles de modélisation et des prompts tout prêts, dans le menu de prompts de l'agent ou en commandes (<code>/mcp__bpmn-pilot__review_diagram</code> dans Claude Code) : <code>model_process</code>, <code>model_collaboration</code>, <code>review_diagram</code>, <code>tidy_diagram</code>, <code>critique_description</code>, <code>add_agent_step</code>, <code>write_user_stories</code>. Les <a href="#exemples-prompts">exemples de prompts</a> marchent aussi.</p>
+        <h3 id="sans-navigateur">Sans navigateur ouvert (mode sans écran)</h3>
+        <p>Par défaut, l'agent dessine dans un onglet ouvert de l'éditeur. Avec <code>docker-compose.headless.yml</code> à la place de <code>docker-compose.image.yml</code> (voir le README), il travaille sans aucun onglet : un service <code>renderer</code>, un Chromium sans écran isolé d'Internet et des clés API, ouvre l'éditeur dans un onglet invisible, qui se ferme après 5 minutes sans appel. Chaque diagramme ainsi dessiné est enregistré sur le serveur dans <span class="uib"><span class="ico" data-icon="library" aria-hidden="true"></span>Mes diagrammes</span>, sous un nom comme « Agent 2026-11-28 14h05 ».</p>
+        <p>Si vous ouvrez l'éditeur pendant ce temps, un bandeau le signale. <span class="uib">Ouvrir</span> charge le diagramme dans votre onglet, et l'agent continue là. Sans ce clic, il ne touche jamais au diagramme que vous avez sous les yeux. Avec l'option <code>returnFile</code>, <code>export_diagram</code> renvoie le fichier à l'agent.</p>
+        <figure><img src="/src/help/img/fr-bandeau-agent.webp" width="1200" height="600" alt="Bandeau en haut du canevas : L'agent dessine « Agent 2026-11-28 01h10 » sans éditeur ouvert, avec un bouton Ouvrir et une croix." loading="lazy" /><figcaption>Le bandeau qui annonce un diagramme dessiné sans éditeur ouvert.</figcaption></figure>
         <h3>Vos fichiers dans la version Docker</h3>
         <p>Le serveur range tout dans <code>bpmn-data</code>, à côté de son fichier compose (ou dans <code>BPMN_DATA_DIR</code>) :</p>
         <ul>
@@ -1034,7 +1041,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
         <!-- docker -->
         <details class="faq">
           <summary>Mon agent MCP ne dessine pas.</summary>
-          <p>L'agent dessine dans le dernier onglet de l'éditeur utilisé : gardez-le ouvert. Le badge doit indiquer « MCP : prêt », puis le nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Un clic redonne l'adresse et les réglages.</p>
+          <p>L'agent dessine dans le dernier onglet de l'éditeur utilisé : gardez-le ouvert, ou passez au <a href="#sans-navigateur">mode sans écran</a>. Le badge doit indiquer « MCP : prêt », puis le nom de l'agent dès qu'il se connecte (« MCP : Claude Code »). Un clic redonne l'adresse et les réglages.</p>
           <p>Une erreur 401 « MCP is closed » veut dire que l'éditeur est servi sous un autre nom que localhost, sans jeton. Générez un jeton dans <span class="ui">Connecter un agent</span>, mettez-le dans <code>MCP_TOKEN</code>, relancez, et recollez le réglage dans l'agent.</p>
         </details>
         <details class="faq">

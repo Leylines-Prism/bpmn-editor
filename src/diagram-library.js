@@ -337,7 +337,7 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
 
   async function openRow(row) {
     if (row.kind === 'dmn') return openDecisionRow(row)
-    if (isDirty() && !confirm(T('The current diagram has changes that are not saved in My diagrams. Open the other one anyway?', 'Le diagramme actuel a des modifications non enregistrées dans Mes diagrammes. Ouvrir l\'autre quand même ?'))) return
+    if (isDirty() && !confirm(T('The current diagram has changes that are not saved in My diagrams. Open the other one anyway?', 'Le diagramme actuel a des modifications non enregistrées dans Mes diagrammes. Ouvrir l\'autre quand même ?'))) return false
     say('')
     try {
       const item = await stores[row.place].get(row.id)
@@ -352,8 +352,10 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
       markClean()
       setStatus(T(`Opened: “${item.name}”`, `Ouvert : « ${item.name} »`))
       dialog.close()
+      return true
     } catch (err) {
       say(T(`Cannot open it: ${err?.message || err}`, `Ouverture impossible : ${err?.message || err}`), true)
+      return false
     }
   }
 
@@ -447,6 +449,14 @@ export function setupDiagramLibrary({ button, getXml, getName, setName, openXml,
   })
 
   return {
+    // Ouvre un diagramme enregistré sur le serveur (bannière du mode sans navigateur).
+    // Renvoie false si l'utilisateur renonce ou si l'ouverture échoue.
+    async openServer(id) {
+      if (!stores.server) return false
+      const opened = await openRow({ place: 'server', id, kind: 'bpmn' })
+      if (opened !== true && !dialog.open && status.textContent) dialog.showModal()
+      return opened === true
+    },
     // Le diagramme ouvert ne correspond plus à un diagramme enregistré
     // (Nouveau, fichier ouvert depuis le disque, XML collé).
     unlink() {

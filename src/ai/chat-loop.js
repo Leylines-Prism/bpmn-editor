@@ -10,6 +10,7 @@
 
 import { INSTRUCTIONS, buildTools } from './tools.js'
 import { imageCaption, isImageResult } from './image-result.js'
+import { isFileResult, withoutFile } from './file-result.js'
 import { anthropicUserContent, openaiUserContent } from './attachments.js'
 import { createAssist, runCritique } from './assist.js'
 
@@ -120,7 +121,9 @@ export async function runTool({ toolSet, name, input, executeTool, emit, log = c
   const parsed = validator.safeParse(input)
   if (!parsed.success) return toolError(name, T(`Invalid arguments: ${toolSet.z.prettifyError(parsed.error)}`, `Arguments invalides : ${toolSet.z.prettifyError(parsed.error)}`), emit, log)
   try {
-    const data = await executeTool(name, parsed.data)
+    let data = await executeTool(name, parsed.data)
+    // Le panneau propose déjà le fichier (bouton Télécharger) : le modèle n'en reçoit que la fiche.
+    if (isFileResult(data)) data = withoutFile(data)
     if (isImageResult(data)) {
       if (!images) {
         return toolError(name, 'This provider cannot receive images from tools: read the diagram with get_shapes instead.', emit, log)
