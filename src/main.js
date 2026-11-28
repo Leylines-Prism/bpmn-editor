@@ -54,7 +54,6 @@ import { setupMining } from './mining/mining-ui.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
-import { setupSimulationGlow } from './simulation-glow.js'
 import { ProbabilityPanelModule, isBranchFlow } from './probability-panel.js'
 import { RulesPanelModule } from './rules-panel.js'
 import { AgentStepModule } from './agent-step.js'
@@ -905,7 +904,6 @@ setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 // Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
 const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
-setupSimulationGlow(modeler)
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
