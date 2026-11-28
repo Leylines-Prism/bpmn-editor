@@ -206,7 +206,7 @@ the tools and give modeling rules: start and end events, verb + object for tasks
 events, a question on each exclusive gateway, no implicit split or join, the happy path from left to right.
 Most of them match what `validate_diagram` checks. The built-in chat sends the same text.
 
-The server also offers twelve MCP prompts (`src/ai/prompts.js`), which the user picks in their client. The first three of the Expert block send the same request as the matching Expert menu commands of the AI co-pilot:
+The server also offers thirteen MCP prompts (`src/ai/prompts.js`), which the user picks in their client. The first three of the Expert block send the same request as the matching Expert menu commands of the AI co-pilot:
 
 | Prompt | Arguments | Purpose |
 |---|---|---|
@@ -222,6 +222,7 @@ The server also offers twelve MCP prompts (`src/ai/prompts.js`), which the user 
 | `analyze_process` | none | runs 100 tokens, reads the report and saves its analysis with `set_report_commentary` (Expert > Co-pilot analysis) |
 | `assess_compliance` | `framework` (optional) | writes the risks, controls and requirements of each activity, and proposes the process identity |
 | `model_from_event_log` | none | draws the process from the loaded event log, then checks the log against it (fitness, deviations, real shares) |
+| `fill_decision_table` | `task` (optional) | writes the DMN decision table of a business rule task (inputs, outputs, hit policy, annotated rules), links it and tests it with `test_decision` (decision window > Fill in with the co-pilot) |
 
 ## Saved diagrams
 
