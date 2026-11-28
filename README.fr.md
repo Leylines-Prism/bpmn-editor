@@ -633,7 +633,14 @@ les [Discussions](https://github.com/Leylines-Prism/bpmn-pilot/discussions), les
 par le formulaire privé décrit dans [SECURITY.md](SECURITY.md). Pas de délai de réponse garanti,
 mais tout est lu.
 
+## Référencé sur
+
 [![Serveur MCP bpmn-pilot : note de qualité et de maintenance sur Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
+
+<a href="https://alternativeto.net/software/bpmn-pilot/about/?utm_source=badge&utm_medium=referral"><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://alternativeto.net/static/badges/badge-compact-dark.svg">
+  <img src="https://alternativeto.net/static/badges/badge-compact-light.svg" alt="BPMN-Pilot sur AlternativeTo" width="171" height="58">
+</picture></a>
 
 ## Soutenir le développement
 
