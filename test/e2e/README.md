@@ -6,6 +6,8 @@ the real MCP server and the published Docker composes.
 | Script | What it covers |
 |---|---|
 | `mcp-suite.mjs` | Every MCP tool, every MCP prompt and every HTTP route of the server (`/healthz`, `/chat`, `/diagrams`, `/exports`, `/mcp`), with the cases that must fail (bad token, foreign origin, unreadable XML, unknown id, wrong file type). Fails when the server publishes a tool the suite does not call. Writes every exported file to `--out` for a visual check. |
+| `ui-suite.mjs` | Visual sweep of the editor: French and English, light and dark, 1440 and 540 px, normal and Expert mode. Opens every toolbar menu and the dialogs they lead to, screenshots each screen and flags page overflow, overlapping or off-screen buttons, clipped text, low contrast, unnamed buttons, broken images, raw translation keys, console errors and dialogs that Escape does not close. Also checks the help and showcase pages and their internal links. |
+| `help-coverage.mjs` | Every toolbar and menu button must be named in the help (French and English), and every MCP tool and prompt in `mcp/README`. |
 | `docker-suite.sh` | Starts `docker-compose.image.yml` (editor tab open) and `docker-compose.headless.yml` (no tab, headless renderer) with the images under test, then runs `mcp-suite.mjs` against each. |
 
 ## Running
@@ -22,6 +24,13 @@ test/e2e/docker-suite.sh all          # or: image, headless
 
 To test published images instead, set `EDITOR_IMAGE`, `MCP_IMAGE` and `RENDERER_IMAGE`.
 Results and exported files land in `test-results/`.
+
+The browser suites run against any editor:
+
+```sh
+node test/e2e/ui-suite.mjs --url http://localhost:8080      # --only fr-dark-540 for one combination
+node test/e2e/help-coverage.mjs --url http://localhost:8080
+```
 
 `mcp-suite.mjs` also runs on its own against any running server:
 
