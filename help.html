@@ -161,6 +161,13 @@
         <h3>Search and zoom<span class="ico" data-icon="search" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Search</span>, or <kbd>Ctrl</kbd>+<kbd>F</kbd>, looks through labels, IDs and documentation. <kbd>Enter</kbd> selects the element found and centers the view. Next to it, <span class="uib"><span class="ico" data-icon="zoom-out" aria-hidden="true"></span>Zoom out</span> and <span class="uib"><span class="ico" data-icon="zoom-in" aria-hidden="true"></span>Zoom in</span> change the zoom by one step, the percentage between them opens a slider to set the zoom from 20% to 400%, with a 100% button, and <span class="uib"><span class="ico" data-icon="zoom-fit" aria-hidden="true"></span>Fit</span> shows the whole diagram.</p>
         <p><span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>Map</span>, next to Search, unfolds the tree of the diagram: each process or participant, its subprocesses, the activities linked to a sub-level and the tasks linked to a decision table, on every level. A click opens the item, like its button on the canvas, and the level shown is marked. The same button is in the Presentation mode bar.</p>
+        <p>The tree has no names of its own: each line shows the name typed on the block, by double-click or in the properties panel. To rename a line, rename the block.</p>
+        <ul>
+          <li>Process or participant: the participant's <span class="ui">Name</span> field, else <span class="ui">Process name</span> (process panel, with nothing selected). Without a name: "Main process".</li>
+          <li>Subprocess: its <span class="ui">Name</span> field. Without a name: "Subprocess".</li>
+          <li>Activity linked to a sub-level: its <span class="ui">Name</span> field, then, after an arrow, the <span class="ui">Linked diagram</span> of the <span class="ui">Sub-level</span> group, that is the file's name in My diagrams, when the two differ.</li>
+          <li>Task linked to a decision table: its <span class="ui">Name</span> field, else the identifier of the <span class="ui">Linked decision</span> (<span class="ui">Decision table (DMN)</span> group).</li>
+        </ul>
         <h3>Keyboard shortcuts</h3>
         <p>On a Mac, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">

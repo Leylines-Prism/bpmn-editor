@@ -161,6 +161,13 @@
         <h3>Rechercher et zoomer<span class="ico" data-icon="search" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="search" aria-hidden="true"></span>Rechercher</span>, ou <kbd>Ctrl</kbd>+<kbd>F</kbd>, cherche dans les libellés, les identifiants et la documentation. <kbd>Entrée</kbd> sélectionne l'élément trouvé et centre la vue. À côté, <span class="uib"><span class="ico" data-icon="zoom-out" aria-hidden="true"></span>Dézoomer</span> et <span class="uib"><span class="ico" data-icon="zoom-in" aria-hidden="true"></span>Zoomer</span> changent le zoom d'un cran, le pourcentage entre les deux ouvre au clic une glissière pour régler le zoom de 20 % à 400 %, avec un bouton 100 %, et <span class="uib"><span class="ico" data-icon="zoom-fit" aria-hidden="true"></span>Ajuster</span> montre tout le diagramme.</p>
         <p><span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>Plan</span>, à côté de Rechercher, déroule l'arborescence du diagramme : chaque processus ou participant, ses sous-processus, les activités liées à un sous-niveau et les tâches liées à une table de décision, sur tous les niveaux. Un clic ouvre l'élément, comme son bouton sur le canevas, et le niveau affiché est marqué. Le même bouton est dans la barre du mode Présentation.</p>
+        <p>L'arbre n'a pas de noms à lui : chaque ligne reprend le nom saisi sur le bloc, par double-clic ou dans le panneau de propriétés. Pour renommer une ligne, renommez le bloc.</p>
+        <ul>
+          <li>Processus ou participant : le champ <span class="ui">Nom</span> du participant, sinon <span class="ui">Nom du processus</span> (panneau du processus quand rien n'est sélectionné). Sans nom : « Processus principal ».</li>
+          <li>Sous-processus : son champ <span class="ui">Nom</span>. Sans nom : « Sous-processus ».</li>
+          <li>Activité liée à un sous-niveau : son champ <span class="ui">Nom</span>, puis, après une flèche, le <span class="ui">Diagramme lié</span> du groupe <span class="ui">Sous-niveau</span>, c'est-à-dire le nom du fichier dans Mes diagrammes, quand les deux diffèrent.</li>
+          <li>Tâche liée à une table de décision : son champ <span class="ui">Nom</span>, sinon l'identifiant de la <span class="ui">Décision liée</span> (groupe <span class="ui">Table de décision (DMN)</span>).</li>
+        </ul>
         <h3>Raccourcis clavier</h3>
         <p>Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>.</p>
         <div class="table-wrap">

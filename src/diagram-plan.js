@@ -101,6 +101,15 @@ export function setupDiagramPlan(modeler, { button }) {
     list.setAttribute('role', 'tree')
     for (const r of tree) list.append(item(r, current, 1))
     panel.append(list)
+    if (total) {
+      const note = document.createElement('p')
+      note.className = 'plan-note'
+      const arrow = (nodes) => nodes.some((x) => (x.kind === 'level' && x.detail && x.detail !== x.name) || arrow(x.children))
+      note.textContent = tree.some((r) => arrow(r.children))
+        ? T('Names come from the blocks: their Name field, and after the arrow the Linked diagram of the Sub-level group.', 'Les noms sont ceux des blocs : leur champ Nom et, après la flèche, le Diagramme lié du groupe Sous\u2011niveau.')
+        : T('Names come from the blocks: their Name field.', 'Les noms sont ceux des blocs : leur champ Nom.')
+      panel.append(note)
+    }
     if (!total) {
       const p = document.createElement('p')
       p.className = 'plan-empty'
