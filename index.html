@@ -63,7 +63,7 @@
     <input type="file" id="compare-input" accept=".bpmn,.xml" style="display:none" />
     <input type="file" id="file-input" accept=".bpmn,.xml,.enc" style="display:none" />
     <input type="file" id="dmn-input" accept=".dmn,.xml" style="display:none" />
-    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets (PDF, Word, Markdown), or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
+    <button class="btn" id="btn-export" title="Export as BPMN, XML, SVG, PNG or PDF, procedure sheets (PDF, Word, Markdown), an HTML documentation page, or print" data-icon="save" popovertarget="export-menu" aria-haspopup="menu">Export</button>
     <div id="export-menu" class="menu" popover role="menu">
       <button class="btn" id="btn-save" title="BPMN 2.0 file, readable by other BPMN tools" data-icon="save" role="menuitem">.bpmn file</button>
       <button class="btn" id="btn-save-xml" title="Same content as .bpmn, with the .xml extension" data-icon="save" role="menuitem">.xml file</button>
@@ -79,7 +79,9 @@
       <button class="btn" id="btn-sheets-pdf" title="One page per activity, in the order of the flow, with its documentation" data-icon="pdf" role="menuitem">Procedure sheets (PDF)</button>
       <button class="btn" id="btn-sheets-md" title="The same procedure sheets, as Markdown text" data-icon="code" role="menuitem">Procedure sheets (Markdown)</button>
       <button class="btn" id="btn-sheets-docx" title="The same procedure sheets, as an editable Word document" data-icon="word" role="menuitem">Procedure sheets (Word)</button>
+      <button class="btn" id="btn-doc-html" title="One self-contained web page: the diagram, and the sheet of each element on a click. Opens in any browser, without BPMN Pilot" data-icon="doc" role="menuitem">Documentation page (HTML)</button>
       <button class="btn" id="btn-raci-xlsx" title="Who performs, answers for, is consulted on and informed of each activity, as an Excel workbook" data-icon="table" role="menuitem">RACI matrix (Excel)</button>
+      <button class="btn expert-only mod-user-stories-only" id="btn-stories-md" title="The user stories and acceptance criteria of each activity, in the order of the flow, as Markdown" data-icon="code" role="menuitem">User stories (Markdown)</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-xml" title="Show the BPMN XML, ready to copy" data-icon="code" role="menuitem">XML code to copy…</button>
       <button class="btn" id="btn-print" title="Print, or save as PDF from the browser's dialog" data-icon="print" role="menuitem">Print…</button>
@@ -97,6 +99,7 @@
       <button class="btn mod-report-only" id="btn-report-docx" title="Same process report, as an editable Word document" data-icon="word" role="menuitem">Process report (Word)</button>
       <div class="menu-row mod-report-only"><button class="btn copilot-only" disabled id="btn-ai-analysis" data-icon="assistant" title="The AI co-pilot runs 100 tokens, reads the report and writes its analysis into it" role="menuitem">Co-pilot analysis</button><span class="copilot-help" id="help-ai-analysis" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <div class="menu-row mod-ai-potential-only"><button class="btn copilot-only" disabled id="btn-ai-potential" data-icon="assistant" title="The AI co-pilot rates each activity: automatable, AI-assisted or human, with its reason and safeguard, and lists the risks and controls of the steps given to AI; the result goes into the process report" role="menuitem">AI potential by activity</button><span class="copilot-help" id="help-ai-potential" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
+      <div class="menu-row mod-user-stories-only"><button class="btn copilot-only" disabled id="btn-ai-stories" data-icon="assistant" title="The AI co-pilot writes the user stories and acceptance criteria of each activity, from its name, lane, documentation and systems" role="menuitem">User stories by activity</button><span class="copilot-help" id="help-ai-stories" role="img" tabindex="0" aria-label="Connect an AI model to the co-pilot to use this function"><span class="copilot-help-icon" data-icon="help"></span></span></div>
       <button class="btn dmn-only expert-only" id="btn-dmn-drd" data-icon="table" title="Open the decisions of this diagram and their requirements diagram" role="menuitem">Decisions of the diagram…</button>
       <div class="menu-sep" role="separator"></div>
       <button class="btn" id="btn-expert-modules" data-icon="modules" title="Turn each expert function on or off" role="menuitem">Choose modules…</button>

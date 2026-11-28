@@ -43,6 +43,7 @@ import './brand/tokens.css'
 import './theme/leylines.css'
 import './doc/doc.css'
 import './dmn/dmn.css'
+import './sub-levels.css'
 import { setupThemeToggle } from './theme/theme-toggle.js'
 import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
@@ -57,6 +58,7 @@ import { RulesPanelModule } from './rules-panel.js'
 import bpmnPilotModdle from './bpmn-pilot-moddle.json'
 import zeebeModdle from 'zeebe-bpmn-moddle/resources/zeebe.json'
 import { DecisionPanelModule } from './dmn/decision-links.js'
+import { SubLevelPanelModule, setupSubLevels } from './sub-levels.js'
 import { setupDecisions } from './dmn/setup.js'
 import { buildReport, reportToMarkdown, reportToPdf } from './process-report.js'
 import { setupSmallScreenNotice } from './small-screen.js'
@@ -178,6 +180,7 @@ const modeler = new BpmnModeler({
     ProbabilityPanelModule,
     RulesPanelModule,
     DecisionPanelModule,
+    SubLevelPanelModule,
     ...(lang === 'fr' ? [TranslateModule] : []),
   ],
 })
@@ -403,6 +406,18 @@ const library = setupDiagramLibrary({
   openDecisionModel: (item) => decisions.openDecisionModel(item),
 })
 
+// Carte à plusieurs niveaux : une activité d'appel ouvre le diagramme qui la détaille, fil d'Ariane
+// pour remonter (src/sub-levels.js).
+setupSubLevels(modeler, {
+  library,
+  getName: baseName,
+  setStatus: (msg) => { document.getElementById('autosave-status').textContent = msg },
+  showPanelGroup: () => {
+    const toggle = document.getElementById('btn-properties')
+    if (toggle?.getAttribute('aria-expanded') === 'false') toggle.click()
+  },
+})
+
 // Version docker : le menu Exporter peut aussi déposer les fichiers dans le dossier du serveur.
 const { deliver, sendToServer } = setupExportDestination({
   menu: document.getElementById('export-menu'),
@@ -571,6 +586,46 @@ document.getElementById('btn-sheets-pdf').addEventListener('click', (e) => expor
 document.getElementById('btn-sheets-md').addEventListener('click', (e) => exportSheets('md', e.currentTarget))
 document.getElementById('btn-sheets-docx').addEventListener('click', (e) => exportSheets('docx', e.currentTarget))
 
+// Exporter > Page de documentation (HTML) : une page autonome, diagramme et fiches (src/doc/doc-page.js).
+document.getElementById('btn-doc-html').addEventListener('click', async (e) => {
+  const button = e.currentTarget
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ docPageHtml }, report, { svg }] = await Promise.all([import('./doc/doc-page.js'), processReport(), modeler.saveSVG()])
+    const html = docPageHtml({ report, svg })
+    await deliver(html, `${baseName()} - ${T('documentation', 'documentation')}`, 'html', 'text/html')
+    track('export', { format: 'doc-html' })
+  } catch (err) {
+    console.error('Documentation page error:', err)
+    alert(T('Documentation page failed: ', 'Page de documentation impossible : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+})
+
+// Exporter > Récits utilisateur (Markdown), module Expert « Récits utilisateur ».
+document.getElementById('btn-stories-md').addEventListener('click', async (e) => {
+  const button = e.currentTarget
+  button.disabled = true
+  try {
+    if (!hasShapes(modeler)) throw new Error(T('the diagram is empty', 'le diagramme est vide'))
+    const [{ storiesToMarkdown, activitiesWithStories }, report] = await Promise.all([import('./user-stories.js'), processReport()])
+    if (!activitiesWithStories(report).length) {
+      alert(T('No activity has a user story or an acceptance criterion yet. Select an activity and fill in the User stories group of the Process panel, or ask the co-pilot (Expert > User stories by activity).',
+        'Aucune activité n\'a encore de récit utilisateur ni de critère d\'acceptation. Sélectionnez une activité et remplissez le groupe Récits utilisateur du panneau Processus, ou demandez au Co-pilote (Expert > Récits utilisateur par activité).'))
+      return
+    }
+    await deliver(storiesToMarkdown(report), `${baseName()} - ${T('user stories', 'récits utilisateur')}`, 'md', 'text/markdown')
+    track('export', { format: 'stories-md' })
+  } catch (err) {
+    console.error('User stories error:', err)
+    alert(T('User stories failed: ', 'Récits utilisateur impossibles : ') + err.message)
+  } finally {
+    button.disabled = false
+  }
+})
+
 // Exporter > Matrice RACI (Excel) : une ligne par activité, une colonne par rôle.
 document.getElementById('btn-raci-xlsx').addEventListener('click', async (e) => {
   const button = e.currentTarget
@@ -641,6 +696,22 @@ document.getElementById('btn-ai-potential').addEventListener('click', () => {
       'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
       'Pour chaque activité automate ou assist, ajoute aussi dans son champ risks les risques de la confier à l\'IA (erreur, données personnelles, absence de revue…), un par ligne, et dans son champ controls les contrôles correspondants, un par ligne, en gardant les risques et contrôles déjà écrits. ' +
       'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.'))
+})
+document.getElementById('btn-ai-stories').addEventListener('click', () => {
+  setExpert(true)
+  if (!modeler.get('elementRegistry').find((el) => el.businessObject?.$instanceOf?.('bpmn:Activity'))) {
+    alert(T('The diagram has no activity to describe.', 'Le diagramme n\'a aucune activité à décrire.'))
+    return
+  }
+  askCopilot(T(
+    'Write the user stories and acceptance criteria of each activity of this diagram, from its name, lane, documentation, assignee and systems, as a product owner would for the team that will tool the process. ' +
+      'Save them with update_elements: userStories, one per line, in the form "As a <role>, I want <action>, so that <benefit>"; acceptanceCriteria, one per line, testable, in the form "Given <context>, when <event>, then <result>". ' +
+      'Two or three stories and three to five criteria per activity at most, keeping the ones already written. Change nothing else. ' +
+      'Then list in three lines the activities whose need is still unclear and the question to ask.',
+    'Rédige les récits utilisateur et les critères d\'acceptation de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes, comme le ferait un product owner pour l\'équipe qui outillera le processus. ' +
+      'Enregistre-les avec update_elements : userStories, un par ligne, sous la forme « En tant que <rôle>, je veux <action>, afin de <bénéfice> » ; acceptanceCriteria, un par ligne, vérifiable, sous la forme « Étant donné <contexte>, quand <événement>, alors <résultat> ». ' +
+      'Deux ou trois récits et trois à cinq critères par activité au plus, en gardant ceux déjà écrits. Ne change rien d\'autre. ' +
+      'Liste ensuite en trois lignes les activités dont le besoin reste flou et la question à poser.'))
 })
 document.getElementById('btn-ai-analysis').addEventListener('click', () => {
   setExpert(true)

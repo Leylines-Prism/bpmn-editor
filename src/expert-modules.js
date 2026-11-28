@@ -45,6 +45,11 @@ const modules = [
     detail: () => T('Risks, controls and requirements of each activity, and the process identity, with the compliance matrix of the report.', 'Risques, contrôles et exigences de chaque activité, et fiche d\'identité du processus, avec la matrice de conformité du rapport.'),
   },
   {
+    id: 'user-stories', icon: 'doc', default: true, help: ['recits-utilisateur', 'user-stories'],
+    name: () => T('User stories', 'Récits utilisateur'),
+    detail: () => T('User stories and acceptance criteria for each activity, written by the co-pilot or by hand, exported as a Markdown backlog.', 'Récits utilisateur et critères d\'acceptation de chaque activité, rédigés par le Co-pilote ou à la main, exportés en Markdown.'),
+  },
+  {
     id: 'camunda-export', icon: 'engine', default: false, help: ['export-camunda', 'camunda-export'],
     name: () => T('Camunda export', 'Export pour Camunda'),
     detail: () => T('BPMN files prepared for Camunda 8 or 7, in the Export menu.', 'Fichiers BPMN préparés pour Camunda 8 ou 7, dans le menu Exporter.'),

@@ -8,7 +8,7 @@ const prompts = buildPrompts(z)
 const byName = Object.fromEntries(prompts.map((p) => [p.name, p]))
 
 test('the five prompts are there, with unique names', () => {
-  assert.deepEqual(Object.keys(byName).sort(), ['critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram'])
+  assert.deepEqual(Object.keys(byName).sort(), ['critique_description', 'model_collaboration', 'model_process', 'review_diagram', 'tidy_diagram', 'write_user_stories'])
   for (const p of prompts) assert.ok(p.title && p.description, p.name)
 })
 

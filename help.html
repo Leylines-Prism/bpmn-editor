@@ -44,6 +44,7 @@
               <li><a href="#colors-text">Colors and text</a></li>
               <li><a href="#checking">Check and tidy up</a></li>
               <li><a href="#saving">Saving and My diagrams</a></li>
+              <li><a href="#levels">Multi-level map</a></li>
               <li><a href="#open-export">Open, import, export</a></li>
               <li><a href="#presenting">Presenting</a></li>
               <li><a href="#documenting">Documenting elements</a></li>
@@ -61,6 +62,7 @@
               <li><a href="#process-report">Process report</a></li>
               <li><a href="#ai-potential">AI potential by activity</a></li>
               <li><a href="#risks-compliance">Risks and compliance</a></li>
+              <li><a href="#user-stories">User stories</a></li>
               <li><a href="#camunda-export">Camunda export</a></li>
               <li><a href="#dmn-decisions">Decision tables (DMN)</a></li>
               <li><a href="#experts-mcp">MCP agents in Expert mode</a></li>
@@ -390,6 +392,28 @@
         <!-- /docker -->
       </section>
 
+      <section id="levels">
+        <h2>Multi-level map (call activity)<span class="ico" data-icon="levels" aria-hidden="true"></span></h2>
+        <p>An end-to-end process rarely fits on one screen. Keep an overview of a few steps, and detail each one in its own diagram: a call activity points to the diagram that describes it, and one click goes down to it.</p>
+        <ol>
+          <li>Turn the task into a call activity: <span class="uib"><span class="ico bpmn-icon-screw-wrench" aria-hidden="true"></span>Change element</span> (the wrench), then <span class="ui">Call activity</span>. It keeps its links and label, and gets a thick outline. The <span class="ui">Sub-level</span> group appears in the <a href="#properties">Process panel</a>.</li>
+          <li><span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>+ Create the diagram of this level</span> saves in <a href="#saving">My diagrams</a> a diagram named after the activity, with a start and an end, and links it. You can also pick a diagram already saved from the list.</li>
+          <li>The <span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>Open</span> marker, at the bottom of the activity, or <span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>Open this level</span> in the panel, opens the linked diagram. The breadcrumb trail, at the top of the canvas, shows the path taken: <span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>↑ Up</span>, or a click on a level, goes back to it, with the starting activity selected.</li>
+        </ol>
+        <div class="fig-pair">
+          <figure><p class="fig-title">The link</p><img src="/src/help/img/en-niveaux-lien.webp" width="1100" height="520" alt="The call activity Place the order, with its Open marker, and the Sub-level group of the Process panel: linked diagram Place the order, Open this level and Unlink buttons." loading="lazy" /><figcaption>An activity linked to the diagram that details it.</figcaption></figure>
+          <figure><p class="fig-title">The level below</p><img src="/src/help/img/en-niveaux-fil.webp" width="1100" height="520" alt="The diagram Place the order open, with the breadcrumb trail at the top of the canvas: Up, Internal purchase, Place the order." loading="lazy" /><figcaption>The breadcrumb trail leads back to the overall process.</figcaption></figure>
+        </div>
+        <p>Before each change of level, the open diagram is saved in My diagrams (updated, or created under its name if it was not there): nothing is lost. Opening another diagram, a file or <span class="uib"><span class="ico" data-icon="new" aria-hidden="true"></span>New</span> leaves the map and clears the trail. A call activity without a link has a dashed <span class="uib"><span class="ico" data-icon="levels" aria-hidden="true"></span>+ Link</span> marker, and a link whose diagram is gone from My diagrams, a red one.</p>
+        <p>The link is kept in the .bpmn file: the name of the linked diagram (<code>bpmnpilot:linkedDiagramName</code>), which finds it in another browser where it is saved under that name, and the id of the called process in the standard <code>calledElement</code> attribute, which execution engines read. In <a href="#presenting">Presentation</a> mode, the markers of linked activities and the trail stay: you go down and back up in front of the audience. Procedure sheets and the documentation page give, for each linked activity, the diagram that details it.</p>
+        <!-- online -->
+        <div class="note">My diagrams lives in this browser: to pass a map on, export each level as a .bpmn file, under the name of its diagram.</div>
+        <!-- /online -->
+        <!-- docker -->
+        <div class="note">A diagram created from a level saved on the server is stored on the server too: the whole map opens from every browser that reaches the server.</div>
+        <!-- /docker -->
+      </section>
+
       <section id="open-export">
         <h2>Open, import, export (XML, SVG, PNG, PDF)</h2>
         <h3>Open<span class="ico" data-icon="open" aria-hidden="true"></span></h3>
@@ -449,14 +473,16 @@
               <tr><td>PNG image</td><td>An image to paste into a document, an email or a slide</td></tr>
               <tr><td>PDF document</td><td>Send or archive the diagram</td></tr>
               <tr><td>Procedure sheets (PDF, Markdown or Word)</td><td>One sheet per activity, in the order of the flow, with its documentation, assignee, systems and RACI (see <a href="#documenting">Documenting elements</a>). The Word document can then be edited like any other.</td></tr>
+              <tr><td>Documentation page (HTML)</td><td>A single page, to open in any browser: the diagram, where a click on an element opens its sheet, then all the sheets (see <a href="#documentation-page">below</a>)</td></tr>
               <tr><td>RACI matrix (Excel)</td><td>A workbook: one row per activity, one column per role, and the letters R, A, C, I (see <a href="#responsibilities">Responsibilities</a>)</td></tr>
+              <tr><td>User stories (Markdown)</td><td>In Expert mode: the user stories and acceptance criteria of each activity, see <a href="#user-stories">User stories</a></td></tr>
               <tr><td>XML code to copy…</td><td>Copy the code to paste it elsewhere, or download it</td></tr>
               <tr><td>Print…</td><td>Print the diagram alone, without the editor around it: it fits on one page, and the orientation follows its shape</td></tr>
             </tbody>
           </table>
         </div>
         <p>Every export uses the file name shown in the toolbar.</p>
-        <figure><img src="/src/help/img/en-menu-exporter.webp" width="242" height="606" alt="Export menu open in Expert mode: Destination, .bpmn file, .xml file, Encrypted .bpmn file, BPMN for Camunda 8 and 7, SVG and PNG images, PDF document, Procedure sheets in PDF, Markdown and Word, RACI matrix (Excel), XML code to copy, Print." loading="lazy" /><figcaption>The Export menu, in Expert mode.</figcaption></figure>
+        <figure><img src="/src/help/img/en-menu-exporter.webp" width="240" height="670" alt="Export menu open in Expert mode: Destination, .bpmn file, .xml file, Encrypted .bpmn file, BPMN for Camunda 8 and 7, SVG and PNG images, PDF document, Procedure sheets in PDF, Markdown and Word, Documentation page (HTML), RACI matrix (Excel), User stories (Markdown), XML code to copy, Print." loading="lazy" /><figcaption>The Export menu, in Expert mode.</figcaption></figure>
         <!-- online -->
         <p>In the Docker version, the menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /online -->
@@ -464,6 +490,10 @@
         <p>The menu starts with a <span class="ui">Destination</span> choice, to make before clicking a format: <span class="ui">Download</span> (the default, the browser downloads the file), <span class="ui">Server</span> (the file goes to the server folder, see <a href="#docker">Your files in the Docker version</a>) or <span class="ui">Both</span>. The browser remembers this choice. XML code to copy and Print make no file and are not concerned.</p>
         <!-- /docker -->
         <p>The <a href="#process-report">process report</a>, as PDF or Markdown, comes from the Expert menu: see <a href="#bpmn-experts">Expert mode</a>. In Expert mode, DMN decisions can also be opened and exported as .dmn files: see <a href="#dmn-files">Decision tables (DMN)</a>.</p>
+        <h3 id="documentation-page">Documentation page (HTML)<span class="ico" data-icon="doc" aria-hidden="true"></span></h3>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="doc" aria-hidden="true"></span>Documentation page (HTML)</span>, makes a single .html file that reads without BPMN Pilot: to attach to an e-mail, to put on an intranet or a wiki, to open offline. At the top, the title, the date and the <a href="#process-identity">process identity</a> if it is filled in. Then the diagram, read-only: an element that has a sheet is highlighted on hover, and a click opens its sheet on the right (<kbd>Esc</kbd> or the cross closes it). Below, all the sheets in the order of the flow, like the <a href="#documenting">procedure sheets</a>: type, lane, assignee, systems, RACI, before and next, documentation, and, when filled in, risks, controls, requirements, sub-level, user stories and acceptance criteria.</p>
+        <p>The page loads nothing from elsewhere: no font, no script, no external image. It stays light whatever the theme, and prints with all its sheets.</p>
+        <figure><img src="/src/help/img/en-page-documentation.webp" width="1280" height="720" alt="Documentation page open in a browser: the title Internal purchase, the diagram, the task Check the budget highlighted and its sheet on the right with its lane, what comes before and next, its documentation and its user stories." loading="lazy" /><figcaption>The documentation page, with the sheet of Check the budget open.</figcaption></figure>
         <h3>Exports asked of the AI</h3>
         <p>You can ask the AI co-pilot or an MCP agent for a file: "export the diagram as a PDF". It makes the same file as the Export menu (BPMN, SVG, PNG or PDF), under the diagram name or the one you give it. A banner then appears at the bottom of the canvas, with a <span class="uib">Download</span> button: the file is downloaded only if you click it. The cross closes the banner, and a new export replaces the previous one.</p>
         <figure><img src="/src/help/img/en-export-ia.webp" width="359" height="46" alt="Banner at the bottom of the canvas: AI exported Leave request.pdf, with a Download button and a cross to close it." loading="lazy" /><figcaption>The banner that follows an export asked of the AI.</figcaption></figure>
@@ -875,12 +905,12 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       <section id="bpmn-experts" class="expert-part">
         <h2>Turn on Expert mode<span class="ico" data-icon="expert" aria-hidden="true"></span></h2>
         <p>These features are for testing a model and reporting on it: replaying the process, measuring how instances spread, producing a report, and linking the decisions of the process to DMN tables.</p>
-        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu, with the commands of the <a href="#modules">modules that are on</a>: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, <a href="#probabilities">Propose probabilities</a>, <a href="#process-report">Co-pilot analysis</a> and <a href="#ai-potential">AI potential by activity</a>, the last three greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The <a href="#ai-checks">co-pilot checks</a> and the MCP drawing tools are available either way.</p>
+        <p>The <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> button of the toolbar opens a menu, with the commands of the <a href="#modules">modules that are on</a>: <span class="uib"><span class="ico" data-icon="play" aria-hidden="true"></span>Simulation</span>, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Process report (Markdown)</span>, <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Process report (Word)</span>, <a href="#probabilities">Propose probabilities</a>, <a href="#process-report">Co-pilot analysis</a>, <a href="#ai-potential">AI potential by activity</a> and <a href="#user-stories">User stories by activity</a>, the last four greyed out until a model is chosen for the co-pilot: a small help icon says so on hover. Choosing an entry turns expert mode on: the button turns blue, and the Probability (%) field appears in the Process panel. The mode stays on until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>, at the bottom of the same menu, and the browser remembers it. This entry is hidden while a simulation runs. Outside this mode, the editor shows none of these tools. The <a href="#ai-checks">co-pilot checks</a> and the MCP drawing tools are available either way.</p>
         <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="204" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF, Markdown or Word." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
         <h3 id="modules">Choose modules<span class="ico" data-icon="modules" aria-hidden="true"></span></h3>
-        <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span>, at the bottom of the menu, opens a window with one switch per function: <span class="ui">Token simulation</span>, <span class="ui">Heatmap</span>, <span class="ui">Process report</span>, <span class="ui">AI potential</span>, <span class="ui">Risks and compliance</span>, <span class="ui">Camunda export</span> and <span class="ui">Decision tables (DMN)</span>. Turn on only what you use: the Expert menu and the Process panel only show the commands of the modules that are on. The heatmap needs the simulation. By default, the simulation, the heatmap, the report, the AI potential and the risks are on, and the Camunda export and decision tables are off. The browser remembers your choices.</p>
-        <figure><img src="/src/help/img/en-modules-experts.webp" width="1040" height="1680" alt="The Expert modules window: Token simulation, Heatmap, Process report, AI potential, Risks and compliance, Camunda export and Decision tables (DMN), each with its switch, a line of explanation and a link to the help." loading="lazy" /><figcaption>The Expert modules window: here, the Camunda export and decision tables are off.</figcaption></figure>
-        <p>Turning a module off leaves the diagram as it is: the probabilities, decisions, AI potential, risks and process identity already set stay in the file. The <span class="ui">Decision tables (DMN)</span> module, once on, adds the markers of business rule tasks, the <span class="ui">Decision (DMN)</span> group of the Process panel and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span> entry: see <a href="#dmn-decisions">Decision tables (DMN)</a>. AI agents, through the co-pilot or MCP, keep all their tools, whatever modules are on.</p>
+        <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span>, at the bottom of the menu, opens a window with one switch per function: <span class="ui">Token simulation</span>, <span class="ui">Heatmap</span>, <span class="ui">Process report</span>, <span class="ui">AI potential</span>, <span class="ui">Risks and compliance</span>, <span class="ui">User stories</span>, <span class="ui">Camunda export</span> and <span class="ui">Decision tables (DMN)</span>. Turn on only what you use: the Expert menu and the Process panel only show the commands of the modules that are on. The heatmap needs the simulation. By default, the simulation, the heatmap, the report, the AI potential, the risks and the user stories are on, and the Camunda export and decision tables are off. The browser remembers your choices.</p>
+        <figure><img src="/src/help/img/en-modules-experts.webp" width="1040" height="1864" alt="The Expert modules window: Token simulation, Heatmap, Process report, AI potential, Risks and compliance, User stories, Camunda export and Decision tables (DMN), each with its switch, a line of explanation and a link to the help." loading="lazy" /><figcaption>The Expert modules window: here, the Camunda export and decision tables are off.</figcaption></figure>
+        <p>Turning a module off leaves the diagram as it is: the probabilities, decisions, AI potential, risks, user stories and process identity already set stay in the file. The <span class="ui">Decision tables (DMN)</span> module, once on, adds the markers of business rule tasks, the <span class="ui">Decision (DMN)</span> group of the Process panel and the <span class="uib"><span class="ico" data-icon="table" aria-hidden="true"></span>Decisions of the diagram…</span> entry: see <a href="#dmn-decisions">Decision tables (DMN)</a>. AI agents, through the co-pilot or MCP, keep all their tools, whatever modules are on.</p>
       </section>
 
       <section id="simulation" class="expert-part">
@@ -974,6 +1004,19 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <p>This function needs the <span class="ui">Risks and compliance</span> module, to turn on in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
       </section>
 
+      <section id="user-stories" class="expert-part">
+        <h2>User stories and acceptance criteria<span class="ico" data-icon="doc" aria-hidden="true"></span></h2>
+        <p>To go from the process to the tool that will serve it, each activity can carry its user stories and acceptance criteria. In Expert mode, the Process panel of an activity gets the <span class="ui">User stories</span> group:</p>
+        <ul>
+          <li><span class="ui">User stories</span>: one per line, in the form "As a &lt;role&gt;, I want &lt;action&gt;, so that &lt;benefit&gt;".</li>
+          <li><span class="ui">Acceptance criteria</span>: one per line, testable, in the form "Given…, when…, then…" (Gherkin).</li>
+        </ul>
+        <p><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>User stories by activity</span>, in the <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> menu, asks the co-pilot for two or three stories and three to five criteria per activity, from its name, lane, documentation, assignee and systems. It keeps those already written, changes nothing else, then lists the activities whose need is still unclear, with the question to ask. The entry stays greyed out until a model is chosen. An MCP agent does the same with <code>update_elements</code>, or the <code>write_user_stories</code> prompt.</p>
+        <figure><img src="/src/help/img/en-recits-utilisateur.webp" width="300" height="875" alt="Process panel of the task Check the budget in Expert mode: User stories group with two stories and three acceptance criteria." loading="lazy" /><figcaption>The User stories group of an activity.</figcaption></figure>
+        <p><span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span>, then <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>User stories (Markdown)</span>, turns them into a backlog ready for a tracking tool (Jira, GitLab, Azure DevOps…): one section per activity in the order of the flow, with its lane, assignee and systems, the stories as a list and the criteria as checkboxes. The process report (PDF, Markdown and Word), the procedure sheets and the <a href="#documentation-page">documentation page</a> include them too.</p>
+        <p>This function needs the <span class="ui">User stories</span> module, on by default, in <span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span> then <a href="#modules">Choose modules…</a>.</p>
+      </section>
+
       <section id="camunda-export" class="expert-part">
         <h2>Export for Camunda (8 and 7)<span class="ico" data-icon="engine" aria-hidden="true"></span></h2>
         <p>In Expert mode, <span class="uib"><span class="ico" data-icon="save" aria-hidden="true"></span>Export</span> offers <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 8</span> and <span class="uib"><span class="ico" data-icon="engine" aria-hidden="true"></span>BPMN for Camunda 7</span>. The file opens in Camunda Modeler on the right platform, with what BPMN Pilot can already translate for the engine:</p>
@@ -1056,7 +1099,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
         <p>In the <a href="#docker">Docker version</a>, an MCP agent also gets the report, the probabilities and the decision tables:</p>
         <ul>
           <li><code>get_process_report</code> returns the <a href="#process-report">process report</a> in Markdown. With <code>simulate</code>, it first computes 100 tokens following the branch probabilities;</li>
-          <li><code>update_elements</code> also sets the <span class="ui">Documentation</span> field and the probability of a branch, marked as proposed by the AI until reviewed;</li>
+          <li><code>update_elements</code> also sets the <span class="ui">Documentation</span> field, the user stories and acceptance criteria of an activity, and the probability of a branch, marked as proposed by the AI until reviewed;</li>
           <li><code>set_report_commentary</code> saves the analysis of the process in the file, for the report;</li>
           <li><code>get_decisions</code> returns the decisions of the diagram (inputs, outputs, rules, hit policy), the tasks that call them and the findings;</li>
           <li><code>set_decision_table</code> creates or replaces a decision table, and links it to a task with <code>linkTo</code>;</li>

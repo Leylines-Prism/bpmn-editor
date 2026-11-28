@@ -123,7 +123,7 @@ export function buildTools(z) {
       description:
         'Lists the elements of the open diagram: shapes (id, type, name, position, parent, incoming and outgoing flows, documentation) and connections (id, type, name, source, target). ' +
         'Documentation is the Markdown text the user wrote about the element (shortened past 1,500 characters): use it to answer questions about the process. ' +
-        'Filled-in fields are included too (assignee, systems, RACI roles, AI potential, risks, controls, requirements, branch condition and probability), and the root carries the process identity: read them before completing them with update_elements, which replaces a field as a whole. ' +
+        'Filled-in fields are included too (assignee, systems, RACI roles, AI potential, risks, controls, requirements, user stories, acceptance criteria, branch condition and probability, and the diagram a call activity is linked to), and the root carries the process identity: read them before completing them with update_elements, which replaces a field as a whole. ' +
         'Call it before changing an existing diagram: the other tools take these ids. Read-only. ' +
         'For the full BPMN content (conditions, full documentation, extensions) use get_diagram_xml; to see the layout, get_diagram_image.',
       inputSchema: {},
@@ -262,7 +262,7 @@ export function buildTools(z) {
       title: 'Update elements',
       description:
         'Renames elements, changes their type (for example Task to UserTask), sets an activity marker or whether an event interrupts, fills in their Documentation field, sets the probability or the plain-language condition of a gateway branch, ' +
-        'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls and regulatory requirements of an activity. ' +
+        'or fills in the assignee, systems used, RACI roles, AI potential, risks, controls, regulatory requirements, user stories and acceptance criteria of an activity. ' +
         'With the id of the diagram root (the process, or the collaboration when there are pools, as given by get_shapes), it fills in the process identity: owner, version, status, approval date, scope. ' +
         'Only the fields given change. A type change can produce a new id, returned in the result. ' +
         'For colors and fonts use style_elements; to move shapes, move_elements or layout_diagram. The user can undo the call with Ctrl+Z.',
@@ -298,6 +298,8 @@ export function buildTools(z) {
               risks: z.string().max(1000).optional().describe('Activities only: what can go wrong at this step, one risk per line. Empty string to clear it'),
               controls: z.string().max(1000).optional().describe('Activities only: what prevents or detects those risks (review, double check, threshold, log), one control per line. Empty string to clear it'),
               requirements: z.string().max(500).optional().describe('Activities only: regulatory or standard references this step must meet, separated by semicolons, e.g. "GDPR art. 30; ISO 9001 §8.5; AI Act art. 14". Empty string to clear it'),
+              userStories: z.string().max(2000).optional().describe('Activities only: user stories of the need this step carries, one per line, "As a <role>, I want <action>, so that <benefit>". It replaces the whole field: send the existing stories with your additions. Empty string to clear it'),
+              acceptanceCriteria: z.string().max(2000).optional().describe('Activities only: testable acceptance criteria, one per line, "Given <context>, when <event>, then <result>". It replaces the whole field. Empty string to clear it'),
               owner: z.string().max(200).optional().describe('Diagram root only: process owner, the person or role who answers for the process'),
               version: z.string().max(50).optional().describe('Diagram root only: version of the process, e.g. "2.1"'),
               status: z.enum(['draft', 'review', 'approved', 'retired']).nullable().optional().describe('Diagram root only: status of the process. null to clear it'),

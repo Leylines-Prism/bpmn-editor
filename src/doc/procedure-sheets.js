@@ -29,6 +29,15 @@ function complianceFacts(s) {
   ].filter(([, v]) => v)
 }
 
+// Sous-niveau, récits utilisateur et critères d'acceptation, quand ils sont renseignés.
+function moreFacts(s) {
+  return [
+    [T('Detailed in', 'Détaillé dans'), s.linkedDiagram ? T(`diagram “${s.linkedDiagram}”`, `diagramme « ${s.linkedDiagram} »`) : ''],
+    [T('User stories', 'Récits utilisateur'), (s.userStories || []).join(' ; ')],
+    [T('Acceptance criteria', 'Critères d\'acceptation'), (s.acceptanceCriteria || []).join(' ; ')],
+  ].filter(([, v]) => v)
+}
+
 const heading = (s) => (s.number ? `${s.number}. ${s.name}` : s.name)
 const dateText = (date) => date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 const colon = () => T(': ', ' : ')
@@ -55,7 +64,7 @@ export function sheetsToMarkdown(report) {
     lines.push(facts.join(' · '))
     if (s.previous?.length) lines.push('', `**${T('Before', 'Avant')}**${colon()}${s.previous.join(' ; ')}`)
     if (s.next) lines.push('', `**${T('Next', 'Ensuite')}**${colon()}${s.next}`)
-    for (const [k, v] of complianceFacts(s)) lines.push('', `**${k}**${colon()}${v}`)
+    for (const [k, v] of [...complianceFacts(s), ...moreFacts(s)]) lines.push('', `**${k}**${colon()}${v}`)
     lines.push('', s.docMarkdown ? shiftHeadings(s.docMarkdown, 1) : `*${T('Documentation to complete.', 'Documentation à compléter.')}*`)
   }
   return lines.join('\n') + '\n'
@@ -225,7 +234,7 @@ export async function sheetsToPdf(report) {
     if (s.systems) facts.push([T('Systems', 'Systèmes'), s.systems])
     const raci = [['A', s.accountable], ['C', s.consulted], ['I', s.informed]].filter(([, v]) => v).map(([k, v]) => `${k}${colon()}${v}`)
     if (raci.length) facts.push(['RACI', raci.join(', ')])
-    facts.push(...complianceFacts(s))
+    facts.push(...complianceFacts(s), ...moreFacts(s))
     if (facts.length) {
       const top = y
       y += 5.5

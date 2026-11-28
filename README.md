@@ -101,6 +101,8 @@ uncluttered for everyone else (see the
 - **Risks, controls and compliance**: risks and controls for each activity, regulatory references
   (GDPR, ISO 9001, AI Act…), and a process identity (owner, version, status, scope) at the top of the
   report and the procedure sheets. The report adds a risk and control table and a compliance matrix.
+- **User stories and acceptance criteria** for each activity, written by hand or by the co-pilot,
+  exported as a Markdown backlog for a tracking tool.
 - **BPMN for Camunda 8 or 7**: platform set, executable process, gateway conditions in FEEL or JUEL,
   user tasks with their assignee.
 - **DMN decision tables**: each business rule task links to an editable decision
@@ -455,10 +457,13 @@ it), unless the table says `mcp/.env`, then run `docker compose up -d --build`.
   as an image, print the diagram alone fitted to one page. The current diagram is restored when you
   come back.
 - **My diagrams**: save several diagrams, reopen, rename, delete. Ctrl+S saves.
+- **Multi-level map**: a call activity links to the diagram of My diagrams that details it. One click
+  goes down to it, and a breadcrumb trail goes back up, in Presentation mode too.
 - **Without AI**: build a process from a table of steps (pasted from Excel, .csv or .xlsx, Visio Data
   Visualizer columns read as they are), or from a roles × tasks grid in a workshop.
 - **Responsibilities**: assignee, systems used and RACI for each activity, plain-words conditions on
-  decision branches. Procedure sheets in PDF, Markdown or Word, RACI matrix in Excel.
+  decision branches. Procedure sheets in PDF, Markdown or Word, RACI matrix in Excel, and a single-file
+  HTML documentation page: the read-only diagram, where a click on an element opens its sheet.
 - **Drawing**: palette, context pad, copy and paste, undo and redo buttons, tidy up, BPMN rule
   checking, grid, minimap, and the Process panel for the properties of each
   element.
@@ -488,6 +493,9 @@ Each function is turned on separately in **Expert** > **Choose modules…**.
   with the reason and the safeguard), its risks and controls, and its regulatory references; a process identity
   (owner, version, status, validation date, scope). The report adds a risk and control table, a compliance
   matrix and a finding for each risk without a control.
+- **User stories**: user stories and acceptance criteria (Given, when, then) for each activity, written by
+  the co-pilot on request, exported as Markdown, and included in the report, the procedure sheets and the
+  documentation page.
 - **Camunda 8 and 7 export**: platform set, executable processes, gateway conditions in FEEL or JUEL from the
   Condition field or the flow label, tasks with an assignee as user tasks.
 - **DMN decision tables**: link business rule tasks to decision tables edited with dmn-js, with the DRD,
