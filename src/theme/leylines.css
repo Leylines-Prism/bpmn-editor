@@ -1472,8 +1472,26 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #history-buttons button:focus-visible, #zoom-buttons button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; }
 /* Canevas étroit : la minicarte occupe le haut à droite, les boutons passent juste en dessous,
    le zoom sous l'historique. */
+/* Glissière de zoom, ouverte par un clic sur le niveau de zoom, sous le groupe. */
+#zoom-slider {
+  position: absolute; top: calc(100% + 6px);
+  display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 10px;
+  border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: var(--white); box-shadow: var(--elevation-1);
+}
+#zoom-slider[hidden] { display: none; }
+#zoom-slider input[type=range] { width: 180px; margin: 0; accent-color: var(--leyline-sky-deep); cursor: pointer; }
+#zoom-slider .zoom-slider-end { font: 500 11px/1 var(--font-sans); color: var(--ink-muted); white-space: nowrap; }
+#zoom-slider .zoom-slider-reset {
+  height: 27px; padding: 0 8px; border: 1px solid var(--mist); border-radius: var(--radius-sm);
+  background: none; color: var(--night-800); font: 500 12px/1 var(--font-sans); cursor: pointer; white-space: nowrap;
+}
+#zoom-slider .zoom-slider-reset:hover { color: var(--leyline-sky-deep); background: var(--mist); }
+#zoom-slider .zoom-slider-reset:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: 1px; }
+#zoom-buttons .zoom-level[aria-expanded="true"] { color: var(--leyline-sky-deep); background: var(--mist); }
 @container canvas (max-width: 560px) {
   #canvas-tools { left: auto; right: 20px; top: 66px; flex-direction: column; align-items: flex-end; }
+  #zoom-slider { left: auto !important; right: 0; }
 }
 /* La pilule de l'IA, centrée en haut, descend d'un cran quand elle toucherait ces boutons. */
 @container canvas (max-width: 1100px) {

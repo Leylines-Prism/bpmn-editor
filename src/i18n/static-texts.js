@@ -24,7 +24,7 @@ const FR = {
   '#btn-search': { title: 'Rechercher dans les libellés et la documentation (Ctrl+F)', 'aria-label': 'Rechercher' },
   '#zoom-buttons': { 'aria-label': 'Zoom' },
   '#btn-zoom-out': { title: 'Dézoomer (Ctrl+−)', 'aria-label': 'Dézoomer' },
-  '#btn-zoom-reset': { title: 'Revenir à 100 % (Ctrl+0)', 'aria-label': 'Niveau de zoom, clic pour revenir à 100 %' },
+  '#btn-zoom-level': { title: 'Niveau de zoom : clic pour la glissière de zoom', 'aria-label': 'Niveau de zoom, clic pour la glissière de zoom' },
   '#btn-zoom-in': { title: 'Zoomer (Ctrl++)', 'aria-label': 'Zoomer' },
   '#btn-zoom-fit': { title: 'Ajuster le diagramme à l\'écran', 'aria-label': 'Ajuster le diagramme à l\'écran' },
   '#btn-export': { text: 'Exporter', title: 'Exporter en BPMN, XML, SVG, PNG ou PDF, en fiches de procédure (PDF, Word, Markdown), en page de documentation HTML, ou imprimer' },
