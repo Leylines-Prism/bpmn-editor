@@ -606,10 +606,8 @@ is read.
 
 [![bpmn-pilot MCP server – quality and maintenance score on Glama](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot/badges/card.svg)](https://glama.ai/mcp/servers/Leylines-Prism/bpmn-pilot)
 
-<a href="https://alternativeto.net/software/bpmn-pilot/about/?utm_source=badge&utm_medium=referral"><picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://alternativeto.net/static/badges/badge-compact-dark.svg">
-  <img src="https://alternativeto.net/static/badges/badge-compact-light.svg" alt="BPMN-Pilot on AlternativeTo" width="171" height="58">
-</picture></a>
+<a href="https://alternativeto.net/software/bpmn-pilot/about/?utm_source=badge&utm_medium=referral"><img src="https://alternativeto.net/static/badges/badge-compact-light.svg#gh-light-mode-only" alt="BPMN-Pilot on AlternativeTo" width="171" height="58"></a>
+<a href="https://alternativeto.net/software/bpmn-pilot/about/?utm_source=badge&utm_medium=referral"><img src="https://alternativeto.net/static/badges/badge-compact-dark.svg#gh-dark-mode-only" alt="BPMN-Pilot on AlternativeTo" width="171" height="58"></a>
 
 ## Support development
 

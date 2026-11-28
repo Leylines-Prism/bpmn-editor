@@ -15,6 +15,7 @@ import GridModule from 'diagram-js-grid'
 import { CopyAsImageModule } from 'bpmn-js-copy-as-image'
 import lintConfig from './lint/lint-config.js'
 import { LintProcessBadgeModule } from './lint-process-badge.js'
+import { LintNavigatorModule } from './lint-navigator.js'
 import TranslateModule from './i18n/translate.js'
 import { lang, T } from './i18n/lang.js'
 import { translatePanelTitles } from './i18n/panel-titles.js'
@@ -52,6 +53,8 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
+import { setupSimulationAutopilot } from './simulation-autopilot.js'
+import PaletteProfilesModule from './palette-profiles.js'
 import { setupMining } from './mining/mining-ui.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
@@ -179,6 +182,7 @@ const modeler = new BpmnModeler({
     minimapModule,
     TokenSimulationModule,
     CreateAppendAnythingModule,
+    PaletteProfilesModule,
     BpmnColorPickerModule,
     CustomColorModule,
     LabelStyleModule,
@@ -186,6 +190,7 @@ const modeler = new BpmnModeler({
     NativeCopyPasteModule,
     LintModule,
     LintProcessBadgeModule,
+    LintNavigatorModule,
     GridModule,
     CopyAsImageModule,
     ProbabilityPanelModule,
@@ -918,6 +923,8 @@ setupPresentation({ button: document.getElementById('btn-present'), modeler })
 setupSimulationSpeed(modeler)
 // Les tables de décision orientent les jetons calculés (src/dmn/decision-routing.js).
 const heatmap = setupHeatmap(modeler, { branchHint: () => decisions.routing() })
+// Pilote automatique : les passerelles choisissent leur branche pendant l'animation, selon les mêmes règles.
+setupSimulationAutopilot(modeler, { branchHint: () => decisions.routing() })
 
 // Poignée pour régler la largeur du panneau Processus.
 translatePanelTitles(document.getElementById('properties-panel'))
