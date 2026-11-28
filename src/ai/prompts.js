@@ -19,6 +19,49 @@ export const CRITIQUE_SEVERITIES = `- blocking: without the answer, the model wo
 - major: an assumption is needed, and it changes the model;
 - minor: a detail, such as a name.`
 
+// Demandes des commandes du menu Expert qui passent par le Co-pilote IA (src/main.js), en anglais
+// et en français. Les prompts MCP du même nom reprennent le texte anglais : un agent MCP reçoit
+// la même consigne que le Co-pilote.
+export const EXPERT_ASKS = {
+  probabilities: {
+    en:
+      'Propose realistic probabilities for the branches of each gateway of this diagram, from the labels, conditions and documentation. ' +
+        'Set them with update_elements (the branches of one gateway add up to 100 %), without changing anything else. ' +
+        'Then give, in one line per gateway, what justifies your values.',
+    fr:
+      'Propose des probabilités réalistes pour les branches de chaque passerelle de ce diagramme, d\'après les libellés, les conditions et la documentation. ' +
+        'Inscris-les avec update_elements (les branches d\'une passerelle font 100 % ensemble), sans rien changer d\'autre. ' +
+        'Donne ensuite, en une ligne par passerelle, ce qui justifie tes valeurs.',
+  },
+  aiPotential: {
+    en:
+      'Rate the AI potential of each activity of this diagram, from its name, lane, documentation, assignee and systems: ' +
+        'automate (an AI agent or automation performs it, with a human review), assist (a human performs it with AI help) or human (judgment, relationship or accountability). ' +
+        'Save it with update_elements (aiPotential and aiPotentialReason: one or two sentences on why and the safeguard needed), without changing anything else. ' +
+        'For each automate or assist activity, also add to its risks field the risks of handing it to AI (error, personal data, missing review…), one per line, and to its controls field the matching controls, one per line, keeping the risks and controls already written. ' +
+        'Then sum up in three lines where AI pays off first, and the risks to frame.',
+    fr:
+      'Note le potentiel d\'IA de chaque activité de ce diagramme, d\'après son nom, son couloir, sa documentation, la personne assignée et les systèmes : ' +
+        'automate (un agent IA ou une automatisation la réalise, avec une revue humaine), assist (un humain la réalise aidé par l\'IA) ou human (jugement, relation ou responsabilité). ' +
+        'Enregistre-le avec update_elements (aiPotential et aiPotentialReason : une ou deux phrases sur la raison et le garde-fou nécessaire), sans rien changer d\'autre. ' +
+        'Pour chaque activité automate ou assist, ajoute aussi dans son champ risks les risques de la confier à l\'IA (erreur, données personnelles, absence de revue…), un par ligne, et dans son champ controls les contrôles correspondants, un par ligne, en gardant les risques et contrôles déjà écrits. ' +
+        'Résume ensuite en trois lignes où l\'IA rapporte d\'abord, et les risques à encadrer.',
+  },
+  analysis: {
+    en:
+      'Analyze this process for its report: read get_process_report with simulate, then save your analysis with set_report_commentary ' +
+        '(summary, bottlenecks, rare paths, risks, improvements, each tied to the elements concerned and to the figures of the report). ' +
+        'Do not change the diagram. Finish with a short summary of what you saved.',
+    fr:
+      'Analyse ce processus pour son rapport : lis get_process_report avec simulate, puis enregistre ton analyse avec set_report_commentary ' +
+        '(synthèse, goulots, chemins rares, risques, pistes d\'amélioration, chacun relié aux éléments concernés et aux chiffres du rapport). ' +
+        'Ne modifie pas le diagramme. Termine par un court résumé de ce que tu as enregistré.',
+  },
+}
+
+// Ligne ajoutée aux demandes du menu Expert quand elles servent de prompt MCP.
+const OPEN_DIAGRAM = 'Work on the BPMN diagram open in the editor: read it with get_shapes first. Write in the language of the diagram\'s names. I can undo everything with Ctrl+Z.'
+
 export function buildPrompts(z) {
   return [
     {
@@ -155,6 +198,71 @@ ${CRITIQUE_SEVERITIES}
 
 Then give the assumption you would make for each point, and ask me whether to draw now with these assumptions or to wait for my answers.
 Reply in the language of the description.`,
+    },
+    {
+      name: 'propose_probabilities',
+      title: 'Propose branch probabilities',
+      description:
+        'Sets realistic probabilities on the branches of each gateway, from the labels, conditions and documentation, for the simulation and the heatmap. Same request as the Expert menu command "Propose probabilities".',
+      argsSchema: {},
+      text: () => `${EXPERT_ASKS.probabilities.en}
+${OPEN_DIAGRAM}
+The values stay marked as proposed by the AI until I review them.`,
+    },
+    {
+      name: 'rate_ai_potential',
+      title: 'Rate which activities to hand to AI',
+      description:
+        'Rates each activity automate, assist or human with the reason and the safeguard, and adds the risks and controls of handing it to AI. Same request as the Expert menu command "Which activities to hand to AI?".',
+      argsSchema: {},
+      text: () => `${EXPERT_ASKS.aiPotential.en}
+${OPEN_DIAGRAM}`,
+    },
+    {
+      name: 'analyze_process',
+      title: 'Analyze the process for its report',
+      description:
+        'Runs 100 simulated tokens, reads the process report and saves an analysis (summary, bottlenecks, rare paths, risks, improvements) that the report shows. Same request as the Expert menu command "Co-pilot analysis".',
+      argsSchema: {},
+      text: () => `${EXPERT_ASKS.analysis.en}
+${OPEN_DIAGRAM}`,
+    },
+    {
+      name: 'assess_compliance',
+      title: 'Assess risks, controls and requirements',
+      description:
+        'Writes the risks, controls and regulatory requirements of each activity, and proposes the process identity, for the compliance matrix of the process report.',
+      argsSchema: {
+        framework: z
+          .string()
+          .optional()
+          .describe('Regulations or standards to check against, for example "GDPR, ISO 9001, AI Act". Left empty, the ones the activities call for'),
+      },
+      text: ({ framework }) =>
+        `Assess the risks and compliance of the BPMN diagram open in the editor, activity by activity.
+${framework ? `Frameworks: ${framework}\n` : ''}
+- Read it with get_shapes: name, lane, documentation, assignee, systems, and the risks, controls and requirements already written. The process identity is on the diagram root.
+- For each activity, save with update_elements, keeping what is already written: risks (what can go wrong at this step, one per line), controls (what prevents or detects each risk: review, double check, threshold, log, one per line), requirements (the articles or clauses this step must meet, separated by semicolons).
+- Cite only references you are sure of. When unsure, leave requirements empty and write the question to ask in your answer.
+- If the process identity (owner, version, status, scope) is empty, propose it in your answer and save it on the diagram root only once I confirm it.
+- Change nothing else in the diagram. Then list the three highest risks, and the activities that have a risk without a control.
+Write in the language of the diagram's names. I can undo everything with Ctrl+Z; the process report shows the compliance matrix.`,
+    },
+    {
+      name: 'model_from_event_log',
+      title: 'Draw the process from an event log',
+      description:
+        'Draws the process found in an event log (CSV or XES from an ERP, CRM or ticketing tool), then checks the log against it: fitness, deviations, real branch shares and bottlenecks.',
+      argsSchema: {},
+      text: () =>
+        `Draw the BPMN process found in the event log loaded in the editor, then check the log against it.
+
+- If no log is loaded, ask me for the file and load it with load_event_log. If the open diagram is not empty, ask me before drawing.
+- Read get_log_summary with activities 0.8 and paths 0.8 to keep the main flow first.
+- Draw a start event, one task per step named as in the log, an exclusive gateway where a step is followed by different steps, a parallel split and join where two steps appear in both orders, a loop back where a step comes back, and an end event for each way cases end.
+- Finish the drawing with layout_diagram. Match each step with its task (map_log_activities), then run check_conformance and apply_log_frequencies.
+- Report the fitness, the main deviations with their number of cases, the bottlenecks, and the rare steps and paths you left out.
+Name the gateways and end events in the language of the step names. I can undo the drawing with Ctrl+Z.`,
     },
   ]
 }

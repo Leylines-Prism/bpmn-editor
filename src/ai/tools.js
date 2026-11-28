@@ -30,7 +30,7 @@ Size guide: task 100×80, event 36×36, gateway 50×50. The x and y coordinates 
 Colors and text formatting: style_elements sets the fill, stroke, text color and font of shapes and connections.
 Use them sparingly and consistently, for example one color per actor or to highlight an exception path.
 To start from scratch or import a complete diagram, use set_diagram_xml.
-When the user asks for a file (BPMN, SVG, PNG or PDF), use export_diagram. To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.
+When the user asks for a file, use export_diagram: the diagram (BPMN, SVG, PNG, PDF) or one of its documents (process report, procedure sheets, HTML documentation page, RACI matrix, user stories, DMN decisions, BPMN for Camunda 8 or 7). To read the diagram yourself, use get_diagram_xml or get_diagram_image instead.
 
 Process analysis: get_process_report gives the findings, and with simulate the token counts per element and per gateway branch.
 Gateway branch probabilities are set with update_elements (probability, in %); the branches of one gateway add up to 100.
@@ -38,6 +38,12 @@ They are marked as proposed by the AI until the user reviews them.
 set_report_commentary stores your analysis of the process (summary, bottlenecks, rare paths, risks, improvements)
 in the diagram file: it appears in the process report, under your name. Base each point on the report's figures.
 The process goals (at least or at most a share of instances ending on an end event, or of passes through an activity) are the user's own targets: the report says whether the simulation reaches them. Cite them in your analysis, never change them.
+
+Process documentation: update_elements also fills in what the procedure sheets, the RACI matrix and the report show.
+On an activity: documentation (Markdown), assignee, systems, accountable, consulted, informed (RACI), aiPotential with aiPotentialReason (automate, assist or human),
+risks, controls and requirements (compliance), userStories and acceptanceCriteria. On the diagram root (id from get_shapes): the process identity
+(owner, version, status, validatedOn, scope). get_shapes returns these fields when they are filled in: read them first and keep what is written.
+A CallActivity can be linked by the user to another diagram that details it (multi-level map): get_shapes gives its name as linkedDiagram.
 
 Decisions (DMN): a business rule task can call a DMN decision kept in the diagram file (one DMN 1.3 model per diagram,
 with its decision requirements diagram). get_decisions lists the decisions, their tables and the tasks that call them.
@@ -72,6 +78,16 @@ Modeling rules (validate_diagram checks most of them):
 
 // Polices proposées par l'éditeur (src/label-style.js, FONTS), recopiées ici : ce module n'importe rien.
 export const FONT_NAMES = ['Arial', 'Times New Roman', 'Courier New', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Palatino Linotype', 'Comic Sans MS']
+
+// Formats de l'outil export_diagram : ceux du diagramme (src/export-files.js, EXPORT_FORMATS) puis
+// ses documents (DOCUMENT_FORMATS), recopiés ici. Un test vérifie qu'ils restent les mêmes.
+export const EXPORT_FORMATS = [
+  'bpmn', 'svg', 'png', 'pdf',
+  'dmn', 'camunda8', 'camunda7',
+  'report-pdf', 'report-md', 'report-docx',
+  'sheets-pdf', 'sheets-md', 'sheets-docx',
+  'doc-html', 'stories-md', 'raci-xlsx',
+]
 
 // Renvoie la liste des outils, décrits avec le zod fourni : buildTools(z).
 export function buildTools(z) {
@@ -155,21 +171,27 @@ export function buildTools(z) {
     },
     {
       name: 'export_diagram',
-      title: 'Export the diagram',
+      title: 'Export the diagram or one of its documents',
       description:
-        'Exports the open diagram as a file, exactly like the editor\'s Export menu: bpmn (BPMN 2.0 XML), svg, png (2x, white background) or pdf (vector). ' +
+        'Produces a file exactly like the editor\'s Export menu. The diagram: bpmn (BPMN 2.0 XML), svg, png (2x, white background) or pdf (vector). ' +
+        'Its documents: dmn (the decision tables, DMN 1.3), camunda8 and camunda7 (BPMN prepared for the engine: executable process, gateway conditions in FEEL or JUEL, assigned tasks as user tasks), ' +
+        'report-pdf, report-md and report-docx (the process report, see get_process_report), sheets-pdf, sheets-md and sheets-docx (procedure sheets: one per activity in flow order, with its documentation, RACI, risks and stories), ' +
+        'doc-html (a self-contained web page: the diagram, and the sheet of each element on a click), stories-md (user stories and acceptance criteria backlog) and raci-xlsx (RACI matrix as an Excel workbook). ' +
+        'The documents work whatever the Expert modules shown in the tab. When there is nothing to put in one (no decision, no RACI role, no user story), the error says which field to fill in. ' +
         'When the editor runs with its server, the file is saved in the exports folder of the server; an existing file is never replaced ' +
         '("Name (2).pdf" is added next to it). The editor also shows the user a Download button: nothing is downloaded unless they click it. ' +
-        'With returnFile, the file itself is also returned to you (png as an image, bpmn and svg as text, pdf as an embedded resource), ' +
+        'With returnFile, the file itself is also returned to you (png as an image, bpmn, svg, dmn, md and html as text, pdf, docx and xlsx as an embedded resource), ' +
         'so you can pass it on or attach it elsewhere; without it, only the file name and size come back. ' +
-        'The diagram itself is not changed. Use it only when the user asks for a file.',
+        'The diagram itself is not changed. Use it only when the user asks for a file: to read the diagram yourself, use get_diagram_xml or get_diagram_image; to read the report, get_process_report.',
       inputSchema: {
-        format: z.enum(['bpmn', 'svg', 'png', 'pdf']).describe('File format'),
+        format: z
+          .enum(EXPORT_FORMATS)
+          .describe('File format: bpmn, svg, png or pdf for the diagram; dmn, camunda8, camunda7, report-*, sheets-*, doc-html, stories-md or raci-xlsx for a document'),
         name: z
           .string()
           .max(120)
           .optional()
-          .describe('File name without extension. Default: the name of the diagram in the editor'),
+          .describe('File name without extension. Default: the name of the diagram in the editor, followed by the kind of document (for example "Order - procedure sheets")'),
         returnFile: z
           .boolean()
           .optional()

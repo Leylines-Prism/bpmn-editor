@@ -48,6 +48,11 @@ const TOOL_LABELS = {
   set_decision_table: T('decision table', 'table de décision'),
   link_decision: T('decision link', 'lien de décision'),
   test_decision: T('testing the table', 'essai de la table'),
+  load_event_log: T('loading the event log', 'chargement du journal'),
+  get_log_summary: T('reading the event log', 'lecture du journal'),
+  map_log_activities: T('matching log steps', 'correspondance des étapes'),
+  apply_log_frequencies: T('real frequencies', 'fréquences réelles'),
+  check_conformance: T('conformance check', 'contrôle de conformité'),
 }
 
 const CSS = `

@@ -408,7 +408,10 @@ Code, Claude Desktop, GitHub Copilot in VS Code, Cursor or another MCP client. T
 
 The agent reads and draws the diagram, tidies it up (`layout_diagram`), moves or duplicates specific
 shapes (`move_elements`, `duplicate_elements`), and backs out of a wrong call with `undo` and `redo`, like
-Ctrl+Z and Ctrl+Y. The full list of tools is in [mcp/README.md](mcp/README.md).
+Ctrl+Z and Ctrl+Y. It fills in the expert fields (RACI, AI potential, risks and controls, user stories, process
+identity), and `export_diagram` produces every file of the Export menu: report, procedure sheets, HTML
+documentation page, RACI matrix, user stories, decisions and BPMN for Camunda. Twelve MCP prompts, five of them
+for Expert mode, are ready to pick in the agent. The full list of tools is in [mcp/README.md](mcp/README.md).
 
 A token protects this access: the same window generates one and tells you where to put it. It is
 optional on `localhost`, and required as soon as the editor is served under another name (see
