@@ -243,7 +243,10 @@ export function setupPresentationPointer({ modeler, bar, flash }) {
     if (!active || !on.hover) return
     clearHighlight()
     const target = element.labelTarget || element
-    if (!target.businessObject || NO_HIGHLIGHT.has(target.type) && !target.waypoints) return
+    // Un sous-processus replié est une étape comme une autre : seul le sous-processus déplié,
+    // qui contient d'autres éléments, reste hors de la surbrillance.
+    const isContainer = NO_HIGHLIGHT.has(target.type) && !(target.type === 'bpmn:SubProcess' && target.collapsed)
+    if (!target.businessObject || isContainer && !target.waypoints) return
     if (target === canvas.getRootElement()) return
     mark(target, 'pres-hot')
     if (target.waypoints) {
