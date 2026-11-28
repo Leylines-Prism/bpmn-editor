@@ -13,3 +13,14 @@ test('the MCP server version matches the application version', () => {
   assert.equal(lock.version, app, 'run npm install in mcp/ to update mcp/package-lock.json')
   assert.equal(lock.packages[''].version, app, 'run npm install in mcp/ to update mcp/package-lock.json')
 })
+
+// Les deux fichiers compose prêts à l'emploi tirent les images de la version en cours.
+test('the compose files use the images of the application version', () => {
+  const app = read('../package.json').version
+  for (const file of ['../docker-compose.image.yml', '../docker-compose.headless.yml']) {
+    const text = readFileSync(new URL(file, import.meta.url), 'utf8')
+    const tags = [...text.matchAll(/ghcr\.io\/leylines-prism\/bpmn-pilot[a-z-]*:([^\s]+)/g)].map((m) => m[1])
+    assert.ok(tags.length >= 2, `${file}: no image found`)
+    for (const tag of tags) assert.equal(tag, app, `${file}: image tag ${tag} instead of ${app}`)
+  }
+})

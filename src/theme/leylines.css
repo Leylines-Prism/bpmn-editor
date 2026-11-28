@@ -1465,6 +1465,8 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
   font-family: var(--font-sans); font-size: 14px; font-weight: 500; line-height: 20px; color: var(--night-800);
 }
 #canvas .export-offer[hidden] { display: none; }
+/* Bannière du mode sans navigateur (src/headless-offer.js) : en haut, pour ne pas couvrir celle des exports. */
+#canvas .headless-offer { bottom: auto; top: 16px; }
 #canvas .export-offer-label { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 14px; min-width: 0; }
 #canvas .export-offer-label span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #canvas .export-offer-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--leyline-magenta); }
@@ -1479,6 +1481,7 @@ body.panel-resizing iframe, body.panel-resizing #canvas { pointer-events: none; 
 #canvas .export-offer button:focus-visible { outline: 2px solid var(--leyline-sky-deep); outline-offset: -2px; border-radius: var(--radius-pill); }
 @container canvas (max-width: 560px) {
   #canvas .export-offer { bottom: 260px; }
+  #canvas .headless-offer { bottom: auto; }
 }
 
 /* Croix de fermeture des fenêtres (src/dialog-close.js) : le titre et la croix restent

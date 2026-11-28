@@ -16,7 +16,7 @@ Client MCP  ──HTTP──▶  serveur MCP (Node, 127.0.0.1:3333)  ──WebSo
 - Le serveur valide les arguments de chaque outil puis relaie l'appel à l'onglet ouvert.
 - L'onglet exécute l'outil avec l'API de modélisation de bpmn-js (`src/mcp-bridge.js`) et renvoie le résultat.
 - Si plusieurs onglets sont ouverts, c'est le dernier utilisé qui reçoit les appels des clients MCP. Le chat intégré, lui, dessine toujours dans l'onglet où l'on discute.
-- Sans onglet ouvert, les outils répondent par une erreur explicite.
+- Sans onglet ouvert, les outils répondent par une erreur explicite, sauf en mode sans écran (plus bas).
 - Un badge « MCP » dans la barre d'outils indique si l'éditeur est relié au serveur.
 - Les outils, les consignes et la boucle du chat sont définis dans `src/ai/`, partagé avec l'éditeur : le serveur se lance depuis le dépôt complet, pas depuis le seul dossier `mcp/`.
 
@@ -172,7 +172,7 @@ onglets de l'éditeur, et son journal part sur la sortie d'erreur. Les contrôle
 | `get_shapes` | liste les formes et les connexions du diagramme (id, type, nom, position, liens) |
 | `get_diagram_xml` | renvoie le diagramme en BPMN 2.0 XML |
 | `get_diagram_image` | renvoie une image PNG du diagramme, tel qu'il est dessiné, pour que le modèle vérifie la mise en page ou la montre (avec les fournisseurs compatibles OpenAI, Mistral compris, le co-pilote intégré ne peut pas la recevoir) |
-| `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Le contenu du fichier n'est pas renvoyé au client |
+| `export_diagram` | exporte le diagramme en fichier (`bpmn`, `svg`, `png` ou `pdf`), comme le menu Exporter. Le fichier est déposé dans `EXPORTS_DIR`, sans jamais en remplacer un autre, et l'éditeur affiche un bouton Télécharger : rien ne se télécharge sans clic de l'utilisateur. Avec `returnFile`, le fichier est aussi renvoyé au client (PNG en image, SVG et BPMN en texte, PDF en ressource intégrée, 10 Mo au plus) |
 | `set_diagram_xml` | remplace tout le diagramme. Un XML illisible ou sans partie graphique est refusé et le diagramme reste inchangé |
 | `add_shapes` | ajoute des formes, à la suite d'un élément (`after`, placement et connexion automatiques), à une position, ou à droite du diagramme. Ajoute aussi des pools (`Participant`) et leurs lanes (`Lane`), et place une forme dans une lane avec `parent`. Avec `attachTo`, ajoute un événement de bordure (minuteur, erreur…) sur une tâche |
 | `connect_shapes` | relie deux formes. Le type de connexion suit les règles BPMN de bpmn-js |
@@ -301,7 +301,25 @@ Elles peuvent aussi être placées dans `mcp/.env`.
 | `DIAGRAMS_DIR` | `mcp/data/diagrams` (`/data/diagrams` dans l'image docker) | dossier des diagrammes enregistrés sur le serveur |
 | `VITE_MCP_BRIDGE_URL` (côté éditeur) | `ws://127.0.0.1:3333/bridge` en développement, `/bridge` dans le compose | adresse du pont. Une adresse relative vise le site lui-même |
 
+## Mode sans écran (sans navigateur ouvert)
+
+Coupé par défaut (`MCP_HEADLESS=on` l'active ; `docker-compose.headless.yml` le fait pour vous). Quand
+un client MCP appelle un outil et qu'aucun onglet de l'éditeur n'est relié, le serveur ouvre l'éditeur
+dans un onglet invisible d'un Chromium sans écran (`HEADLESS_BROWSER_URL`, le service `renderer`, image
+`bpmn-pilot-renderer`), par la seule interface HTTP de DevTools (`/json/new`, `/json/close`) : aucune
+bibliothèque de pilotage de navigateur n'est embarquée. La page charge
+`HEADLESS_EDITOR_URL/?headless=<clé>` et présente la clé à `/bridge`, pour que le serveur la distingue
+des vrais onglets (`mcp/renderer.js`, `mcp/bridge.js`).
+
+- Un onglet ouvert passe en premier. Une série d'appels commencée dans l'onglet invisible y reste
+  jusqu'à sa fermeture (`HEADLESS_IDLE_SECONDS` sans appel, 300 par défaut) ou jusqu'à ce qu'un
+  utilisateur ouvre son diagramme.
+- Après chaque appel qui modifie le diagramme, son XML est enregistré dans Mes diagrammes (un fichier
+  par série, `Agent AAAA-MM-JJ HHhMM`) et les onglets ouverts affichent un bandeau avec un bouton
+  **Ouvrir**. L'ouvrir ferme l'onglet invisible, et les appels suivants vont à cet onglet.
+- `GET /healthz/headless` dit si le serveur joint le navigateur.
+
 ## Limites du prototype
 
-- L'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
+- Sans le mode sans écran, l'onglet de l'éditeur doit être ouvert pour que l'IA dessine.
 - `layout_diagram` utilise bpmn-auto-layout 2.0.0-alpha.2, qui range pools, lanes, flux de messages et événements de bordure. C'est encore une version alpha : le rendu peut changer avec ses prochaines versions.

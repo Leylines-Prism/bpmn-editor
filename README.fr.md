@@ -39,7 +39,7 @@ les heures passées sur la structure BPMN et le dessin à la main.
 BPMN-Pilot est un éditeur BPMN 2.0 dans le navigateur (bpmn-js), en français et en anglais :
 
 - **Connectez un agent par MCP** (version Docker), comme Claude Code, Claude Desktop ou GitHub Copilot dans
-  VS Code. Il pilote l'éditeur ouvert dans votre navigateur.
+  VS Code. Il pilote l'éditeur ouvert dans votre navigateur, ou, avec le mode sans écran facultatif, un éditeur invisible.
 - **Demandez au co-pilote IA intégré** ([en ligne](https://bpmn.leylines.fr) ou en Docker) : décrivez
   un processus ou joignez vos documents (Word, Excel, PDF, e-mails…), et il le dessine.
 - **Dessinez à la main**, avec le modeleur bpmn-js et ses extensions.
@@ -443,6 +443,48 @@ sur `localhost`, et obligatoire dès que l'éditeur est servi sous un autre nom 
 [Le joindre depuis d'autres machines](#le-joindre-depuis-dautres-machines)). Sans lui, la fenêtre
 indique que MCP est fermé, et l'agent reçoit une erreur 401 qui nomme `MCP_TOKEN`.
 
+### Sans navigateur ouvert (mode sans écran)
+
+Un mode avancé, facultatif, coupé par défaut. L'agent dessine, contrôle, exporte et lit le rapport
+sans qu'aucun onglet de l'éditeur soit ouvert : utile pour un agent qui modélise en série les
+processus décrits dans vos documents, puis vous en remet le résultat à relire.
+
+Pour l'activer, utilisez [`docker-compose.headless.yml`](docker-compose.headless.yml) à la place de
+`docker-compose.image.yml`. C'est le même fichier avec un quatrième service, `renderer` : un Chromium
+sans écran (image `bpmn-pilot-renderer`, environ 160 Mo à télécharger) que le serveur pilote par le
+protocole DevTools. Même `.env`, même dossier de données.
+
+```bash
+docker compose -f docker-compose.headless.yml up -d
+```
+
+Fonctionnement :
+
+- Quand un agent appelle un outil et qu'aucun onglet de l'éditeur n'est relié, le serveur ouvre
+  l'éditeur dans un onglet invisible de `renderer`. Tous les outils y marchent comme dans un vrai
+  onglet, images et PDF compris. L'onglet se ferme après `HEADLESS_IDLE_SECONDS` sans appel (300 par
+  défaut).
+- Chaque diagramme ainsi dessiné est enregistré dans Mes diagrammes sur le serveur
+  (`bpmn-data/diagrams`), sous un nom comme `Agent 2026-11-28 14h05`. Rien ne reste seulement en
+  mémoire.
+- Un onglet ouvert passe toujours en premier. Mais une série d'appels commencée sans onglet reste dans
+  l'onglet invisible, même si vous ouvrez l'éditeur entre-temps : l'agent ne bascule jamais de
+  lui-même sur le diagramme que vous avez sous les yeux. Un bandeau en haut du canevas annonce le
+  diagramme de l'agent, et **Ouvrir** le charge dans votre onglet : les appels suivants de l'agent y
+  arrivent alors. Rien n'est fusionné : si votre diagramme a des modifications non enregistrées,
+  l'éditeur demande d'abord.
+- Avec `returnFile`, `export_diagram` renvoie le fichier à l'agent (PNG en image, SVG et BPMN en texte,
+  PDF en ressource intégrée), avec ou sans onglet ouvert.
+
+Sécurité : `renderer` est sur un réseau Docker interne sans accès à Internet, ne publie aucun port, et
+ne voit ni les clés API ni le dossier de données. Il n'ouvre que l'éditeur du même fichier compose.
+Chromium tourne sous un utilisateur sans droits root, sans capacité Linux et sur un système de
+fichiers en lecture seule. Il prend 300 à 600 Mo de mémoire tant qu'un onglet est ouvert (plafond
+`HEADLESS_MEMORY`, 1 Go par défaut). Les règles du jeton MCP ci-dessus s'appliquent toujours.
+
+Vérification : `docker compose -f docker-compose.headless.yml exec mcp wget -qO- http://localhost:3333/healthz/headless`
+répond `"browser": true` quand le serveur joint Chromium.
+
 ## Où sont gardées vos clés API
 
 **Dans la version Docker**, le plus sûr est le serveur : le fichier `.env` à côté de
@@ -484,6 +526,8 @@ commande `up -d`. Depuis le code source, mettez-les dans un fichier `.env` à c�
 | `BPMN_DATA_DIR` | Dossier des fichiers du serveur, Mes diagrammes et exports (`./bpmn-data` par défaut). Dans un outil de gestion de conteneurs, un chemin absolu. |
 | `PUID`, `PGID` | Utilisateur et groupe du serveur, propriétaires du dossier de données (1000 par défaut). |
 | `SHOWCASE` | `off` coupe la page vitrine (`about.html`) et ses fonds d'écran. Le logo de la barre d'outils ouvre alors la fenêtre « Votre avis ». `on` par défaut. |
+| `MCP_HEADLESS` (`mcp/.env`) | `on` active le [mode sans écran](#sans-navigateur-ouvert-mode-sans-écran). Coupé par défaut ; `docker-compose.headless.yml` le règle. `HEADLESS_BROWSER_URL` (`http://renderer:9222`) et `HEADLESS_EDITOR_URL` (`http://editor:8080`) ne changent que pour un montage sur mesure. |
+| `HEADLESS_IDLE_SECONDS`, `HEADLESS_MEMORY` | Mode sans écran : secondes sans appel avant la fermeture de l'onglet invisible (300), plafond de mémoire de `renderer` (`1g`). |
 
 ## Ce que fait l'éditeur
 

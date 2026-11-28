@@ -36,12 +36,13 @@ jobs:
             package-lock.json
             mcp/package-lock.json
       - run: npm ci
+      # Dépendances du serveur avant les tests : test/headless.test.mjs relie de vrais WebSocket au pont.
+      - run: npm ci --omit=dev
+        working-directory: mcp
       - run: npm run lint
       - run: npm test
       - run: npm run build
       - run: npm run build:online
-      - run: npm ci --omit=dev
-        working-directory: mcp
       # Chaque fichier du serveur doit au moins se lire.
       - run: for f in mcp/*.js; do node --check "$f"; done
 

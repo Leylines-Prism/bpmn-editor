@@ -28,6 +28,6 @@ updates:
         patterns: ['*']
 
   - package-ecosystem: docker
-    directories: ['/', '/mcp']
+    directories: ['/', '/mcp', '/renderer']
     schedule:
       interval: weekly

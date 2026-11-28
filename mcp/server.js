@@ -16,7 +16,7 @@ import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js
 import * as z from 'zod/v4'
 
 import express from 'express'
-import { timingSafeEqual } from 'node:crypto'
+import { randomUUID, timingSafeEqual } from 'node:crypto'
 import { readFileSync } from 'node:fs'
 
 import { LOCAL_HOSTS, LOCKED_MESSAGE, mcpAccess } from './auth.js'
@@ -25,6 +25,8 @@ import { DiagramStore, KINDS, MAX_XML_BYTES } from './diagrams.js'
 import { ExportStore, MAX_EXPORT_BYTES } from './exports.js'
 import { ChatService } from './chat.js'
 import { isForbiddenAddress, relayFetch } from './relay-guard.js'
+import { HeadlessRenderer, headlessConfig } from './renderer.js'
+import { fileContent, isFileResult } from '../src/ai/file-result.js'
 import { OpenAICompatError } from '../src/ai/openai-compat.js'
 import { INSTRUCTIONS, buildTools } from '../src/ai/tools.js'
 import { buildPrompts } from '../src/ai/prompts.js'
@@ -47,6 +49,8 @@ const ALLOWED_HOSTS = (process.env.MCP_ALLOWED_HOSTS || '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean)
+// Mode sans navigateur (MCP_HEADLESS=on, voir renderer.js), coupé par défaut.
+const HEADLESS = headlessConfig()
 const PORT = Number(process.env.MCP_PORT || 3333)
 // Jeton facultatif demandé aux clients MCP (en-tête Authorization: Bearer …).
 const MCP_TOKEN = (process.env.MCP_TOKEN || '').trim()
@@ -59,6 +63,10 @@ const ALLOWED_ORIGINS = (process.env.BPMN_EDITOR_ORIGINS || 'http://localhost:51
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean)
+// L'onglet invisible charge l'éditeur par le réseau interne (http://editor:8080 par défaut) :
+// son origine et son nom d'hôte sont acceptés en plus.
+if (HEADLESS.editorOrigin && !ALLOWED_ORIGINS.includes(HEADLESS.editorOrigin)) ALLOWED_ORIGINS.push(HEADLESS.editorOrigin)
+const HEADLESS_HOST = HEADLESS.editorOrigin ? new URL(HEADLESS.editorOrigin).hostname : null
 
 // Fichiers créés en 0640 et dossiers en 0750 : lisibles par le propriétaire et son groupe seulement.
 process.umask(0o027)
@@ -70,9 +78,26 @@ const escapeControls = (text) =>
   text.replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`)
 const log = (...args) =>
   console.error(new Date().toLocaleTimeString('fr-FR'), ...args.map((a) => (typeof a === 'string' ? escapeControls(a) : a)))
-const bridge = new EditorBridge({ allowedOrigins: ALLOWED_ORIGINS, log })
+const renderer = HEADLESS.enabled
+  ? new HeadlessRenderer({ cdpUrl: HEADLESS.cdpUrl, editorUrl: HEADLESS.editorUrl, idleMs: HEADLESS.idleMs, log })
+  : null
+const READ_ONLY_TOOLS = new Set()
+const bridge = new EditorBridge({
+  allowedOrigins: ALLOWED_ORIGINS,
+  log,
+  renderer,
+  onHeadlessCall: (tool, send) => saveHeadlessDiagram(tool, send),
+  // Un onglet visible a ouvert le diagramme de la série en cours : l'onglet invisible se ferme
+  // (tout est déjà enregistré), et les appels suivants vont à cet onglet.
+  onHeadlessTake: (id) => {
+    if (headlessSession?.id !== id) return
+    headlessSession = null
+    renderer.close()
+  },
+})
 const chat = new ChatService({ bridge, log })
 const TOOLS = buildTools(z)
+for (const tool of TOOLS) if (tool.annotations?.readOnlyHint) READ_ONLY_TOOLS.add(tool.name)
 const PROMPTS = buildPrompts(z)
 
 function buildMcpServer() {
@@ -85,6 +110,7 @@ function buildMcpServer() {
         try {
           bridge.noteMcpCall()
           const data = await bridge.call(tool.name, args ?? {})
+          if (isFileResult(data)) return { content: fileContent(data) }
           if (isImageResult(data)) {
             return {
               content: [
@@ -114,7 +140,9 @@ function buildMcpServer() {
 
 // Hors de 127.0.0.1, les noms d'hôte acceptés sont ceux de MCP_ALLOWED_HOSTS, ou localhost par défaut.
 const app = createMcpExpressApp(
-  LOCAL_HOSTS.includes(HOST) ? { host: HOST } : { host: HOST, allowedHosts: ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1'] },
+  LOCAL_HOSTS.includes(HOST)
+    ? { host: HOST }
+    : { host: HOST, allowedHosts: [...(ALLOWED_HOSTS.length ? ALLOWED_HOSTS : ['localhost', '127.0.0.1']), ...(HEADLESS_HOST ? [HEADLESS_HOST] : [])] },
 )
 
 function checkToken(req, res, next) {
@@ -164,6 +192,11 @@ app.get('/mcp', methodNotAllowed)
 app.delete('/mcp', methodNotAllowed)
 
 app.get('/healthz', (req, res) => res.json({ ok: true, ...bridge.status(), chat: chat.status() }))
+// Le navigateur sans écran répond-il ? Pour vérifier la stack après son démarrage.
+app.get('/healthz/headless', async (req, res) => {
+  if (!renderer) return res.json({ enabled: false })
+  res.json({ enabled: true, browser: await renderer.reachable(), ...bridge.status().headless })
+})
 
 // ── Chat intégré ───────────────────────────────────────────────────────────
 // Réservé aux pages de l'éditeur : chaque message consomme des crédits d'API.
@@ -311,6 +344,28 @@ app.post('/chat', chatCors, chatBody, async (req, res) => {
 // Mêmes règles d'origine que le chat : seules les pages de l'éditeur y ont accès.
 
 const diagrams = new DiagramStore()
+
+// ── Diagrammes dessinés sans éditeur ouvert ────────────────────────────────
+// Après chaque appel qui modifie le diagramme de l'onglet invisible, son XML est enregistré dans
+// « Mes diagrammes » : un fichier par série d'appels, nommé d'après sa date. Les onglets visibles
+// en sont prévenus et proposent de l'ouvrir. Rien ne reste seulement en mémoire.
+let headlessSession = null // { targetId, id, name }
+const two = (n) => String(n).padStart(2, '0')
+async function saveHeadlessDiagram(tool, send) {
+  if (READ_ONLY_TOOLS.has(tool) || !renderer?.target) return
+  if (headlessSession?.targetId !== renderer.target.id) {
+    const d = new Date()
+    headlessSession = {
+      targetId: renderer.target.id,
+      id: randomUUID(),
+      name: `Agent ${d.getFullYear()}-${two(d.getMonth() + 1)}-${two(d.getDate())} ${two(d.getHours())}h${two(d.getMinutes())}`,
+    }
+  }
+  const xml = await send('get_diagram_xml', {})
+  if (typeof xml !== 'string' || !xml.includes('<')) return
+  const saved = await diagrams.put(headlessSession.id, headlessSession.name, xml)
+  bridge.notifyTabs({ type: 'headless-diagram', id: headlessSession.id, name: headlessSession.name, updatedAt: saved.updatedAt })
+}
 const xmlBody = express.text({ type: ['application/xml', 'text/xml', 'text/plain'], limit: MAX_XML_BYTES })
 function checkId(req, res, next) {
   if (!DiagramStore.validId(req.params.id)) return res.status(400).json({ error: 'Invalid id' })
@@ -449,6 +504,12 @@ const httpServer = app.listen(PORT, HOST, (err) => {
   }
   if (!RELAY) log('Relais des fournisseurs de la fenêtre Options désactivé (CHAT_RELAY=off).')
   log(`Origines de l'éditeur autorisées : ${ALLOWED_ORIGINS.join(', ')}`)
+  if (renderer) {
+    log(`Mode sans navigateur actif : navigateur ${HEADLESS.cdpUrl}, éditeur ${HEADLESS.editorUrl}, fermeture après ${HEADLESS.idleMs / 1000} s sans appel.`)
+    renderer.reachable().then((ok) => {
+      if (!ok) log(`Attention : le navigateur sans écran (${HEADLESS.cdpUrl}) ne répond pas. Le service renderer est-il démarré ?`)
+    })
+  }
   for (const warning of chat.warnings) log(`Attention : ${warning}`)
   log(
     chat.enabled
