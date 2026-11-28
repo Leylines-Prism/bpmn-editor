@@ -115,10 +115,18 @@
   </div>
   <div id="main">
     <div id="canvas">
-      <div id="history-buttons" role="group" aria-label="History and search">
-        <button type="button" id="btn-undo" data-icon="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled></button>
-        <button type="button" id="btn-redo" data-icon="redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled></button>
-        <button type="button" id="btn-search" data-icon="search" title="Search the labels and the documentation (Ctrl+F)" aria-label="Search"></button>
+      <div id="canvas-tools">
+        <div id="history-buttons" role="group" aria-label="History and search">
+          <button type="button" id="btn-undo" data-icon="undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled></button>
+          <button type="button" id="btn-redo" data-icon="redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled></button>
+          <button type="button" id="btn-search" data-icon="search" title="Search the labels and the documentation (Ctrl+F)" aria-label="Search"></button>
+        </div>
+        <div id="zoom-buttons" role="group" aria-label="Zoom">
+          <button type="button" id="btn-zoom-out" data-zoom="out" data-icon="zoom-out" title="Zoom out (Ctrl+−)" aria-label="Zoom out"></button>
+          <button type="button" id="btn-zoom-reset" data-zoom="reset" class="zoom-level" title="Back to 100 % (Ctrl+0)" aria-label="Zoom level, click to go back to 100 %">100 %</button>
+          <button type="button" id="btn-zoom-in" data-zoom="in" data-icon="zoom-in" title="Zoom in (Ctrl++)" aria-label="Zoom in"></button>
+          <button type="button" id="btn-zoom-fit" data-zoom="fit" data-icon="zoom-fit" title="Fit the diagram to the screen" aria-label="Fit the diagram to the screen"></button>
+        </div>
       </div>
       <div id="credit">Powered by <a href="https://bpmn.io" target="_blank">bpmn.io</a></div>
     </div>
