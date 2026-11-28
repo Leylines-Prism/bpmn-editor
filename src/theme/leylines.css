@@ -749,7 +749,8 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #properties-panel .appearance-entry { display: flex; flex-direction: column; gap: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label { margin-top: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label:first-child { margin-top: 0; }
-#properties-panel .appearance-swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+/* Les pastilles suivent la largeur du panneau jusqu'à 36 px, puis restent à cette taille, alignées à gauche. */
+#properties-panel .appearance-swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 36px)); justify-content: start; gap: 4px; }
 #properties-panel .appearance-used { display: flex; flex-direction: column; gap: 4px; }
 #properties-panel .appearance-sublabel { font-size: 11px; color: var(--ink-muted); }
 #properties-panel .appearance-swatch {
