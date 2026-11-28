@@ -219,6 +219,14 @@ a.btn { text-decoration: none; }
   background: var(--white); box-shadow: var(--elevation-1);
 }
 
+/* Profils de palette (src/palette-profiles.js) : bouton du bas de la palette. Un point
+   orange signale une palette réduite. */
+#canvas .djs-palette .entry.bpmn-pilot-palette-profile { display: flex; align-items: center; justify-content: center; position: relative; color: var(--night-800, currentColor); }
+#canvas .djs-palette .entry.bpmn-pilot-palette-profile.narrowed::after {
+  content: ''; position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--leyline-orange, #F08A24);
+}
+.djs-popup.bpmn-pilot-palette-profile .djs-popup-entry-icon { width: 16px; color: var(--accent); }
+
 /* Bascule de simulation de jetons de l'extension : masquée, la simulation se lance par le
    bouton Simulation de la barre d'outils, en mode expert. */
 #canvas .bts-toggle-mode { display: none !important; }
@@ -1678,6 +1686,13 @@ body.presenting.pres-idle #presentation-bar { opacity: 0; }
    vitesse ; la couche de couleurs passe au-dessus des formes sans capter les clics. */
 #canvas .bts-set-animation-speed { display: flex; align-items: center; }
 #canvas .bts-set-animation-speed.hidden { display: none; }
+#canvas .autopilot-bar { display: flex; padding: 4px 6px 4px 10px; border-left: 1px solid var(--line); }
+#canvas .autopilot-bar button {
+  font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
+  border: 1px solid var(--line-strong); background: transparent; color: inherit; white-space: nowrap;
+}
+#canvas .autopilot-bar button:hover { border-color: var(--accent); }
+#canvas .autopilot-bar button.active { background: var(--accent); border-color: var(--accent); color: #FFFFFF; font-weight: 600; }
 #canvas .heatmap-bar { display: flex; gap: 4px; padding: 4px 6px 4px 10px; border-left: 1px solid var(--line); }
 #canvas .heatmap-bar button {
   font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px; cursor: pointer;
@@ -1707,6 +1722,7 @@ body.presenting.pres-idle #presentation-bar { opacity: 0; }
   background: #1F2937; color: #FFFFFF; font-size: 11px; font-weight: 600; line-height: 1;
   padding: 3px 6px; border-radius: 9px; white-space: nowrap; font-variant-numeric: tabular-nums;
 }
+#canvas .heatmap-badge.blocked { background: #DC2626; }
 #canvas .heatmap-legend {
   position: absolute; left: 16px; bottom: 44px; z-index: 5; display: flex; flex-direction: column; gap: 4px;
   max-width: 300px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
@@ -1718,13 +1734,17 @@ body.presenting.pres-idle #presentation-bar { opacity: 0; }
 #canvas .heatmap-legend .heatmap-source, #canvas .heatmap-legend .heatmap-note { font-size: 11px; opacity: 0.8; }
 #canvas .heatmap-legend .heatmap-note.warn { color: #C2410C; opacity: 1; }
 @media (max-width: 560px) {
-  #canvas .heatmap-bar { border-left: 0; padding-left: 4px; }
+  #canvas .heatmap-bar, #canvas .autopilot-bar { border-left: 0; padding-left: 4px; }
+  /* Écran étroit : le cadre de la vitesse passe sur plusieurs lignes au lieu de déborder. */
+  #canvas .bts-set-animation-speed { flex-wrap: wrap; justify-content: center; width: max-content; max-width: calc(100% - 16px); row-gap: 2px; padding-bottom: 4px; }
+  #canvas .bts-set-animation-speed .sim-speed input { width: 110px; }
   #canvas .heatmap-legend { left: 8px; right: 8px; bottom: 72px; max-width: none; }
 }
 
 /* Mode expert (src/expert-mode.js) : hors du mode, les fonctions avancées sont masquées. */
 html:not(.expert) .expert-only,
 html:not(.expert) #canvas .heatmap-bar,
+html:not(.expert) #canvas .autopilot-bar,
 html:not(.expert) #canvas .heatmap-legend,
 html:not(.expert) [data-group-id="group-bpmn-pilot-simulation"] { display: none !important; }
 /* Modules du mode Expert (src/expert-modules.js) : chaque module éteint retire ses commandes.
