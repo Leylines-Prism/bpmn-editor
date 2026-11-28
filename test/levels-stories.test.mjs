@@ -82,10 +82,9 @@ test('user stories and criteria reach the report, the sheets and their own Markd
 
 test('the HTML documentation page is self-contained and escapes every text', async () => {
   const { report } = await load()
-  const svg = '<?xml version="1.0"?><svg xmlns="http://www.w3.org/2000/svg"><g data-element-id="A" onclick="alert(1)" onmouseover=alert(2)><a href="javascript:alert(3)">x</a></g><script>alert(4)</script></svg>'
-  const clean = cleanSvg(svg)
-  assert.doesNotMatch(clean, /onclick|onmouseover|javascript:|<script|<\?xml/)
-  assert.match(clean, /data-element-id="A"/)
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg"><g data-element-id="A"></g><script>alert(4)</script></svg>'
+  // Hors navigateur, pas d'analyseur XML : le diagramme est omis plutôt que nettoyé au texte.
+  assert.equal(cleanSvg(svg, {}), '')
   const page = docPageHtml({ report, svg })
   assert.match(page, /^<!DOCTYPE html>/i)
   assert.match(page, /<article class="sheet" id="sheet-A"/)

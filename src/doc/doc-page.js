@@ -23,16 +23,28 @@ const e = escapeHtml
 const colon = () => T(': ', ' : ')
 const dateText = (date) => date.toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 
-// Le SVG de bpmn-js n'a ni script ni gestionnaire d'événement ; on s'en assure quand même.
-export function cleanSvg(svg) {
-  return String(svg || '')
-    .replace(/<\?xml[^>]*>/g, '')
-    .replace(/<!DOCTYPE[^>]*>/gi, '')
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
-    .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, '')
-    .replace(/(href\s*=\s*["'])\s*javascript:[^"']*/gi, '$1#')
-    .trim()
+// Le SVG de bpmn-js n'a ni script ni gestionnaire d'événement ; on s'en assure quand même, sur
+// l'arbre XML et non sur le texte : éléments actifs retirés, attributs on* retirés, liens réduits
+// aux ancres internes (#…). Sans analyseur XML (hors navigateur), le diagramme est omis.
+const ACTIVE = new Set(['script', 'foreignobject', 'iframe', 'object', 'embed', 'audio', 'video', 'animate', 'animatemotion', 'animatetransform', 'set', 'handler', 'listener'])
+export function cleanSvg(svg, dom = globalThis) {
+  if (!svg || typeof dom.DOMParser !== 'function' || typeof dom.XMLSerializer !== 'function') return ''
+  const doc = new dom.DOMParser().parseFromString(String(svg), 'image/svg+xml')
+  const root = doc.documentElement
+  if (!root || root.localName !== 'svg' || doc.getElementsByTagName('parsererror').length) return ''
+  const walk = (el) => {
+    for (const child of [...el.children]) {
+      if (ACTIVE.has(child.localName.toLowerCase())) child.remove()
+      else walk(child)
+    }
+    for (const attr of [...el.attributes]) {
+      const name = attr.localName.toLowerCase()
+      if (name.startsWith('on')) el.removeAttributeNode(attr)
+      else if (name === 'href' && !attr.value.trim().startsWith('#')) el.removeAttributeNode(attr)
+    }
+  }
+  walk(root)
+  return new dom.XMLSerializer().serializeToString(root)
 }
 
 function facts(s) {
