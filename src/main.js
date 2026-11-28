@@ -49,6 +49,7 @@ import { setupBrandLogo } from './theme/brand-logo.js'
 import { setupPanelToggle } from './panel-toggle.js'
 import { setupPresentation } from './presentation.js'
 import { setupSimulationSpeed } from './simulation-speed.js'
+import { setupMining } from './mining/mining-ui.js'
 import { setupHeatmap } from './heatmap.js'
 import { setupExpertMode, setExpert, isExpert, EXPERT_EVENT } from './expert-mode.js'
 import { setupExpertModules, isModuleOn, MODULES_EVENT } from './expert-modules.js'
@@ -535,7 +536,7 @@ async function processReport({ simulate = false } = {}) {
   const { checkDiagram } = await import('./diagram-checks.js')
   const checks = await checkDiagram(modeler).catch((err) => { console.warn('Quality checks for the report:', err); return null })
   const decisionReport = await decisions.report().catch((err) => { console.warn('Decisions for the report:', err); return null })
-  return buildReport(modeler, { name: baseName(), simulation, checks, decisions: decisionReport })
+  return buildReport(modeler, { name: baseName(), simulation, checks, decisions: decisionReport, mining: mining.getReport() })
 }
 
 // Export Word : le texte de l'export Markdown, en styles Word, avec l'image du diagramme.
@@ -608,6 +609,7 @@ document.getElementById('btn-doc-html').addEventListener('click', async (e) => {
   }
 })
 
+const mining = setupMining(modeler, { menuButton: document.getElementById('btn-mining'), isSimulating: () => !!modeler.get('toggleMode')._active })
 // Exporter > Récits utilisateur (Markdown), module Expert « Récits utilisateur ».
 document.getElementById('btn-stories-md').addEventListener('click', async (e) => {
   const button = e.currentTarget
@@ -936,12 +938,12 @@ if (import.meta.env.MODE === 'online') {
   // Bouton « Confidentialité », en bas à droite du canevas.
   import('./privacy.js').then(({ setupPrivacy }) => setupPrivacy({ container: document.getElementById('canvas') }))
   Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js')]).then(([{ createTools }, { createChatPanel }]) => {
-    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service }) })
+    createChatPanel({ mode: 'online', tools: createTools(modeler, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service, mining: mining.toolApi }) })
   })
 } else {
   if (mcpBridgeUrl) {
     Promise.all([import('./mcp-bridge.js'), import('./chat-panel.js'), import('./mcp-connect.js')]).then(([{ connectMcpBridge }, { createChatPanel }, { setupMcpConnect }]) => {
-      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service })
+      const bridge = connectMcpBridge(modeler, mcpBridgeUrl, { exportDiagram: exportForAi, processReport: processReportForAi, decisions: decisions.service, mining: mining.toolApi })
       // Le chat intégré passe par le même serveur, route /chat.
       const chatUrl = mcpBridgeUrl.replace(/^ws/, 'http').replace(/\/bridge$/, '/chat')
       createChatPanel({ mode: 'server', chatUrl, bridge })

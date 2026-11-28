@@ -25,6 +25,7 @@ import { renderDiagramPng } from './diagram-image.js'
 import { fitView } from './fit-view.js'
 import { T } from './i18n/lang.js'
 import { FONTS, applyFont, applyTextColor, fontOf, hasText, resetText, textColorOf } from './label-style.js'
+import { miningTools } from './mining/mining-tools.js'
 
 // Valeurs FEEL (dates, durées) en texte, pour la réponse JSON de l'outil.
 const plain = (v) => (v === null || v === undefined ? null : Array.isArray(v) ? v.map(plain) : typeof v === 'object' ? (Object.getPrototypeOf(v) === Object.prototype ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, plain(x)])) : String(v)) : v)
@@ -185,8 +186,9 @@ function setBadge(badge, state, client = null) {
 // Les outils qui écrivent sont suivis : ce qu'ils changent est marqué sur le canevas.
 // options.exportDiagram({ format, name }) : l'export de l'éditeur (src/main.js), pour export_diagram.
 // options.processReport({ simulate }) : le rapport de processus en Markdown, pour get_process_report.
-export function createTools(modeler, { exportDiagram, processReport, decisions } = {}) {
-  return trackAiChanges(modeler, buildTools(modeler, exportDiagram, processReport, decisions))
+// options.mining : l'analyse de journal d'événements de l'éditeur (src/mining/mining-ui.js).
+export function createTools(modeler, { exportDiagram, processReport, decisions, mining } = {}) {
+  return trackAiChanges(modeler, { ...buildTools(modeler, exportDiagram, processReport, decisions), ...miningTools(mining) })
 }
 
 function buildTools(modeler, exportDiagram, processReport, decisions) {

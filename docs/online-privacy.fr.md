@@ -32,6 +32,7 @@ clé réservée à cet éditeur, qui expire d'elle-même et dont la dépense est
 | Adresses et modèles des fournisseurs | `localStorage` | nulle part |
 | Conversation avec le co-pilote | mémoire de la page seulement, perdue au rechargement | chez le fournisseur, à chaque message |
 | Pièces jointes du chat (images, PDF, documents bureautiques, fichiers texte) | mémoire de la page (pour les documents et les fichiers texte, seul le texte extrait est gardé) | chez le fournisseur, avec le message |
+| Journal d'événements pour le process mining (CSV, XES), menu Expert | mémoire de la page seulement, perdu au rechargement. Si « Garder les totaux dans le fichier .bpmn » est cochée, le diagramme ne garde que des totaux (passages, durées, écarts), jamais de nom de dossier ni de ressource | nulle part. Si vous demandez au co-pilote de dessiner le processus à partir du journal, il ne reçoit que des totaux (noms d'étapes, nombres, durées). Un CSV joint dans le chat est une pièce jointe du chat, envoyée en entier |
 | Copie du site pour le hors connexion | stockage de cache du navigateur (Cache API), rempli par le service worker : les seuls fichiers du site (code, pages, images) | nulle part : elle ne contient aucune de vos données |
 
 ## Toutes les requêtes de la page

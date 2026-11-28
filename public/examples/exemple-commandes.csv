@@ -1,0 +1,2469 @@
+commande;etape;debut;fin;ressource
+C-1001;Commande reçue;2026-10-08 21:41;2026-10-08 21:41;Site web
+C-1001;Vérifier le paiement;2026-10-08 23:30;2026-10-08 23:35;Agent A
+C-1001;Préparer la commande;2026-10-10 05:26;2026-10-10 06:47;Entrepôt 1
+C-1001;Expédier;2026-10-10 13:09;2026-10-10 13:41;Entrepôt 1
+C-1001;Facturer;2026-10-10 17:31;2026-10-10 17:35;Agent D
+C-1002;Commande reçue;2026-10-28 00:25;2026-10-28 00:25;Site web
+C-1002;Vérifier le paiement;2026-10-28 01:07;2026-10-28 01:21;Agent C
+C-1002;Vérifier le stock;2026-10-28 02:43;2026-10-28 03:08;Entrepôt 2
+C-1002;Préparer la commande;2026-10-28 20:11;2026-10-28 20:31;Entrepôt 2
+C-1002;Expédier;2026-10-29 02:47;2026-10-29 03:08;Entrepôt 2
+C-1002;Facturer;2026-10-29 06:09;2026-10-29 06:18;Agent D
+C-1003;Commande reçue;2026-10-14 19:49;2026-10-14 19:49;Site web
+C-1003;Vérifier le paiement;2026-10-14 20:33;2026-10-14 20:38;Agent B
+C-1003;Vérifier le stock;2026-10-15 01:34;2026-10-15 01:54;Entrepôt 1
+C-1003;Commander au fournisseur;2026-10-15 03:02;2026-10-15 03:27;Agent B
+C-1003;Préparer la commande;2026-10-19 02:02;2026-10-19 03:24;Entrepôt 2
+C-1003;Expédier;2026-10-19 05:34;2026-10-19 05:53;Entrepôt 2
+C-1003;Facturer;2026-10-19 09:37;2026-10-19 09:41;Agent D
+C-1004;Commande reçue;2026-10-14 07:43;2026-10-14 07:43;Site web
+C-1004;Vérifier le paiement;2026-10-14 08:47;2026-10-14 09:05;Agent A
+C-1004;Vérifier le stock;2026-10-14 12:54;2026-10-14 13:06;Entrepôt 2
+C-1004;Préparer la commande;2026-10-15 10:32;2026-10-15 11:07;Entrepôt 2
+C-1004;Expédier;2026-10-15 15:43;2026-10-15 16:16;Entrepôt 1
+C-1004;Facturer;2026-10-15 18:39;2026-10-15 18:43;Agent C
+C-1005;Commande reçue;2026-10-30 23:13;2026-10-30 23:13;Site web
+C-1005;Vérifier le paiement;2026-10-31 01:31;2026-10-31 01:43;Agent B
+C-1005;Relancer le client;2026-11-02 01:07;2026-11-02 01:23;Agent D
+C-1005;Annuler la commande;2026-11-02 11:16;2026-11-02 11:21;Agent B
+C-1006;Commande reçue;2026-10-16 00:43;2026-10-16 00:43;Site web
+C-1006;Vérifier le paiement;2026-10-16 03:28;2026-10-16 03:49;Agent A
+C-1006;Vérifier le stock;2026-10-16 06:32;2026-10-16 06:44;Entrepôt 1
+C-1006;Préparer la commande;2026-10-16 15:53;2026-10-16 16:45;Entrepôt 2
+C-1006;Expédier;2026-10-16 19:50;2026-10-16 20:16;Entrepôt 1
+C-1006;Facturer;2026-10-17 00:03;2026-10-17 00:10;Agent A
+C-1007;Commande reçue;2026-10-28 22:59;2026-10-28 22:59;Site web
+C-1007;Vérifier le paiement;2026-10-29 00:47;2026-10-29 01:10;Agent D
+C-1007;Relancer le client;2026-10-30 11:14;2026-10-30 11:26;Agent D
+C-1007;Annuler la commande;2026-10-31 04:43;2026-10-31 04:55;Agent D
+C-1008;Commande reçue;2026-10-10 14:20;2026-10-10 14:20;Site web
+C-1008;Vérifier le paiement;2026-10-10 16:27;2026-10-10 16:42;Agent A
+C-1008;Vérifier le stock;2026-10-10 22:33;2026-10-10 22:57;Entrepôt 1
+C-1008;Préparer la commande;2026-10-11 19:39;2026-10-11 20:44;Entrepôt 1
+C-1008;Expédier;2026-10-11 22:02;2026-10-11 22:27;Entrepôt 2
+C-1008;Facturer;2026-10-12 02:06;2026-10-12 02:16;Agent C
+C-1009;Commande reçue;2026-10-17 10:35;2026-10-17 10:35;Site web
+C-1009;Vérifier le paiement;2026-10-17 13:32;2026-10-17 13:56;Agent C
+C-1009;Vérifier le stock;2026-10-17 17:49;2026-10-17 18:08;Entrepôt 1
+C-1009;Préparer la commande;2026-10-18 08:41;2026-10-18 10:06;Entrepôt 2
+C-1009;Expédier;2026-10-18 14:46;2026-10-18 14:59;Entrepôt 2
+C-1009;Facturer;2026-10-18 15:59;2026-10-18 16:02;Agent A
+C-1010;Commande reçue;2026-10-09 00:36;2026-10-09 00:36;Site web
+C-1010;Vérifier le paiement;2026-10-09 02:22;2026-10-09 02:31;Agent B
+C-1010;Vérifier le stock;2026-10-09 05:00;2026-10-09 05:21;Entrepôt 2
+C-1010;Préparer la commande;2026-10-09 22:53;2026-10-10 00:15;Entrepôt 2
+C-1010;Expédier;2026-10-10 02:34;2026-10-10 02:53;Entrepôt 1
+C-1010;Facturer;2026-10-10 04:35;2026-10-10 04:39;Agent B
+C-1011;Commande reçue;2026-10-24 16:25;2026-10-24 16:25;Site web
+C-1011;Vérifier le paiement;2026-10-24 18:56;2026-10-24 19:12;Agent B
+C-1011;Vérifier le stock;2026-10-24 23:43;2026-10-24 23:58;Entrepôt 2
+C-1011;Préparer la commande;2026-10-26 00:27;2026-10-26 01:04;Entrepôt 2
+C-1011;Expédier;2026-10-26 07:22;2026-10-26 07:38;Entrepôt 2
+C-1011;Facturer;2026-10-26 08:10;2026-10-26 08:19;Agent B
+C-1012;Commande reçue;2026-10-02 21:46;2026-10-02 21:46;Site web
+C-1012;Vérifier le paiement;2026-10-02 22:36;2026-10-02 22:57;Agent B
+C-1012;Vérifier le stock;2026-10-03 00:06;2026-10-03 00:26;Entrepôt 1
+C-1012;Préparer la commande;2026-10-03 06:44;2026-10-03 07:13;Entrepôt 2
+C-1012;Expédier;2026-10-03 10:14;2026-10-03 10:28;Entrepôt 2
+C-1012;Facturer;2026-10-03 14:02;2026-10-03 14:13;Agent D
+C-1013;Commande reçue;2026-10-04 01:48;2026-10-04 01:48;Site web
+C-1013;Vérifier le paiement;2026-10-04 04:36;2026-10-04 04:53;Agent C
+C-1013;Vérifier le stock;2026-10-04 09:33;2026-10-04 09:57;Entrepôt 1
+C-1013;Préparer la commande;2026-10-06 12:07;2026-10-06 13:01;Entrepôt 1
+C-1013;Expédier;2026-10-06 20:11;2026-10-06 20:42;Entrepôt 1
+C-1013;Facturer;2026-10-06 21:31;2026-10-06 21:36;Agent D
+C-1014;Commande reçue;2026-10-30 17:48;2026-10-30 17:48;Site web
+C-1014;Vérifier le paiement;2026-10-30 19:13;2026-10-30 19:24;Agent A
+C-1014;Vérifier le stock;2026-10-30 22:22;2026-10-30 22:34;Entrepôt 2
+C-1014;Préparer la commande;2026-10-31 07:04;2026-10-31 07:43;Entrepôt 2
+C-1014;Expédier;2026-10-31 10:22;2026-10-31 10:55;Entrepôt 1
+C-1014;Facturer;2026-10-31 14:38;2026-10-31 14:44;Agent D
+C-1015;Commande reçue;2026-10-15 04:57;2026-10-15 04:57;Site web
+C-1015;Vérifier le paiement;2026-10-15 07:21;2026-10-15 07:25;Agent B
+C-1015;Préparer la commande;2026-10-18 10:27;2026-10-18 11:38;Entrepôt 2
+C-1015;Expédier;2026-10-18 14:15;2026-10-18 14:46;Entrepôt 1
+C-1015;Facturer;2026-10-18 15:54;2026-10-18 16:03;Agent B
+C-1016;Commande reçue;2026-10-30 18:44;2026-10-30 18:44;Site web
+C-1016;Vérifier le paiement;2026-10-30 20:11;2026-10-30 20:30;Agent C
+C-1016;Vérifier le stock;2026-10-30 23:48;2026-10-30 23:55;Entrepôt 2
+C-1016;Préparer la commande;2026-11-01 02:31;2026-11-01 03:16;Entrepôt 1
+C-1016;Expédier;2026-11-01 10:14;2026-11-01 10:49;Entrepôt 2
+C-1016;Facturer;2026-11-01 12:31;2026-11-01 12:43;Agent A
+C-1017;Commande reçue;2026-10-24 09:21;2026-10-24 09:21;Site web
+C-1017;Vérifier le paiement;2026-10-24 09:48;2026-10-24 10:03;Agent A
+C-1017;Vérifier le stock;2026-10-24 14:47;2026-10-24 15:08;Entrepôt 1
+C-1017;Préparer la commande;2026-10-25 03:41;2026-10-25 04:09;Entrepôt 1
+C-1017;Expédier;2026-10-25 05:29;2026-10-25 05:42;Entrepôt 2
+C-1017;Facturer;2026-10-25 07:51;2026-10-25 07:57;Agent B
+C-1018;Commande reçue;2026-10-26 05:39;2026-10-26 05:39;Site web
+C-1018;Vérifier le paiement;2026-10-26 07:22;2026-10-26 07:33;Agent D
+C-1018;Vérifier le stock;2026-10-26 10:54;2026-10-26 11:04;Entrepôt 1
+C-1018;Préparer la commande;2026-10-27 00:42;2026-10-27 02:11;Entrepôt 2
+C-1018;Expédier;2026-10-27 05:43;2026-10-27 06:15;Entrepôt 1
+C-1018;Facturer;2026-10-27 08:48;2026-10-27 08:59;Agent A
+C-1019;Commande reçue;2026-10-17 17:34;2026-10-17 17:34;Site web
+C-1019;Vérifier le paiement;2026-10-17 20:30;2026-10-17 20:40;Agent B
+C-1019;Vérifier le stock;2026-10-18 02:36;2026-10-18 03:02;Entrepôt 2
+C-1019;Préparer la commande;2026-10-18 16:17;2026-10-18 17:34;Entrepôt 2
+C-1019;Expédier;2026-10-18 21:12;2026-10-18 21:40;Entrepôt 2
+C-1019;Facturer;2026-10-18 22:42;2026-10-18 22:46;Agent A
+C-1020;Commande reçue;2026-10-23 12:04;2026-10-23 12:04;Site web
+C-1020;Vérifier le paiement;2026-10-23 14:30;2026-10-23 14:38;Agent B
+C-1020;Vérifier le stock;2026-10-23 15:24;2026-10-23 15:33;Entrepôt 2
+C-1020;Préparer la commande;2026-10-24 04:16;2026-10-24 04:58;Entrepôt 1
+C-1020;Expédier;2026-10-24 14:19;2026-10-24 14:36;Entrepôt 1
+C-1020;Facturer;2026-10-24 16:06;2026-10-24 16:12;Agent D
+C-1021;Commande reçue;2026-10-24 22:17;2026-10-24 22:17;Site web
+C-1021;Vérifier le paiement;2026-10-25 00:20;2026-10-25 00:29;Agent B
+C-1021;Préparer la commande;2026-10-26 03:48;2026-10-26 04:38;Entrepôt 2
+C-1021;Expédier;2026-10-26 10:03;2026-10-26 10:25;Entrepôt 1
+C-1021;Facturer;2026-10-26 11:58;2026-10-26 12:09;Agent D
+C-1022;Commande reçue;2026-10-11 11:53;2026-10-11 11:53;Site web
+C-1022;Vérifier le paiement;2026-10-11 12:22;2026-10-11 12:38;Agent A
+C-1022;Vérifier le stock;2026-10-11 17:07;2026-10-11 17:34;Entrepôt 2
+C-1022;Préparer la commande;2026-10-12 04:47;2026-10-12 05:09;Entrepôt 1
+C-1022;Expédier;2026-10-12 11:10;2026-10-12 11:24;Entrepôt 2
+C-1022;Facturer;2026-10-12 12:07;2026-10-12 12:13;Agent D
+C-1023;Commande reçue;2026-10-03 07:38;2026-10-03 07:38;Site web
+C-1023;Vérifier le paiement;2026-10-03 09:50;2026-10-03 10:14;Agent D
+C-1023;Vérifier le stock;2026-10-03 11:26;2026-10-03 11:46;Entrepôt 2
+C-1023;Préparer la commande;2026-10-03 19:22;2026-10-03 20:13;Entrepôt 2
+C-1023;Expédier;2026-10-04 00:02;2026-10-04 00:36;Entrepôt 1
+C-1023;Facturer;2026-10-04 04:06;2026-10-04 04:14;Agent D
+C-1024;Commande reçue;2026-10-19 21:27;2026-10-19 21:27;Site web
+C-1024;Vérifier le paiement;2026-10-19 22:36;2026-10-19 22:51;Agent D
+C-1024;Vérifier le stock;2026-10-20 01:14;2026-10-20 01:38;Entrepôt 1
+C-1024;Préparer la commande;2026-10-20 08:39;2026-10-20 09:22;Entrepôt 1
+C-1024;Expédier;2026-10-20 13:31;2026-10-20 13:52;Entrepôt 2
+C-1024;Facturer;2026-10-20 15:39;2026-10-20 15:50;Agent C
+C-1025;Commande reçue;2026-10-10 04:01;2026-10-10 04:01;Site web
+C-1025;Vérifier le paiement;2026-10-10 05:19;2026-10-10 05:35;Agent C
+C-1025;Vérifier le stock;2026-10-10 11:33;2026-10-10 11:55;Entrepôt 1
+C-1025;Préparer la commande;2026-10-11 01:16;2026-10-11 02:18;Entrepôt 1
+C-1025;Expédier;2026-10-11 05:29;2026-10-11 05:54;Entrepôt 2
+C-1025;Facturer;2026-10-11 06:25;2026-10-11 06:36;Agent C
+C-1026;Commande reçue;2026-10-04 17:22;2026-10-04 17:22;Site web
+C-1026;Vérifier le paiement;2026-10-04 17:56;2026-10-04 18:14;Agent C
+C-1026;Vérifier le stock;2026-10-04 20:02;2026-10-04 20:28;Entrepôt 2
+C-1026;Préparer la commande;2026-10-05 11:22;2026-10-05 12:32;Entrepôt 1
+C-1026;Expédier;2026-10-05 16:30;2026-10-05 16:45;Entrepôt 2
+C-1026;Facturer;2026-10-05 20:45;2026-10-05 20:56;Agent B
+C-1027;Commande reçue;2026-10-27 10:16;2026-10-27 10:16;Site web
+C-1027;Vérifier le paiement;2026-10-27 12:11;2026-10-27 12:25;Agent D
+C-1027;Vérifier le stock;2026-10-27 13:32;2026-10-27 13:51;Entrepôt 1
+C-1027;Préparer la commande;2026-10-28 13:40;2026-10-28 14:02;Entrepôt 1
+C-1027;Expédier;2026-10-28 19:23;2026-10-28 19:55;Entrepôt 2
+C-1027;Facturer;2026-10-28 22:16;2026-10-28 22:23;Agent C
+C-1028;Commande reçue;2026-10-08 03:18;2026-10-08 03:18;Site web
+C-1028;Vérifier le paiement;2026-10-08 05:50;2026-10-08 06:12;Agent B
+C-1028;Vérifier le stock;2026-10-08 09:28;2026-10-08 09:51;Entrepôt 1
+C-1028;Préparer la commande;2026-10-08 16:35;2026-10-08 17:12;Entrepôt 1
+C-1028;Expédier;2026-10-08 22:59;2026-10-08 23:25;Entrepôt 2
+C-1028;Facturer;2026-10-09 00:21;2026-10-09 00:31;Agent B
+C-1029;Commande reçue;2026-10-05 18:38;2026-10-05 18:38;Site web
+C-1029;Vérifier le paiement;2026-10-05 20:26;2026-10-05 20:39;Agent C
+C-1029;Vérifier le stock;2026-10-05 23:37;2026-10-05 23:55;Entrepôt 1
+C-1029;Préparer la commande;2026-10-06 14:23;2026-10-06 15:34;Entrepôt 2
+C-1029;Expédier;2026-10-07 00:54;2026-10-07 01:27;Entrepôt 2
+C-1029;Facturer;2026-10-07 02:03;2026-10-07 02:11;Agent A
+C-1030;Commande reçue;2026-10-23 10:28;2026-10-23 10:28;Site web
+C-1030;Vérifier le paiement;2026-10-23 11:28;2026-10-23 11:36;Agent A
+C-1030;Vérifier le stock;2026-10-23 13:55;2026-10-23 14:11;Entrepôt 1
+C-1030;Préparer la commande;2026-10-24 11:57;2026-10-24 12:37;Entrepôt 2
+C-1030;Expédier;2026-10-24 21:12;2026-10-24 21:35;Entrepôt 2
+C-1030;Facturer;2026-10-25 00:19;2026-10-25 00:30;Agent B
+C-1031;Commande reçue;2026-10-17 19:14;2026-10-17 19:14;Site web
+C-1031;Vérifier le paiement;2026-10-17 20:53;2026-10-17 21:02;Agent B
+C-1031;Vérifier le stock;2026-10-18 01:38;2026-10-18 01:53;Entrepôt 1
+C-1031;Préparer la commande;2026-10-18 21:32;2026-10-18 22:08;Entrepôt 1
+C-1031;Expédier;2026-10-19 07:20;2026-10-19 07:45;Entrepôt 2
+C-1031;Facturer;2026-10-19 10:43;2026-10-19 10:55;Agent B
+C-1032;Commande reçue;2026-10-18 09:41;2026-10-18 09:41;Site web
+C-1032;Vérifier le paiement;2026-10-18 10:43;2026-10-18 10:50;Agent D
+C-1032;Vérifier le stock;2026-10-18 16:23;2026-10-18 16:42;Entrepôt 1
+C-1032;Préparer la commande;2026-10-19 02:39;2026-10-19 03:57;Entrepôt 1
+C-1032;Expédier;2026-10-19 05:36;2026-10-19 05:58;Entrepôt 1
+C-1032;Facturer;2026-10-19 07:47;2026-10-19 07:50;Agent D
+C-1033;Commande reçue;2026-10-17 07:42;2026-10-17 07:42;Site web
+C-1033;Vérifier le paiement;2026-10-17 09:27;2026-10-17 09:51;Agent A
+C-1033;Préparer la commande;2026-10-18 12:42;2026-10-18 13:12;Entrepôt 2
+C-1033;Expédier;2026-10-18 16:47;2026-10-18 17:10;Entrepôt 1
+C-1033;Facturer;2026-10-18 18:40;2026-10-18 18:52;Agent A
+C-1034;Commande reçue;2026-10-28 04:41;2026-10-28 04:41;Site web
+C-1034;Vérifier le paiement;2026-10-28 06:56;2026-10-28 07:02;Agent A
+C-1034;Vérifier le stock;2026-10-28 07:46;2026-10-28 08:06;Entrepôt 2
+C-1034;Commander au fournisseur;2026-10-28 13:01;2026-10-28 13:49;Agent D
+C-1034;Préparer la commande;2026-10-28 18:50;2026-10-28 20:02;Entrepôt 1
+C-1034;Expédier;2026-10-28 22:08;2026-10-28 22:23;Entrepôt 2
+C-1034;Facturer;2026-10-28 23:42;2026-10-28 23:47;Agent D
+C-1035;Commande reçue;2026-10-26 14:13;2026-10-26 14:13;Site web
+C-1035;Vérifier le paiement;2026-10-26 16:34;2026-10-26 16:51;Agent C
+C-1035;Vérifier le stock;2026-10-26 22:42;2026-10-26 22:53;Entrepôt 1
+C-1035;Commander au fournisseur;2026-10-27 06:00;2026-10-27 06:23;Agent D
+C-1035;Préparer la commande;2026-10-27 09:19;2026-10-27 10:06;Entrepôt 2
+C-1035;Expédier;2026-10-27 18:13;2026-10-27 18:35;Entrepôt 1
+C-1035;Facturer;2026-10-27 20:06;2026-10-27 20:12;Agent B
+C-1036;Commande reçue;2026-10-04 16:50;2026-10-04 16:50;Site web
+C-1036;Vérifier le paiement;2026-10-04 17:26;2026-10-04 17:43;Agent C
+C-1036;Vérifier le stock;2026-10-04 21:25;2026-10-04 21:38;Entrepôt 1
+C-1036;Préparer la commande;2026-10-05 03:37;2026-10-05 04:45;Entrepôt 1
+C-1036;Expédier;2026-10-05 14:43;2026-10-05 15:03;Entrepôt 1
+C-1036;Facturer;2026-10-05 19:00;2026-10-05 19:04;Agent A
+C-1037;Commande reçue;2026-10-16 07:53;2026-10-16 07:53;Site web
+C-1037;Vérifier le paiement;2026-10-16 10:44;2026-10-16 10:50;Agent A
+C-1037;Relancer le client;2026-10-18 00:03;2026-10-18 00:14;Agent A
+C-1037;Annuler la commande;2026-10-18 07:59;2026-10-18 08:11;Agent D
+C-1038;Commande reçue;2026-10-18 11:17;2026-10-18 11:17;Site web
+C-1038;Vérifier le paiement;2026-10-18 12:18;2026-10-18 12:24;Agent A
+C-1038;Vérifier le stock;2026-10-18 17:54;2026-10-18 18:04;Entrepôt 1
+C-1038;Préparer la commande;2026-10-20 21:48;2026-10-20 23:08;Entrepôt 2
+C-1038;Expédier;2026-10-21 00:58;2026-10-21 01:33;Entrepôt 1
+C-1038;Facturer;2026-10-21 03:08;2026-10-21 03:18;Agent C
+C-1039;Commande reçue;2026-10-08 22:21;2026-10-08 22:21;Site web
+C-1039;Vérifier le paiement;2026-10-08 23:39;2026-10-08 23:45;Agent A
+C-1039;Vérifier le stock;2026-10-09 03:04;2026-10-09 03:15;Entrepôt 2
+C-1039;Commander au fournisseur;2026-10-09 09:50;2026-10-09 10:26;Agent A
+C-1039;Préparer la commande;2026-10-10 13:34;2026-10-10 14:59;Entrepôt 2
+C-1039;Expédier;2026-10-10 20:22;2026-10-10 20:44;Entrepôt 1
+C-1039;Facturer;2026-10-10 21:55;2026-10-10 22:03;Agent B
+C-1040;Commande reçue;2026-10-08 01:46;2026-10-08 01:46;Site web
+C-1040;Vérifier le paiement;2026-10-08 04:02;2026-10-08 04:11;Agent D
+C-1040;Vérifier le stock;2026-10-08 09:18;2026-10-08 09:27;Entrepôt 2
+C-1040;Commander au fournisseur;2026-10-08 15:43;2026-10-08 16:15;Agent B
+C-1040;Préparer la commande;2026-10-09 12:05;2026-10-09 13:02;Entrepôt 2
+C-1040;Expédier;2026-10-09 15:06;2026-10-09 15:19;Entrepôt 1
+C-1040;Facturer;2026-10-09 17:34;2026-10-09 17:40;Agent B
+C-1041;Commande reçue;2026-10-29 15:56;2026-10-29 15:56;Site web
+C-1041;Vérifier le paiement;2026-10-29 18:41;2026-10-29 19:03;Agent A
+C-1041;Vérifier le stock;2026-10-29 21:43;2026-10-29 21:58;Entrepôt 1
+C-1041;Préparer la commande;2026-10-30 07:27;2026-10-30 08:43;Entrepôt 1
+C-1041;Facturer;2026-10-30 11:08;2026-10-30 11:20;Agent C
+C-1041;Expédier;2026-10-30 17:32;2026-10-30 17:52;Entrepôt 1
+C-1042;Commande reçue;2026-10-14 06:13;2026-10-14 06:13;Site web
+C-1042;Vérifier le paiement;2026-10-14 07:32;2026-10-14 07:50;Agent A
+C-1042;Vérifier le stock;2026-10-14 13:38;2026-10-14 13:45;Entrepôt 2
+C-1042;Préparer la commande;2026-10-17 04:34;2026-10-17 05:12;Entrepôt 2
+C-1042;Expédier;2026-10-17 09:40;2026-10-17 09:59;Entrepôt 2
+C-1042;Facturer;2026-10-17 12:29;2026-10-17 12:36;Agent D
+C-1043;Commande reçue;2026-10-18 20:38;2026-10-18 20:38;Site web
+C-1043;Vérifier le paiement;2026-10-18 23:11;2026-10-18 23:22;Agent A
+C-1043;Vérifier le stock;2026-10-19 03:13;2026-10-19 03:24;Entrepôt 2
+C-1043;Préparer la commande;2026-10-21 06:35;2026-10-21 07:14;Entrepôt 1
+C-1043;Expédier;2026-10-21 08:28;2026-10-21 09:02;Entrepôt 2
+C-1043;Facturer;2026-10-21 10:29;2026-10-21 10:36;Agent D
+C-1044;Commande reçue;2026-10-19 05:40;2026-10-19 05:40;Site web
+C-1044;Vérifier le paiement;2026-10-19 08:18;2026-10-19 08:40;Agent A
+C-1044;Vérifier le stock;2026-10-19 09:23;2026-10-19 09:50;Entrepôt 1
+C-1044;Commander au fournisseur;2026-10-19 12:18;2026-10-19 13:11;Agent A
+C-1044;Préparer la commande;2026-10-21 18:18;2026-10-21 19:11;Entrepôt 1
+C-1044;Expédier;2026-10-21 23:27;2026-10-21 23:55;Entrepôt 1
+C-1044;Facturer;2026-10-22 02:26;2026-10-22 02:38;Agent D
+C-1045;Commande reçue;2026-10-20 05:57;2026-10-20 05:57;Site web
+C-1045;Vérifier le paiement;2026-10-20 07:28;2026-10-20 07:40;Agent A
+C-1045;Vérifier le stock;2026-10-20 13:31;2026-10-20 14:01;Entrepôt 1
+C-1045;Préparer la commande;2026-10-20 22:25;2026-10-20 23:04;Entrepôt 1
+C-1045;Expédier;2026-10-21 05:46;2026-10-21 06:13;Entrepôt 2
+C-1045;Facturer;2026-10-21 09:26;2026-10-21 09:37;Agent B
+C-1046;Commande reçue;2026-10-17 11:14;2026-10-17 11:14;Site web
+C-1046;Vérifier le paiement;2026-10-17 12:42;2026-10-17 13:04;Agent D
+C-1046;Vérifier le stock;2026-10-17 17:42;2026-10-17 17:59;Entrepôt 2
+C-1046;Commander au fournisseur;2026-10-17 19:26;2026-10-17 20:18;Agent C
+C-1046;Préparer la commande;2026-10-18 11:28;2026-10-18 11:59;Entrepôt 2
+C-1046;Expédier;2026-10-18 20:20;2026-10-18 20:46;Entrepôt 2
+C-1046;Facturer;2026-10-18 23:09;2026-10-18 23:13;Agent D
+C-1047;Commande reçue;2026-10-22 17:27;2026-10-22 17:27;Site web
+C-1047;Vérifier le paiement;2026-10-22 20:26;2026-10-22 20:47;Agent B
+C-1047;Vérifier le stock;2026-10-22 22:52;2026-10-22 23:02;Entrepôt 1
+C-1047;Préparer la commande;2026-10-23 20:34;2026-10-23 21:00;Entrepôt 1
+C-1047;Expédier;2026-10-24 01:39;2026-10-24 01:57;Entrepôt 1
+C-1047;Facturer;2026-10-24 04:14;2026-10-24 04:17;Agent D
+C-1048;Commande reçue;2026-10-30 17:09;2026-10-30 17:09;Site web
+C-1048;Vérifier le paiement;2026-10-30 17:57;2026-10-30 18:10;Agent A
+C-1048;Vérifier le stock;2026-10-30 18:45;2026-10-30 18:55;Entrepôt 2
+C-1048;Préparer la commande;2026-10-31 12:44;2026-10-31 13:40;Entrepôt 2
+C-1048;Expédier;2026-10-31 20:48;2026-10-31 21:20;Entrepôt 1
+C-1048;Facturer;2026-10-31 22:31;2026-10-31 22:36;Agent A
+C-1049;Commande reçue;2026-10-04 21:34;2026-10-04 21:34;Site web
+C-1049;Vérifier le paiement;2026-10-04 23:34;2026-10-04 23:55;Agent D
+C-1049;Vérifier le stock;2026-10-05 04:51;2026-10-05 05:11;Entrepôt 2
+C-1049;Commander au fournisseur;2026-10-05 12:04;2026-10-05 12:37;Agent C
+C-1049;Préparer la commande;2026-10-09 11:36;2026-10-09 12:19;Entrepôt 2
+C-1049;Expédier;2026-10-09 20:14;2026-10-09 20:39;Entrepôt 1
+C-1049;Facturer;2026-10-09 21:44;2026-10-09 21:54;Agent D
+C-1050;Commande reçue;2026-10-06 18:20;2026-10-06 18:20;Site web
+C-1050;Vérifier le paiement;2026-10-06 19:59;2026-10-06 20:12;Agent C
+C-1050;Vérifier le stock;2026-10-07 00:43;2026-10-07 01:00;Entrepôt 2
+C-1050;Préparer la commande;2026-10-07 11:49;2026-10-07 12:58;Entrepôt 1
+C-1050;Expédier;2026-10-07 15:00;2026-10-07 15:19;Entrepôt 1
+C-1050;Facturer;2026-10-07 16:33;2026-10-07 16:40;Agent B
+C-1051;Commande reçue;2026-10-20 20:41;2026-10-20 20:41;Site web
+C-1051;Vérifier le paiement;2026-10-20 21:58;2026-10-20 22:18;Agent B
+C-1051;Vérifier le stock;2026-10-21 03:52;2026-10-21 04:07;Entrepôt 2
+C-1051;Préparer la commande;2026-10-21 13:33;2026-10-21 14:42;Entrepôt 1
+C-1051;Expédier;2026-10-21 15:52;2026-10-21 16:27;Entrepôt 2
+C-1051;Facturer;2026-10-21 18:51;2026-10-21 18:54;Agent D
+C-1052;Commande reçue;2026-10-27 21:22;2026-10-27 21:22;Site web
+C-1052;Vérifier le paiement;2026-10-27 23:45;2026-10-27 23:58;Agent C
+C-1052;Vérifier le stock;2026-10-28 02:59;2026-10-28 03:15;Entrepôt 2
+C-1052;Préparer la commande;2026-10-29 07:14;2026-10-29 07:35;Entrepôt 2
+C-1052;Expédier;2026-10-29 15:29;2026-10-29 15:43;Entrepôt 1
+C-1052;Facturer;2026-10-29 18:37;2026-10-29 18:41;Agent D
+C-1053;Commande reçue;2026-10-26 21:33;2026-10-26 21:33;Site web
+C-1053;Vérifier le paiement;2026-10-26 21:49;2026-10-26 21:58;Agent C
+C-1053;Vérifier le stock;2026-10-27 01:16;2026-10-27 01:30;Entrepôt 1
+C-1053;Préparer la commande;2026-10-29 09:45;2026-10-29 11:01;Entrepôt 2
+C-1053;Expédier;2026-10-29 19:57;2026-10-29 20:21;Entrepôt 2
+C-1053;Facturer;2026-10-29 23:56;2026-10-30 00:02;Agent B
+C-1054;Commande reçue;2026-10-13 23:02;2026-10-13 23:02;Site web
+C-1054;Vérifier le paiement;2026-10-13 23:24;2026-10-13 23:34;Agent A
+C-1054;Vérifier le stock;2026-10-14 04:02;2026-10-14 04:32;Entrepôt 2
+C-1054;Préparer la commande;2026-10-14 22:08;2026-10-14 22:51;Entrepôt 1
+C-1054;Expédier;2026-10-15 04:58;2026-10-15 05:20;Entrepôt 2
+C-1054;Facturer;2026-10-15 06:25;2026-10-15 06:33;Agent D
+C-1055;Commande reçue;2026-10-04 00:06;2026-10-04 00:06;Site web
+C-1055;Vérifier le paiement;2026-10-04 02:28;2026-10-04 02:32;Agent C
+C-1055;Vérifier le stock;2026-10-04 05:24;2026-10-04 05:53;Entrepôt 1
+C-1055;Préparer la commande;2026-10-05 00:56;2026-10-05 02:02;Entrepôt 1
+C-1055;Expédier;2026-10-05 05:39;2026-10-05 05:54;Entrepôt 2
+C-1055;Facturer;2026-10-05 07:07;2026-10-05 07:15;Agent C
+C-1056;Commande reçue;2026-10-10 11:15;2026-10-10 11:15;Site web
+C-1056;Vérifier le paiement;2026-10-10 11:32;2026-10-10 11:56;Agent C
+C-1056;Vérifier le stock;2026-10-10 15:07;2026-10-10 15:17;Entrepôt 2
+C-1056;Préparer la commande;2026-10-11 14:24;2026-10-11 15:13;Entrepôt 2
+C-1056;Expédier;2026-10-11 17:57;2026-10-11 18:15;Entrepôt 2
+C-1056;Facturer;2026-10-11 20:53;2026-10-11 21:03;Agent C
+C-1057;Commande reçue;2026-10-03 05:02;2026-10-03 05:02;Site web
+C-1057;Vérifier le paiement;2026-10-03 06:45;2026-10-03 07:03;Agent D
+C-1057;Vérifier le stock;2026-10-03 09:45;2026-10-03 09:57;Entrepôt 1
+C-1057;Commander au fournisseur;2026-10-03 13:39;2026-10-03 13:54;Agent A
+C-1057;Préparer la commande;2026-10-03 22:59;2026-10-03 23:36;Entrepôt 1
+C-1057;Expédier;2026-10-04 03:38;2026-10-04 04:10;Entrepôt 2
+C-1057;Facturer;2026-10-04 07:14;2026-10-04 07:21;Agent A
+C-1058;Commande reçue;2026-10-05 01:52;2026-10-05 01:52;Site web
+C-1058;Vérifier le paiement;2026-10-05 03:12;2026-10-05 03:31;Agent C
+C-1058;Vérifier le stock;2026-10-05 04:53;2026-10-05 05:02;Entrepôt 1
+C-1058;Préparer la commande;2026-10-06 07:14;2026-10-06 08:31;Entrepôt 1
+C-1058;Expédier;2026-10-06 15:18;2026-10-06 15:52;Entrepôt 2
+C-1058;Facturer;2026-10-06 19:41;2026-10-06 19:51;Agent C
+C-1059;Commande reçue;2026-10-14 21:00;2026-10-14 21:00;Site web
+C-1059;Vérifier le paiement;2026-10-14 21:34;2026-10-14 21:51;Agent D
+C-1059;Vérifier le stock;2026-10-15 02:02;2026-10-15 02:28;Entrepôt 2
+C-1059;Préparer la commande;2026-10-17 21:14;2026-10-17 21:59;Entrepôt 1
+C-1059;Expédier;2026-10-18 07:48;2026-10-18 08:14;Entrepôt 1
+C-1059;Facturer;2026-10-18 11:15;2026-10-18 11:25;Agent D
+C-1060;Commande reçue;2026-10-12 12:55;2026-10-12 12:55;Site web
+C-1060;Vérifier le paiement;2026-10-12 15:46;2026-10-12 15:52;Agent A
+C-1060;Vérifier le stock;2026-10-12 19:09;2026-10-12 19:38;Entrepôt 1
+C-1060;Préparer la commande;2026-10-13 23:55;2026-10-14 00:19;Entrepôt 2
+C-1060;Expédier;2026-10-14 08:59;2026-10-14 09:15;Entrepôt 2
+C-1060;Facturer;2026-10-14 11:38;2026-10-14 11:41;Agent D
+C-1061;Commande reçue;2026-10-20 05:55;2026-10-20 05:55;Site web
+C-1061;Vérifier le paiement;2026-10-20 07:23;2026-10-20 07:37;Agent D
+C-1061;Commander au fournisseur;2026-10-20 12:20;2026-10-20 12:49;Agent C
+C-1061;Préparer la commande;2026-10-20 18:43;2026-10-20 19:26;Entrepôt 2
+C-1061;Expédier;2026-10-21 01:00;2026-10-21 01:27;Entrepôt 1
+C-1061;Facturer;2026-10-21 02:32;2026-10-21 02:42;Agent B
+C-1062;Commande reçue;2026-10-27 03:25;2026-10-27 03:25;Site web
+C-1062;Vérifier le paiement;2026-10-27 06:16;2026-10-27 06:31;Agent D
+C-1062;Vérifier le stock;2026-10-27 08:29;2026-10-27 08:53;Entrepôt 1
+C-1062;Préparer la commande;2026-10-28 11:00;2026-10-28 11:50;Entrepôt 2
+C-1062;Expédier;2026-10-28 19:16;2026-10-28 19:32;Entrepôt 1
+C-1062;Facturer;2026-10-28 21:48;2026-10-28 21:54;Agent A
+C-1063;Commande reçue;2026-10-11 09:24;2026-10-11 09:24;Site web
+C-1063;Vérifier le paiement;2026-10-11 10:50;2026-10-11 11:07;Agent C
+C-1063;Vérifier le stock;2026-10-11 13:35;2026-10-11 13:43;Entrepôt 1
+C-1063;Préparer la commande;2026-10-12 10:30;2026-10-12 11:22;Entrepôt 1
+C-1063;Expédier;2026-10-12 18:16;2026-10-12 18:45;Entrepôt 1
+C-1063;Facturer;2026-10-12 22:14;2026-10-12 22:21;Agent B
+C-1064;Commande reçue;2026-10-08 15:50;2026-10-08 15:50;Site web
+C-1064;Vérifier le paiement;2026-10-08 16:03;2026-10-08 16:16;Agent D
+C-1064;Vérifier le stock;2026-10-08 20:18;2026-10-08 20:42;Entrepôt 1
+C-1064;Préparer la commande;2026-10-09 06:42;2026-10-09 07:28;Entrepôt 1
+C-1064;Expédier;2026-10-09 11:17;2026-10-09 11:38;Entrepôt 2
+C-1064;Facturer;2026-10-09 12:36;2026-10-09 12:42;Agent A
+C-1065;Commande reçue;2026-10-27 03:44;2026-10-27 03:44;Site web
+C-1065;Vérifier le paiement;2026-10-27 05:10;2026-10-27 05:28;Agent B
+C-1065;Vérifier le stock;2026-10-27 09:35;2026-10-27 09:53;Entrepôt 1
+C-1065;Préparer la commande;2026-10-28 07:28;2026-10-28 08:41;Entrepôt 1
+C-1065;Expédier;2026-10-28 12:18;2026-10-28 12:33;Entrepôt 2
+C-1065;Facturer;2026-10-28 15:08;2026-10-28 15:15;Agent C
+C-1066;Commande reçue;2026-10-25 15:36;2026-10-25 15:36;Site web
+C-1066;Vérifier le paiement;2026-10-25 16:22;2026-10-25 16:38;Agent B
+C-1066;Vérifier le stock;2026-10-25 20:41;2026-10-25 21:01;Entrepôt 1
+C-1066;Préparer la commande;2026-10-26 23:47;2026-10-27 01:05;Entrepôt 2
+C-1066;Expédier;2026-10-27 09:36;2026-10-27 10:10;Entrepôt 1
+C-1066;Facturer;2026-10-27 11:02;2026-10-27 11:07;Agent D
+C-1067;Commande reçue;2026-10-15 04:50;2026-10-15 04:50;Site web
+C-1067;Vérifier le paiement;2026-10-15 06:23;2026-10-15 06:46;Agent B
+C-1067;Vérifier le stock;2026-10-15 10:31;2026-10-15 10:53;Entrepôt 1
+C-1067;Commander au fournisseur;2026-10-15 17:29;2026-10-15 17:57;Agent A
+C-1067;Préparer la commande;2026-10-16 16:13;2026-10-16 16:54;Entrepôt 1
+C-1067;Expédier;2026-10-16 22:43;2026-10-16 23:11;Entrepôt 1
+C-1067;Facturer;2026-10-17 01:03;2026-10-17 01:12;Agent D
+C-1068;Commande reçue;2026-10-23 21:17;2026-10-23 21:17;Site web
+C-1068;Vérifier le paiement;2026-10-23 22:30;2026-10-23 22:50;Agent B
+C-1068;Relancer le client;2026-10-25 14:33;2026-10-25 14:41;Agent C
+C-1068;Annuler la commande;2026-10-26 11:11;2026-10-26 11:18;Agent A
+C-1069;Commande reçue;2026-10-14 22:31;2026-10-14 22:31;Site web
+C-1069;Vérifier le paiement;2026-10-14 22:44;2026-10-14 23:03;Agent D
+C-1069;Vérifier le stock;2026-10-15 05:00;2026-10-15 05:26;Entrepôt 1
+C-1069;Commander au fournisseur;2026-10-15 08:05;2026-10-15 08:59;Agent C
+C-1069;Préparer la commande;2026-10-16 00:23;2026-10-16 01:41;Entrepôt 1
+C-1069;Expédier;2026-10-16 03:41;2026-10-16 04:06;Entrepôt 1
+C-1069;Facturer;2026-10-16 07:02;2026-10-16 07:06;Agent A
+C-1070;Commande reçue;2026-10-20 22:41;2026-10-20 22:41;Site web
+C-1070;Vérifier le paiement;2026-10-21 01:05;2026-10-21 01:13;Agent B
+C-1070;Vérifier le stock;2026-10-21 07:03;2026-10-21 07:12;Entrepôt 1
+C-1070;Commander au fournisseur;2026-10-21 11:52;2026-10-21 12:38;Agent B
+C-1070;Préparer la commande;2026-10-24 21:03;2026-10-24 21:31;Entrepôt 1
+C-1070;Expédier;2026-10-24 22:41;2026-10-24 22:55;Entrepôt 2
+C-1070;Facturer;2026-10-25 01:51;2026-10-25 01:56;Agent B
+C-1071;Commande reçue;2026-10-01 22:25;2026-10-01 22:25;Site web
+C-1071;Vérifier le paiement;2026-10-01 23:32;2026-10-01 23:49;Agent C
+C-1071;Préparer la commande;2026-10-03 00:36;2026-10-03 00:55;Entrepôt 1
+C-1071;Expédier;2026-10-03 05:23;2026-10-03 05:55;Entrepôt 1
+C-1071;Facturer;2026-10-03 06:35;2026-10-03 06:46;Agent B
+C-1072;Commande reçue;2026-10-22 08:32;2026-10-22 08:32;Site web
+C-1072;Vérifier le paiement;2026-10-22 09:23;2026-10-22 09:31;Agent A
+C-1072;Vérifier le stock;2026-10-22 11:57;2026-10-22 12:15;Entrepôt 1
+C-1072;Préparer la commande;2026-10-23 08:29;2026-10-23 09:33;Entrepôt 1
+C-1072;Expédier;2026-10-23 17:53;2026-10-23 18:20;Entrepôt 1
+C-1072;Facturer;2026-10-23 19:24;2026-10-23 19:34;Agent C
+C-1073;Commande reçue;2026-10-26 09:07;2026-10-26 09:07;Site web
+C-1073;Vérifier le paiement;2026-10-26 11:42;2026-10-26 11:47;Agent C
+C-1073;Vérifier le stock;2026-10-26 13:47;2026-10-26 13:55;Entrepôt 2
+C-1073;Préparer la commande;2026-10-29 03:28;2026-10-29 04:35;Entrepôt 1
+C-1073;Facturer;2026-10-29 08:31;2026-10-29 08:41;Agent D
+C-1073;Expédier;2026-10-29 15:37;2026-10-29 16:13;Entrepôt 2
+C-1074;Commande reçue;2026-10-07 07:14;2026-10-07 07:14;Site web
+C-1074;Vérifier le paiement;2026-10-07 08:18;2026-10-07 08:42;Agent D
+C-1074;Vérifier le stock;2026-10-07 12:24;2026-10-07 12:48;Entrepôt 2
+C-1074;Préparer la commande;2026-10-08 06:56;2026-10-08 08:24;Entrepôt 1
+C-1074;Expédier;2026-10-08 10:01;2026-10-08 10:16;Entrepôt 2
+C-1074;Facturer;2026-10-08 13:12;2026-10-08 13:20;Agent D
+C-1075;Commande reçue;2026-10-21 12:29;2026-10-21 12:29;Site web
+C-1075;Vérifier le paiement;2026-10-21 12:58;2026-10-21 13:18;Agent B
+C-1075;Préparer la commande;2026-10-22 15:01;2026-10-22 15:55;Entrepôt 1
+C-1075;Expédier;2026-10-22 18:11;2026-10-22 18:44;Entrepôt 2
+C-1075;Facturer;2026-10-22 22:34;2026-10-22 22:42;Agent A
+C-1076;Commande reçue;2026-10-07 06:24;2026-10-07 06:24;Site web
+C-1076;Vérifier le paiement;2026-10-07 07:58;2026-10-07 08:06;Agent A
+C-1076;Vérifier le stock;2026-10-07 09:50;2026-10-07 10:13;Entrepôt 1
+C-1076;Préparer la commande;2026-10-07 20:39;2026-10-07 21:05;Entrepôt 2
+C-1076;Expédier;2026-10-08 04:46;2026-10-08 05:20;Entrepôt 2
+C-1076;Facturer;2026-10-08 08:11;2026-10-08 08:21;Agent A
+C-1077;Commande reçue;2026-10-06 17:41;2026-10-06 17:41;Site web
+C-1077;Vérifier le paiement;2026-10-06 18:34;2026-10-06 18:48;Agent B
+C-1077;Vérifier le stock;2026-10-06 22:07;2026-10-06 22:26;Entrepôt 2
+C-1077;Commander au fournisseur;2026-10-07 03:03;2026-10-07 03:30;Agent B
+C-1077;Préparer la commande;2026-10-07 08:31;2026-10-07 09:24;Entrepôt 2
+C-1077;Expédier;2026-10-07 13:59;2026-10-07 14:20;Entrepôt 1
+C-1077;Facturer;2026-10-07 15:08;2026-10-07 15:16;Agent C
+C-1078;Commande reçue;2026-10-26 04:15;2026-10-26 04:15;Site web
+C-1078;Vérifier le paiement;2026-10-26 05:21;2026-10-26 05:24;Agent A
+C-1078;Vérifier le stock;2026-10-26 09:39;2026-10-26 09:51;Entrepôt 1
+C-1078;Préparer la commande;2026-10-27 03:09;2026-10-27 04:16;Entrepôt 2
+C-1078;Facturer;2026-10-27 06:43;2026-10-27 06:49;Agent C
+C-1078;Expédier;2026-10-27 14:53;2026-10-27 15:15;Entrepôt 1
+C-1079;Commande reçue;2026-10-23 15:35;2026-10-23 15:35;Site web
+C-1079;Vérifier le paiement;2026-10-23 16:17;2026-10-23 16:31;Agent B
+C-1079;Annuler la commande;2026-10-24 06:21;2026-10-24 06:25;Agent C
+C-1080;Commande reçue;2026-10-11 08:51;2026-10-11 08:51;Site web
+C-1080;Vérifier le paiement;2026-10-11 10:47;2026-10-11 10:54;Agent A
+C-1080;Vérifier le stock;2026-10-11 12:48;2026-10-11 13:04;Entrepôt 2
+C-1080;Préparer la commande;2026-10-12 15:12;2026-10-12 15:42;Entrepôt 2
+C-1080;Expédier;2026-10-12 19:54;2026-10-12 20:16;Entrepôt 2
+C-1080;Facturer;2026-10-12 23:16;2026-10-12 23:25;Agent C
+C-1081;Commande reçue;2026-10-30 20:46;2026-10-30 20:46;Site web
+C-1081;Vérifier le paiement;2026-10-30 23:10;2026-10-30 23:18;Agent D
+C-1081;Vérifier le stock;2026-10-31 04:37;2026-10-31 05:06;Entrepôt 1
+C-1081;Préparer la commande;2026-10-31 07:54;2026-10-31 08:25;Entrepôt 1
+C-1081;Expédier;2026-10-31 12:21;2026-10-31 12:36;Entrepôt 2
+C-1081;Facturer;2026-10-31 13:24;2026-10-31 13:30;Agent A
+C-1082;Commande reçue;2026-10-03 19:34;2026-10-03 19:34;Site web
+C-1082;Vérifier le paiement;2026-10-03 20:00;2026-10-03 20:07;Agent A
+C-1082;Vérifier le stock;2026-10-03 22:55;2026-10-03 23:08;Entrepôt 1
+C-1082;Préparer la commande;2026-10-04 06:40;2026-10-04 07:40;Entrepôt 1
+C-1082;Expédier;2026-10-04 13:33;2026-10-04 14:01;Entrepôt 1
+C-1082;Facturer;2026-10-04 14:54;2026-10-04 15:03;Agent C
+C-1083;Commande reçue;2026-10-29 23:01;2026-10-29 23:01;Site web
+C-1083;Vérifier le paiement;2026-10-30 00:03;2026-10-30 00:12;Agent B
+C-1083;Vérifier le stock;2026-10-30 02:48;2026-10-30 03:16;Entrepôt 2
+C-1083;Préparer la commande;2026-10-30 14:19;2026-10-30 14:39;Entrepôt 2
+C-1083;Expédier;2026-10-30 16:36;2026-10-30 17:03;Entrepôt 2
+C-1083;Facturer;2026-10-30 18:10;2026-10-30 18:19;Agent A
+C-1084;Commande reçue;2026-10-16 09:16;2026-10-16 09:16;Site web
+C-1084;Vérifier le paiement;2026-10-16 10:35;2026-10-16 10:56;Agent B
+C-1084;Vérifier le stock;2026-10-16 15:06;2026-10-16 15:21;Entrepôt 1
+C-1084;Commander au fournisseur;2026-10-16 18:50;2026-10-16 19:26;Agent A
+C-1084;Préparer la commande;2026-10-19 19:20;2026-10-19 20:47;Entrepôt 2
+C-1084;Facturer;2026-10-19 22:29;2026-10-19 22:35;Agent C
+C-1084;Expédier;2026-10-20 00:41;2026-10-20 01:02;Entrepôt 2
+C-1085;Commande reçue;2026-10-29 02:42;2026-10-29 02:42;Site web
+C-1085;Vérifier le paiement;2026-10-29 04:51;2026-10-29 05:12;Agent D
+C-1085;Vérifier le stock;2026-10-29 09:59;2026-10-29 10:22;Entrepôt 1
+C-1085;Préparer la commande;2026-11-01 17:51;2026-11-01 18:58;Entrepôt 1
+C-1085;Expédier;2026-11-02 02:05;2026-11-02 02:40;Entrepôt 1
+C-1085;Facturer;2026-11-02 04:16;2026-11-02 04:28;Agent D
+C-1086;Commande reçue;2026-10-17 23:40;2026-10-17 23:40;Site web
+C-1086;Vérifier le paiement;2026-10-18 02:08;2026-10-18 02:29;Agent A
+C-1086;Vérifier le stock;2026-10-18 04:19;2026-10-18 04:36;Entrepôt 1
+C-1086;Préparer la commande;2026-10-19 02:17;2026-10-19 03:26;Entrepôt 1
+C-1086;Expédier;2026-10-19 05:33;2026-10-19 06:01;Entrepôt 2
+C-1086;Facturer;2026-10-19 06:35;2026-10-19 06:44;Agent B
+C-1087;Commande reçue;2026-10-08 00:05;2026-10-08 00:05;Site web
+C-1087;Vérifier le paiement;2026-10-08 01:53;2026-10-08 02:15;Agent C
+C-1087;Vérifier le stock;2026-10-08 03:25;2026-10-08 03:31;Entrepôt 2
+C-1087;Préparer la commande;2026-10-10 20:06;2026-10-10 21:18;Entrepôt 1
+C-1087;Expédier;2026-10-11 04:32;2026-10-11 04:50;Entrepôt 1
+C-1087;Facturer;2026-10-11 08:42;2026-10-11 08:50;Agent B
+C-1088;Commande reçue;2026-10-21 05:31;2026-10-21 05:31;Site web
+C-1088;Vérifier le paiement;2026-10-21 06:34;2026-10-21 06:58;Agent D
+C-1088;Vérifier le stock;2026-10-21 12:37;2026-10-21 12:59;Entrepôt 2
+C-1088;Préparer la commande;2026-10-22 05:36;2026-10-22 06:46;Entrepôt 2
+C-1088;Expédier;2026-10-22 10:24;2026-10-22 10:47;Entrepôt 2
+C-1088;Facturer;2026-10-22 11:49;2026-10-22 11:53;Agent B
+C-1089;Commande reçue;2026-10-02 18:14;2026-10-02 18:14;Site web
+C-1089;Vérifier le paiement;2026-10-02 21:06;2026-10-02 21:14;Agent C
+C-1089;Vérifier le stock;2026-10-02 22:45;2026-10-02 23:05;Entrepôt 1
+C-1089;Commander au fournisseur;2026-10-03 03:07;2026-10-03 04:01;Agent A
+C-1089;Préparer la commande;2026-10-06 03:08;2026-10-06 04:05;Entrepôt 2
+C-1089;Expédier;2026-10-06 06:16;2026-10-06 06:44;Entrepôt 1
+C-1089;Facturer;2026-10-06 07:27;2026-10-06 07:36;Agent D
+C-1090;Commande reçue;2026-10-22 01:08;2026-10-22 01:08;Site web
+C-1090;Vérifier le paiement;2026-10-22 02:08;2026-10-22 02:15;Agent C
+C-1090;Vérifier le stock;2026-10-22 03:41;2026-10-22 03:49;Entrepôt 2
+C-1090;Préparer la commande;2026-10-23 03:08;2026-10-23 04:17;Entrepôt 1
+C-1090;Expédier;2026-10-23 08:50;2026-10-23 09:18;Entrepôt 1
+C-1090;Facturer;2026-10-23 12:52;2026-10-23 13:03;Agent D
+C-1091;Commande reçue;2026-10-10 07:15;2026-10-10 07:15;Site web
+C-1091;Vérifier le paiement;2026-10-10 07:51;2026-10-10 08:15;Agent A
+C-1091;Vérifier le stock;2026-10-10 11:01;2026-10-10 11:27;Entrepôt 1
+C-1091;Préparer la commande;2026-10-13 11:43;2026-10-13 12:45;Entrepôt 2
+C-1091;Expédier;2026-10-13 20:49;2026-10-13 21:24;Entrepôt 2
+C-1091;Facturer;2026-10-14 00:48;2026-10-14 00:55;Agent D
+C-1092;Commande reçue;2026-10-15 00:27;2026-10-15 00:27;Site web
+C-1092;Vérifier le paiement;2026-10-15 03:18;2026-10-15 03:34;Agent C
+C-1092;Vérifier le stock;2026-10-15 05:04;2026-10-15 05:27;Entrepôt 2
+C-1092;Préparer la commande;2026-10-17 06:51;2026-10-17 07:38;Entrepôt 2
+C-1092;Expédier;2026-10-17 17:24;2026-10-17 17:38;Entrepôt 2
+C-1092;Facturer;2026-10-17 18:44;2026-10-17 18:50;Agent A
+C-1093;Commande reçue;2026-10-19 19:03;2026-10-19 19:03;Site web
+C-1093;Vérifier le paiement;2026-10-19 20:06;2026-10-19 20:15;Agent D
+C-1093;Vérifier le stock;2026-10-19 21:48;2026-10-19 22:14;Entrepôt 1
+C-1093;Préparer la commande;2026-10-23 07:36;2026-10-23 09:04;Entrepôt 2
+C-1093;Facturer;2026-10-23 12:18;2026-10-23 12:29;Agent D
+C-1093;Expédier;2026-10-23 15:42;2026-10-23 15:55;Entrepôt 2
+C-1094;Commande reçue;2026-10-29 05:08;2026-10-29 05:08;Site web
+C-1094;Vérifier le paiement;2026-10-29 07:31;2026-10-29 07:55;Agent C
+C-1094;Vérifier le stock;2026-10-29 10:33;2026-10-29 10:49;Entrepôt 2
+C-1094;Préparer la commande;2026-11-01 17:43;2026-11-01 18:27;Entrepôt 2
+C-1094;Expédier;2026-11-01 23:10;2026-11-01 23:46;Entrepôt 2
+C-1094;Facturer;2026-11-02 01:58;2026-11-02 02:03;Agent C
+C-1095;Commande reçue;2026-10-09 10:36;2026-10-09 10:36;Site web
+C-1095;Vérifier le paiement;2026-10-09 12:59;2026-10-09 13:16;Agent C
+C-1095;Vérifier le stock;2026-10-09 16:31;2026-10-09 16:50;Entrepôt 1
+C-1095;Commander au fournisseur;2026-10-09 19:41;2026-10-09 20:18;Agent B
+C-1095;Préparer la commande;2026-10-09 23:30;2026-10-10 00:25;Entrepôt 2
+C-1095;Expédier;2026-10-10 02:40;2026-10-10 03:01;Entrepôt 1
+C-1095;Facturer;2026-10-10 05:19;2026-10-10 05:22;Agent D
+C-1096;Commande reçue;2026-10-26 17:25;2026-10-26 17:25;Site web
+C-1096;Vérifier le paiement;2026-10-26 19:36;2026-10-26 19:57;Agent D
+C-1096;Vérifier le stock;2026-10-26 22:34;2026-10-26 22:53;Entrepôt 1
+C-1096;Préparer la commande;2026-10-27 13:31;2026-10-27 14:23;Entrepôt 1
+C-1096;Expédier;2026-10-27 16:19;2026-10-27 16:40;Entrepôt 2
+C-1096;Facturer;2026-10-27 19:29;2026-10-27 19:39;Agent B
+C-1097;Commande reçue;2026-10-30 08:45;2026-10-30 08:45;Site web
+C-1097;Vérifier le paiement;2026-10-30 10:45;2026-10-30 11:02;Agent C
+C-1097;Vérifier le stock;2026-10-30 14:29;2026-10-30 14:42;Entrepôt 1
+C-1097;Préparer la commande;2026-11-01 22:13;2026-11-01 23:15;Entrepôt 2
+C-1097;Expédier;2026-11-02 06:54;2026-11-02 07:19;Entrepôt 1
+C-1097;Facturer;2026-11-02 08:01;2026-11-02 08:13;Agent A
+C-1098;Commande reçue;2026-10-12 03:58;2026-10-12 03:58;Site web
+C-1098;Vérifier le paiement;2026-10-12 06:12;2026-10-12 06:15;Agent C
+C-1098;Vérifier le stock;2026-10-12 07:00;2026-10-12 07:07;Entrepôt 1
+C-1098;Commander au fournisseur;2026-10-12 11:22;2026-10-12 11:38;Agent B
+C-1098;Préparer la commande;2026-10-15 08:06;2026-10-15 08:31;Entrepôt 1
+C-1098;Expédier;2026-10-15 11:47;2026-10-15 12:02;Entrepôt 1
+C-1098;Facturer;2026-10-15 15:30;2026-10-15 15:34;Agent C
+C-1099;Commande reçue;2026-10-13 20:02;2026-10-13 20:02;Site web
+C-1099;Vérifier le paiement;2026-10-13 21:32;2026-10-13 21:44;Agent A
+C-1099;Vérifier le stock;2026-10-13 22:33;2026-10-13 22:46;Entrepôt 2
+C-1099;Préparer la commande;2026-10-17 03:24;2026-10-17 03:44;Entrepôt 2
+C-1099;Expédier;2026-10-17 13:27;2026-10-17 14:03;Entrepôt 1
+C-1099;Facturer;2026-10-17 15:01;2026-10-17 15:06;Agent C
+C-1100;Commande reçue;2026-10-04 02:21;2026-10-04 02:21;Site web
+C-1100;Vérifier le paiement;2026-10-04 04:32;2026-10-04 04:52;Agent C
+C-1100;Vérifier le stock;2026-10-04 10:51;2026-10-04 11:06;Entrepôt 2
+C-1100;Préparer la commande;2026-10-05 06:41;2026-10-05 07:11;Entrepôt 1
+C-1100;Expédier;2026-10-05 12:03;2026-10-05 12:35;Entrepôt 1
+C-1100;Facturer;2026-10-05 14:43;2026-10-05 14:53;Agent A
+C-1101;Commande reçue;2026-10-25 20:54;2026-10-25 20:54;Site web
+C-1101;Vérifier le paiement;2026-10-25 23:44;2026-10-26 00:05;Agent C
+C-1101;Vérifier le stock;2026-10-26 06:03;2026-10-26 06:16;Entrepôt 2
+C-1101;Préparer la commande;2026-10-29 14:52;2026-10-29 15:59;Entrepôt 1
+C-1101;Facturer;2026-10-29 19:45;2026-10-29 19:49;Agent B
+C-1101;Expédier;2026-10-29 23:39;2026-10-29 23:57;Entrepôt 2
+C-1102;Commande reçue;2026-10-04 10:22;2026-10-04 10:22;Site web
+C-1102;Vérifier le paiement;2026-10-04 11:06;2026-10-04 11:21;Agent D
+C-1102;Vérifier le stock;2026-10-04 16:57;2026-10-04 17:09;Entrepôt 2
+C-1102;Commander au fournisseur;2026-10-04 19:09;2026-10-04 19:35;Agent D
+C-1102;Préparer la commande;2026-10-07 21:48;2026-10-07 23:14;Entrepôt 1
+C-1102;Expédier;2026-10-08 08:39;2026-10-08 09:03;Entrepôt 1
+C-1102;Facturer;2026-10-08 11:34;2026-10-08 11:39;Agent D
+C-1103;Commande reçue;2026-10-26 16:11;2026-10-26 16:11;Site web
+C-1103;Vérifier le paiement;2026-10-26 16:41;2026-10-26 16:59;Agent C
+C-1103;Vérifier le stock;2026-10-26 22:48;2026-10-26 23:03;Entrepôt 2
+C-1103;Préparer la commande;2026-10-27 18:00;2026-10-27 19:03;Entrepôt 1
+C-1103;Expédier;2026-10-28 03:44;2026-10-28 03:57;Entrepôt 2
+C-1103;Facturer;2026-10-28 05:21;2026-10-28 05:25;Agent C
+C-1104;Commande reçue;2026-10-27 08:30;2026-10-27 08:30;Site web
+C-1104;Vérifier le paiement;2026-10-27 10:52;2026-10-27 11:05;Agent D
+C-1104;Vérifier le stock;2026-10-27 12:37;2026-10-27 12:50;Entrepôt 2
+C-1104;Commander au fournisseur;2026-10-27 16:19;2026-10-27 16:45;Agent D
+C-1104;Préparer la commande;2026-10-30 05:06;2026-10-30 05:24;Entrepôt 2
+C-1104;Expédier;2026-10-30 14:48;2026-10-30 15:15;Entrepôt 2
+C-1104;Facturer;2026-10-30 16:26;2026-10-30 16:36;Agent A
+C-1105;Commande reçue;2026-10-27 07:49;2026-10-27 07:49;Site web
+C-1105;Vérifier le paiement;2026-10-27 10:36;2026-10-27 10:54;Agent A
+C-1105;Vérifier le stock;2026-10-27 15:24;2026-10-27 15:31;Entrepôt 1
+C-1105;Préparer la commande;2026-10-28 06:46;2026-10-28 08:07;Entrepôt 1
+C-1105;Expédier;2026-10-28 13:16;2026-10-28 13:36;Entrepôt 2
+C-1105;Facturer;2026-10-28 16:45;2026-10-28 16:49;Agent B
+C-1106;Commande reçue;2026-10-26 09:45;2026-10-26 09:45;Site web
+C-1106;Vérifier le paiement;2026-10-26 10:32;2026-10-26 10:37;Agent D
+C-1106;Vérifier le stock;2026-10-26 13:16;2026-10-26 13:28;Entrepôt 2
+C-1106;Préparer la commande;2026-10-28 20:31;2026-10-28 21:34;Entrepôt 2
+C-1106;Facturer;2026-10-29 00:24;2026-10-29 00:33;Agent C
+C-1106;Expédier;2026-10-29 09:57;2026-10-29 10:25;Entrepôt 1
+C-1107;Commande reçue;2026-10-31 03:46;2026-10-31 03:46;Site web
+C-1107;Vérifier le paiement;2026-10-31 05:45;2026-10-31 06:03;Agent B
+C-1107;Vérifier le stock;2026-10-31 08:50;2026-10-31 08:59;Entrepôt 2
+C-1107;Commander au fournisseur;2026-10-31 15:15;2026-10-31 16:05;Agent C
+C-1107;Préparer la commande;2026-11-01 09:40;2026-11-01 10:28;Entrepôt 1
+C-1107;Expédier;2026-11-01 19:55;2026-11-01 20:08;Entrepôt 1
+C-1107;Facturer;2026-11-01 22:26;2026-11-01 22:31;Agent B
+C-1108;Commande reçue;2026-10-17 12:03;2026-10-17 12:03;Site web
+C-1108;Vérifier le paiement;2026-10-17 12:29;2026-10-17 12:37;Agent C
+C-1108;Vérifier le stock;2026-10-17 17:05;2026-10-17 17:20;Entrepôt 2
+C-1108;Commander au fournisseur;2026-10-18 00:07;2026-10-18 00:53;Agent B
+C-1108;Préparer la commande;2026-10-18 19:08;2026-10-18 19:49;Entrepôt 2
+C-1108;Expédier;2026-10-19 00:02;2026-10-19 00:23;Entrepôt 1
+C-1108;Facturer;2026-10-19 03:47;2026-10-19 03:59;Agent C
+C-1109;Commande reçue;2026-10-13 19:32;2026-10-13 19:32;Site web
+C-1109;Vérifier le paiement;2026-10-13 20:24;2026-10-13 20:30;Agent C
+C-1109;Vérifier le stock;2026-10-14 02:24;2026-10-14 02:50;Entrepôt 1
+C-1109;Préparer la commande;2026-10-15 00:20;2026-10-15 01:13;Entrepôt 2
+C-1109;Facturer;2026-10-15 04:53;2026-10-15 04:57;Agent D
+C-1109;Expédier;2026-10-15 12:06;2026-10-15 12:21;Entrepôt 2
+C-1110;Commande reçue;2026-10-07 08:56;2026-10-07 08:56;Site web
+C-1110;Vérifier le paiement;2026-10-07 10:45;2026-10-07 11:08;Agent B
+C-1110;Vérifier le stock;2026-10-07 16:20;2026-10-07 16:48;Entrepôt 1
+C-1110;Préparer la commande;2026-10-08 07:59;2026-10-08 09:14;Entrepôt 1
+C-1110;Expédier;2026-10-08 12:04;2026-10-08 12:35;Entrepôt 1
+C-1110;Facturer;2026-10-08 16:29;2026-10-08 16:33;Agent C
+C-1111;Commande reçue;2026-10-14 22:24;2026-10-14 22:24;Site web
+C-1111;Vérifier le paiement;2026-10-15 00:24;2026-10-15 00:31;Agent B
+C-1111;Vérifier le stock;2026-10-15 04:56;2026-10-15 05:19;Entrepôt 2
+C-1111;Préparer la commande;2026-10-16 06:46;2026-10-16 07:54;Entrepôt 1
+C-1111;Facturer;2026-10-16 09:15;2026-10-16 09:19;Agent A
+C-1111;Expédier;2026-10-16 14:11;2026-10-16 14:40;Entrepôt 2
+C-1112;Commande reçue;2026-10-28 11:51;2026-10-28 11:51;Site web
+C-1112;Vérifier le paiement;2026-10-28 13:48;2026-10-28 14:11;Agent C
+C-1112;Vérifier le stock;2026-10-28 17:49;2026-10-28 18:05;Entrepôt 1
+C-1112;Préparer la commande;2026-10-30 21:33;2026-10-30 22:04;Entrepôt 1
+C-1112;Expédier;2026-10-31 08:02;2026-10-31 08:24;Entrepôt 1
+C-1112;Facturer;2026-10-31 10:10;2026-10-31 10:19;Agent C
+C-1113;Commande reçue;2026-10-09 06:40;2026-10-09 06:40;Site web
+C-1113;Vérifier le paiement;2026-10-09 08:32;2026-10-09 08:40;Agent C
+C-1113;Vérifier le stock;2026-10-09 11:36;2026-10-09 11:56;Entrepôt 1
+C-1113;Commander au fournisseur;2026-10-09 14:13;2026-10-09 15:00;Agent D
+C-1113;Préparer la commande;2026-10-12 02:49;2026-10-12 04:18;Entrepôt 1
+C-1113;Expédier;2026-10-12 07:09;2026-10-12 07:24;Entrepôt 2
+C-1113;Facturer;2026-10-12 08:57;2026-10-12 09:03;Agent A
+C-1114;Commande reçue;2026-10-24 15:50;2026-10-24 15:50;Site web
+C-1114;Vérifier le paiement;2026-10-24 16:44;2026-10-24 16:52;Agent C
+C-1114;Vérifier le stock;2026-10-24 17:23;2026-10-24 17:40;Entrepôt 1
+C-1114;Préparer la commande;2026-10-28 03:53;2026-10-28 04:30;Entrepôt 1
+C-1114;Expédier;2026-10-28 10:43;2026-10-28 11:14;Entrepôt 2
+C-1114;Facturer;2026-10-28 15:09;2026-10-28 15:20;Agent C
+C-1115;Commande reçue;2026-10-25 11:24;2026-10-25 11:24;Site web
+C-1115;Vérifier le paiement;2026-10-25 13:06;2026-10-25 13:10;Agent C
+C-1115;Vérifier le stock;2026-10-25 17:04;2026-10-25 17:22;Entrepôt 1
+C-1115;Préparer la commande;2026-10-26 23:17;2026-10-27 00:17;Entrepôt 2
+C-1115;Expédier;2026-10-27 08:52;2026-10-27 09:05;Entrepôt 1
+C-1115;Facturer;2026-10-27 12:02;2026-10-27 12:06;Agent D
+C-1116;Commande reçue;2026-10-20 11:32;2026-10-20 11:32;Site web
+C-1116;Vérifier le paiement;2026-10-20 11:52;2026-10-20 12:13;Agent C
+C-1116;Vérifier le stock;2026-10-20 12:58;2026-10-20 13:16;Entrepôt 1
+C-1116;Préparer la commande;2026-10-20 16:31;2026-10-20 17:16;Entrepôt 1
+C-1116;Expédier;2026-10-20 20:40;2026-10-20 21:04;Entrepôt 2
+C-1116;Facturer;2026-10-21 00:59;2026-10-21 01:05;Agent D
+C-1117;Commande reçue;2026-10-05 03:31;2026-10-05 03:31;Site web
+C-1117;Vérifier le paiement;2026-10-05 04:08;2026-10-05 04:18;Agent A
+C-1117;Vérifier le stock;2026-10-05 05:30;2026-10-05 05:37;Entrepôt 1
+C-1117;Préparer la commande;2026-10-05 23:10;2026-10-06 00:08;Entrepôt 1
+C-1117;Expédier;2026-10-06 01:39;2026-10-06 02:13;Entrepôt 1
+C-1117;Facturer;2026-10-06 05:25;2026-10-06 05:29;Agent B
+C-1118;Commande reçue;2026-10-24 11:10;2026-10-24 11:10;Site web
+C-1118;Vérifier le paiement;2026-10-24 11:24;2026-10-24 11:41;Agent A
+C-1118;Vérifier le stock;2026-10-24 17:34;2026-10-24 17:55;Entrepôt 2
+C-1118;Préparer la commande;2026-10-25 10:55;2026-10-25 12:06;Entrepôt 1
+C-1118;Expédier;2026-10-25 13:25;2026-10-25 13:41;Entrepôt 1
+C-1118;Facturer;2026-10-25 17:36;2026-10-25 17:41;Agent B
+C-1119;Commande reçue;2026-10-17 11:39;2026-10-17 11:39;Site web
+C-1119;Vérifier le paiement;2026-10-17 12:37;2026-10-17 12:42;Agent B
+C-1119;Vérifier le stock;2026-10-17 16:52;2026-10-17 17:07;Entrepôt 1
+C-1119;Préparer la commande;2026-10-18 04:26;2026-10-18 05:18;Entrepôt 1
+C-1119;Expédier;2026-10-18 09:49;2026-10-18 10:06;Entrepôt 2
+C-1119;Facturer;2026-10-18 13:44;2026-10-18 13:52;Agent C
+C-1120;Commande reçue;2026-10-22 09:57;2026-10-22 09:57;Site web
+C-1120;Vérifier le paiement;2026-10-22 11:55;2026-10-22 12:08;Agent D
+C-1120;Préparer la commande;2026-10-25 18:12;2026-10-25 19:37;Entrepôt 2
+C-1120;Expédier;2026-10-26 03:48;2026-10-26 04:23;Entrepôt 1
+C-1120;Facturer;2026-10-26 06:41;2026-10-26 06:45;Agent C
+C-1121;Commande reçue;2026-10-23 01:40;2026-10-23 01:40;Site web
+C-1121;Vérifier le paiement;2026-10-23 02:35;2026-10-23 02:44;Agent D
+C-1121;Vérifier le stock;2026-10-23 05:45;2026-10-23 06:15;Entrepôt 1
+C-1121;Préparer la commande;2026-10-23 08:31;2026-10-23 09:36;Entrepôt 2
+C-1121;Expédier;2026-10-23 17:16;2026-10-23 17:39;Entrepôt 1
+C-1121;Facturer;2026-10-23 20:57;2026-10-23 21:04;Agent B
+C-1122;Commande reçue;2026-10-07 17:50;2026-10-07 17:50;Site web
+C-1122;Vérifier le paiement;2026-10-07 19:22;2026-10-07 19:35;Agent C
+C-1122;Vérifier le stock;2026-10-07 20:46;2026-10-07 21:13;Entrepôt 2
+C-1122;Préparer la commande;2026-10-09 06:11;2026-10-09 07:13;Entrepôt 2
+C-1122;Expédier;2026-10-09 12:29;2026-10-09 12:50;Entrepôt 2
+C-1122;Facturer;2026-10-09 15:35;2026-10-09 15:45;Agent C
+C-1123;Commande reçue;2026-10-06 22:22;2026-10-06 22:22;Site web
+C-1123;Vérifier le paiement;2026-10-06 23:57;2026-10-07 00:03;Agent B
+C-1123;Vérifier le stock;2026-10-07 04:03;2026-10-07 04:23;Entrepôt 2
+C-1123;Préparer la commande;2026-10-10 23:53;2026-10-11 00:50;Entrepôt 2
+C-1123;Facturer;2026-10-11 01:38;2026-10-11 01:44;Agent C
+C-1123;Expédier;2026-10-11 03:32;2026-10-11 03:56;Entrepôt 1
+C-1124;Commande reçue;2026-10-12 11:50;2026-10-12 11:50;Site web
+C-1124;Vérifier le paiement;2026-10-12 14:39;2026-10-12 15:00;Agent C
+C-1124;Vérifier le stock;2026-10-12 16:14;2026-10-12 16:29;Entrepôt 2
+C-1124;Préparer la commande;2026-10-13 05:16;2026-10-13 06:00;Entrepôt 2
+C-1124;Expédier;2026-10-13 12:24;2026-10-13 12:52;Entrepôt 2
+C-1124;Facturer;2026-10-13 16:35;2026-10-13 16:40;Agent D
+C-1125;Commande reçue;2026-10-25 16:45;2026-10-25 16:45;Site web
+C-1125;Vérifier le paiement;2026-10-25 17:03;2026-10-25 17:15;Agent D
+C-1125;Vérifier le stock;2026-10-25 19:26;2026-10-25 19:39;Entrepôt 2
+C-1125;Commander au fournisseur;2026-10-26 00:17;2026-10-26 00:38;Agent A
+C-1125;Préparer la commande;2026-10-27 20:53;2026-10-27 21:44;Entrepôt 2
+C-1125;Expédier;2026-10-28 06:05;2026-10-28 06:36;Entrepôt 2
+C-1125;Facturer;2026-10-28 09:28;2026-10-28 09:35;Agent A
+C-1126;Commande reçue;2026-10-14 06:32;2026-10-14 06:32;Site web
+C-1126;Vérifier le paiement;2026-10-14 07:56;2026-10-14 08:02;Agent B
+C-1126;Vérifier le stock;2026-10-14 09:58;2026-10-14 10:23;Entrepôt 1
+C-1126;Préparer la commande;2026-10-15 12:12;2026-10-15 13:14;Entrepôt 2
+C-1126;Expédier;2026-10-15 15:38;2026-10-15 16:11;Entrepôt 1
+C-1126;Facturer;2026-10-15 16:44;2026-10-15 16:49;Agent B
+C-1127;Commande reçue;2026-10-19 06:45;2026-10-19 06:45;Site web
+C-1127;Vérifier le paiement;2026-10-19 08:08;2026-10-19 08:16;Agent D
+C-1127;Vérifier le stock;2026-10-19 10:04;2026-10-19 10:14;Entrepôt 2
+C-1127;Préparer la commande;2026-10-20 09:31;2026-10-20 09:57;Entrepôt 1
+C-1127;Expédier;2026-10-20 14:19;2026-10-20 14:47;Entrepôt 2
+C-1127;Facturer;2026-10-20 16:17;2026-10-20 16:23;Agent A
+C-1128;Commande reçue;2026-10-21 14:40;2026-10-21 14:40;Site web
+C-1128;Vérifier le paiement;2026-10-21 15:16;2026-10-21 15:40;Agent D
+C-1128;Vérifier le stock;2026-10-21 19:59;2026-10-21 20:09;Entrepôt 1
+C-1128;Préparer la commande;2026-10-22 09:54;2026-10-22 10:47;Entrepôt 1
+C-1128;Expédier;2026-10-22 18:56;2026-10-22 19:18;Entrepôt 2
+C-1128;Facturer;2026-10-22 22:32;2026-10-22 22:40;Agent A
+C-1129;Commande reçue;2026-10-05 07:26;2026-10-05 07:26;Site web
+C-1129;Vérifier le paiement;2026-10-05 09:39;2026-10-05 09:48;Agent A
+C-1129;Vérifier le stock;2026-10-05 15:42;2026-10-05 15:50;Entrepôt 2
+C-1129;Commander au fournisseur;2026-10-05 20:55;2026-10-05 21:16;Agent A
+C-1129;Préparer la commande;2026-10-06 09:29;2026-10-06 09:48;Entrepôt 1
+C-1129;Expédier;2026-10-06 12:01;2026-10-06 12:21;Entrepôt 1
+C-1129;Facturer;2026-10-06 14:29;2026-10-06 14:37;Agent C
+C-1130;Commande reçue;2026-10-21 05:35;2026-10-21 05:35;Site web
+C-1130;Vérifier le paiement;2026-10-21 06:05;2026-10-21 06:15;Agent B
+C-1130;Vérifier le stock;2026-10-21 07:11;2026-10-21 07:33;Entrepôt 2
+C-1130;Préparer la commande;2026-10-21 15:30;2026-10-21 16:30;Entrepôt 2
+C-1130;Expédier;2026-10-21 23:42;2026-10-21 23:55;Entrepôt 1
+C-1130;Facturer;2026-10-22 03:24;2026-10-22 03:29;Agent A
+C-1131;Commande reçue;2026-10-02 06:02;2026-10-02 06:02;Site web
+C-1131;Vérifier le paiement;2026-10-02 08:55;2026-10-02 09:01;Agent B
+C-1131;Vérifier le stock;2026-10-02 14:20;2026-10-02 14:29;Entrepôt 2
+C-1131;Commander au fournisseur;2026-10-02 16:12;2026-10-02 16:37;Agent C
+C-1131;Préparer la commande;2026-10-03 05:47;2026-10-03 06:13;Entrepôt 1
+C-1131;Expédier;2026-10-03 11:07;2026-10-03 11:39;Entrepôt 2
+C-1131;Facturer;2026-10-03 12:58;2026-10-03 13:06;Agent D
+C-1132;Commande reçue;2026-10-21 13:06;2026-10-21 13:06;Site web
+C-1132;Vérifier le paiement;2026-10-21 14:45;2026-10-21 15:03;Agent D
+C-1132;Vérifier le stock;2026-10-21 20:18;2026-10-21 20:34;Entrepôt 1
+C-1132;Préparer la commande;2026-10-24 09:43;2026-10-24 10:23;Entrepôt 2
+C-1132;Expédier;2026-10-24 17:27;2026-10-24 17:43;Entrepôt 2
+C-1132;Facturer;2026-10-24 20:11;2026-10-24 20:21;Agent B
+C-1133;Commande reçue;2026-10-08 03:56;2026-10-08 03:56;Site web
+C-1133;Vérifier le paiement;2026-10-08 05:59;2026-10-08 06:12;Agent C
+C-1133;Préparer la commande;2026-10-11 17:36;2026-10-11 17:58;Entrepôt 2
+C-1133;Facturer;2026-10-11 18:43;2026-10-11 18:54;Agent C
+C-1133;Expédier;2026-10-11 20:00;2026-10-11 20:33;Entrepôt 2
+C-1134;Commande reçue;2026-10-16 04:09;2026-10-16 04:09;Site web
+C-1134;Vérifier le paiement;2026-10-16 06:33;2026-10-16 06:48;Agent B
+C-1134;Vérifier le stock;2026-10-16 07:34;2026-10-16 08:01;Entrepôt 1
+C-1134;Préparer la commande;2026-10-16 12:35;2026-10-16 13:11;Entrepôt 1
+C-1134;Expédier;2026-10-16 14:31;2026-10-16 15:04;Entrepôt 2
+C-1134;Facturer;2026-10-16 17:56;2026-10-16 18:02;Agent A
+C-1135;Commande reçue;2026-10-27 00:56;2026-10-27 00:56;Site web
+C-1135;Vérifier le paiement;2026-10-27 03:02;2026-10-27 03:07;Agent C
+C-1135;Vérifier le stock;2026-10-27 03:44;2026-10-27 03:57;Entrepôt 1
+C-1135;Préparer la commande;2026-10-27 19:32;2026-10-27 20:17;Entrepôt 2
+C-1135;Expédier;2026-10-27 22:38;2026-10-27 23:04;Entrepôt 1
+C-1135;Facturer;2026-10-28 02:41;2026-10-28 02:53;Agent C
+C-1136;Commande reçue;2026-10-29 16:15;2026-10-29 16:15;Site web
+C-1136;Vérifier le paiement;2026-10-29 18:15;2026-10-29 18:34;Agent A
+C-1136;Vérifier le stock;2026-10-29 20:32;2026-10-29 20:50;Entrepôt 1
+C-1136;Préparer la commande;2026-11-01 23:42;2026-11-02 00:14;Entrepôt 1
+C-1136;Expédier;2026-11-02 05:10;2026-11-02 05:36;Entrepôt 1
+C-1136;Facturer;2026-11-02 06:50;2026-11-02 06:58;Agent B
+C-1137;Commande reçue;2026-10-04 05:02;2026-10-04 05:02;Site web
+C-1137;Vérifier le paiement;2026-10-04 07:52;2026-10-04 08:07;Agent A
+C-1137;Vérifier le stock;2026-10-04 11:00;2026-10-04 11:28;Entrepôt 2
+C-1137;Préparer la commande;2026-10-05 15:10;2026-10-05 15:46;Entrepôt 1
+C-1137;Expédier;2026-10-05 21:40;2026-10-05 22:09;Entrepôt 1
+C-1137;Facturer;2026-10-05 23:49;2026-10-05 23:55;Agent B
+C-1138;Commande reçue;2026-10-21 17:18;2026-10-21 17:18;Site web
+C-1138;Vérifier le paiement;2026-10-21 17:46;2026-10-21 18:08;Agent B
+C-1138;Vérifier le stock;2026-10-21 22:51;2026-10-21 23:17;Entrepôt 1
+C-1139;Commande reçue;2026-10-14 07:01;2026-10-14 07:01;Site web
+C-1139;Vérifier le paiement;2026-10-14 08:47;2026-10-14 08:53;Agent A
+C-1139;Vérifier le stock;2026-10-14 11:55;2026-10-14 12:10;Entrepôt 1
+C-1139;Commander au fournisseur;2026-10-14 19:31;2026-10-14 20:07;Agent B
+C-1139;Préparer la commande;2026-10-15 00:13;2026-10-15 00:39;Entrepôt 1
+C-1139;Expédier;2026-10-15 03:13;2026-10-15 03:39;Entrepôt 1
+C-1139;Facturer;2026-10-15 07:11;2026-10-15 07:20;Agent C
+C-1140;Commande reçue;2026-10-21 07:01;2026-10-21 07:01;Site web
+C-1140;Vérifier le paiement;2026-10-21 08:18;2026-10-21 08:22;Agent D
+C-1140;Vérifier le stock;2026-10-21 09:55;2026-10-21 10:19;Entrepôt 2
+C-1140;Commander au fournisseur;2026-10-21 16:52;2026-10-21 17:26;Agent A
+C-1140;Préparer la commande;2026-10-22 13:19;2026-10-22 14:33;Entrepôt 1
+C-1140;Expédier;2026-10-22 20:46;2026-10-22 21:13;Entrepôt 2
+C-1140;Facturer;2026-10-23 00:31;2026-10-23 00:39;Agent A
+C-1141;Commande reçue;2026-10-28 17:36;2026-10-28 17:36;Site web
+C-1141;Vérifier le paiement;2026-10-28 19:34;2026-10-28 19:57;Agent C
+C-1141;Vérifier le stock;2026-10-28 22:21;2026-10-28 22:40;Entrepôt 1
+C-1141;Préparer la commande;2026-10-29 06:33;2026-10-29 06:52;Entrepôt 2
+C-1141;Expédier;2026-10-29 15:43;2026-10-29 15:58;Entrepôt 1
+C-1141;Facturer;2026-10-29 19:26;2026-10-29 19:34;Agent A
+C-1142;Commande reçue;2026-10-26 19:19;2026-10-26 19:19;Site web
+C-1142;Vérifier le paiement;2026-10-26 20:09;2026-10-26 20:30;Agent C
+C-1142;Relancer le client;2026-10-28 15:07;2026-10-28 15:22;Agent A
+C-1142;Annuler la commande;2026-10-29 06:52;2026-10-29 07:03;Agent B
+C-1143;Commande reçue;2026-10-26 06:44;2026-10-26 06:44;Site web
+C-1143;Vérifier le paiement;2026-10-26 09:42;2026-10-26 09:56;Agent B
+C-1143;Vérifier le stock;2026-10-26 13:44;2026-10-26 13:51;Entrepôt 1
+C-1143;Préparer la commande;2026-10-27 17:05;2026-10-27 17:26;Entrepôt 2
+C-1143;Expédier;2026-10-28 00:07;2026-10-28 00:19;Entrepôt 1
+C-1143;Facturer;2026-10-28 04:09;2026-10-28 04:18;Agent A
+C-1144;Commande reçue;2026-10-02 10:25;2026-10-02 10:25;Site web
+C-1144;Vérifier le paiement;2026-10-02 13:10;2026-10-02 13:31;Agent B
+C-1144;Vérifier le stock;2026-10-02 18:00;2026-10-02 18:07;Entrepôt 2
+C-1144;Préparer la commande;2026-10-06 15:43;2026-10-06 16:57;Entrepôt 1
+C-1144;Expédier;2026-10-07 01:14;2026-10-07 01:44;Entrepôt 2
+C-1144;Facturer;2026-10-07 02:46;2026-10-07 02:55;Agent B
+C-1145;Commande reçue;2026-10-08 21:12;2026-10-08 21:12;Site web
+C-1145;Vérifier le paiement;2026-10-08 22:30;2026-10-08 22:44;Agent D
+C-1145;Vérifier le stock;2026-10-09 02:48;2026-10-09 02:58;Entrepôt 2
+C-1145;Commander au fournisseur;2026-10-09 07:36;2026-10-09 08:11;Agent A
+C-1145;Préparer la commande;2026-10-10 01:33;2026-10-10 02:42;Entrepôt 1
+C-1145;Expédier;2026-10-10 11:11;2026-10-10 11:38;Entrepôt 2
+C-1145;Facturer;2026-10-10 13:06;2026-10-10 13:14;Agent D
+C-1146;Commande reçue;2026-10-21 13:32;2026-10-21 13:32;Site web
+C-1146;Vérifier le paiement;2026-10-21 16:29;2026-10-21 16:46;Agent C
+C-1146;Vérifier le stock;2026-10-21 20:09;2026-10-21 20:39;Entrepôt 1
+C-1146;Préparer la commande;2026-10-24 07:47;2026-10-24 08:58;Entrepôt 1
+C-1146;Expédier;2026-10-24 10:39;2026-10-24 11:00;Entrepôt 2
+C-1146;Facturer;2026-10-24 13:02;2026-10-24 13:12;Agent A
+C-1147;Commande reçue;2026-10-19 08:52;2026-10-19 08:52;Site web
+C-1147;Vérifier le paiement;2026-10-19 10:05;2026-10-19 10:23;Agent B
+C-1147;Vérifier le stock;2026-10-19 11:36;2026-10-19 11:49;Entrepôt 1
+C-1147;Préparer la commande;2026-10-20 16:42;2026-10-20 17:11;Entrepôt 2
+C-1147;Expédier;2026-10-20 20:57;2026-10-20 21:27;Entrepôt 2
+C-1147;Facturer;2026-10-20 23:40;2026-10-20 23:52;Agent C
+C-1148;Commande reçue;2026-10-28 22:44;2026-10-28 22:44;Site web
+C-1148;Vérifier le paiement;2026-10-28 23:11;2026-10-28 23:31;Agent D
+C-1148;Vérifier le stock;2026-10-29 01:53;2026-10-29 02:12;Entrepôt 1
+C-1148;Commander au fournisseur;2026-10-29 06:31;2026-10-29 07:30;Agent D
+C-1148;Préparer la commande;2026-10-30 01:18;2026-10-30 02:33;Entrepôt 2
+C-1148;Expédier;2026-10-30 10:53;2026-10-30 11:18;Entrepôt 2
+C-1148;Facturer;2026-10-30 14:31;2026-10-30 14:37;Agent A
+C-1149;Commande reçue;2026-10-01 12:32;2026-10-01 12:32;Site web
+C-1149;Vérifier le paiement;2026-10-01 14:31;2026-10-01 14:49;Agent B
+C-1149;Relancer le client;2026-10-02 20:54;2026-10-02 21:06;Agent D
+C-1149;Annuler la commande;2026-10-03 14:50;2026-10-03 14:58;Agent D
+C-1150;Commande reçue;2026-10-08 04:55;2026-10-08 04:55;Site web
+C-1150;Vérifier le paiement;2026-10-08 07:15;2026-10-08 07:39;Agent C
+C-1150;Vérifier le stock;2026-10-08 12:35;2026-10-08 12:43;Entrepôt 1
+C-1150;Commander au fournisseur;2026-10-08 20:43;2026-10-08 21:34;Agent A
+C-1150;Préparer la commande;2026-10-09 04:05;2026-10-09 04:46;Entrepôt 1
+C-1150;Expédier;2026-10-09 06:57;2026-10-09 07:21;Entrepôt 1
+C-1150;Facturer;2026-10-09 10:43;2026-10-09 10:48;Agent C
+C-1151;Commande reçue;2026-10-22 06:08;2026-10-22 06:08;Site web
+C-1151;Vérifier le paiement;2026-10-22 07:14;2026-10-22 07:20;Agent D
+C-1151;Vérifier le stock;2026-10-22 11:27;2026-10-22 11:48;Entrepôt 2
+C-1151;Préparer la commande;2026-10-25 17:26;2026-10-25 18:37;Entrepôt 2
+C-1151;Expédier;2026-10-25 21:42;2026-10-25 22:17;Entrepôt 1
+C-1151;Facturer;2026-10-26 00:40;2026-10-26 00:49;Agent C
+C-1152;Commande reçue;2026-10-27 08:40;2026-10-27 08:40;Site web
+C-1152;Vérifier le paiement;2026-10-27 09:03;2026-10-27 09:21;Agent D
+C-1152;Vérifier le stock;2026-10-27 10:03;2026-10-27 10:22;Entrepôt 2
+C-1152;Préparer la commande;2026-10-28 01:20;2026-10-28 02:43;Entrepôt 1
+C-1152;Expédier;2026-10-28 11:41;2026-10-28 12:10;Entrepôt 2
+C-1152;Facturer;2026-10-28 13:09;2026-10-28 13:13;Agent C
+C-1153;Commande reçue;2026-10-28 11:36;2026-10-28 11:36;Site web
+C-1153;Vérifier le paiement;2026-10-28 12:49;2026-10-28 13:11;Agent C
+C-1153;Vérifier le stock;2026-10-28 13:44;2026-10-28 14:13;Entrepôt 2
+C-1153;Commander au fournisseur;2026-10-28 16:09;2026-10-28 16:54;Agent A
+C-1153;Préparer la commande;2026-10-31 06:04;2026-10-31 07:28;Entrepôt 1
+C-1153;Expédier;2026-10-31 12:30;2026-10-31 12:58;Entrepôt 1
+C-1153;Facturer;2026-10-31 15:15;2026-10-31 15:20;Agent C
+C-1154;Commande reçue;2026-10-30 10:43;2026-10-30 10:43;Site web
+C-1154;Vérifier le paiement;2026-10-30 12:34;2026-10-30 12:53;Agent C
+C-1154;Vérifier le stock;2026-10-30 15:47;2026-10-30 16:01;Entrepôt 1
+C-1154;Préparer la commande;2026-10-31 16:29;2026-10-31 17:07;Entrepôt 2
+C-1154;Expédier;2026-10-31 20:42;2026-10-31 21:13;Entrepôt 2
+C-1154;Facturer;2026-10-31 22:05;2026-10-31 22:08;Agent C
+C-1155;Commande reçue;2026-10-05 01:00;2026-10-05 01:00;Site web
+C-1155;Vérifier le paiement;2026-10-05 01:18;2026-10-05 01:32;Agent A
+C-1155;Vérifier le stock;2026-10-05 06:44;2026-10-05 07:07;Entrepôt 2
+C-1155;Préparer la commande;2026-10-05 22:11;2026-10-05 22:53;Entrepôt 1
+C-1155;Expédier;2026-10-06 05:51;2026-10-06 06:11;Entrepôt 2
+C-1155;Facturer;2026-10-06 08:05;2026-10-06 08:12;Agent C
+C-1156;Commande reçue;2026-10-02 19:03;2026-10-02 19:03;Site web
+C-1156;Vérifier le paiement;2026-10-02 19:16;2026-10-02 19:24;Agent D
+C-1156;Vérifier le stock;2026-10-02 22:37;2026-10-02 23:07;Entrepôt 2
+C-1156;Commander au fournisseur;2026-10-03 03:08;2026-10-03 03:41;Agent A
+C-1156;Préparer la commande;2026-10-06 14:35;2026-10-06 15:22;Entrepôt 2
+C-1156;Expédier;2026-10-06 21:59;2026-10-06 22:18;Entrepôt 2
+C-1156;Facturer;2026-10-06 23:18;2026-10-06 23:27;Agent C
+C-1157;Commande reçue;2026-10-13 04:52;2026-10-13 04:52;Site web
+C-1157;Vérifier le paiement;2026-10-13 05:52;2026-10-13 05:58;Agent D
+C-1157;Vérifier le stock;2026-10-13 08:57;2026-10-13 09:17;Entrepôt 1
+C-1157;Préparer la commande;2026-10-14 12:38;2026-10-14 14:03;Entrepôt 1
+C-1157;Expédier;2026-10-14 18:37;2026-10-14 19:08;Entrepôt 2
+C-1157;Facturer;2026-10-14 19:58;2026-10-14 20:02;Agent D
+C-1158;Commande reçue;2026-10-20 06:19;2026-10-20 06:19;Site web
+C-1158;Vérifier le paiement;2026-10-20 08:12;2026-10-20 08:33;Agent D
+C-1158;Vérifier le stock;2026-10-20 12:23;2026-10-20 12:41;Entrepôt 2
+C-1158;Préparer la commande;2026-10-22 14:07;2026-10-22 14:41;Entrepôt 2
+C-1158;Expédier;2026-10-22 23:06;2026-10-22 23:40;Entrepôt 1
+C-1158;Facturer;2026-10-23 01:44;2026-10-23 01:51;Agent A
+C-1159;Commande reçue;2026-10-31 03:05;2026-10-31 03:05;Site web
+C-1159;Vérifier le paiement;2026-10-31 03:24;2026-10-31 03:29;Agent C
+C-1159;Vérifier le stock;2026-10-31 08:13;2026-10-31 08:38;Entrepôt 2
+C-1159;Préparer la commande;2026-11-01 09:44;2026-11-01 10:54;Entrepôt 1
+C-1159;Expédier;2026-11-01 16:19;2026-11-01 16:52;Entrepôt 1
+C-1159;Facturer;2026-11-01 18:53;2026-11-01 19:03;Agent A
+C-1160;Commande reçue;2026-10-28 02:15;2026-10-28 02:15;Site web
+C-1160;Vérifier le paiement;2026-10-28 03:57;2026-10-28 04:19;Agent B
+C-1160;Vérifier le stock;2026-10-28 09:27;2026-10-28 09:47;Entrepôt 2
+C-1160;Commander au fournisseur;2026-10-28 13:31;2026-10-28 14:31;Agent C
+C-1160;Préparer la commande;2026-10-31 00:56;2026-10-31 01:31;Entrepôt 2
+C-1160;Expédier;2026-10-31 09:57;2026-10-31 10:32;Entrepôt 2
+C-1160;Facturer;2026-10-31 13:47;2026-10-31 13:58;Agent D
+C-1161;Commande reçue;2026-10-15 01:37;2026-10-15 01:37;Site web
+C-1161;Vérifier le paiement;2026-10-15 04:01;2026-10-15 04:06;Agent A
+C-1161;Vérifier le stock;2026-10-15 05:58;2026-10-15 06:09;Entrepôt 1
+C-1161;Préparer la commande;2026-10-17 21:57;2026-10-17 22:27;Entrepôt 2
+C-1161;Expédier;2026-10-17 23:37;2026-10-18 00:01;Entrepôt 1
+C-1161;Facturer;2026-10-18 00:51;2026-10-18 00:57;Agent A
+C-1162;Commande reçue;2026-10-13 10:49;2026-10-13 10:49;Site web
+C-1162;Vérifier le paiement;2026-10-13 12:12;2026-10-13 12:33;Agent A
+C-1162;Vérifier le stock;2026-10-13 16:41;2026-10-13 17:11;Entrepôt 1
+C-1162;Préparer la commande;2026-10-14 07:30;2026-10-14 08:13;Entrepôt 1
+C-1162;Expédier;2026-10-14 16:23;2026-10-14 16:58;Entrepôt 1
+C-1162;Facturer;2026-10-14 17:52;2026-10-14 17:59;Agent B
+C-1163;Commande reçue;2026-10-09 02:18;2026-10-09 02:18;Site web
+C-1163;Vérifier le paiement;2026-10-09 04:10;2026-10-09 04:15;Agent C
+C-1163;Vérifier le stock;2026-10-09 09:54;2026-10-09 10:01;Entrepôt 1
+C-1163;Commander au fournisseur;2026-10-09 17:52;2026-10-09 18:32;Agent A
+C-1163;Préparer la commande;2026-10-09 22:15;2026-10-09 22:44;Entrepôt 2
+C-1163;Expédier;2026-10-10 04:46;2026-10-10 05:18;Entrepôt 2
+C-1163;Facturer;2026-10-10 08:55;2026-10-10 08:59;Agent B
+C-1164;Commande reçue;2026-10-22 20:40;2026-10-22 20:40;Site web
+C-1164;Vérifier le paiement;2026-10-22 21:57;2026-10-22 22:18;Agent A
+C-1164;Préparer la commande;2026-10-23 10:33;2026-10-23 11:50;Entrepôt 2
+C-1164;Expédier;2026-10-23 13:24;2026-10-23 13:54;Entrepôt 1
+C-1164;Facturer;2026-10-23 15:06;2026-10-23 15:14;Agent D
+C-1165;Commande reçue;2026-10-23 06:28;2026-10-23 06:28;Site web
+C-1165;Vérifier le paiement;2026-10-23 08:35;2026-10-23 08:48;Agent A
+C-1165;Relancer le client;2026-10-25 08:10;2026-10-25 08:24;Agent C
+C-1165;Annuler la commande;2026-10-25 17:02;2026-10-25 17:13;Agent C
+C-1166;Commande reçue;2026-10-07 04:08;2026-10-07 04:08;Site web
+C-1166;Vérifier le paiement;2026-10-07 06:54;2026-10-07 06:58;Agent D
+C-1166;Vérifier le stock;2026-10-07 12:14;2026-10-07 12:20;Entrepôt 2
+C-1166;Préparer la commande;2026-10-07 16:02;2026-10-07 17:04;Entrepôt 2
+C-1166;Expédier;2026-10-07 23:39;2026-10-07 23:55;Entrepôt 1
+C-1166;Facturer;2026-10-08 01:15;2026-10-08 01:24;Agent C
+C-1167;Commande reçue;2026-10-23 19:12;2026-10-23 19:12;Site web
+C-1167;Vérifier le paiement;2026-10-23 20:25;2026-10-23 20:42;Agent D
+C-1167;Vérifier le stock;2026-10-24 01:24;2026-10-24 01:46;Entrepôt 2
+C-1167;Préparer la commande;2026-10-25 07:27;2026-10-25 08:06;Entrepôt 2
+C-1167;Expédier;2026-10-25 16:43;2026-10-25 17:09;Entrepôt 1
+C-1167;Facturer;2026-10-25 18:50;2026-10-25 18:56;Agent B
+C-1168;Commande reçue;2026-10-17 15:16;2026-10-17 15:16;Site web
+C-1168;Vérifier le paiement;2026-10-17 18:09;2026-10-17 18:17;Agent C
+C-1168;Vérifier le stock;2026-10-17 22:57;2026-10-17 23:10;Entrepôt 2
+C-1168;Préparer la commande;2026-10-18 10:48;2026-10-18 11:38;Entrepôt 1
+C-1168;Expédier;2026-10-18 19:34;2026-10-18 19:56;Entrepôt 2
+C-1168;Facturer;2026-10-18 21:01;2026-10-18 21:06;Agent B
+C-1169;Commande reçue;2026-10-01 16:26;2026-10-01 16:26;Site web
+C-1169;Vérifier le paiement;2026-10-01 16:46;2026-10-01 16:51;Agent A
+C-1169;Vérifier le stock;2026-10-01 18:08;2026-10-01 18:36;Entrepôt 1
+C-1169;Préparer la commande;2026-10-02 07:16;2026-10-02 08:08;Entrepôt 1
+C-1169;Expédier;2026-10-02 15:16;2026-10-02 15:31;Entrepôt 2
+C-1169;Facturer;2026-10-02 16:03;2026-10-02 16:10;Agent C
+C-1170;Commande reçue;2026-10-13 19:04;2026-10-13 19:04;Site web
+C-1170;Vérifier le paiement;2026-10-13 19:49;2026-10-13 20:05;Agent C
+C-1170;Vérifier le stock;2026-10-13 23:23;2026-10-13 23:33;Entrepôt 2
+C-1170;Préparer la commande;2026-10-14 13:24;2026-10-14 14:05;Entrepôt 1
+C-1170;Expédier;2026-10-14 16:26;2026-10-14 16:38;Entrepôt 2
+C-1170;Facturer;2026-10-14 19:38;2026-10-14 19:47;Agent C
+C-1171;Commande reçue;2026-10-17 09:56;2026-10-17 09:56;Site web
+C-1171;Vérifier le paiement;2026-10-17 12:52;2026-10-17 13:15;Agent A
+C-1171;Vérifier le stock;2026-10-17 14:31;2026-10-17 14:49;Entrepôt 2
+C-1171;Préparer la commande;2026-10-18 01:50;2026-10-18 02:23;Entrepôt 1
+C-1171;Expédier;2026-10-18 07:04;2026-10-18 07:26;Entrepôt 1
+C-1171;Facturer;2026-10-18 10:20;2026-10-18 10:30;Agent C
+C-1172;Commande reçue;2026-10-10 17:56;2026-10-10 17:56;Site web
+C-1172;Vérifier le paiement;2026-10-10 20:02;2026-10-10 20:23;Agent A
+C-1172;Vérifier le stock;2026-10-10 22:38;2026-10-10 23:02;Entrepôt 1
+C-1172;Préparer la commande;2026-10-12 02:47;2026-10-12 04:10;Entrepôt 1
+C-1172;Expédier;2026-10-12 11:29;2026-10-12 12:04;Entrepôt 2
+C-1172;Facturer;2026-10-12 12:40;2026-10-12 12:51;Agent D
+C-1173;Commande reçue;2026-10-27 16:52;2026-10-27 16:52;Site web
+C-1173;Vérifier le paiement;2026-10-27 18:27;2026-10-27 18:36;Agent D
+C-1173;Vérifier le stock;2026-10-27 20:40;2026-10-27 21:07;Entrepôt 1
+C-1173;Commander au fournisseur;2026-10-28 01:07;2026-10-28 01:51;Agent D
+C-1173;Préparer la commande;2026-10-28 09:02;2026-10-28 09:20;Entrepôt 1
+C-1173;Expédier;2026-10-28 12:19;2026-10-28 12:37;Entrepôt 1
+C-1173;Facturer;2026-10-28 13:25;2026-10-28 13:35;Agent A
+C-1174;Commande reçue;2026-10-30 21:55;2026-10-30 21:55;Site web
+C-1174;Vérifier le paiement;2026-10-30 23:29;2026-10-30 23:44;Agent D
+C-1174;Vérifier le stock;2026-10-31 02:30;2026-10-31 02:47;Entrepôt 1
+C-1174;Préparer la commande;2026-11-01 23:10;2026-11-02 00:40;Entrepôt 2
+C-1174;Expédier;2026-11-02 05:34;2026-11-02 05:47;Entrepôt 2
+C-1174;Facturer;2026-11-02 08:27;2026-11-02 08:37;Agent D
+C-1175;Commande reçue;2026-10-02 10:45;2026-10-02 10:45;Site web
+C-1175;Vérifier le paiement;2026-10-02 11:59;2026-10-02 12:02;Agent B
+C-1175;Vérifier le stock;2026-10-02 13:40;2026-10-02 13:56;Entrepôt 2
+C-1175;Préparer la commande;2026-10-03 03:42;2026-10-03 04:15;Entrepôt 2
+C-1175;Expédier;2026-10-03 07:59;2026-10-03 08:34;Entrepôt 2
+C-1175;Facturer;2026-10-03 11:15;2026-10-03 11:24;Agent C
+C-1176;Commande reçue;2026-10-04 13:50;2026-10-04 13:50;Site web
+C-1176;Vérifier le paiement;2026-10-04 16:21;2026-10-04 16:27;Agent D
+C-1176;Vérifier le stock;2026-10-04 20:39;2026-10-04 20:56;Entrepôt 2
+C-1176;Préparer la commande;2026-10-05 15:19;2026-10-05 16:15;Entrepôt 1
+C-1176;Expédier;2026-10-05 17:33;2026-10-05 17:57;Entrepôt 2
+C-1176;Facturer;2026-10-05 20:26;2026-10-05 20:31;Agent D
+C-1177;Commande reçue;2026-10-25 09:25;2026-10-25 09:25;Site web
+C-1177;Vérifier le paiement;2026-10-25 11:48;2026-10-25 11:53;Agent C
+C-1177;Vérifier le stock;2026-10-25 13:17;2026-10-25 13:40;Entrepôt 2
+C-1177;Préparer la commande;2026-10-28 15:40;2026-10-28 16:59;Entrepôt 1
+C-1177;Facturer;2026-10-28 17:40;2026-10-28 17:47;Agent A
+C-1177;Expédier;2026-10-29 00:22;2026-10-29 00:44;Entrepôt 1
+C-1178;Commande reçue;2026-10-28 18:06;2026-10-28 18:06;Site web
+C-1178;Vérifier le paiement;2026-10-28 18:36;2026-10-28 18:47;Agent D
+C-1178;Vérifier le stock;2026-10-28 20:20;2026-10-28 20:28;Entrepôt 2
+C-1178;Préparer la commande;2026-10-31 00:04;2026-10-31 00:55;Entrepôt 1
+C-1178;Expédier;2026-10-31 07:33;2026-10-31 08:08;Entrepôt 1
+C-1178;Facturer;2026-10-31 11:05;2026-10-31 11:15;Agent B
+C-1179;Commande reçue;2026-10-29 21:44;2026-10-29 21:44;Site web
+C-1179;Vérifier le paiement;2026-10-29 22:10;2026-10-29 22:30;Agent B
+C-1179;Vérifier le stock;2026-10-30 03:14;2026-10-30 03:39;Entrepôt 1
+C-1179;Préparer la commande;2026-10-31 06:04;2026-10-31 07:13;Entrepôt 1
+C-1179;Expédier;2026-10-31 16:52;2026-10-31 17:15;Entrepôt 2
+C-1179;Facturer;2026-10-31 18:35;2026-10-31 18:40;Agent A
+C-1180;Commande reçue;2026-10-09 07:29;2026-10-09 07:29;Site web
+C-1180;Vérifier le paiement;2026-10-09 10:13;2026-10-09 10:33;Agent A
+C-1180;Vérifier le stock;2026-10-09 13:54;2026-10-09 14:19;Entrepôt 1
+C-1180;Préparer la commande;2026-10-12 03:50;2026-10-12 05:15;Entrepôt 1
+C-1180;Expédier;2026-10-12 10:32;2026-10-12 10:48;Entrepôt 1
+C-1180;Facturer;2026-10-12 13:39;2026-10-12 13:44;Agent A
+C-1181;Commande reçue;2026-10-13 05:31;2026-10-13 05:31;Site web
+C-1181;Vérifier le paiement;2026-10-13 05:53;2026-10-13 06:14;Agent A
+C-1181;Annuler la commande;2026-10-13 22:40;2026-10-13 22:46;Agent B
+C-1182;Commande reçue;2026-10-28 13:16;2026-10-28 13:16;Site web
+C-1182;Vérifier le paiement;2026-10-28 14:13;2026-10-28 14:28;Agent B
+C-1182;Préparer la commande;2026-10-29 03:18;2026-10-29 03:51;Entrepôt 2
+C-1182;Expédier;2026-10-29 08:23;2026-10-29 08:43;Entrepôt 1
+C-1182;Facturer;2026-10-29 11:43;2026-10-29 11:54;Agent D
+C-1183;Commande reçue;2026-10-21 04:45;2026-10-21 04:45;Site web
+C-1183;Vérifier le paiement;2026-10-21 06:08;2026-10-21 06:14;Agent B
+C-1183;Vérifier le stock;2026-10-21 08:53;2026-10-21 09:17;Entrepôt 2
+C-1183;Préparer la commande;2026-10-22 09:42;2026-10-22 10:16;Entrepôt 1
+C-1183;Expédier;2026-10-22 14:26;2026-10-22 14:42;Entrepôt 2
+C-1183;Facturer;2026-10-22 18:05;2026-10-22 18:17;Agent D
+C-1184;Commande reçue;2026-10-08 02:09;2026-10-08 02:09;Site web
+C-1184;Vérifier le paiement;2026-10-08 04:53;2026-10-08 05:13;Agent D
+C-1184;Vérifier le stock;2026-10-08 08:28;2026-10-08 08:53;Entrepôt 2
+C-1184;Préparer la commande;2026-10-08 20:13;2026-10-08 21:15;Entrepôt 1
+C-1184;Expédier;2026-10-09 02:06;2026-10-09 02:41;Entrepôt 1
+C-1184;Facturer;2026-10-09 05:02;2026-10-09 05:06;Agent A
+C-1185;Commande reçue;2026-10-10 18:48;2026-10-10 18:48;Site web
+C-1185;Vérifier le paiement;2026-10-10 21:10;2026-10-10 21:25;Agent C
+C-1185;Vérifier le stock;2026-10-10 22:08;2026-10-10 22:20;Entrepôt 2
+C-1185;Préparer la commande;2026-10-11 16:35;2026-10-11 17:43;Entrepôt 2
+C-1185;Expédier;2026-10-11 22:47;2026-10-11 23:09;Entrepôt 1
+C-1185;Facturer;2026-10-12 00:17;2026-10-12 00:25;Agent D
+C-1186;Commande reçue;2026-10-23 20:34;2026-10-23 20:34;Site web
+C-1186;Vérifier le paiement;2026-10-23 22:49;2026-10-23 22:54;Agent C
+C-1186;Vérifier le stock;2026-10-24 02:10;2026-10-24 02:33;Entrepôt 2
+C-1186;Préparer la commande;2026-10-24 14:09;2026-10-24 14:57;Entrepôt 1
+C-1186;Expédier;2026-10-24 16:49;2026-10-24 17:06;Entrepôt 1
+C-1186;Facturer;2026-10-24 20:21;2026-10-24 20:25;Agent B
+C-1187;Commande reçue;2026-10-26 04:28;2026-10-26 04:28;Site web
+C-1187;Vérifier le paiement;2026-10-26 05:53;2026-10-26 06:15;Agent C
+C-1187;Vérifier le stock;2026-10-26 10:20;2026-10-26 10:41;Entrepôt 2
+C-1187;Préparer la commande;2026-10-27 05:32;2026-10-27 06:16;Entrepôt 1
+C-1187;Expédier;2026-10-27 15:42;2026-10-27 16:11;Entrepôt 1
+C-1187;Facturer;2026-10-27 18:09;2026-10-27 18:16;Agent B
+C-1188;Commande reçue;2026-10-15 00:13;2026-10-15 00:13;Site web
+C-1188;Vérifier le paiement;2026-10-15 02:16;2026-10-15 02:38;Agent B
+C-1188;Vérifier le stock;2026-10-15 07:00;2026-10-15 07:09;Entrepôt 2
+C-1188;Commander au fournisseur;2026-10-15 11:13;2026-10-15 12:08;Agent A
+C-1188;Préparer la commande;2026-10-16 10:01;2026-10-16 10:26;Entrepôt 1
+C-1188;Expédier;2026-10-16 13:23;2026-10-16 13:35;Entrepôt 2
+C-1188;Facturer;2026-10-16 16:41;2026-10-16 16:49;Agent B
+C-1189;Commande reçue;2026-10-13 16:57;2026-10-13 16:57;Site web
+C-1189;Vérifier le paiement;2026-10-13 19:46;2026-10-13 20:06;Agent B
+C-1189;Vérifier le stock;2026-10-13 22:54;2026-10-13 23:01;Entrepôt 1
+C-1189;Commander au fournisseur;2026-10-14 02:32;2026-10-14 02:54;Agent A
+C-1189;Préparer la commande;2026-10-16 10:46;2026-10-16 12:02;Entrepôt 2
+C-1189;Facturer;2026-10-16 14:04;2026-10-16 14:16;Agent D
+C-1189;Expédier;2026-10-16 19:35;2026-10-16 20:08;Entrepôt 2
+C-1190;Commande reçue;2026-10-12 23:33;2026-10-12 23:33;Site web
+C-1190;Vérifier le paiement;2026-10-13 02:20;2026-10-13 02:38;Agent B
+C-1190;Vérifier le stock;2026-10-13 08:31;2026-10-13 08:40;Entrepôt 1
+C-1190;Préparer la commande;2026-10-16 07:38;2026-10-16 08:45;Entrepôt 1
+C-1190;Expédier;2026-10-16 13:51;2026-10-16 14:14;Entrepôt 1
+C-1190;Facturer;2026-10-16 16:13;2026-10-16 16:21;Agent D
+C-1191;Commande reçue;2026-10-05 01:09;2026-10-05 01:09;Site web
+C-1191;Vérifier le paiement;2026-10-05 02:01;2026-10-05 02:18;Agent A
+C-1191;Vérifier le stock;2026-10-05 06:41;2026-10-05 06:55;Entrepôt 1
+C-1191;Commander au fournisseur;2026-10-05 11:57;2026-10-05 12:37;Agent B
+C-1191;Préparer la commande;2026-10-05 17:35;2026-10-05 17:59;Entrepôt 1
+C-1191;Expédier;2026-10-06 02:24;2026-10-06 02:49;Entrepôt 1
+C-1191;Facturer;2026-10-06 04:00;2026-10-06 04:08;Agent B
+C-1192;Commande reçue;2026-10-19 18:22;2026-10-19 18:22;Site web
+C-1192;Vérifier le paiement;2026-10-19 20:45;2026-10-19 21:03;Agent D
+C-1192;Vérifier le stock;2026-10-19 23:51;2026-10-20 00:10;Entrepôt 2
+C-1192;Commander au fournisseur;2026-10-20 02:43;2026-10-20 03:36;Agent C
+C-1192;Préparer la commande;2026-10-23 16:34;2026-10-23 16:59;Entrepôt 2
+C-1192;Expédier;2026-10-24 02:09;2026-10-24 02:29;Entrepôt 1
+C-1192;Facturer;2026-10-24 04:57;2026-10-24 05:00;Agent C
+C-1193;Commande reçue;2026-10-13 09:04;2026-10-13 09:04;Site web
+C-1193;Vérifier le paiement;2026-10-13 11:13;2026-10-13 11:22;Agent D
+C-1193;Vérifier le stock;2026-10-13 14:47;2026-10-13 15:16;Entrepôt 2
+C-1193;Commander au fournisseur;2026-10-13 22:42;2026-10-13 23:39;Agent B
+C-1193;Préparer la commande;2026-10-16 17:58;2026-10-16 19:11;Entrepôt 1
+C-1193;Expédier;2026-10-17 01:44;2026-10-17 02:14;Entrepôt 2
+C-1193;Facturer;2026-10-17 04:35;2026-10-17 04:46;Agent C
+C-1194;Commande reçue;2026-10-23 17:57;2026-10-23 17:57;Site web
+C-1194;Vérifier le paiement;2026-10-23 18:22;2026-10-23 18:46;Agent C
+C-1194;Vérifier le stock;2026-10-23 21:00;2026-10-23 21:08;Entrepôt 2
+C-1194;Préparer la commande;2026-10-26 18:00;2026-10-26 19:29;Entrepôt 1
+C-1194;Expédier;2026-10-27 00:23;2026-10-27 00:57;Entrepôt 1
+C-1194;Facturer;2026-10-27 01:46;2026-10-27 01:55;Agent D
+C-1195;Commande reçue;2026-10-02 22:03;2026-10-02 22:03;Site web
+C-1195;Vérifier le paiement;2026-10-03 00:29;2026-10-03 00:43;Agent D
+C-1195;Vérifier le stock;2026-10-03 04:15;2026-10-03 04:29;Entrepôt 1
+C-1195;Commander au fournisseur;2026-10-03 10:04;2026-10-03 10:43;Agent B
+C-1195;Préparer la commande;2026-10-03 13:44;2026-10-03 14:47;Entrepôt 1
+C-1195;Expédier;2026-10-03 20:40;2026-10-03 20:59;Entrepôt 1
+C-1195;Facturer;2026-10-03 23:17;2026-10-03 23:27;Agent C
+C-1196;Commande reçue;2026-10-10 22:19;2026-10-10 22:19;Site web
+C-1196;Vérifier le paiement;2026-10-10 23:24;2026-10-10 23:37;Agent C
+C-1196;Vérifier le stock;2026-10-11 02:07;2026-10-11 02:22;Entrepôt 1
+C-1196;Préparer la commande;2026-10-11 07:37;2026-10-11 07:57;Entrepôt 2
+C-1196;Expédier;2026-10-11 09:01;2026-10-11 09:28;Entrepôt 2
+C-1196;Facturer;2026-10-11 12:36;2026-10-11 12:40;Agent D
+C-1197;Commande reçue;2026-10-20 07:48;2026-10-20 07:48;Site web
+C-1197;Vérifier le paiement;2026-10-20 08:24;2026-10-20 08:43;Agent C
+C-1197;Vérifier le stock;2026-10-20 12:58;2026-10-20 13:08;Entrepôt 2
+C-1197;Préparer la commande;2026-10-21 11:14;2026-10-21 12:32;Entrepôt 1
+C-1197;Expédier;2026-10-21 16:10;2026-10-21 16:34;Entrepôt 2
+C-1197;Facturer;2026-10-21 20:31;2026-10-21 20:37;Agent B
+C-1198;Commande reçue;2026-10-26 11:52;2026-10-26 11:52;Site web
+C-1198;Vérifier le paiement;2026-10-26 13:20;2026-10-26 13:38;Agent C
+C-1198;Vérifier le stock;2026-10-26 18:26;2026-10-26 18:51;Entrepôt 2
+C-1198;Préparer la commande;2026-10-30 03:53;2026-10-30 04:47;Entrepôt 2
+C-1198;Expédier;2026-10-30 08:41;2026-10-30 09:15;Entrepôt 1
+C-1198;Facturer;2026-10-30 11:14;2026-10-30 11:22;Agent A
+C-1199;Commande reçue;2026-10-27 10:00;2026-10-27 10:00;Site web
+C-1199;Vérifier le paiement;2026-10-27 12:57;2026-10-27 13:20;Agent C
+C-1199;Vérifier le stock;2026-10-27 19:16;2026-10-27 19:44;Entrepôt 2
+C-1199;Préparer la commande;2026-10-28 11:29;2026-10-28 12:16;Entrepôt 1
+C-1199;Expédier;2026-10-28 14:30;2026-10-28 14:56;Entrepôt 2
+C-1199;Facturer;2026-10-28 17:01;2026-10-28 17:10;Agent B
+C-1200;Commande reçue;2026-10-05 14:26;2026-10-05 14:26;Site web
+C-1200;Vérifier le paiement;2026-10-05 17:10;2026-10-05 17:30;Agent A
+C-1200;Vérifier le stock;2026-10-05 22:54;2026-10-05 23:02;Entrepôt 2
+C-1200;Préparer la commande;2026-10-08 16:56;2026-10-08 17:43;Entrepôt 1
+C-1200;Expédier;2026-10-08 19:36;2026-10-08 19:50;Entrepôt 2
+C-1200;Facturer;2026-10-08 22:47;2026-10-08 22:53;Agent A
+C-1201;Commande reçue;2026-10-17 05:39;2026-10-17 05:39;Site web
+C-1201;Vérifier le paiement;2026-10-17 07:21;2026-10-17 07:40;Agent A
+C-1201;Vérifier le stock;2026-10-17 12:04;2026-10-17 12:15;Entrepôt 2
+C-1201;Préparer la commande;2026-10-17 15:00;2026-10-17 15:43;Entrepôt 1
+C-1201;Expédier;2026-10-17 18:54;2026-10-17 19:24;Entrepôt 1
+C-1201;Facturer;2026-10-17 20:47;2026-10-17 20:56;Agent B
+C-1202;Commande reçue;2026-10-30 12:45;2026-10-30 12:45;Site web
+C-1202;Vérifier le paiement;2026-10-30 13:04;2026-10-30 13:20;Agent D
+C-1202;Vérifier le stock;2026-10-30 13:55;2026-10-30 14:21;Entrepôt 2
+C-1202;Préparer la commande;2026-10-30 22:44;2026-10-31 00:09;Entrepôt 2
+C-1202;Expédier;2026-10-31 09:44;2026-10-31 10:15;Entrepôt 1
+C-1202;Facturer;2026-10-31 13:42;2026-10-31 13:48;Agent B
+C-1203;Commande reçue;2026-10-05 12:44;2026-10-05 12:44;Site web
+C-1203;Vérifier le paiement;2026-10-05 14:44;2026-10-05 15:01;Agent C
+C-1203;Vérifier le stock;2026-10-05 20:00;2026-10-05 20:24;Entrepôt 2
+C-1203;Préparer la commande;2026-10-06 05:13;2026-10-06 06:23;Entrepôt 2
+C-1203;Expédier;2026-10-06 10:50;2026-10-06 11:15;Entrepôt 2
+C-1203;Facturer;2026-10-06 14:01;2026-10-06 14:13;Agent A
+C-1204;Commande reçue;2026-10-27 23:56;2026-10-27 23:56;Site web
+C-1204;Vérifier le paiement;2026-10-28 02:27;2026-10-28 02:45;Agent D
+C-1204;Vérifier le stock;2026-10-28 07:22;2026-10-28 07:43;Entrepôt 2
+C-1204;Commander au fournisseur;2026-10-28 15:04;2026-10-28 15:36;Agent D
+C-1204;Préparer la commande;2026-10-29 13:52;2026-10-29 14:24;Entrepôt 1
+C-1204;Expédier;2026-10-29 23:10;2026-10-29 23:43;Entrepôt 2
+C-1204;Facturer;2026-10-30 00:38;2026-10-30 00:43;Agent B
+C-1205;Commande reçue;2026-10-23 21:34;2026-10-23 21:34;Site web
+C-1205;Vérifier le paiement;2026-10-23 21:56;2026-10-23 22:15;Agent D
+C-1205;Vérifier le stock;2026-10-23 23:26;2026-10-23 23:50;Entrepôt 2
+C-1205;Préparer la commande;2026-10-26 06:02;2026-10-26 06:23;Entrepôt 2
+C-1205;Expédier;2026-10-26 12:07;2026-10-26 12:29;Entrepôt 2
+C-1205;Facturer;2026-10-26 14:31;2026-10-26 14:38;Agent C
+C-1206;Commande reçue;2026-10-24 08:02;2026-10-24 08:02;Site web
+C-1206;Vérifier le paiement;2026-10-24 09:42;2026-10-24 10:03;Agent A
+C-1206;Vérifier le stock;2026-10-24 13:42;2026-10-24 14:10;Entrepôt 2
+C-1206;Préparer la commande;2026-10-28 08:52;2026-10-28 09:59;Entrepôt 2
+C-1206;Expédier;2026-10-28 16:19;2026-10-28 16:55;Entrepôt 1
+C-1206;Facturer;2026-10-28 18:05;2026-10-28 18:08;Agent C
+C-1207;Commande reçue;2026-10-05 11:17;2026-10-05 11:17;Site web
+C-1207;Vérifier le paiement;2026-10-05 13:10;2026-10-05 13:31;Agent C
+C-1207;Vérifier le stock;2026-10-05 16:41;2026-10-05 16:58;Entrepôt 2
+C-1207;Commander au fournisseur;2026-10-05 21:26;2026-10-05 21:42;Agent B
+C-1207;Préparer la commande;2026-10-06 18:50;2026-10-06 19:27;Entrepôt 2
+C-1207;Expédier;2026-10-07 03:53;2026-10-07 04:11;Entrepôt 1
+C-1207;Facturer;2026-10-07 06:04;2026-10-07 06:12;Agent C
+C-1208;Commande reçue;2026-10-29 21:09;2026-10-29 21:09;Site web
+C-1208;Vérifier le paiement;2026-10-29 23:04;2026-10-29 23:10;Agent A
+C-1208;Vérifier le stock;2026-10-30 03:18;2026-10-30 03:40;Entrepôt 2
+C-1208;Préparer la commande;2026-10-30 18:31;2026-10-30 19:11;Entrepôt 2
+C-1208;Expédier;2026-10-30 22:00;2026-10-30 22:28;Entrepôt 2
+C-1208;Facturer;2026-10-30 23:30;2026-10-30 23:34;Agent B
+C-1209;Commande reçue;2026-10-15 16:31;2026-10-15 16:31;Site web
+C-1209;Vérifier le paiement;2026-10-15 19:19;2026-10-15 19:41;Agent A
+C-1209;Préparer la commande;2026-10-16 23:02;2026-10-16 23:34;Entrepôt 2
+C-1209;Expédier;2026-10-17 01:36;2026-10-17 02:11;Entrepôt 2
+C-1209;Facturer;2026-10-17 06:05;2026-10-17 06:17;Agent B
+C-1210;Commande reçue;2026-10-01 11:03;2026-10-01 11:03;Site web
+C-1210;Vérifier le paiement;2026-10-01 11:22;2026-10-01 11:35;Agent D
+C-1210;Vérifier le stock;2026-10-01 12:43;2026-10-01 12:50;Entrepôt 2
+C-1210;Commander au fournisseur;2026-10-01 20:50;2026-10-01 21:11;Agent B
+C-1210;Préparer la commande;2026-10-02 23:28;2026-10-02 23:48;Entrepôt 1
+C-1210;Expédier;2026-10-03 01:44;2026-10-03 02:04;Entrepôt 2
+C-1210;Facturer;2026-10-03 03:57;2026-10-03 04:04;Agent B
+C-1211;Commande reçue;2026-10-15 16:18;2026-10-15 16:18;Site web
+C-1211;Vérifier le paiement;2026-10-15 18:56;2026-10-15 19:13;Agent C
+C-1211;Vérifier le stock;2026-10-16 01:02;2026-10-16 01:30;Entrepôt 2
+C-1211;Préparer la commande;2026-10-16 07:52;2026-10-16 08:21;Entrepôt 2
+C-1211;Expédier;2026-10-16 14:29;2026-10-16 15:02;Entrepôt 2
+C-1211;Facturer;2026-10-16 17:02;2026-10-16 17:13;Agent B
+C-1212;Commande reçue;2026-10-21 03:37;2026-10-21 03:37;Site web
+C-1212;Vérifier le paiement;2026-10-21 04:37;2026-10-21 04:53;Agent C
+C-1212;Vérifier le stock;2026-10-21 09:13;2026-10-21 09:29;Entrepôt 1
+C-1212;Préparer la commande;2026-10-21 11:49;2026-10-21 12:15;Entrepôt 1
+C-1212;Expédier;2026-10-21 16:18;2026-10-21 16:53;Entrepôt 1
+C-1212;Facturer;2026-10-21 19:59;2026-10-21 20:10;Agent B
+C-1213;Commande reçue;2026-10-07 03:53;2026-10-07 03:53;Site web
+C-1213;Vérifier le paiement;2026-10-07 04:48;2026-10-07 05:05;Agent C
+C-1213;Relancer le client;2026-10-08 08:00;2026-10-08 08:09;Agent A
+C-1213;Annuler la commande;2026-10-08 18:37;2026-10-08 18:44;Agent B
+C-1214;Commande reçue;2026-10-15 02:17;2026-10-15 02:17;Site web
+C-1214;Vérifier le paiement;2026-10-15 03:30;2026-10-15 03:51;Agent D
+C-1214;Vérifier le stock;2026-10-15 04:49;2026-10-15 05:04;Entrepôt 1
+C-1214;Préparer la commande;2026-10-15 08:08;2026-10-15 09:24;Entrepôt 1
+C-1214;Expédier;2026-10-15 11:57;2026-10-15 12:12;Entrepôt 2
+C-1214;Facturer;2026-10-15 16:12;2026-10-15 16:17;Agent D
+C-1215;Commande reçue;2026-10-11 13:17;2026-10-11 13:17;Site web
+C-1215;Vérifier le paiement;2026-10-11 15:42;2026-10-11 15:54;Agent B
+C-1215;Vérifier le stock;2026-10-11 16:29;2026-10-11 16:47;Entrepôt 1
+C-1215;Commander au fournisseur;2026-10-11 23:25;2026-10-11 23:51;Agent D
+C-1215;Préparer la commande;2026-10-12 09:24;2026-10-12 10:43;Entrepôt 1
+C-1215;Expédier;2026-10-12 16:31;2026-10-12 16:50;Entrepôt 1
+C-1215;Facturer;2026-10-12 19:51;2026-10-12 20:00;Agent B
+C-1216;Commande reçue;2026-10-31 04:10;2026-10-31 04:10;Site web
+C-1216;Vérifier le paiement;2026-10-31 07:00;2026-10-31 07:12;Agent C
+C-1216;Préparer la commande;2026-11-01 02:22;2026-11-01 02:43;Entrepôt 1
+C-1216;Expédier;2026-11-01 04:44;2026-11-01 05:05;Entrepôt 2
+C-1216;Facturer;2026-11-01 08:34;2026-11-01 08:40;Agent D
+C-1217;Commande reçue;2026-10-03 01:21;2026-10-03 01:21;Site web
+C-1217;Vérifier le paiement;2026-10-03 02:13;2026-10-03 02:21;Agent D
+C-1217;Vérifier le stock;2026-10-03 07:20;2026-10-03 07:40;Entrepôt 2
+C-1217;Préparer la commande;2026-10-05 23:11;2026-10-05 23:53;Entrepôt 2
+C-1217;Expédier;2026-10-06 07:04;2026-10-06 07:34;Entrepôt 1
+C-1217;Facturer;2026-10-06 09:34;2026-10-06 09:41;Agent A
+C-1218;Commande reçue;2026-10-31 05:32;2026-10-31 05:32;Site web
+C-1218;Vérifier le paiement;2026-10-31 07:19;2026-10-31 07:37;Agent C
+C-1218;Vérifier le stock;2026-10-31 08:08;2026-10-31 08:34;Entrepôt 1
+C-1218;Préparer la commande;2026-11-01 09:59;2026-11-01 10:19;Entrepôt 1
+C-1218;Expédier;2026-11-01 18:06;2026-11-01 18:31;Entrepôt 1
+C-1218;Facturer;2026-11-01 21:12;2026-11-01 21:23;Agent D
+C-1219;Commande reçue;2026-10-19 05:22;2026-10-19 05:22;Site web
+C-1219;Vérifier le paiement;2026-10-19 07:54;2026-10-19 08:10;Agent C
+C-1219;Vérifier le stock;2026-10-19 11:43;2026-10-19 12:09;Entrepôt 1
+C-1219;Préparer la commande;2026-10-20 03:08;2026-10-20 03:33;Entrepôt 1
+C-1219;Facturer;2026-10-20 05:19;2026-10-20 05:29;Agent A
+C-1219;Expédier;2026-10-20 08:43;2026-10-20 09:03;Entrepôt 2
+C-1220;Commande reçue;2026-10-27 21:33;2026-10-27 21:33;Site web
+C-1220;Vérifier le paiement;2026-10-27 21:49;2026-10-27 22:12;Agent A
+C-1220;Vérifier le stock;2026-10-27 22:47;2026-10-27 23:00;Entrepôt 1
+C-1220;Commander au fournisseur;2026-10-28 01:47;2026-10-28 02:11;Agent D
+C-1220;Préparer la commande;2026-10-31 18:22;2026-10-31 19:30;Entrepôt 2
+C-1220;Facturer;2026-10-31 20:04;2026-10-31 20:12;Agent A
+C-1220;Expédier;2026-10-31 23:36;2026-10-31 23:53;Entrepôt 1
+C-1221;Commande reçue;2026-10-15 13:18;2026-10-15 13:18;Site web
+C-1221;Vérifier le paiement;2026-10-15 15:38;2026-10-15 15:48;Agent B
+C-1221;Vérifier le stock;2026-10-15 21:08;2026-10-15 21:34;Entrepôt 2
+C-1221;Préparer la commande;2026-10-17 01:32;2026-10-17 03:01;Entrepôt 2
+C-1221;Expédier;2026-10-17 10:41;2026-10-17 10:53;Entrepôt 1
+C-1221;Facturer;2026-10-17 14:36;2026-10-17 14:44;Agent B
+C-1222;Commande reçue;2026-10-21 00:29;2026-10-21 00:29;Site web
+C-1222;Vérifier le paiement;2026-10-21 02:39;2026-10-21 02:57;Agent A
+C-1222;Vérifier le stock;2026-10-21 03:42;2026-10-21 04:01;Entrepôt 2
+C-1222;Préparer la commande;2026-10-21 12:01;2026-10-21 13:31;Entrepôt 2
+C-1222;Expédier;2026-10-21 20:23;2026-10-21 20:55;Entrepôt 2
+C-1222;Facturer;2026-10-21 23:04;2026-10-21 23:07;Agent A
+C-1223;Commande reçue;2026-10-27 12:53;2026-10-27 12:53;Site web
+C-1223;Vérifier le paiement;2026-10-27 14:58;2026-10-27 15:20;Agent A
+C-1223;Vérifier le stock;2026-10-27 16:32;2026-10-27 16:41;Entrepôt 2
+C-1223;Préparer la commande;2026-10-28 01:02;2026-10-28 02:14;Entrepôt 1
+C-1223;Expédier;2026-10-28 08:11;2026-10-28 08:42;Entrepôt 1
+C-1223;Facturer;2026-10-28 11:58;2026-10-28 12:09;Agent B
+C-1224;Commande reçue;2026-10-18 07:19;2026-10-18 07:19;Site web
+C-1224;Vérifier le paiement;2026-10-18 10:06;2026-10-18 10:27;Agent D
+C-1224;Vérifier le stock;2026-10-18 13:36;2026-10-18 13:43;Entrepôt 2
+C-1224;Préparer la commande;2026-10-19 01:39;2026-10-19 02:29;Entrepôt 1
+C-1224;Expédier;2026-10-19 04:51;2026-10-19 05:04;Entrepôt 2
+C-1224;Facturer;2026-10-19 07:36;2026-10-19 07:39;Agent D
+C-1225;Commande reçue;2026-10-06 00:54;2026-10-06 00:54;Site web
+C-1225;Vérifier le paiement;2026-10-06 02:07;2026-10-06 02:10;Agent B
+C-1225;Vérifier le stock;2026-10-06 07:28;2026-10-06 07:45;Entrepôt 2
+C-1225;Commander au fournisseur;2026-10-06 12:44;2026-10-06 13:37;Agent C
+C-1225;Préparer la commande;2026-10-06 18:54;2026-10-06 19:15;Entrepôt 1
+C-1225;Expédier;2026-10-07 02:24;2026-10-07 02:47;Entrepôt 2
+C-1225;Facturer;2026-10-07 04:55;2026-10-07 05:04;Agent D
+C-1226;Commande reçue;2026-10-23 16:16;2026-10-23 16:16;Site web
+C-1226;Vérifier le paiement;2026-10-23 17:16;2026-10-23 17:20;Agent C
+C-1226;Vérifier le stock;2026-10-23 21:08;2026-10-23 21:35;Entrepôt 1
+C-1226;Préparer la commande;2026-10-25 20:04;2026-10-25 20:34;Entrepôt 2
+C-1226;Expédier;2026-10-26 03:15;2026-10-26 03:27;Entrepôt 1
+C-1226;Facturer;2026-10-26 05:23;2026-10-26 05:35;Agent C
+C-1227;Commande reçue;2026-10-12 22:30;2026-10-12 22:30;Site web
+C-1227;Vérifier le paiement;2026-10-13 01:29;2026-10-13 01:46;Agent A
+C-1227;Vérifier le stock;2026-10-13 06:14;2026-10-13 06:36;Entrepôt 1
+C-1227;Préparer la commande;2026-10-13 16:05;2026-10-13 17:08;Entrepôt 1
+C-1227;Expédier;2026-10-13 19:01;2026-10-13 19:37;Entrepôt 1
+C-1227;Facturer;2026-10-13 23:01;2026-10-13 23:07;Agent C
+C-1228;Commande reçue;2026-10-22 21:23;2026-10-22 21:23;Site web
+C-1228;Vérifier le paiement;2026-10-22 23:52;2026-10-22 23:59;Agent D
+C-1228;Relancer le client;2026-10-24 19:00;2026-10-24 19:16;Agent A
+C-1228;Annuler la commande;2026-10-25 14:57;2026-10-25 15:05;Agent A
+C-1229;Commande reçue;2026-10-31 06:17;2026-10-31 06:17;Site web
+C-1229;Vérifier le paiement;2026-10-31 07:55;2026-10-31 08:10;Agent A
+C-1229;Vérifier le stock;2026-10-31 11:51;2026-10-31 12:01;Entrepôt 1
+C-1229;Préparer la commande;2026-10-31 23:28;2026-11-01 00:37;Entrepôt 1
+C-1229;Expédier;2026-11-01 04:57;2026-11-01 05:30;Entrepôt 1
+C-1229;Facturer;2026-11-01 06:54;2026-11-01 07:06;Agent C
+C-1230;Commande reçue;2026-10-31 01:53;2026-10-31 01:53;Site web
+C-1230;Vérifier le paiement;2026-10-31 04:13;2026-10-31 04:22;Agent B
+C-1230;Vérifier le stock;2026-10-31 07:01;2026-10-31 07:10;Entrepôt 1
+C-1231;Commande reçue;2026-10-24 21:18;2026-10-24 21:18;Site web
+C-1231;Vérifier le paiement;2026-10-24 22:30;2026-10-24 22:52;Agent A
+C-1231;Vérifier le stock;2026-10-25 04:38;2026-10-25 04:48;Entrepôt 1
+C-1231;Commander au fournisseur;2026-10-25 06:46;2026-10-25 07:17;Agent B
+C-1231;Préparer la commande;2026-10-25 09:35;2026-10-25 11:04;Entrepôt 1
+C-1231;Facturer;2026-10-25 12:14;2026-10-25 12:22;Agent B
+C-1231;Expédier;2026-10-25 13:48;2026-10-25 14:09;Entrepôt 1
+C-1232;Commande reçue;2026-10-30 19:38;2026-10-30 19:38;Site web
+C-1232;Vérifier le paiement;2026-10-30 22:05;2026-10-30 22:15;Agent B
+C-1232;Relancer le client;2026-11-01 08:09;2026-11-01 08:23;Agent B
+C-1232;Annuler la commande;2026-11-01 19:25;2026-11-01 19:30;Agent A
+C-1233;Commande reçue;2026-10-23 05:17;2026-10-23 05:17;Site web
+C-1233;Vérifier le paiement;2026-10-23 06:09;2026-10-23 06:15;Agent D
+C-1233;Vérifier le stock;2026-10-23 09:55;2026-10-23 10:23;Entrepôt 1
+C-1233;Préparer la commande;2026-10-24 20:23;2026-10-24 21:29;Entrepôt 2
+C-1233;Expédier;2026-10-25 04:36;2026-10-25 05:05;Entrepôt 1
+C-1233;Facturer;2026-10-25 08:11;2026-10-25 08:18;Agent C
+C-1234;Commande reçue;2026-10-04 14:53;2026-10-04 14:53;Site web
+C-1234;Vérifier le paiement;2026-10-04 17:17;2026-10-04 17:25;Agent A
+C-1234;Vérifier le stock;2026-10-04 22:35;2026-10-04 22:53;Entrepôt 1
+C-1234;Préparer la commande;2026-10-05 21:29;2026-10-05 22:05;Entrepôt 2
+C-1234;Expédier;2026-10-06 00:46;2026-10-06 01:09;Entrepôt 2
+C-1234;Facturer;2026-10-06 04:11;2026-10-06 04:21;Agent A
+C-1235;Commande reçue;2026-10-30 03:51;2026-10-30 03:51;Site web
+C-1235;Vérifier le paiement;2026-10-30 06:17;2026-10-30 06:24;Agent D
+C-1235;Vérifier le stock;2026-10-30 10:33;2026-10-30 10:40;Entrepôt 1
+C-1235;Préparer la commande;2026-10-31 11:32;2026-10-31 12:50;Entrepôt 2
+C-1235;Expédier;2026-10-31 14:44;2026-10-31 15:00;Entrepôt 2
+C-1235;Facturer;2026-10-31 17:13;2026-10-31 17:16;Agent D
+C-1236;Commande reçue;2026-10-09 12:57;2026-10-09 12:57;Site web
+C-1236;Vérifier le paiement;2026-10-09 14:27;2026-10-09 14:46;Agent A
+C-1236;Vérifier le stock;2026-10-09 15:17;2026-10-09 15:42;Entrepôt 1
+C-1236;Préparer la commande;2026-10-09 20:31;2026-10-09 21:33;Entrepôt 2
+C-1236;Expédier;2026-10-10 04:39;2026-10-10 05:00;Entrepôt 1
+C-1236;Facturer;2026-10-10 07:30;2026-10-10 07:40;Agent B
+C-1237;Commande reçue;2026-10-26 07:14;2026-10-26 07:14;Site web
+C-1237;Vérifier le paiement;2026-10-26 08:02;2026-10-26 08:20;Agent D
+C-1237;Annuler la commande;2026-10-27 05:33;2026-10-27 05:41;Agent B
+C-1238;Commande reçue;2026-10-09 13:52;2026-10-09 13:52;Site web
+C-1238;Vérifier le paiement;2026-10-09 16:40;2026-10-09 17:00;Agent B
+C-1238;Vérifier le stock;2026-10-09 19:00;2026-10-09 19:27;Entrepôt 2
+C-1238;Commander au fournisseur;2026-10-10 03:22;2026-10-10 04:06;Agent A
+C-1238;Préparer la commande;2026-10-10 21:18;2026-10-10 22:18;Entrepôt 1
+C-1238;Expédier;2026-10-11 07:35;2026-10-11 07:52;Entrepôt 1
+C-1238;Facturer;2026-10-11 09:44;2026-10-11 09:54;Agent B
+C-1239;Commande reçue;2026-10-01 12:53;2026-10-01 12:53;Site web
+C-1239;Vérifier le paiement;2026-10-01 14:03;2026-10-01 14:25;Agent D
+C-1239;Vérifier le stock;2026-10-01 15:25;2026-10-01 15:54;Entrepôt 1
+C-1239;Préparer la commande;2026-10-02 18:09;2026-10-02 19:35;Entrepôt 2
+C-1239;Expédier;2026-10-03 03:18;2026-10-03 03:47;Entrepôt 1
+C-1239;Facturer;2026-10-03 05:55;2026-10-03 06:05;Agent C
+C-1240;Commande reçue;2026-10-04 21:29;2026-10-04 21:29;Site web
+C-1240;Vérifier le paiement;2026-10-04 22:50;2026-10-04 23:10;Agent A
+C-1240;Vérifier le stock;2026-10-05 05:07;2026-10-05 05:33;Entrepôt 1
+C-1240;Préparer la commande;2026-10-06 06:35;2026-10-06 08:05;Entrepôt 1
+C-1240;Expédier;2026-10-06 11:09;2026-10-06 11:25;Entrepôt 2
+C-1240;Facturer;2026-10-06 14:09;2026-10-06 14:14;Agent D
+C-1241;Commande reçue;2026-10-16 11:07;2026-10-16 11:07;Site web
+C-1241;Vérifier le paiement;2026-10-16 12:21;2026-10-16 12:36;Agent A
+C-1241;Vérifier le stock;2026-10-16 17:12;2026-10-16 17:42;Entrepôt 2
+C-1241;Préparer la commande;2026-10-16 21:39;2026-10-16 22:27;Entrepôt 1
+C-1241;Expédier;2026-10-17 05:05;2026-10-17 05:18;Entrepôt 2
+C-1241;Facturer;2026-10-17 06:33;2026-10-17 06:37;Agent D
+C-1242;Commande reçue;2026-10-23 12:55;2026-10-23 12:55;Site web
+C-1242;Vérifier le paiement;2026-10-23 13:28;2026-10-23 13:34;Agent A
+C-1242;Vérifier le stock;2026-10-23 17:51;2026-10-23 18:15;Entrepôt 2
+C-1242;Préparer la commande;2026-10-24 14:29;2026-10-24 15:00;Entrepôt 1
+C-1242;Expédier;2026-10-24 23:10;2026-10-24 23:38;Entrepôt 2
+C-1242;Facturer;2026-10-25 00:27;2026-10-25 00:32;Agent A
+C-1243;Commande reçue;2026-10-04 14:27;2026-10-04 14:27;Site web
+C-1243;Vérifier le paiement;2026-10-04 17:09;2026-10-04 17:30;Agent C
+C-1243;Vérifier le stock;2026-10-04 19:06;2026-10-04 19:34;Entrepôt 2
+C-1243;Préparer la commande;2026-10-05 17:11;2026-10-05 17:47;Entrepôt 1
+C-1243;Expédier;2026-10-06 00:08;2026-10-06 00:33;Entrepôt 1
+C-1243;Facturer;2026-10-06 04:11;2026-10-06 04:19;Agent A
+C-1244;Commande reçue;2026-10-20 18:34;2026-10-20 18:34;Site web
+C-1244;Vérifier le paiement;2026-10-20 20:38;2026-10-20 21:01;Agent D
+C-1244;Relancer le client;2026-10-21 20:32;2026-10-21 20:49;Agent B
+C-1244;Annuler la commande;2026-10-22 20:18;2026-10-22 20:25;Agent A
+C-1245;Commande reçue;2026-10-20 15:12;2026-10-20 15:12;Site web
+C-1245;Vérifier le paiement;2026-10-20 17:09;2026-10-20 17:15;Agent C
+C-1245;Vérifier le stock;2026-10-20 20:50;2026-10-20 21:09;Entrepôt 2
+C-1245;Préparer la commande;2026-10-23 14:07;2026-10-23 14:46;Entrepôt 2
+C-1245;Expédier;2026-10-23 21:50;2026-10-23 22:18;Entrepôt 1
+C-1245;Facturer;2026-10-24 00:00;2026-10-24 00:11;Agent C
+C-1246;Commande reçue;2026-10-07 08:19;2026-10-07 08:19;Site web
+C-1246;Vérifier le paiement;2026-10-07 09:34;2026-10-07 09:46;Agent A
+C-1246;Vérifier le stock;2026-10-07 13:06;2026-10-07 13:27;Entrepôt 2
+C-1246;Préparer la commande;2026-10-08 05:24;2026-10-08 05:58;Entrepôt 1
+C-1246;Expédier;2026-10-08 11:30;2026-10-08 12:00;Entrepôt 1
+C-1246;Facturer;2026-10-08 13:40;2026-10-08 13:45;Agent A
+C-1247;Commande reçue;2026-10-30 19:54;2026-10-30 19:54;Site web
+C-1247;Vérifier le paiement;2026-10-30 20:47;2026-10-30 20:53;Agent A
+C-1247;Vérifier le stock;2026-10-30 21:47;2026-10-30 22:04;Entrepôt 2
+C-1247;Commander au fournisseur;2026-10-31 02:54;2026-10-31 03:29;Agent D
+C-1247;Préparer la commande;2026-11-03 06:20;2026-11-03 06:41;Entrepôt 1
+C-1247;Expédier;2026-11-03 12:21;2026-11-03 12:48;Entrepôt 2
+C-1247;Facturer;2026-11-03 14:25;2026-11-03 14:36;Agent C
+C-1248;Commande reçue;2026-10-12 01:25;2026-10-12 01:25;Site web
+C-1248;Vérifier le paiement;2026-10-12 03:38;2026-10-12 03:44;Agent D
+C-1248;Vérifier le stock;2026-10-12 09:17;2026-10-12 09:37;Entrepôt 2
+C-1248;Préparer la commande;2026-10-13 15:02;2026-10-13 15:40;Entrepôt 2
+C-1248;Facturer;2026-10-13 19:04;2026-10-13 19:11;Agent B
+C-1248;Expédier;2026-10-14 00:34;2026-10-14 00:48;Entrepôt 2
+C-1249;Commande reçue;2026-10-15 12:17;2026-10-15 12:17;Site web
+C-1249;Vérifier le paiement;2026-10-15 14:31;2026-10-15 14:54;Agent B
+C-1249;Vérifier le stock;2026-10-15 16:51;2026-10-15 17:00;Entrepôt 2
+C-1249;Préparer la commande;2026-10-17 17:10;2026-10-17 17:46;Entrepôt 2
+C-1249;Expédier;2026-10-18 01:58;2026-10-18 02:18;Entrepôt 1
+C-1249;Facturer;2026-10-18 06:15;2026-10-18 06:27;Agent D
+C-1250;Commande reçue;2026-10-27 06:55;2026-10-27 06:55;Site web
+C-1250;Vérifier le paiement;2026-10-27 09:49;2026-10-27 10:12;Agent A
+C-1250;Vérifier le stock;2026-10-27 13:43;2026-10-27 14:09;Entrepôt 1
+C-1250;Préparer la commande;2026-10-30 21:28;2026-10-30 22:54;Entrepôt 1
+C-1250;Expédier;2026-10-31 06:44;2026-10-31 07:20;Entrepôt 2
+C-1250;Facturer;2026-10-31 08:38;2026-10-31 08:43;Agent B
+C-1251;Commande reçue;2026-10-03 15:49;2026-10-03 15:49;Site web
+C-1251;Vérifier le paiement;2026-10-03 16:24;2026-10-03 16:44;Agent A
+C-1251;Vérifier le stock;2026-10-03 22:25;2026-10-03 22:39;Entrepôt 2
+C-1251;Préparer la commande;2026-10-04 09:30;2026-10-04 10:31;Entrepôt 2
+C-1251;Expédier;2026-10-04 14:40;2026-10-04 15:15;Entrepôt 1
+C-1251;Facturer;2026-10-04 18:31;2026-10-04 18:42;Agent B
+C-1252;Commande reçue;2026-10-21 04:45;2026-10-21 04:45;Site web
+C-1252;Vérifier le paiement;2026-10-21 06:26;2026-10-21 06:44;Agent C
+C-1252;Vérifier le stock;2026-10-21 12:16;2026-10-21 12:36;Entrepôt 2
+C-1252;Préparer la commande;2026-10-22 22:15;2026-10-22 22:37;Entrepôt 2
+C-1252;Expédier;2026-10-23 00:48;2026-10-23 01:16;Entrepôt 1
+C-1252;Facturer;2026-10-23 03:15;2026-10-23 03:26;Agent B
+C-1253;Commande reçue;2026-10-17 19:34;2026-10-17 19:34;Site web
+C-1253;Vérifier le paiement;2026-10-17 22:22;2026-10-17 22:25;Agent B
+C-1253;Annuler la commande;2026-10-18 06:04;2026-10-18 06:07;Agent D
+C-1254;Commande reçue;2026-10-06 15:31;2026-10-06 15:31;Site web
+C-1254;Vérifier le paiement;2026-10-06 17:34;2026-10-06 17:39;Agent D
+C-1254;Vérifier le stock;2026-10-06 22:07;2026-10-06 22:29;Entrepôt 2
+C-1254;Préparer la commande;2026-10-07 22:05;2026-10-07 22:42;Entrepôt 2
+C-1254;Expédier;2026-10-08 03:12;2026-10-08 03:42;Entrepôt 1
+C-1254;Facturer;2026-10-08 05:54;2026-10-08 06:01;Agent D
+C-1255;Commande reçue;2026-10-03 06:25;2026-10-03 06:25;Site web
+C-1255;Vérifier le paiement;2026-10-03 08:08;2026-10-03 08:12;Agent D
+C-1255;Vérifier le stock;2026-10-03 09:25;2026-10-03 09:33;Entrepôt 2
+C-1255;Préparer la commande;2026-10-06 14:53;2026-10-06 15:51;Entrepôt 1
+C-1255;Expédier;2026-10-06 17:01;2026-10-06 17:26;Entrepôt 2
+C-1255;Facturer;2026-10-06 19:10;2026-10-06 19:16;Agent B
+C-1256;Commande reçue;2026-10-28 07:15;2026-10-28 07:15;Site web
+C-1256;Vérifier le paiement;2026-10-28 08:00;2026-10-28 08:08;Agent A
+C-1256;Vérifier le stock;2026-10-28 12:41;2026-10-28 13:03;Entrepôt 1
+C-1256;Préparer la commande;2026-10-29 16:50;2026-10-29 17:24;Entrepôt 2
+C-1256;Expédier;2026-10-30 00:29;2026-10-30 00:58;Entrepôt 2
+C-1256;Facturer;2026-10-30 02:58;2026-10-30 03:07;Agent D
+C-1257;Commande reçue;2026-10-16 19:03;2026-10-16 19:03;Site web
+C-1257;Vérifier le paiement;2026-10-16 19:40;2026-10-16 19:54;Agent A
+C-1257;Vérifier le stock;2026-10-16 21:48;2026-10-16 22:14;Entrepôt 2
+C-1257;Préparer la commande;2026-10-19 07:25;2026-10-19 07:57;Entrepôt 1
+C-1257;Expédier;2026-10-19 14:03;2026-10-19 14:18;Entrepôt 1
+C-1257;Facturer;2026-10-19 17:30;2026-10-19 17:42;Agent A
+C-1258;Commande reçue;2026-10-11 22:08;2026-10-11 22:08;Site web
+C-1258;Vérifier le paiement;2026-10-11 23:22;2026-10-11 23:29;Agent D
+C-1258;Vérifier le stock;2026-10-12 04:14;2026-10-12 04:41;Entrepôt 2
+C-1258;Préparer la commande;2026-10-13 06:36;2026-10-13 07:32;Entrepôt 2
+C-1258;Expédier;2026-10-13 12:06;2026-10-13 12:24;Entrepôt 1
+C-1258;Facturer;2026-10-13 14:35;2026-10-13 14:41;Agent D
+C-1259;Commande reçue;2026-10-18 04:30;2026-10-18 04:30;Site web
+C-1259;Vérifier le paiement;2026-10-18 07:07;2026-10-18 07:25;Agent B
+C-1259;Vérifier le stock;2026-10-18 12:41;2026-10-18 13:08;Entrepôt 2
+C-1259;Préparer la commande;2026-10-19 03:19;2026-10-19 04:33;Entrepôt 2
+C-1259;Expédier;2026-10-19 07:48;2026-10-19 08:15;Entrepôt 1
+C-1259;Facturer;2026-10-19 08:45;2026-10-19 08:52;Agent D
+C-1260;Commande reçue;2026-10-05 23:23;2026-10-05 23:23;Site web
+C-1260;Vérifier le paiement;2026-10-06 00:33;2026-10-06 00:55;Agent C
+C-1260;Vérifier le stock;2026-10-06 04:53;2026-10-06 05:17;Entrepôt 2
+C-1260;Préparer la commande;2026-10-06 22:34;2026-10-06 23:55;Entrepôt 2
+C-1260;Expédier;2026-10-07 01:56;2026-10-07 02:27;Entrepôt 1
+C-1260;Facturer;2026-10-07 05:06;2026-10-07 05:12;Agent C
+C-1261;Commande reçue;2026-10-03 05:42;2026-10-03 05:42;Site web
+C-1261;Vérifier le paiement;2026-10-03 07:00;2026-10-03 07:04;Agent B
+C-1261;Relancer le client;2026-10-05 02:39;2026-10-05 02:51;Agent D
+C-1261;Annuler la commande;2026-10-05 07:13;2026-10-05 07:16;Agent A
+C-1262;Commande reçue;2026-10-06 21:23;2026-10-06 21:23;Site web
+C-1262;Vérifier le paiement;2026-10-06 22:17;2026-10-06 22:36;Agent B
+C-1262;Vérifier le stock;2026-10-07 01:09;2026-10-07 01:26;Entrepôt 1
+C-1262;Préparer la commande;2026-10-07 09:13;2026-10-07 10:33;Entrepôt 1
+C-1262;Expédier;2026-10-07 15:34;2026-10-07 16:05;Entrepôt 1
+C-1262;Facturer;2026-10-07 17:08;2026-10-07 17:18;Agent A
+C-1263;Commande reçue;2026-10-13 03:30;2026-10-13 03:30;Site web
+C-1263;Vérifier le paiement;2026-10-13 04:54;2026-10-13 04:57;Agent C
+C-1263;Vérifier le stock;2026-10-13 07:04;2026-10-13 07:19;Entrepôt 2
+C-1263;Préparer la commande;2026-10-14 09:26;2026-10-14 09:54;Entrepôt 2
+C-1263;Expédier;2026-10-14 11:39;2026-10-14 12:07;Entrepôt 1
+C-1263;Facturer;2026-10-14 14:10;2026-10-14 14:19;Agent C
+C-1264;Commande reçue;2026-10-21 13:45;2026-10-21 13:45;Site web
+C-1264;Vérifier le paiement;2026-10-21 14:28;2026-10-21 14:45;Agent A
+C-1264;Vérifier le stock;2026-10-21 16:23;2026-10-21 16:52;Entrepôt 2
+C-1264;Préparer la commande;2026-10-22 06:08;2026-10-22 07:18;Entrepôt 1
+C-1264;Expédier;2026-10-22 10:27;2026-10-22 10:54;Entrepôt 1
+C-1264;Facturer;2026-10-22 13:45;2026-10-22 13:52;Agent B
+C-1265;Commande reçue;2026-10-20 21:45;2026-10-20 21:45;Site web
+C-1265;Vérifier le paiement;2026-10-21 00:29;2026-10-21 00:46;Agent C
+C-1265;Vérifier le stock;2026-10-21 06:24;2026-10-21 06:36;Entrepôt 2
+C-1265;Préparer la commande;2026-10-21 09:05;2026-10-21 09:45;Entrepôt 1
+C-1265;Expédier;2026-10-21 13:29;2026-10-21 13:43;Entrepôt 1
+C-1265;Facturer;2026-10-21 16:54;2026-10-21 16:57;Agent C
+C-1266;Commande reçue;2026-10-21 19:03;2026-10-21 19:03;Site web
+C-1266;Vérifier le paiement;2026-10-21 19:54;2026-10-21 20:05;Agent A
+C-1266;Vérifier le stock;2026-10-21 20:47;2026-10-21 20:59;Entrepôt 1
+C-1266;Commander au fournisseur;2026-10-21 23:34;2026-10-22 00:10;Agent A
+C-1266;Préparer la commande;2026-10-22 03:06;2026-10-22 04:08;Entrepôt 2
+C-1266;Expédier;2026-10-22 12:52;2026-10-22 13:16;Entrepôt 2
+C-1266;Facturer;2026-10-22 13:48;2026-10-22 13:54;Agent B
+C-1267;Commande reçue;2026-10-12 11:31;2026-10-12 11:31;Site web
+C-1267;Vérifier le paiement;2026-10-12 13:06;2026-10-12 13:22;Agent B
+C-1267;Relancer le client;2026-10-13 15:47;2026-10-13 15:55;Agent A
+C-1267;Annuler la commande;2026-10-14 06:14;2026-10-14 06:24;Agent A
+C-1268;Commande reçue;2026-10-10 20:14;2026-10-10 20:14;Site web
+C-1268;Vérifier le paiement;2026-10-10 21:38;2026-10-10 22:00;Agent A
+C-1268;Vérifier le stock;2026-10-11 01:13;2026-10-11 01:20;Entrepôt 2
+C-1268;Préparer la commande;2026-10-13 09:28;2026-10-13 10:03;Entrepôt 1
+C-1268;Expédier;2026-10-13 11:18;2026-10-13 11:40;Entrepôt 1
+C-1268;Facturer;2026-10-13 13:51;2026-10-13 13:59;Agent D
+C-1269;Commande reçue;2026-10-16 09:23;2026-10-16 09:23;Site web
+C-1269;Vérifier le paiement;2026-10-16 10:18;2026-10-16 10:25;Agent A
+C-1269;Vérifier le stock;2026-10-16 13:12;2026-10-16 13:27;Entrepôt 2
+C-1269;Préparer la commande;2026-10-17 03:16;2026-10-17 03:47;Entrepôt 2
+C-1269;Expédier;2026-10-17 09:48;2026-10-17 10:02;Entrepôt 1
+C-1269;Facturer;2026-10-17 10:41;2026-10-17 10:51;Agent D
+C-1270;Commande reçue;2026-10-10 04:28;2026-10-10 04:28;Site web
+C-1270;Vérifier le paiement;2026-10-10 07:05;2026-10-10 07:12;Agent D
+C-1270;Vérifier le stock;2026-10-10 10:31;2026-10-10 10:41;Entrepôt 1
+C-1270;Préparer la commande;2026-10-14 13:51;2026-10-14 14:48;Entrepôt 1
+C-1270;Expédier;2026-10-14 21:15;2026-10-14 21:48;Entrepôt 2
+C-1270;Facturer;2026-10-14 23:33;2026-10-14 23:40;Agent A
+C-1271;Commande reçue;2026-10-30 18:02;2026-10-30 18:02;Site web
+C-1271;Vérifier le paiement;2026-10-30 19:28;2026-10-30 19:39;Agent D
+C-1271;Vérifier le stock;2026-10-30 21:36;2026-10-30 22:02;Entrepôt 1
+C-1271;Préparer la commande;2026-10-31 02:14;2026-10-31 02:54;Entrepôt 2
+C-1271;Expédier;2026-10-31 09:03;2026-10-31 09:29;Entrepôt 2
+C-1271;Facturer;2026-10-31 12:15;2026-10-31 12:26;Agent C
+C-1272;Commande reçue;2026-10-17 02:34;2026-10-17 02:34;Site web
+C-1272;Vérifier le paiement;2026-10-17 05:22;2026-10-17 05:27;Agent C
+C-1272;Vérifier le stock;2026-10-17 08:11;2026-10-17 08:30;Entrepôt 2
+C-1272;Préparer la commande;2026-10-18 07:48;2026-10-18 08:56;Entrepôt 2
+C-1272;Expédier;2026-10-18 12:50;2026-10-18 13:10;Entrepôt 2
+C-1272;Facturer;2026-10-18 16:38;2026-10-18 16:44;Agent B
+C-1273;Commande reçue;2026-10-03 18:02;2026-10-03 18:02;Site web
+C-1273;Vérifier le paiement;2026-10-03 19:51;2026-10-03 20:13;Agent D
+C-1273;Vérifier le stock;2026-10-03 23:27;2026-10-03 23:33;Entrepôt 1
+C-1273;Préparer la commande;2026-10-04 16:44;2026-10-04 17:26;Entrepôt 2
+C-1273;Expédier;2026-10-05 00:37;2026-10-05 01:01;Entrepôt 2
+C-1273;Facturer;2026-10-05 04:48;2026-10-05 05:00;Agent D
+C-1274;Commande reçue;2026-10-30 20:33;2026-10-30 20:33;Site web
+C-1274;Vérifier le paiement;2026-10-30 23:29;2026-10-30 23:46;Agent B
+C-1274;Vérifier le stock;2026-10-31 03:09;2026-10-31 03:34;Entrepôt 1
+C-1274;Préparer la commande;2026-11-01 06:02;2026-11-01 07:26;Entrepôt 2
+C-1274;Expédier;2026-11-01 08:59;2026-11-01 09:29;Entrepôt 2
+C-1274;Facturer;2026-11-01 12:31;2026-11-01 12:38;Agent C
+C-1275;Commande reçue;2026-10-08 07:11;2026-10-08 07:11;Site web
+C-1275;Vérifier le paiement;2026-10-08 08:45;2026-10-08 09:06;Agent B
+C-1275;Vérifier le stock;2026-10-08 13:23;2026-10-08 13:47;Entrepôt 2
+C-1275;Préparer la commande;2026-10-08 15:59;2026-10-08 16:50;Entrepôt 2
+C-1275;Expédier;2026-10-09 01:47;2026-10-09 02:12;Entrepôt 2
+C-1275;Facturer;2026-10-09 04:23;2026-10-09 04:31;Agent C
+C-1276;Commande reçue;2026-10-15 22:52;2026-10-15 22:52;Site web
+C-1276;Vérifier le paiement;2026-10-15 23:26;2026-10-15 23:35;Agent D
+C-1276;Vérifier le stock;2026-10-16 00:29;2026-10-16 00:36;Entrepôt 1
+C-1276;Préparer la commande;2026-10-16 07:53;2026-10-16 08:58;Entrepôt 1
+C-1276;Expédier;2026-10-16 16:42;2026-10-16 17:06;Entrepôt 1
+C-1276;Facturer;2026-10-16 18:07;2026-10-16 18:15;Agent B
+C-1277;Commande reçue;2026-10-21 01:20;2026-10-21 01:20;Site web
+C-1277;Vérifier le paiement;2026-10-21 04:14;2026-10-21 04:27;Agent D
+C-1277;Vérifier le stock;2026-10-21 07:56;2026-10-21 08:16;Entrepôt 2
+C-1277;Préparer la commande;2026-10-21 10:57;2026-10-21 11:50;Entrepôt 2
+C-1277;Expédier;2026-10-21 14:15;2026-10-21 14:44;Entrepôt 1
+C-1277;Facturer;2026-10-21 16:31;2026-10-21 16:39;Agent C
+C-1278;Commande reçue;2026-10-07 04:54;2026-10-07 04:54;Site web
+C-1278;Vérifier le paiement;2026-10-07 06:46;2026-10-07 07:05;Agent D
+C-1278;Vérifier le stock;2026-10-07 09:53;2026-10-07 10:12;Entrepôt 1
+C-1278;Commander au fournisseur;2026-10-07 17:05;2026-10-07 18:01;Agent D
+C-1278;Préparer la commande;2026-10-07 23:53;2026-10-08 00:14;Entrepôt 1
+C-1278;Expédier;2026-10-08 07:37;2026-10-08 07:54;Entrepôt 2
+C-1278;Facturer;2026-10-08 09:26;2026-10-08 09:33;Agent A
+C-1279;Commande reçue;2026-10-06 00:49;2026-10-06 00:49;Site web
+C-1279;Vérifier le paiement;2026-10-06 01:04;2026-10-06 01:15;Agent D
+C-1279;Vérifier le stock;2026-10-06 03:04;2026-10-06 03:22;Entrepôt 1
+C-1279;Commander au fournisseur;2026-10-06 08:30;2026-10-06 09:24;Agent C
+C-1279;Préparer la commande;2026-10-07 04:38;2026-10-07 05:24;Entrepôt 1
+C-1279;Expédier;2026-10-07 07:01;2026-10-07 07:21;Entrepôt 1
+C-1279;Facturer;2026-10-07 08:12;2026-10-07 08:23;Agent A
+C-1280;Commande reçue;2026-10-14 22:47;2026-10-14 22:47;Site web
+C-1280;Vérifier le paiement;2026-10-14 23:21;2026-10-14 23:40;Agent D
+C-1280;Vérifier le stock;2026-10-15 05:19;2026-10-15 05:35;Entrepôt 2
+C-1280;Commander au fournisseur;2026-10-15 10:46;2026-10-15 11:28;Agent D
+C-1280;Préparer la commande;2026-10-17 02:31;2026-10-17 03:12;Entrepôt 2
+C-1280;Expédier;2026-10-17 10:00;2026-10-17 10:22;Entrepôt 2
+C-1280;Facturer;2026-10-17 11:27;2026-10-17 11:36;Agent A
+C-1281;Commande reçue;2026-10-26 05:06;2026-10-26 05:06;Site web
+C-1281;Vérifier le paiement;2026-10-26 06:06;2026-10-26 06:16;Agent B
+C-1281;Vérifier le stock;2026-10-26 11:12;2026-10-26 11:27;Entrepôt 1
+C-1281;Préparer la commande;2026-10-26 21:54;2026-10-26 22:40;Entrepôt 1
+C-1281;Expédier;2026-10-27 00:49;2026-10-27 01:21;Entrepôt 1
+C-1281;Facturer;2026-10-27 04:14;2026-10-27 04:18;Agent A
+C-1282;Commande reçue;2026-10-09 10:02;2026-10-09 10:02;Site web
+C-1282;Vérifier le paiement;2026-10-09 11:07;2026-10-09 11:30;Agent C
+C-1282;Vérifier le stock;2026-10-09 14:26;2026-10-09 14:40;Entrepôt 1
+C-1282;Préparer la commande;2026-10-12 23:34;2026-10-12 23:53;Entrepôt 1
+C-1282;Expédier;2026-10-13 09:33;2026-10-13 09:48;Entrepôt 2
+C-1282;Facturer;2026-10-13 12:03;2026-10-13 12:07;Agent C
+C-1283;Commande reçue;2026-10-14 04:13;2026-10-14 04:13;Site web
+C-1283;Vérifier le paiement;2026-10-14 06:49;2026-10-14 07:03;Agent D
+C-1283;Vérifier le stock;2026-10-14 12:21;2026-10-14 12:49;Entrepôt 2
+C-1283;Préparer la commande;2026-10-15 14:51;2026-10-15 15:15;Entrepôt 2
+C-1283;Expédier;2026-10-15 20:36;2026-10-15 20:53;Entrepôt 1
+C-1283;Facturer;2026-10-15 22:07;2026-10-15 22:19;Agent B
+C-1284;Commande reçue;2026-10-20 00:30;2026-10-20 00:30;Site web
+C-1284;Vérifier le paiement;2026-10-20 02:13;2026-10-20 02:37;Agent C
+C-1284;Vérifier le stock;2026-10-20 07:18;2026-10-20 07:29;Entrepôt 1
+C-1284;Commander au fournisseur;2026-10-20 11:12;2026-10-20 11:52;Agent D
+C-1284;Préparer la commande;2026-10-21 00:04;2026-10-21 00:34;Entrepôt 2
+C-1284;Expédier;2026-10-21 09:44;2026-10-21 10:17;Entrepôt 1
+C-1284;Facturer;2026-10-21 11:26;2026-10-21 11:37;Agent D
+C-1285;Commande reçue;2026-10-15 11:01;2026-10-15 11:01;Site web
+C-1285;Vérifier le paiement;2026-10-15 12:02;2026-10-15 12:13;Agent C
+C-1285;Vérifier le stock;2026-10-15 16:06;2026-10-15 16:20;Entrepôt 1
+C-1285;Préparer la commande;2026-10-19 02:15;2026-10-19 03:41;Entrepôt 2
+C-1285;Expédier;2026-10-19 06:50;2026-10-19 07:08;Entrepôt 1
+C-1285;Facturer;2026-10-19 10:00;2026-10-19 10:04;Agent B
+C-1286;Commande reçue;2026-10-09 18:35;2026-10-09 18:35;Site web
+C-1286;Vérifier le paiement;2026-10-09 21:15;2026-10-09 21:21;Agent D
+C-1286;Vérifier le stock;2026-10-10 01:30;2026-10-10 01:46;Entrepôt 1
+C-1286;Préparer la commande;2026-10-11 05:48;2026-10-11 07:07;Entrepôt 1
+C-1286;Expédier;2026-10-11 14:49;2026-10-11 15:11;Entrepôt 2
+C-1286;Facturer;2026-10-11 15:59;2026-10-11 16:08;Agent D
+C-1287;Commande reçue;2026-10-23 22:01;2026-10-23 22:01;Site web
+C-1287;Vérifier le paiement;2026-10-23 22:51;2026-10-23 22:57;Agent A
+C-1287;Vérifier le stock;2026-10-23 23:56;2026-10-24 00:11;Entrepôt 1
+C-1287;Préparer la commande;2026-10-24 12:17;2026-10-24 13:20;Entrepôt 2
+C-1287;Expédier;2026-10-24 15:51;2026-10-24 16:24;Entrepôt 1
+C-1287;Facturer;2026-10-24 18:30;2026-10-24 18:37;Agent D
+C-1288;Commande reçue;2026-10-21 22:59;2026-10-21 22:59;Site web
+C-1288;Vérifier le paiement;2026-10-21 23:50;2026-10-22 00:05;Agent D
+C-1288;Vérifier le stock;2026-10-22 03:50;2026-10-22 04:16;Entrepôt 2
+C-1288;Commander au fournisseur;2026-10-22 12:11;2026-10-22 12:39;Agent A
+C-1288;Préparer la commande;2026-10-23 05:49;2026-10-23 06:31;Entrepôt 2
+C-1288;Expédier;2026-10-23 09:32;2026-10-23 09:59;Entrepôt 2
+C-1288;Facturer;2026-10-23 10:43;2026-10-23 10:50;Agent A
+C-1289;Commande reçue;2026-10-28 15:43;2026-10-28 15:43;Site web
+C-1289;Vérifier le paiement;2026-10-28 17:44;2026-10-28 17:57;Agent C
+C-1289;Vérifier le stock;2026-10-28 18:28;2026-10-28 18:46;Entrepôt 2
+C-1289;Préparer la commande;2026-10-29 05:14;2026-10-29 05:37;Entrepôt 2
+C-1289;Expédier;2026-10-29 08:14;2026-10-29 08:31;Entrepôt 2
+C-1289;Facturer;2026-10-29 11:31;2026-10-29 11:37;Agent D
+C-1290;Commande reçue;2026-10-22 23:31;2026-10-22 23:31;Site web
+C-1290;Vérifier le paiement;2026-10-23 00:13;2026-10-23 00:25;Agent B
+C-1290;Vérifier le stock;2026-10-23 04:29;2026-10-23 04:39;Entrepôt 1
+C-1290;Commander au fournisseur;2026-10-23 11:59;2026-10-23 12:15;Agent A
+C-1290;Préparer la commande;2026-10-24 23:56;2026-10-25 00:18;Entrepôt 2
+C-1290;Expédier;2026-10-25 10:18;2026-10-25 10:51;Entrepôt 2
+C-1290;Facturer;2026-10-25 12:34;2026-10-25 12:40;Agent B
+C-1291;Commande reçue;2026-10-12 19:56;2026-10-12 19:56;Site web
+C-1291;Vérifier le paiement;2026-10-12 21:14;2026-10-12 21:22;Agent B
+C-1291;Préparer la commande;2026-10-13 17:26;2026-10-13 17:57;Entrepôt 2
+C-1291;Expédier;2026-10-13 23:12;2026-10-13 23:36;Entrepôt 1
+C-1291;Facturer;2026-10-14 02:49;2026-10-14 02:57;Agent A
+C-1292;Commande reçue;2026-10-22 04:08;2026-10-22 04:08;Site web
+C-1292;Vérifier le paiement;2026-10-22 04:36;2026-10-22 04:52;Agent D
+C-1292;Vérifier le stock;2026-10-22 06:08;2026-10-22 06:31;Entrepôt 2
+C-1292;Préparer la commande;2026-10-22 20:25;2026-10-22 21:08;Entrepôt 1
+C-1292;Expédier;2026-10-23 07:06;2026-10-23 07:42;Entrepôt 2
+C-1292;Facturer;2026-10-23 11:28;2026-10-23 11:39;Agent A
+C-1293;Commande reçue;2026-10-06 06:08;2026-10-06 06:08;Site web
+C-1293;Vérifier le paiement;2026-10-06 08:07;2026-10-06 08:25;Agent B
+C-1293;Vérifier le stock;2026-10-06 11:00;2026-10-06 11:21;Entrepôt 1
+C-1293;Préparer la commande;2026-10-06 14:56;2026-10-06 15:24;Entrepôt 1
+C-1293;Expédier;2026-10-06 19:42;2026-10-06 20:10;Entrepôt 2
+C-1293;Facturer;2026-10-06 22:35;2026-10-06 22:40;Agent B
+C-1294;Commande reçue;2026-10-18 09:35;2026-10-18 09:35;Site web
+C-1294;Vérifier le paiement;2026-10-18 09:59;2026-10-18 10:20;Agent D
+C-1294;Vérifier le stock;2026-10-18 16:04;2026-10-18 16:29;Entrepôt 1
+C-1294;Préparer la commande;2026-10-19 06:13;2026-10-19 06:59;Entrepôt 2
+C-1294;Expédier;2026-10-19 13:35;2026-10-19 14:00;Entrepôt 1
+C-1294;Facturer;2026-10-19 14:59;2026-10-19 15:06;Agent A
+C-1295;Commande reçue;2026-10-03 21:41;2026-10-03 21:41;Site web
+C-1295;Vérifier le paiement;2026-10-03 22:09;2026-10-03 22:28;Agent A
+C-1295;Vérifier le stock;2026-10-04 01:28;2026-10-04 01:52;Entrepôt 1
+C-1295;Préparer la commande;2026-10-07 05:37;2026-10-07 06:16;Entrepôt 1
+C-1295;Expédier;2026-10-07 08:35;2026-10-07 09:04;Entrepôt 1
+C-1295;Facturer;2026-10-07 10:17;2026-10-07 10:23;Agent D
+C-1296;Commande reçue;2026-10-03 02:50;2026-10-03 02:50;Site web
+C-1296;Vérifier le paiement;2026-10-03 04:47;2026-10-03 04:51;Agent A
+C-1296;Vérifier le stock;2026-10-03 05:50;2026-10-03 05:59;Entrepôt 2
+C-1296;Préparer la commande;2026-10-03 17:05;2026-10-03 18:04;Entrepôt 2
+C-1296;Expédier;2026-10-04 01:32;2026-10-04 02:05;Entrepôt 2
+C-1296;Facturer;2026-10-04 03:06;2026-10-04 03:17;Agent B
+C-1297;Commande reçue;2026-10-19 15:39;2026-10-19 15:39;Site web
+C-1297;Vérifier le paiement;2026-10-19 16:46;2026-10-19 16:53;Agent B
+C-1297;Vérifier le stock;2026-10-19 18:39;2026-10-19 18:47;Entrepôt 1
+C-1297;Préparer la commande;2026-10-21 03:01;2026-10-21 04:02;Entrepôt 1
+C-1297;Expédier;2026-10-21 09:27;2026-10-21 09:55;Entrepôt 2
+C-1297;Facturer;2026-10-21 11:24;2026-10-21 11:28;Agent D
+C-1298;Commande reçue;2026-10-29 05:01;2026-10-29 05:01;Site web
+C-1298;Vérifier le paiement;2026-10-29 06:17;2026-10-29 06:23;Agent B
+C-1298;Vérifier le stock;2026-10-29 08:31;2026-10-29 08:55;Entrepôt 2
+C-1298;Préparer la commande;2026-10-30 01:03;2026-10-30 01:32;Entrepôt 2
+C-1298;Expédier;2026-10-30 03:36;2026-10-30 04:08;Entrepôt 1
+C-1298;Facturer;2026-10-30 06:20;2026-10-30 06:31;Agent A
+C-1299;Commande reçue;2026-10-25 14:42;2026-10-25 14:42;Site web
+C-1299;Vérifier le paiement;2026-10-25 17:24;2026-10-25 17:35;Agent B
+C-1299;Vérifier le stock;2026-10-25 22:32;2026-10-25 22:58;Entrepôt 2
+C-1299;Commander au fournisseur;2026-10-26 05:05;2026-10-26 05:39;Agent A
+C-1299;Préparer la commande;2026-10-26 11:13;2026-10-26 12:06;Entrepôt 1
+C-1299;Expédier;2026-10-26 20:46;2026-10-26 21:21;Entrepôt 1
+C-1299;Facturer;2026-10-26 22:16;2026-10-26 22:27;Agent D
+C-1300;Commande reçue;2026-10-01 15:58;2026-10-01 15:58;Site web
+C-1300;Vérifier le paiement;2026-10-01 18:24;2026-10-01 18:43;Agent B
+C-1300;Vérifier le stock;2026-10-01 19:15;2026-10-01 19:24;Entrepôt 2
+C-1300;Préparer la commande;2026-10-03 10:28;2026-10-03 11:12;Entrepôt 1
+C-1300;Expédier;2026-10-03 14:38;2026-10-03 15:10;Entrepôt 2
+C-1300;Facturer;2026-10-03 15:43;2026-10-03 15:47;Agent B
+C-1301;Commande reçue;2026-10-11 01:42;2026-10-11 01:42;Site web
+C-1301;Vérifier le paiement;2026-10-11 04:25;2026-10-11 04:38;Agent C
+C-1301;Préparer la commande;2026-10-11 08:18;2026-10-11 08:40;Entrepôt 2
+C-1301;Expédier;2026-10-11 16:20;2026-10-11 16:44;Entrepôt 2
+C-1301;Facturer;2026-10-11 20:43;2026-10-11 20:47;Agent A
+C-1302;Commande reçue;2026-10-17 17:28;2026-10-17 17:28;Site web
+C-1302;Vérifier le paiement;2026-10-17 18:57;2026-10-17 19:15;Agent B
+C-1302;Vérifier le stock;2026-10-17 23:56;2026-10-18 00:11;Entrepôt 1
+C-1302;Préparer la commande;2026-10-19 01:33;2026-10-19 02:42;Entrepôt 2
+C-1302;Facturer;2026-10-19 05:59;2026-10-19 06:08;Agent B
+C-1302;Expédier;2026-10-19 09:51;2026-10-19 10:18;Entrepôt 2
+C-1303;Commande reçue;2026-10-30 12:33;2026-10-30 12:33;Site web
+C-1303;Vérifier le paiement;2026-10-30 15:08;2026-10-30 15:15;Agent B
+C-1303;Vérifier le stock;2026-10-30 16:49;2026-10-30 17:11;Entrepôt 2
+C-1303;Préparer la commande;2026-11-01 18:23;2026-11-01 19:09;Entrepôt 1
+C-1303;Facturer;2026-11-01 19:57;2026-11-01 20:01;Agent D
+C-1303;Expédier;2026-11-02 00:46;2026-11-02 01:09;Entrepôt 2
+C-1304;Commande reçue;2026-10-29 10:09;2026-10-29 10:09;Site web
+C-1304;Vérifier le paiement;2026-10-29 11:04;2026-10-29 11:10;Agent A
+C-1304;Vérifier le stock;2026-10-29 14:56;2026-10-29 15:24;Entrepôt 2
+C-1304;Préparer la commande;2026-10-30 07:14;2026-10-30 08:19;Entrepôt 1
+C-1304;Facturer;2026-10-30 10:57;2026-10-30 11:07;Agent C
+C-1304;Expédier;2026-10-30 17:14;2026-10-30 17:50;Entrepôt 2
+C-1305;Commande reçue;2026-10-14 00:39;2026-10-14 00:39;Site web
+C-1305;Vérifier le paiement;2026-10-14 02:22;2026-10-14 02:38;Agent D
+C-1305;Vérifier le stock;2026-10-14 07:17;2026-10-14 07:41;Entrepôt 1
+C-1305;Préparer la commande;2026-10-15 01:43;2026-10-15 02:54;Entrepôt 1
+C-1305;Expédier;2026-10-15 07:09;2026-10-15 07:42;Entrepôt 1
+C-1305;Facturer;2026-10-15 09:59;2026-10-15 10:10;Agent B
+C-1306;Commande reçue;2026-10-18 10:14;2026-10-18 10:14;Site web
+C-1306;Vérifier le paiement;2026-10-18 10:38;2026-10-18 10:53;Agent A
+C-1306;Relancer le client;2026-10-19 07:01;2026-10-19 07:09;Agent B
+C-1306;Annuler la commande;2026-10-20 03:03;2026-10-20 03:13;Agent B
+C-1307;Commande reçue;2026-10-19 22:24;2026-10-19 22:24;Site web
+C-1307;Vérifier le paiement;2026-10-20 00:13;2026-10-20 00:19;Agent D
+C-1307;Relancer le client;2026-10-21 06:21;2026-10-21 06:35;Agent A
+C-1307;Annuler la commande;2026-10-21 21:56;2026-10-21 22:05;Agent D
+C-1308;Commande reçue;2026-10-20 23:50;2026-10-20 23:50;Site web
+C-1308;Vérifier le paiement;2026-10-21 02:44;2026-10-21 03:04;Agent D
+C-1308;Vérifier le stock;2026-10-21 07:02;2026-10-21 07:23;Entrepôt 2
+C-1308;Préparer la commande;2026-10-22 03:13;2026-10-22 03:55;Entrepôt 1
+C-1308;Expédier;2026-10-22 07:30;2026-10-22 07:54;Entrepôt 1
+C-1308;Facturer;2026-10-22 10:37;2026-10-22 10:47;Agent C
+C-1309;Commande reçue;2026-10-16 19:26;2026-10-16 19:26;Site web
+C-1309;Vérifier le paiement;2026-10-16 22:23;2026-10-16 22:40;Agent A
+C-1309;Vérifier le stock;2026-10-17 01:17;2026-10-17 01:42;Entrepôt 2
+C-1309;Préparer la commande;2026-10-17 19:35;2026-10-17 20:03;Entrepôt 1
+C-1309;Expédier;2026-10-17 21:46;2026-10-17 22:02;Entrepôt 1
+C-1309;Facturer;2026-10-17 23:47;2026-10-17 23:57;Agent B
+C-1310;Commande reçue;2026-10-30 17:25;2026-10-30 17:25;Site web
+C-1310;Vérifier le paiement;2026-10-30 19:49;2026-10-30 20:00;Agent C
+C-1310;Vérifier le stock;2026-10-30 21:59;2026-10-30 22:22;Entrepôt 2
+C-1310;Préparer la commande;2026-11-02 11:25;2026-11-02 12:52;Entrepôt 1
+C-1310;Expédier;2026-11-02 14:28;2026-11-02 15:01;Entrepôt 2
+C-1310;Facturer;2026-11-02 16:01;2026-11-02 16:05;Agent A
+C-1311;Commande reçue;2026-10-29 19:15;2026-10-29 19:15;Site web
+C-1311;Vérifier le paiement;2026-10-29 21:33;2026-10-29 21:57;Agent A
+C-1311;Vérifier le stock;2026-10-30 01:21;2026-10-30 01:30;Entrepôt 2
+C-1311;Préparer la commande;2026-10-30 08:37;2026-10-30 09:37;Entrepôt 1
+C-1311;Expédier;2026-10-30 16:17;2026-10-30 16:30;Entrepôt 2
+C-1311;Facturer;2026-10-30 20:06;2026-10-30 20:11;Agent A
+C-1312;Commande reçue;2026-10-03 03:43;2026-10-03 03:43;Site web
+C-1312;Vérifier le paiement;2026-10-03 05:48;2026-10-03 05:58;Agent A
+C-1312;Vérifier le stock;2026-10-03 10:12;2026-10-03 10:31;Entrepôt 2
+C-1313;Commande reçue;2026-10-29 01:11;2026-10-29 01:11;Site web
+C-1313;Vérifier le paiement;2026-10-29 03:18;2026-10-29 03:29;Agent B
+C-1313;Vérifier le stock;2026-10-29 06:04;2026-10-29 06:27;Entrepôt 2
+C-1313;Préparer la commande;2026-10-29 08:48;2026-10-29 09:17;Entrepôt 2
+C-1313;Expédier;2026-10-29 16:48;2026-10-29 17:09;Entrepôt 1
+C-1313;Facturer;2026-10-29 18:24;2026-10-29 18:29;Agent C
+C-1314;Commande reçue;2026-10-24 17:53;2026-10-24 17:53;Site web
+C-1314;Vérifier le paiement;2026-10-24 18:56;2026-10-24 19:02;Agent C
+C-1314;Vérifier le stock;2026-10-24 20:56;2026-10-24 21:25;Entrepôt 2
+C-1314;Préparer la commande;2026-10-27 15:27;2026-10-27 16:27;Entrepôt 1
+C-1314;Expédier;2026-10-27 17:52;2026-10-27 18:21;Entrepôt 1
+C-1314;Facturer;2026-10-27 21:57;2026-10-27 22:08;Agent B
+C-1315;Commande reçue;2026-10-27 17:04;2026-10-27 17:04;Site web
+C-1315;Vérifier le paiement;2026-10-27 19:43;2026-10-27 20:06;Agent C
+C-1315;Vérifier le stock;2026-10-28 01:27;2026-10-28 01:44;Entrepôt 2
+C-1315;Préparer la commande;2026-10-31 13:43;2026-10-31 14:08;Entrepôt 1
+C-1315;Expédier;2026-10-31 16:37;2026-10-31 17:00;Entrepôt 1
+C-1315;Facturer;2026-10-31 20:48;2026-10-31 20:51;Agent C
+C-1316;Commande reçue;2026-10-15 22:20;2026-10-15 22:20;Site web
+C-1316;Vérifier le paiement;2026-10-16 00:42;2026-10-16 00:58;Agent A
+C-1316;Vérifier le stock;2026-10-16 06:09;2026-10-16 06:23;Entrepôt 1
+C-1316;Commander au fournisseur;2026-10-16 13:39;2026-10-16 14:24;Agent D
+C-1316;Préparer la commande;2026-10-17 11:39;2026-10-17 12:13;Entrepôt 1
+C-1316;Expédier;2026-10-17 19:07;2026-10-17 19:28;Entrepôt 1
+C-1316;Facturer;2026-10-17 22:40;2026-10-17 22:49;Agent D
+C-1317;Commande reçue;2026-10-30 21:11;2026-10-30 21:11;Site web
+C-1317;Vérifier le paiement;2026-10-30 21:34;2026-10-30 21:58;Agent A
+C-1317;Vérifier le stock;2026-10-31 03:57;2026-10-31 04:23;Entrepôt 1
+C-1317;Commander au fournisseur;2026-10-31 10:12;2026-10-31 10:33;Agent A
+C-1317;Préparer la commande;2026-11-01 13:16;2026-11-01 14:23;Entrepôt 1
+C-1317;Expédier;2026-11-01 23:41;2026-11-02 00:14;Entrepôt 2
+C-1317;Facturer;2026-11-02 02:05;2026-11-02 02:13;Agent B
+C-1318;Commande reçue;2026-10-02 01:36;2026-10-02 01:36;Site web
+C-1318;Vérifier le paiement;2026-10-02 03:48;2026-10-02 04:04;Agent C
+C-1318;Vérifier le stock;2026-10-02 09:30;2026-10-02 09:52;Entrepôt 1
+C-1318;Préparer la commande;2026-10-02 12:23;2026-10-02 13:31;Entrepôt 2
+C-1318;Expédier;2026-10-02 16:41;2026-10-02 17:04;Entrepôt 1
+C-1318;Facturer;2026-10-02 20:59;2026-10-02 21:11;Agent A
+C-1319;Commande reçue;2026-10-16 20:30;2026-10-16 20:30;Site web
+C-1319;Vérifier le paiement;2026-10-16 21:20;2026-10-16 21:31;Agent D
+C-1319;Vérifier le stock;2026-10-17 00:51;2026-10-17 01:13;Entrepôt 2
+C-1319;Préparer la commande;2026-10-17 20:00;2026-10-17 21:13;Entrepôt 1
+C-1319;Expédier;2026-10-18 02:24;2026-10-18 02:50;Entrepôt 2
+C-1319;Facturer;2026-10-18 05:58;2026-10-18 06:05;Agent B
+C-1320;Commande reçue;2026-10-28 12:10;2026-10-28 12:10;Site web
+C-1320;Vérifier le paiement;2026-10-28 13:19;2026-10-28 13:27;Agent A
+C-1320;Vérifier le stock;2026-10-28 14:14;2026-10-28 14:38;Entrepôt 1
+C-1320;Commander au fournisseur;2026-10-28 20:50;2026-10-28 21:25;Agent C
+C-1320;Préparer la commande;2026-10-31 16:18;2026-10-31 16:42;Entrepôt 2
+C-1320;Expédier;2026-10-31 20:06;2026-10-31 20:41;Entrepôt 1
+C-1320;Facturer;2026-10-31 22:28;2026-10-31 22:35;Agent B
+C-1321;Commande reçue;2026-10-10 03:41;2026-10-10 03:41;Site web
+C-1321;Vérifier le paiement;2026-10-10 04:56;2026-10-10 05:07;Agent A
+C-1321;Vérifier le stock;2026-10-10 09:58;2026-10-10 10:10;Entrepôt 1
+C-1322;Commande reçue;2026-10-11 00:35;2026-10-11 00:35;Site web
+C-1322;Vérifier le paiement;2026-10-11 02:22;2026-10-11 02:33;Agent A
+C-1322;Vérifier le stock;2026-10-11 07:18;2026-10-11 07:26;Entrepôt 2
+C-1322;Préparer la commande;2026-10-11 15:40;2026-10-11 16:44;Entrepôt 2
+C-1322;Expédier;2026-10-11 17:46;2026-10-11 18:11;Entrepôt 2
+C-1322;Facturer;2026-10-11 20:03;2026-10-11 20:11;Agent B
+C-1323;Commande reçue;2026-10-03 09:17;2026-10-03 09:17;Site web
+C-1323;Vérifier le paiement;2026-10-03 10:14;2026-10-03 10:35;Agent D
+C-1323;Vérifier le stock;2026-10-03 15:43;2026-10-03 15:59;Entrepôt 1
+C-1323;Préparer la commande;2026-10-03 20:43;2026-10-03 21:35;Entrepôt 1
+C-1323;Expédier;2026-10-04 06:47;2026-10-04 07:08;Entrepôt 1
+C-1323;Facturer;2026-10-04 09:58;2026-10-04 10:01;Agent B
+C-1324;Commande reçue;2026-10-29 03:47;2026-10-29 03:47;Site web
+C-1324;Vérifier le paiement;2026-10-29 05:40;2026-10-29 06:03;Agent B
+C-1324;Vérifier le stock;2026-10-29 06:40;2026-10-29 07:04;Entrepôt 1
+C-1324;Préparer la commande;2026-11-02 00:34;2026-11-02 01:12;Entrepôt 1
+C-1324;Expédier;2026-11-02 02:44;2026-11-02 02:57;Entrepôt 2
+C-1324;Facturer;2026-11-02 04:11;2026-11-02 04:18;Agent D
+C-1325;Commande reçue;2026-10-08 10:21;2026-10-08 10:21;Site web
+C-1325;Vérifier le paiement;2026-10-08 12:58;2026-10-08 13:16;Agent C
+C-1325;Vérifier le stock;2026-10-08 14:42;2026-10-08 14:53;Entrepôt 2
+C-1325;Préparer la commande;2026-10-12 17:51;2026-10-12 18:34;Entrepôt 2
+C-1325;Expédier;2026-10-12 20:40;2026-10-12 21:11;Entrepôt 1
+C-1325;Facturer;2026-10-12 23:06;2026-10-12 23:13;Agent A
+C-1326;Commande reçue;2026-10-26 13:56;2026-10-26 13:56;Site web
+C-1326;Vérifier le paiement;2026-10-26 16:19;2026-10-26 16:39;Agent D
+C-1326;Vérifier le stock;2026-10-26 18:26;2026-10-26 18:42;Entrepôt 1
+C-1326;Commander au fournisseur;2026-10-27 01:15;2026-10-27 02:05;Agent B
+C-1326;Préparer la commande;2026-10-28 00:42;2026-10-28 01:47;Entrepôt 2
+C-1326;Expédier;2026-10-28 03:27;2026-10-28 03:46;Entrepôt 2
+C-1326;Facturer;2026-10-28 07:46;2026-10-28 07:56;Agent C
+C-1327;Commande reçue;2026-10-06 10:20;2026-10-06 10:20;Site web
+C-1327;Vérifier le paiement;2026-10-06 11:02;2026-10-06 11:18;Agent D
+C-1327;Vérifier le stock;2026-10-06 14:16;2026-10-06 14:23;Entrepôt 2
+C-1327;Commander au fournisseur;2026-10-06 16:06;2026-10-06 16:26;Agent B
+C-1327;Préparer la commande;2026-10-08 19:00;2026-10-08 20:14;Entrepôt 1
+C-1327;Expédier;2026-10-09 00:04;2026-10-09 00:29;Entrepôt 2
+C-1327;Facturer;2026-10-09 04:14;2026-10-09 04:18;Agent C
+C-1328;Commande reçue;2026-10-01 10:26;2026-10-01 10:26;Site web
+C-1328;Vérifier le paiement;2026-10-01 11:53;2026-10-01 12:00;Agent C
+C-1328;Vérifier le stock;2026-10-01 16:44;2026-10-01 16:53;Entrepôt 2
+C-1328;Préparer la commande;2026-10-02 13:23;2026-10-02 14:44;Entrepôt 2
+C-1328;Expédier;2026-10-02 21:22;2026-10-02 21:45;Entrepôt 1
+C-1328;Facturer;2026-10-03 00:44;2026-10-03 00:50;Agent D
+C-1329;Commande reçue;2026-10-31 00:14;2026-10-31 00:14;Site web
+C-1329;Vérifier le paiement;2026-10-31 00:29;2026-10-31 00:39;Agent C
+C-1329;Vérifier le stock;2026-10-31 05:04;2026-10-31 05:25;Entrepôt 2
+C-1329;Préparer la commande;2026-11-01 09:14;2026-11-01 09:57;Entrepôt 2
+C-1329;Expédier;2026-11-01 16:15;2026-11-01 16:35;Entrepôt 2
+C-1329;Facturer;2026-11-01 18:52;2026-11-01 18:58;Agent A
+C-1330;Commande reçue;2026-10-04 12:45;2026-10-04 12:45;Site web
+C-1330;Vérifier le paiement;2026-10-04 13:44;2026-10-04 13:49;Agent A
+C-1330;Vérifier le stock;2026-10-04 16:30;2026-10-04 16:43;Entrepôt 2
+C-1330;Préparer la commande;2026-10-07 08:32;2026-10-07 08:56;Entrepôt 2
+C-1330;Expédier;2026-10-07 12:50;2026-10-07 13:22;Entrepôt 1
+C-1330;Facturer;2026-10-07 16:07;2026-10-07 16:14;Agent C
+C-1331;Commande reçue;2026-10-12 04:04;2026-10-12 04:04;Site web
+C-1331;Vérifier le paiement;2026-10-12 06:20;2026-10-12 06:39;Agent B
+C-1331;Relancer le client;2026-10-14 05:25;2026-10-14 05:39;Agent C
+C-1331;Annuler la commande;2026-10-15 04:13;2026-10-15 04:24;Agent B
+C-1332;Commande reçue;2026-10-09 22:20;2026-10-09 22:20;Site web
+C-1332;Vérifier le paiement;2026-10-09 22:43;2026-10-09 23:04;Agent D
+C-1332;Vérifier le stock;2026-10-10 02:01;2026-10-10 02:24;Entrepôt 1
+C-1332;Préparer la commande;2026-10-10 10:41;2026-10-10 12:03;Entrepôt 2
+C-1332;Expédier;2026-10-10 18:51;2026-10-10 19:12;Entrepôt 2
+C-1332;Facturer;2026-10-10 21:05;2026-10-10 21:10;Agent B
+C-1333;Commande reçue;2026-10-29 12:34;2026-10-29 12:34;Site web
+C-1333;Vérifier le paiement;2026-10-29 14:08;2026-10-29 14:22;Agent A
+C-1333;Vérifier le stock;2026-10-29 20:20;2026-10-29 20:34;Entrepôt 1
+C-1333;Commander au fournisseur;2026-10-29 23:56;2026-10-30 00:14;Agent B
+C-1333;Préparer la commande;2026-11-01 22:11;2026-11-01 23:11;Entrepôt 2
+C-1333;Expédier;2026-11-02 06:56;2026-11-02 07:20;Entrepôt 2
+C-1333;Facturer;2026-11-02 08:57;2026-11-02 09:01;Agent B
+C-1334;Commande reçue;2026-10-26 21:26;2026-10-26 21:26;Site web
+C-1334;Vérifier le paiement;2026-10-26 23:03;2026-10-26 23:15;Agent C
+C-1334;Vérifier le stock;2026-10-27 00:17;2026-10-27 00:45;Entrepôt 1
+C-1334;Préparer la commande;2026-10-30 00:27;2026-10-30 01:00;Entrepôt 2
+C-1334;Expédier;2026-10-30 07:24;2026-10-30 07:48;Entrepôt 2
+C-1334;Facturer;2026-10-30 10:34;2026-10-30 10:44;Agent B
+C-1335;Commande reçue;2026-10-28 15:47;2026-10-28 15:47;Site web
+C-1335;Vérifier le paiement;2026-10-28 18:28;2026-10-28 18:36;Agent A
+C-1335;Vérifier le stock;2026-10-29 00:09;2026-10-29 00:32;Entrepôt 1
+C-1335;Préparer la commande;2026-10-29 03:34;2026-10-29 03:54;Entrepôt 1
+C-1335;Expédier;2026-10-29 09:58;2026-10-29 10:27;Entrepôt 1
+C-1335;Facturer;2026-10-29 14:15;2026-10-29 14:24;Agent C
+C-1336;Commande reçue;2026-10-16 07:55;2026-10-16 07:55;Site web
+C-1336;Vérifier le paiement;2026-10-16 10:53;2026-10-16 11:01;Agent B
+C-1336;Vérifier le stock;2026-10-16 12:26;2026-10-16 12:47;Entrepôt 1
+C-1336;Préparer la commande;2026-10-17 04:31;2026-10-17 05:05;Entrepôt 2
+C-1336;Expédier;2026-10-17 13:35;2026-10-17 14:10;Entrepôt 2
+C-1336;Facturer;2026-10-17 17:05;2026-10-17 17:15;Agent B
+C-1337;Commande reçue;2026-10-29 17:59;2026-10-29 17:59;Site web
+C-1337;Vérifier le paiement;2026-10-29 18:24;2026-10-29 18:40;Agent D
+C-1337;Vérifier le stock;2026-10-29 22:29;2026-10-29 22:50;Entrepôt 1
+C-1337;Préparer la commande;2026-11-01 11:18;2026-11-01 12:43;Entrepôt 2
+C-1337;Expédier;2026-11-01 20:24;2026-11-01 20:36;Entrepôt 2
+C-1337;Facturer;2026-11-01 21:57;2026-11-01 22:07;Agent A
+C-1338;Commande reçue;2026-10-14 13:19;2026-10-14 13:19;Site web
+C-1338;Vérifier le paiement;2026-10-14 14:06;2026-10-14 14:19;Agent C
+C-1338;Vérifier le stock;2026-10-14 17:09;2026-10-14 17:24;Entrepôt 1
+C-1338;Préparer la commande;2026-10-14 23:44;2026-10-15 00:18;Entrepôt 2
+C-1338;Expédier;2026-10-15 10:10;2026-10-15 10:29;Entrepôt 2
+C-1338;Facturer;2026-10-15 13:03;2026-10-15 13:08;Agent A
+C-1339;Commande reçue;2026-10-26 23:09;2026-10-26 23:09;Site web
+C-1339;Vérifier le paiement;2026-10-26 23:45;2026-10-27 00:07;Agent B
+C-1339;Vérifier le stock;2026-10-27 04:17;2026-10-27 04:37;Entrepôt 2
+C-1339;Commander au fournisseur;2026-10-27 06:17;2026-10-27 06:48;Agent A
+C-1339;Préparer la commande;2026-10-27 11:58;2026-10-27 12:18;Entrepôt 1
+C-1339;Expédier;2026-10-27 21:59;2026-10-27 22:25;Entrepôt 1
+C-1339;Facturer;2026-10-28 00:54;2026-10-28 01:01;Agent B
+C-1340;Commande reçue;2026-10-26 21:12;2026-10-26 21:12;Site web
+C-1340;Vérifier le paiement;2026-10-26 23:00;2026-10-26 23:04;Agent D
+C-1340;Vérifier le stock;2026-10-27 00:44;2026-10-27 00:56;Entrepôt 1
+C-1340;Préparer la commande;2026-10-28 05:16;2026-10-28 05:44;Entrepôt 2
+C-1340;Expédier;2026-10-28 08:10;2026-10-28 08:38;Entrepôt 1
+C-1340;Facturer;2026-10-28 09:57;2026-10-28 10:01;Agent A
+C-1341;Commande reçue;2026-10-14 11:26;2026-10-14 11:26;Site web
+C-1341;Vérifier le paiement;2026-10-14 13:18;2026-10-14 13:40;Agent A
+C-1341;Vérifier le stock;2026-10-14 17:10;2026-10-14 17:39;Entrepôt 2
+C-1341;Préparer la commande;2026-10-16 15:32;2026-10-16 16:09;Entrepôt 1
+C-1341;Expédier;2026-10-16 17:42;2026-10-16 18:16;Entrepôt 1
+C-1341;Facturer;2026-10-16 22:01;2026-10-16 22:12;Agent D
+C-1342;Commande reçue;2026-10-04 08:18;2026-10-04 08:18;Site web
+C-1342;Vérifier le paiement;2026-10-04 09:24;2026-10-04 09:37;Agent A
+C-1342;Vérifier le stock;2026-10-04 13:49;2026-10-04 14:12;Entrepôt 2
+C-1342;Préparer la commande;2026-10-05 09:55;2026-10-05 11:13;Entrepôt 2
+C-1342;Expédier;2026-10-05 14:04;2026-10-05 14:18;Entrepôt 1
+C-1342;Facturer;2026-10-05 15:43;2026-10-05 15:54;Agent A
+C-1343;Commande reçue;2026-10-09 21:15;2026-10-09 21:15;Site web
+C-1343;Vérifier le paiement;2026-10-09 23:00;2026-10-09 23:19;Agent A
+C-1343;Vérifier le stock;2026-10-10 04:21;2026-10-10 04:42;Entrepôt 1
+C-1343;Préparer la commande;2026-10-12 10:35;2026-10-12 11:38;Entrepôt 1
+C-1343;Expédier;2026-10-12 18:48;2026-10-12 19:14;Entrepôt 1
+C-1343;Facturer;2026-10-12 20:19;2026-10-12 20:29;Agent C
+C-1344;Commande reçue;2026-10-20 20:29;2026-10-20 20:29;Site web
+C-1344;Vérifier le paiement;2026-10-20 21:16;2026-10-20 21:33;Agent B
+C-1344;Vérifier le stock;2026-10-20 23:46;2026-10-21 00:02;Entrepôt 2
+C-1344;Préparer la commande;2026-10-23 02:27;2026-10-23 03:04;Entrepôt 1
+C-1344;Expédier;2026-10-23 12:01;2026-10-23 12:37;Entrepôt 1
+C-1344;Facturer;2026-10-23 14:04;2026-10-23 14:10;Agent A
+C-1345;Commande reçue;2026-10-24 11:58;2026-10-24 11:58;Site web
+C-1345;Vérifier le paiement;2026-10-24 12:26;2026-10-24 12:32;Agent C
+C-1345;Vérifier le stock;2026-10-24 13:50;2026-10-24 14:10;Entrepôt 2
+C-1345;Préparer la commande;2026-10-24 18:11;2026-10-24 18:30;Entrepôt 2
+C-1345;Expédier;2026-10-24 22:14;2026-10-24 22:42;Entrepôt 1
+C-1345;Facturer;2026-10-25 01:04;2026-10-25 01:10;Agent A
+C-1346;Commande reçue;2026-10-28 15:33;2026-10-28 15:33;Site web
+C-1346;Vérifier le paiement;2026-10-28 16:28;2026-10-28 16:48;Agent D
+C-1346;Vérifier le stock;2026-10-28 22:31;2026-10-28 22:58;Entrepôt 1
+C-1346;Préparer la commande;2026-10-29 04:15;2026-10-29 05:37;Entrepôt 1
+C-1346;Expédier;2026-10-29 12:05;2026-10-29 12:24;Entrepôt 1
+C-1346;Facturer;2026-10-29 12:56;2026-10-29 13:08;Agent D
+C-1347;Commande reçue;2026-10-03 13:35;2026-10-03 13:35;Site web
+C-1347;Vérifier le paiement;2026-10-03 14:28;2026-10-03 14:41;Agent A
+C-1347;Vérifier le stock;2026-10-03 16:57;2026-10-03 17:07;Entrepôt 2
+C-1347;Commander au fournisseur;2026-10-03 21:34;2026-10-03 22:07;Agent D
+C-1347;Préparer la commande;2026-10-06 04:02;2026-10-06 04:28;Entrepôt 1
+C-1347;Expédier;2026-10-06 06:10;2026-10-06 06:40;Entrepôt 2
+C-1347;Facturer;2026-10-06 10:21;2026-10-06 10:25;Agent B
+C-1348;Commande reçue;2026-10-26 06:38;2026-10-26 06:38;Site web
+C-1348;Vérifier le paiement;2026-10-26 08:32;2026-10-26 08:48;Agent D
+C-1348;Vérifier le stock;2026-10-26 12:48;2026-10-26 13:10;Entrepôt 2
+C-1348;Préparer la commande;2026-10-27 14:17;2026-10-27 14:49;Entrepôt 2
+C-1348;Expédier;2026-10-27 21:56;2026-10-27 22:12;Entrepôt 1
+C-1348;Facturer;2026-10-28 01:03;2026-10-28 01:11;Agent D
+C-1349;Commande reçue;2026-10-12 17:07;2026-10-12 17:07;Site web
+C-1349;Vérifier le paiement;2026-10-12 17:28;2026-10-12 17:43;Agent D
+C-1349;Vérifier le stock;2026-10-12 18:22;2026-10-12 18:36;Entrepôt 1
+C-1349;Préparer la commande;2026-10-13 06:28;2026-10-13 07:31;Entrepôt 1
+C-1349;Expédier;2026-10-13 08:34;2026-10-13 09:06;Entrepôt 1
+C-1349;Facturer;2026-10-13 12:40;2026-10-13 12:46;Agent A
+C-1350;Commande reçue;2026-10-18 09:22;2026-10-18 09:22;Site web
+C-1350;Vérifier le paiement;2026-10-18 09:48;2026-10-18 10:03;Agent A
+C-1350;Vérifier le stock;2026-10-18 11:18;2026-10-18 11:43;Entrepôt 1
+C-1350;Préparer la commande;2026-10-19 23:46;2026-10-20 00:13;Entrepôt 2
+C-1350;Expédier;2026-10-20 04:07;2026-10-20 04:32;Entrepôt 1
+C-1350;Facturer;2026-10-20 05:44;2026-10-20 05:47;Agent A
+C-1351;Commande reçue;2026-10-30 13:48;2026-10-30 13:48;Site web
+C-1351;Vérifier le paiement;2026-10-30 16:30;2026-10-30 16:37;Agent B
+C-1351;Vérifier le stock;2026-10-30 20:46;2026-10-30 21:01;Entrepôt 2
+C-1351;Préparer la commande;2026-10-31 15:48;2026-10-31 17:14;Entrepôt 2
+C-1351;Expédier;2026-10-31 21:01;2026-10-31 21:28;Entrepôt 1
+C-1351;Facturer;2026-11-01 00:50;2026-11-01 00:54;Agent D
+C-1352;Commande reçue;2026-10-30 23:49;2026-10-30 23:49;Site web
+C-1352;Vérifier le paiement;2026-10-31 02:06;2026-10-31 02:23;Agent B
+C-1352;Vérifier le stock;2026-10-31 05:05;2026-10-31 05:29;Entrepôt 1
+C-1352;Préparer la commande;2026-10-31 17:57;2026-10-31 19:07;Entrepôt 1
+C-1352;Facturer;2026-10-31 20:13;2026-10-31 20:19;Agent C
+C-1352;Expédier;2026-10-31 21:29;2026-10-31 21:49;Entrepôt 1
+C-1353;Commande reçue;2026-10-17 23:37;2026-10-17 23:37;Site web
+C-1353;Vérifier le paiement;2026-10-18 02:21;2026-10-18 02:39;Agent D
+C-1353;Vérifier le stock;2026-10-18 03:13;2026-10-18 03:28;Entrepôt 2
+C-1353;Préparer la commande;2026-10-18 06:31;2026-10-18 07:29;Entrepôt 2
+C-1353;Expédier;2026-10-18 16:35;2026-10-18 16:59;Entrepôt 2
+C-1353;Facturer;2026-10-18 20:04;2026-10-18 20:08;Agent A
+C-1354;Commande reçue;2026-10-04 14:04;2026-10-04 14:04;Site web
+C-1354;Vérifier le paiement;2026-10-04 16:14;2026-10-04 16:18;Agent C
+C-1354;Vérifier le stock;2026-10-04 17:07;2026-10-04 17:18;Entrepôt 2
+C-1354;Préparer la commande;2026-10-04 22:52;2026-10-04 23:14;Entrepôt 2
+C-1354;Facturer;2026-10-05 02:55;2026-10-05 03:01;Agent B
+C-1354;Expédier;2026-10-05 04:24;2026-10-05 04:38;Entrepôt 1
+C-1355;Commande reçue;2026-10-12 01:17;2026-10-12 01:17;Site web
+C-1355;Vérifier le paiement;2026-10-12 03:15;2026-10-12 03:35;Agent A
+C-1355;Vérifier le stock;2026-10-12 05:46;2026-10-12 06:06;Entrepôt 1
+C-1355;Préparer la commande;2026-10-12 08:20;2026-10-12 08:56;Entrepôt 1
+C-1355;Expédier;2026-10-12 12:44;2026-10-12 13:17;Entrepôt 2
+C-1355;Facturer;2026-10-12 14:08;2026-10-12 14:18;Agent C
+C-1356;Commande reçue;2026-10-07 19:07;2026-10-07 19:07;Site web
+C-1356;Vérifier le paiement;2026-10-07 19:34;2026-10-07 19:43;Agent D
+C-1356;Vérifier le stock;2026-10-08 00:32;2026-10-08 00:57;Entrepôt 2
+C-1356;Préparer la commande;2026-10-08 17:51;2026-10-08 19:00;Entrepôt 1
+C-1356;Expédier;2026-10-09 00:43;2026-10-09 00:56;Entrepôt 2
+C-1356;Facturer;2026-10-09 04:02;2026-10-09 04:10;Agent D
+C-1357;Commande reçue;2026-10-25 17:03;2026-10-25 17:03;Site web
+C-1357;Vérifier le paiement;2026-10-25 17:32;2026-10-25 17:45;Agent A
+C-1357;Vérifier le stock;2026-10-25 19:54;2026-10-25 20:22;Entrepôt 1
+C-1357;Préparer la commande;2026-10-26 09:56;2026-10-26 10:19;Entrepôt 1
+C-1357;Expédier;2026-10-26 17:47;2026-10-26 18:19;Entrepôt 1
+C-1357;Facturer;2026-10-26 21:39;2026-10-26 21:45;Agent B
+C-1358;Commande reçue;2026-10-19 01:16;2026-10-19 01:16;Site web
+C-1358;Vérifier le paiement;2026-10-19 04:12;2026-10-19 04:28;Agent B
+C-1358;Vérifier le stock;2026-10-19 08:34;2026-10-19 08:45;Entrepôt 1
+C-1358;Commander au fournisseur;2026-10-19 10:56;2026-10-19 11:56;Agent C
+C-1358;Préparer la commande;2026-10-20 08:59;2026-10-20 10:19;Entrepôt 2
+C-1358;Expédier;2026-10-20 16:19;2026-10-20 16:44;Entrepôt 2
+C-1358;Facturer;2026-10-20 18:26;2026-10-20 18:31;Agent A
+C-1359;Commande reçue;2026-10-04 07:51;2026-10-04 07:51;Site web
+C-1359;Vérifier le paiement;2026-10-04 10:07;2026-10-04 10:14;Agent D
+C-1359;Vérifier le stock;2026-10-04 14:55;2026-10-04 15:02;Entrepôt 2
+C-1359;Commander au fournisseur;2026-10-04 18:01;2026-10-04 18:32;Agent D
+C-1359;Préparer la commande;2026-10-05 18:27;2026-10-05 19:05;Entrepôt 2
+C-1359;Expédier;2026-10-06 04:40;2026-10-06 04:58;Entrepôt 1
+C-1359;Facturer;2026-10-06 07:11;2026-10-06 07:15;Agent B
+C-1360;Commande reçue;2026-10-13 04:25;2026-10-13 04:25;Site web
+C-1360;Vérifier le paiement;2026-10-13 06:43;2026-10-13 06:58;Agent C
+C-1360;Vérifier le stock;2026-10-13 12:21;2026-10-13 12:45;Entrepôt 2
+C-1361;Commande reçue;2026-10-05 17:01;2026-10-05 17:01;Site web
+C-1361;Vérifier le paiement;2026-10-05 18:29;2026-10-05 18:41;Agent A
+C-1361;Vérifier le stock;2026-10-05 23:28;2026-10-05 23:34;Entrepôt 1
+C-1361;Préparer la commande;2026-10-06 01:39;2026-10-06 02:47;Entrepôt 1
+C-1361;Expédier;2026-10-06 06:56;2026-10-06 07:08;Entrepôt 2
+C-1361;Facturer;2026-10-06 07:58;2026-10-06 08:05;Agent D
+C-1362;Commande reçue;2026-10-14 00:16;2026-10-14 00:16;Site web
+C-1362;Vérifier le paiement;2026-10-14 00:52;2026-10-14 01:09;Agent B
+C-1362;Vérifier le stock;2026-10-14 01:52;2026-10-14 02:00;Entrepôt 2
+C-1362;Préparer la commande;2026-10-15 00:33;2026-10-15 02:01;Entrepôt 2
+C-1362;Expédier;2026-10-15 07:01;2026-10-15 07:28;Entrepôt 1
+C-1362;Facturer;2026-10-15 10:57;2026-10-15 11:04;Agent B
+C-1363;Commande reçue;2026-10-25 20:42;2026-10-25 20:42;Site web
+C-1363;Vérifier le paiement;2026-10-25 21:30;2026-10-25 21:50;Agent A
+C-1363;Vérifier le stock;2026-10-26 00:16;2026-10-26 00:36;Entrepôt 1
+C-1363;Préparer la commande;2026-10-27 01:08;2026-10-27 02:06;Entrepôt 2
+C-1363;Expédier;2026-10-27 09:46;2026-10-27 10:13;Entrepôt 1
+C-1363;Facturer;2026-10-27 14:07;2026-10-27 14:15;Agent D
+C-1364;Commande reçue;2026-10-03 07:04;2026-10-03 07:04;Site web
+C-1364;Vérifier le paiement;2026-10-03 07:24;2026-10-03 07:42;Agent B
+C-1364;Vérifier le stock;2026-10-03 12:41;2026-10-03 13:03;Entrepôt 2
+C-1364;Commander au fournisseur;2026-10-03 15:29;2026-10-03 16:00;Agent A
+C-1364;Préparer la commande;2026-10-04 08:01;2026-10-04 09:18;Entrepôt 2
+C-1364;Expédier;2026-10-04 16:29;2026-10-04 16:43;Entrepôt 2
+C-1364;Facturer;2026-10-04 17:44;2026-10-04 17:48;Agent A
+C-1365;Commande reçue;2026-10-05 08:19;2026-10-05 08:19;Site web
+C-1365;Vérifier le paiement;2026-10-05 11:07;2026-10-05 11:15;Agent A
+C-1365;Vérifier le stock;2026-10-05 15:31;2026-10-05 15:52;Entrepôt 1
+C-1365;Préparer la commande;2026-10-06 11:14;2026-10-06 12:16;Entrepôt 1
+C-1365;Expédier;2026-10-06 17:35;2026-10-06 17:53;Entrepôt 2
+C-1365;Facturer;2026-10-06 20:46;2026-10-06 20:54;Agent D
+C-1366;Commande reçue;2026-10-02 03:33;2026-10-02 03:33;Site web
+C-1366;Vérifier le paiement;2026-10-02 05:15;2026-10-02 05:24;Agent D
+C-1366;Vérifier le stock;2026-10-02 11:01;2026-10-02 11:27;Entrepôt 2
+C-1366;Préparer la commande;2026-10-02 13:37;2026-10-02 14:16;Entrepôt 1
+C-1366;Expédier;2026-10-02 23:24;2026-10-03 00:00;Entrepôt 2
+C-1366;Facturer;2026-10-03 00:58;2026-10-03 01:07;Agent A
+C-1367;Commande reçue;2026-10-30 09:15;2026-10-30 09:15;Site web
+C-1367;Vérifier le paiement;2026-10-30 10:53;2026-10-30 11:06;Agent C
+C-1367;Vérifier le stock;2026-10-30 13:58;2026-10-30 14:15;Entrepôt 2
+C-1367;Préparer la commande;2026-10-31 01:27;2026-10-31 02:04;Entrepôt 2
+C-1367;Expédier;2026-10-31 08:25;2026-10-31 08:57;Entrepôt 2
+C-1367;Facturer;2026-10-31 11:05;2026-10-31 11:12;Agent D
+C-1368;Commande reçue;2026-10-17 04:14;2026-10-17 04:14;Site web
+C-1368;Vérifier le paiement;2026-10-17 04:49;2026-10-17 05:06;Agent D
+C-1368;Vérifier le stock;2026-10-17 07:35;2026-10-17 07:55;Entrepôt 2
+C-1368;Préparer la commande;2026-10-20 22:40;2026-10-20 22:59;Entrepôt 2
+C-1368;Expédier;2026-10-21 03:36;2026-10-21 04:09;Entrepôt 1
+C-1368;Facturer;2026-10-21 06:54;2026-10-21 07:00;Agent B
+C-1369;Commande reçue;2026-10-22 23:15;2026-10-22 23:15;Site web
+C-1369;Vérifier le paiement;2026-10-23 02:08;2026-10-23 02:25;Agent D
+C-1369;Vérifier le stock;2026-10-23 07:42;2026-10-23 07:58;Entrepôt 2
+C-1369;Commander au fournisseur;2026-10-23 14:08;2026-10-23 14:28;Agent D
+C-1369;Préparer la commande;2026-10-24 09:04;2026-10-24 10:19;Entrepôt 1
+C-1369;Expédier;2026-10-24 15:28;2026-10-24 15:47;Entrepôt 1
+C-1369;Facturer;2026-10-24 16:55;2026-10-24 17:06;Agent B
+C-1370;Commande reçue;2026-10-30 00:26;2026-10-30 00:26;Site web
+C-1370;Vérifier le paiement;2026-10-30 03:10;2026-10-30 03:27;Agent D
+C-1370;Vérifier le stock;2026-10-30 04:22;2026-10-30 04:48;Entrepôt 1
+C-1370;Préparer la commande;2026-11-01 11:34;2026-11-01 11:53;Entrepôt 1
+C-1370;Expédier;2026-11-01 17:13;2026-11-01 17:38;Entrepôt 1
+C-1370;Facturer;2026-11-01 19:53;2026-11-01 20:03;Agent D
+C-1371;Commande reçue;2026-10-18 04:41;2026-10-18 04:41;Site web
+C-1371;Vérifier le paiement;2026-10-18 07:12;2026-10-18 07:22;Agent C
+C-1371;Préparer la commande;2026-10-19 03:32;2026-10-19 04:19;Entrepôt 2
+C-1371;Expédier;2026-10-19 10:11;2026-10-19 10:35;Entrepôt 1
+C-1371;Facturer;2026-10-19 11:47;2026-10-19 11:54;Agent C
+C-1372;Commande reçue;2026-10-18 02:40;2026-10-18 02:40;Site web
+C-1372;Vérifier le paiement;2026-10-18 04:14;2026-10-18 04:31;Agent D
+C-1372;Vérifier le stock;2026-10-18 05:10;2026-10-18 05:24;Entrepôt 1
+C-1372;Préparer la commande;2026-10-19 01:42;2026-10-19 03:01;Entrepôt 1
+C-1372;Expédier;2026-10-19 07:55;2026-10-19 08:29;Entrepôt 2
+C-1372;Facturer;2026-10-19 11:48;2026-10-19 11:59;Agent B
+C-1373;Commande reçue;2026-10-10 19:40;2026-10-10 19:40;Site web
+C-1373;Vérifier le paiement;2026-10-10 21:31;2026-10-10 21:51;Agent B
+C-1373;Vérifier le stock;2026-10-11 00:50;2026-10-11 01:15;Entrepôt 2
+C-1373;Préparer la commande;2026-10-12 06:52;2026-10-12 07:12;Entrepôt 1
+C-1373;Expédier;2026-10-12 15:50;2026-10-12 16:25;Entrepôt 2
+C-1373;Facturer;2026-10-12 17:39;2026-10-12 17:48;Agent C
+C-1374;Commande reçue;2026-10-28 17:00;2026-10-28 17:00;Site web
+C-1374;Vérifier le paiement;2026-10-28 17:52;2026-10-28 18:11;Agent C
+C-1374;Vérifier le stock;2026-10-28 20:20;2026-10-28 20:32;Entrepôt 1
+C-1374;Préparer la commande;2026-10-31 06:30;2026-10-31 07:57;Entrepôt 2
+C-1374;Expédier;2026-10-31 12:06;2026-10-31 12:24;Entrepôt 1
+C-1374;Facturer;2026-10-31 15:10;2026-10-31 15:18;Agent B
+C-1375;Commande reçue;2026-10-03 07:29;2026-10-03 07:29;Site web
+C-1375;Vérifier le paiement;2026-10-03 09:44;2026-10-03 09:48;Agent D
+C-1375;Vérifier le stock;2026-10-03 12:30;2026-10-03 12:58;Entrepôt 1
+C-1375;Préparer la commande;2026-10-04 04:51;2026-10-04 05:13;Entrepôt 2
+C-1375;Expédier;2026-10-04 08:12;2026-10-04 08:45;Entrepôt 1
+C-1375;Facturer;2026-10-04 09:31;2026-10-04 09:38;Agent D
+C-1376;Commande reçue;2026-10-01 10:12;2026-10-01 10:12;Site web
+C-1376;Vérifier le paiement;2026-10-01 11:53;2026-10-01 12:14;Agent A
+C-1376;Vérifier le stock;2026-10-01 15:30;2026-10-01 15:40;Entrepôt 2
+C-1376;Préparer la commande;2026-10-02 10:32;2026-10-02 11:15;Entrepôt 1
+C-1376;Expédier;2026-10-02 20:13;2026-10-02 20:40;Entrepôt 1
+C-1376;Facturer;2026-10-03 00:19;2026-10-03 00:27;Agent D
+C-1377;Commande reçue;2026-10-11 13:48;2026-10-11 13:48;Site web
+C-1377;Vérifier le paiement;2026-10-11 14:51;2026-10-11 14:57;Agent B
+C-1377;Vérifier le stock;2026-10-11 16:33;2026-10-11 16:42;Entrepôt 1
+C-1377;Préparer la commande;2026-10-11 23:38;2026-10-12 00:02;Entrepôt 2
+C-1377;Expédier;2026-10-12 03:22;2026-10-12 03:52;Entrepôt 1
+C-1377;Facturer;2026-10-12 06:38;2026-10-12 06:43;Agent B
+C-1378;Commande reçue;2026-10-09 15:48;2026-10-09 15:48;Site web
+C-1378;Vérifier le paiement;2026-10-09 16:19;2026-10-09 16:28;Agent D
+C-1378;Vérifier le stock;2026-10-09 17:56;2026-10-09 18:24;Entrepôt 1
+C-1378;Préparer la commande;2026-10-11 00:32;2026-10-11 01:17;Entrepôt 1
+C-1378;Expédier;2026-10-11 10:28;2026-10-11 10:52;Entrepôt 1
+C-1378;Facturer;2026-10-11 13:33;2026-10-11 13:38;Agent C
+C-1379;Commande reçue;2026-10-29 15:41;2026-10-29 15:41;Site web
+C-1379;Vérifier le paiement;2026-10-29 17:00;2026-10-29 17:23;Agent B
+C-1379;Vérifier le stock;2026-10-29 18:55;2026-10-29 19:06;Entrepôt 1
+C-1379;Préparer la commande;2026-10-30 16:05;2026-10-30 16:40;Entrepôt 2
+C-1379;Expédier;2026-10-30 18:32;2026-10-30 19:06;Entrepôt 2
+C-1379;Facturer;2026-10-30 21:32;2026-10-30 21:43;Agent A
+C-1380;Commande reçue;2026-10-16 00:08;2026-10-16 00:08;Site web
+C-1380;Vérifier le paiement;2026-10-16 02:01;2026-10-16 02:09;Agent A
+C-1380;Préparer la commande;2026-10-16 23:57;2026-10-17 00:37;Entrepôt 2
+C-1380;Expédier;2026-10-17 09:38;2026-10-17 09:59;Entrepôt 1
+C-1380;Facturer;2026-10-17 13:35;2026-10-17 13:43;Agent B
+C-1381;Commande reçue;2026-10-19 05:55;2026-10-19 05:55;Site web
+C-1381;Vérifier le paiement;2026-10-19 08:30;2026-10-19 08:43;Agent B
+C-1381;Vérifier le stock;2026-10-19 09:29;2026-10-19 09:44;Entrepôt 2
+C-1381;Commander au fournisseur;2026-10-19 16:51;2026-10-19 17:21;Agent C
+C-1381;Préparer la commande;2026-10-19 22:31;2026-10-19 23:49;Entrepôt 2
+C-1381;Facturer;2026-10-20 00:58;2026-10-20 01:10;Agent B
+C-1381;Expédier;2026-10-20 08:00;2026-10-20 08:19;Entrepôt 2
+C-1382;Commande reçue;2026-10-01 21:08;2026-10-01 21:08;Site web
+C-1382;Vérifier le paiement;2026-10-01 23:14;2026-10-01 23:18;Agent A
+C-1382;Vérifier le stock;2026-10-02 04:03;2026-10-02 04:13;Entrepôt 2
+C-1382;Commander au fournisseur;2026-10-02 08:00;2026-10-02 08:36;Agent B
+C-1382;Préparer la commande;2026-10-03 07:54;2026-10-03 09:00;Entrepôt 1
+C-1382;Expédier;2026-10-03 11:58;2026-10-03 12:28;Entrepôt 2
+C-1382;Facturer;2026-10-03 13:22;2026-10-03 13:28;Agent B
+C-1383;Commande reçue;2026-10-02 16:30;2026-10-02 16:30;Site web
+C-1383;Vérifier le paiement;2026-10-02 17:32;2026-10-02 17:51;Agent A
+C-1383;Vérifier le stock;2026-10-02 22:29;2026-10-02 22:42;Entrepôt 2
+C-1383;Commander au fournisseur;2026-10-03 04:09;2026-10-03 04:29;Agent A
+C-1383;Préparer la commande;2026-10-03 21:52;2026-10-03 23:09;Entrepôt 1
+C-1383;Expédier;2026-10-04 07:35;2026-10-04 07:55;Entrepôt 1
+C-1383;Facturer;2026-10-04 11:43;2026-10-04 11:51;Agent B
+C-1384;Commande reçue;2026-10-04 08:35;2026-10-04 08:35;Site web
+C-1384;Vérifier le paiement;2026-10-04 11:22;2026-10-04 11:30;Agent A
+C-1384;Vérifier le stock;2026-10-04 13:37;2026-10-04 13:48;Entrepôt 2
+C-1384;Commander au fournisseur;2026-10-04 20:54;2026-10-04 21:43;Agent D
+C-1384;Préparer la commande;2026-10-05 19:04;2026-10-05 20:27;Entrepôt 1
+C-1384;Expédier;2026-10-05 22:01;2026-10-05 22:37;Entrepôt 1
+C-1384;Facturer;2026-10-06 02:11;2026-10-06 02:18;Agent D
+C-1385;Commande reçue;2026-10-05 04:40;2026-10-05 04:40;Site web
+C-1385;Vérifier le paiement;2026-10-05 05:07;2026-10-05 05:11;Agent B
+C-1385;Vérifier le stock;2026-10-05 09:48;2026-10-05 10:03;Entrepôt 1
+C-1385;Préparer la commande;2026-10-08 07:26;2026-10-08 08:27;Entrepôt 1
+C-1385;Expédier;2026-10-08 09:53;2026-10-08 10:18;Entrepôt 2
+C-1385;Facturer;2026-10-08 13:55;2026-10-08 14:03;Agent A
+C-1386;Commande reçue;2026-10-31 07:05;2026-10-31 07:05;Site web
+C-1386;Vérifier le paiement;2026-10-31 09:17;2026-10-31 09:34;Agent B
+C-1386;Vérifier le stock;2026-10-31 14:50;2026-10-31 15:15;Entrepôt 2
+C-1386;Préparer la commande;2026-11-03 01:13;2026-11-03 02:12;Entrepôt 2
+C-1386;Facturer;2026-11-03 05:26;2026-11-03 05:37;Agent C
+C-1386;Expédier;2026-11-03 09:11;2026-11-03 09:41;Entrepôt 1
+C-1387;Commande reçue;2026-10-30 13:29;2026-10-30 13:29;Site web
+C-1387;Vérifier le paiement;2026-10-30 15:16;2026-10-30 15:37;Agent A
+C-1387;Relancer le client;2026-11-01 08:31;2026-11-01 08:48;Agent B
+C-1387;Annuler la commande;2026-11-01 11:38;2026-11-01 11:44;Agent B
+C-1388;Commande reçue;2026-10-19 08:06;2026-10-19 08:06;Site web
+C-1388;Vérifier le paiement;2026-10-19 10:50;2026-10-19 10:54;Agent D
+C-1388;Vérifier le stock;2026-10-19 13:36;2026-10-19 13:45;Entrepôt 2
+C-1388;Préparer la commande;2026-10-20 03:12;2026-10-20 04:20;Entrepôt 2
+C-1388;Expédier;2026-10-20 13:01;2026-10-20 13:21;Entrepôt 2
+C-1388;Facturer;2026-10-20 16:33;2026-10-20 16:39;Agent B
+C-1389;Commande reçue;2026-10-27 02:48;2026-10-27 02:48;Site web
+C-1389;Vérifier le paiement;2026-10-27 03:25;2026-10-27 03:47;Agent B
+C-1389;Relancer le client;2026-10-28 14:56;2026-10-28 15:03;Agent C
+C-1389;Annuler la commande;2026-10-28 17:13;2026-10-28 17:19;Agent D
+C-1390;Commande reçue;2026-10-21 20:15;2026-10-21 20:15;Site web
+C-1390;Vérifier le paiement;2026-10-21 20:54;2026-10-21 21:13;Agent A
+C-1390;Vérifier le stock;2026-10-22 02:03;2026-10-22 02:14;Entrepôt 2
+C-1390;Commander au fournisseur;2026-10-22 09:15;2026-10-22 09:28;Agent D
+C-1390;Préparer la commande;2026-10-22 19:00;2026-10-22 20:11;Entrepôt 2
+C-1390;Expédier;2026-10-22 23:31;2026-10-22 23:52;Entrepôt 1
+C-1390;Facturer;2026-10-23 03:00;2026-10-23 03:09;Agent A
+C-1391;Commande reçue;2026-10-15 11:02;2026-10-15 11:02;Site web
+C-1391;Vérifier le paiement;2026-10-15 13:05;2026-10-15 13:09;Agent D
+C-1391;Vérifier le stock;2026-10-15 19:02;2026-10-15 19:27;Entrepôt 2
+C-1391;Préparer la commande;2026-10-16 11:20;2026-10-16 12:46;Entrepôt 2
+C-1391;Expédier;2026-10-16 17:25;2026-10-16 17:49;Entrepôt 1
+C-1391;Facturer;2026-10-16 20:59;2026-10-16 21:02;Agent A
+C-1392;Commande reçue;2026-10-27 00:39;2026-10-27 00:39;Site web
+C-1392;Vérifier le paiement;2026-10-27 02:29;2026-10-27 02:43;Agent B
+C-1392;Vérifier le stock;2026-10-27 04:01;2026-10-27 04:24;Entrepôt 1
+C-1392;Préparer la commande;2026-10-27 12:03;2026-10-27 12:57;Entrepôt 1
+C-1392;Expédier;2026-10-27 21:24;2026-10-27 21:59;Entrepôt 1
+C-1392;Facturer;2026-10-28 00:00;2026-10-28 00:04;Agent D
+C-1393;Commande reçue;2026-10-11 08:18;2026-10-11 08:18;Site web
+C-1393;Vérifier le paiement;2026-10-11 08:32;2026-10-11 08:47;Agent C
+C-1393;Vérifier le stock;2026-10-11 13:53;2026-10-11 14:01;Entrepôt 2
+C-1393;Commander au fournisseur;2026-10-11 16:47;2026-10-11 17:46;Agent B
+C-1393;Préparer la commande;2026-10-15 01:30;2026-10-15 02:44;Entrepôt 2
+C-1393;Expédier;2026-10-15 05:04;2026-10-15 05:22;Entrepôt 2
+C-1393;Facturer;2026-10-15 06:07;2026-10-15 06:17;Agent D
+C-1394;Commande reçue;2026-10-09 20:44;2026-10-09 20:44;Site web
+C-1394;Vérifier le paiement;2026-10-09 21:34;2026-10-09 21:57;Agent C
+C-1394;Vérifier le stock;2026-10-10 03:52;2026-10-10 04:11;Entrepôt 1
+C-1394;Préparer la commande;2026-10-14 01:46;2026-10-14 02:43;Entrepôt 1
+C-1394;Expédier;2026-10-14 06:23;2026-10-14 06:54;Entrepôt 2
+C-1394;Facturer;2026-10-14 07:49;2026-10-14 08:01;Agent D
+C-1395;Commande reçue;2026-10-25 15:05;2026-10-25 15:05;Site web
+C-1395;Vérifier le paiement;2026-10-25 17:59;2026-10-25 18:19;Agent C
+C-1395;Vérifier le stock;2026-10-26 00:06;2026-10-26 00:35;Entrepôt 2
+C-1395;Commander au fournisseur;2026-10-26 06:22;2026-10-26 07:15;Agent A
+C-1395;Préparer la commande;2026-10-27 07:21;2026-10-27 08:09;Entrepôt 1
+C-1395;Expédier;2026-10-27 14:58;2026-10-27 15:24;Entrepôt 1
+C-1395;Facturer;2026-10-27 17:09;2026-10-27 17:18;Agent A
+C-1396;Commande reçue;2026-10-02 11:27;2026-10-02 11:27;Site web
+C-1396;Vérifier le paiement;2026-10-02 11:46;2026-10-02 12:03;Agent A
+C-1396;Vérifier le stock;2026-10-02 14:08;2026-10-02 14:14;Entrepôt 2
+C-1396;Préparer la commande;2026-10-03 13:39;2026-10-03 15:08;Entrepôt 2
+C-1396;Expédier;2026-10-03 21:51;2026-10-03 22:19;Entrepôt 1
+C-1396;Facturer;2026-10-04 00:51;2026-10-04 00:54;Agent C
+C-1397;Commande reçue;2026-10-03 01:30;2026-10-03 01:30;Site web
+C-1397;Vérifier le paiement;2026-10-03 03:36;2026-10-03 03:55;Agent D
+C-1397;Vérifier le stock;2026-10-03 09:53;2026-10-03 10:21;Entrepôt 2
+C-1397;Préparer la commande;2026-10-03 19:18;2026-10-03 19:46;Entrepôt 2
+C-1397;Expédier;2026-10-03 22:14;2026-10-03 22:30;Entrepôt 1
+C-1397;Facturer;2026-10-04 01:10;2026-10-04 01:13;Agent A
+C-1398;Commande reçue;2026-10-24 01:11;2026-10-24 01:11;Site web
+C-1398;Vérifier le paiement;2026-10-24 02:12;2026-10-24 02:30;Agent B
+C-1398;Relancer le client;2026-10-25 11:34;2026-10-25 11:41;Agent C
+C-1398;Annuler la commande;2026-10-26 06:25;2026-10-26 06:36;Agent A
+C-1399;Commande reçue;2026-10-01 23:14;2026-10-01 23:14;Site web
+C-1399;Vérifier le paiement;2026-10-02 00:10;2026-10-02 00:18;Agent D
+C-1399;Vérifier le stock;2026-10-02 01:06;2026-10-02 01:20;Entrepôt 2
+C-1399;Commander au fournisseur;2026-10-02 03:50;2026-10-02 04:37;Agent C
+C-1399;Préparer la commande;2026-10-02 13:52;2026-10-02 14:18;Entrepôt 1
+C-1399;Facturer;2026-10-02 16:10;2026-10-02 16:22;Agent B
+C-1399;Expédier;2026-10-02 21:32;2026-10-02 21:53;Entrepôt 1
+C-1400;Commande reçue;2026-10-30 03:03;2026-10-30 03:03;Site web
+C-1400;Vérifier le paiement;2026-10-30 04:36;2026-10-30 04:40;Agent C
+C-1400;Vérifier le stock;2026-10-30 08:15;2026-10-30 08:39;Entrepôt 2
+C-1400;Préparer la commande;2026-10-31 13:48;2026-10-31 14:56;Entrepôt 2
+C-1400;Expédier;2026-10-31 20:04;2026-10-31 20:26;Entrepôt 2
+C-1400;Facturer;2026-10-31 21:33;2026-10-31 21:39;Agent A
+C-1401;Commande reçue;2026-10-15 14:39;2026-10-15 14:39;Site web
+C-1401;Vérifier le paiement;2026-10-15 16:59;2026-10-15 17:14;Agent B
+C-1401;Vérifier le stock;2026-10-15 23:11;2026-10-15 23:31;Entrepôt 1
+C-1401;Préparer la commande;2026-10-17 04:57;2026-10-17 06:25;Entrepôt 1
+C-1401;Expédier;2026-10-17 13:51;2026-10-17 14:04;Entrepôt 2
+C-1401;Facturer;2026-10-17 16:02;2026-10-17 16:10;Agent B
+C-1402;Commande reçue;2026-10-20 06:52;2026-10-20 06:52;Site web
+C-1402;Vérifier le paiement;2026-10-20 07:15;2026-10-20 07:19;Agent D
+C-1402;Vérifier le stock;2026-10-20 09:52;2026-10-20 10:09;Entrepôt 2
+C-1402;Préparer la commande;2026-10-20 21:40;2026-10-20 22:56;Entrepôt 1
+C-1402;Facturer;2026-10-21 00:04;2026-10-21 00:10;Agent A
+C-1402;Expédier;2026-10-21 02:55;2026-10-21 03:29;Entrepôt 2
+C-1403;Commande reçue;2026-10-21 18:57;2026-10-21 18:57;Site web
+C-1403;Vérifier le paiement;2026-10-21 21:31;2026-10-21 21:37;Agent C
+C-1403;Vérifier le stock;2026-10-22 01:27;2026-10-22 01:33;Entrepôt 1
+C-1403;Préparer la commande;2026-10-23 04:27;2026-10-23 05:55;Entrepôt 2
+C-1403;Expédier;2026-10-23 07:32;2026-10-23 07:48;Entrepôt 1
+C-1403;Facturer;2026-10-23 09:14;2026-10-23 09:19;Agent B
+C-1404;Commande reçue;2026-10-03 06:18;2026-10-03 06:18;Site web
+C-1404;Vérifier le paiement;2026-10-03 08:10;2026-10-03 08:19;Agent D
+C-1404;Vérifier le stock;2026-10-03 13:01;2026-10-03 13:10;Entrepôt 1
+C-1404;Préparer la commande;2026-10-04 17:59;2026-10-04 18:17;Entrepôt 2
+C-1404;Expédier;2026-10-04 21:04;2026-10-04 21:25;Entrepôt 1
+C-1404;Facturer;2026-10-05 00:20;2026-10-05 00:32;Agent D
+C-1405;Commande reçue;2026-10-20 09:35;2026-10-20 09:35;Site web
+C-1405;Vérifier le paiement;2026-10-20 11:12;2026-10-20 11:34;Agent D
+C-1405;Vérifier le stock;2026-10-20 15:45;2026-10-20 16:11;Entrepôt 1
+C-1405;Préparer la commande;2026-10-23 12:13;2026-10-23 13:01;Entrepôt 2
+C-1405;Expédier;2026-10-23 21:33;2026-10-23 21:56;Entrepôt 1
+C-1405;Facturer;2026-10-24 01:48;2026-10-24 01:57;Agent A
+C-1406;Commande reçue;2026-10-23 20:42;2026-10-23 20:42;Site web
+C-1406;Vérifier le paiement;2026-10-23 21:18;2026-10-23 21:35;Agent D
+C-1406;Vérifier le stock;2026-10-24 02:30;2026-10-24 02:54;Entrepôt 2
+C-1406;Préparer la commande;2026-10-26 08:45;2026-10-26 09:18;Entrepôt 1
+C-1406;Expédier;2026-10-26 17:24;2026-10-26 17:43;Entrepôt 1
+C-1406;Facturer;2026-10-26 20:47;2026-10-26 20:53;Agent A
+C-1407;Commande reçue;2026-10-26 04:20;2026-10-26 04:20;Site web
+C-1407;Vérifier le paiement;2026-10-26 05:48;2026-10-26 05:51;Agent C
+C-1407;Relancer le client;2026-10-27 15:30;2026-10-27 15:43;Agent A
+C-1407;Annuler la commande;2026-10-28 11:53;2026-10-28 12:02;Agent A
+C-1408;Commande reçue;2026-10-04 06:34;2026-10-04 06:34;Site web
+C-1408;Vérifier le paiement;2026-10-04 08:32;2026-10-04 08:55;Agent D
+C-1408;Vérifier le stock;2026-10-04 11:02;2026-10-04 11:21;Entrepôt 2
+C-1408;Préparer la commande;2026-10-04 17:19;2026-10-04 18:38;Entrepôt 1
+C-1408;Expédier;2026-10-05 04:32;2026-10-05 05:00;Entrepôt 1
+C-1408;Facturer;2026-10-05 05:32;2026-10-05 05:41;Agent D
+C-1409;Commande reçue;2026-10-17 07:06;2026-10-17 07:06;Site web
+C-1409;Vérifier le paiement;2026-10-17 09:05;2026-10-17 09:09;Agent B
+C-1409;Vérifier le stock;2026-10-17 14:04;2026-10-17 14:13;Entrepôt 2
+C-1409;Préparer la commande;2026-10-18 04:41;2026-10-18 05:46;Entrepôt 1
+C-1409;Expédier;2026-10-18 07:56;2026-10-18 08:17;Entrepôt 2
+C-1409;Facturer;2026-10-18 09:58;2026-10-18 10:07;Agent C
+C-1410;Commande reçue;2026-10-03 08:32;2026-10-03 08:32;Site web
+C-1410;Vérifier le paiement;2026-10-03 10:28;2026-10-03 10:32;Agent D
+C-1410;Vérifier le stock;2026-10-03 16:18;2026-10-03 16:48;Entrepôt 2
+C-1410;Préparer la commande;2026-10-05 00:40;2026-10-05 01:40;Entrepôt 1
+C-1410;Expédier;2026-10-05 02:50;2026-10-05 03:20;Entrepôt 1
+C-1410;Facturer;2026-10-05 07:16;2026-10-05 07:21;Agent A
+C-1411;Commande reçue;2026-10-09 15:58;2026-10-09 15:58;Site web
+C-1411;Vérifier le paiement;2026-10-09 18:00;2026-10-09 18:09;Agent C
+C-1411;Vérifier le stock;2026-10-09 19:12;2026-10-09 19:40;Entrepôt 1
+C-1411;Commander au fournisseur;2026-10-10 00:00;2026-10-10 00:16;Agent B
+C-1411;Préparer la commande;2026-10-10 23:39;2026-10-11 01:06;Entrepôt 1
+C-1411;Expédier;2026-10-11 03:31;2026-10-11 03:56;Entrepôt 2
+C-1411;Facturer;2026-10-11 05:28;2026-10-11 05:32;Agent D
+C-1412;Commande reçue;2026-10-28 16:35;2026-10-28 16:35;Site web
+C-1412;Vérifier le paiement;2026-10-28 17:58;2026-10-28 18:10;Agent B
+C-1412;Vérifier le stock;2026-10-28 23:24;2026-10-28 23:49;Entrepôt 2
+C-1412;Préparer la commande;2026-10-31 20:32;2026-10-31 21:56;Entrepôt 2
+C-1412;Expédier;2026-11-01 03:12;2026-11-01 03:29;Entrepôt 2
+C-1412;Facturer;2026-11-01 05:40;2026-11-01 05:51;Agent B

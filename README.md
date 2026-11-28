@@ -98,6 +98,10 @@ uncluttered for everyone else (see the
   against the token simulation in the report.
 - **Process report** as PDF, Markdown or Word: key figures, findings by level, improvement areas, end events,
   activities by lane, RACI matrix.
+- **Event log analysis (process mining)**: load a CSV or XES export from your ERP, CRM or ticketing
+  tool and see on the diagram what really happens: passes, waits and durations, bottlenecks, cases
+  that deviate from the model. The log is read in the browser and sent nowhere. Without a diagram,
+  draw a first version of the process from the log. A fictitious example of 412 orders is included.
 - **AI potential by activity**: automatable, AI-assisted or human, with the reason and the safeguard,
   rated by the co-pilot or by hand, and listed in the report.
 - **Risks, controls and compliance**: risks and controls for each activity, regulatory references
@@ -205,7 +209,7 @@ some providers (OpenAI) refuse calls from a web page. The "Privacy" link on the 
 [Your data and API keys in the online version](docs/online-privacy.md) gives the details.
 
 The stable page measures its audience anonymously, without cookies: visits (help pages included), referrers, app version and the use of each function (diagram created, opened or exported,
-expert mode, installation and opening as a PWA, simulation, heatmap, layout, comparison, co-pilot opened or used, provider connected, attached file types,
+expert mode, installation and opening as a PWA, simulation, heatmap, event log analysis, layout, comparison, co-pilot opened or used, provider connected, attached file types,
 error classes, feedback, prompt examples copied, GitHub and support links, active time by range). No third-party script is loaded: the page sends
 these measurements itself ([src/analytics.js](src/analytics.js)), never the content of diagrams,
 messages or API keys. "Do Not Track" and "Global Privacy Control" turn measurement off, and a
@@ -494,6 +498,8 @@ Each function is turned on separately in **Expert** > **Choose modules…**.
   through each element, played by hand or computed from branch probabilities. Export a process report
   (PDF, Markdown or Word) with the findings in three levels, improvement areas, the element sequence, the RACI matrix and, after a simulation, the heatmap
   and the process goals set on end events and activities, reached or not.
+- **Process mining**: compare an event log (CSV or XES) with the diagram, apply the real branch shares,
+  find waits, bottlenecks and deviations, or draw the process from the log.
 - **AI potential, risks and compliance**: for each activity, its AI potential (automatable, AI-assisted or human,
   with the reason and the safeguard), its risks and controls, and its regulatory references; a process identity
   (owner, version, status, validation date, scope). The report adds a risk and control table, a compliance

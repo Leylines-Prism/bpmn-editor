@@ -31,6 +31,7 @@ this editor, one that expires on its own and has a spending cap (see [Good pract
 | Provider addresses and models | `localStorage` | nowhere |
 | Conversation with the co-pilot | page memory only, lost on reload | to the provider, with each message |
 | Chat attachments (images, PDF, office documents, text files) | page memory (for office documents and text files, only the extracted text is kept) | to the provider, with the message |
+| Event log for process mining (CSV, XES), Expert menu | page memory only, lost on reload. If "Keep the totals in the .bpmn file" is checked, the diagram stores totals only (passes, durations, deviations), never case or resource names | nowhere. If you ask the co-pilot to draw the process from the log, it receives totals only (step names, counts, durations). A CSV attached in the chat is a chat attachment, sent in full |
 | Copy of the site for offline use | browser cache storage (Cache API), filled by the service worker: the site's own files only (code, pages, pictures) | nowhere: it holds none of your data |
 | Voice dictation | recognized on the device by the browser (Web Speech API with `processLocally`), the text goes into the input box | nowhere: the microphone button only appears when the browser can recognize speech on the device, so no audio goes to a speech service |
 

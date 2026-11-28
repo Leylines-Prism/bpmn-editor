@@ -107,6 +107,17 @@
       "properties": [
         { "name": "xml", "isBody": true, "type": "String" }
       ]
+    },
+    {
+      "name": "LogSummary",
+      "superClass": ["Element"],
+      "meta": { "allowedIn": ["bpmn:Process"] },
+      "properties": [
+        { "name": "source", "isAttr": true, "type": "String" },
+        { "name": "date", "isAttr": true, "type": "String" },
+        { "name": "fingerprint", "isAttr": true, "type": "String" },
+        { "name": "data", "isBody": true, "type": "String" }
+      ]
     }
   ]
 }

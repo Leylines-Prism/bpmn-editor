@@ -35,6 +35,11 @@ const modules = [
     detail: () => T('Findings, improvement areas and element sequence, as a PDF, Markdown or Word file.', 'Constats, axes d\'amélioration et séquence des éléments, en PDF, Markdown ou Word.'),
   },
   {
+    id: 'process-mining', icon: 'mining', default: true, help: ['process-mining', 'process-mining'],
+    name: () => T('Event log analysis (process mining)', 'Analyse de journal d\'événements (process mining)'),
+    detail: () => T('Compare a CSV or XES log from your ERP, CRM or ticketing tool with the diagram: real passes, waits, deviations.', 'Confronter au diagramme un journal CSV ou XES de votre ERP, CRM ou outil de tickets : passages réels, attentes, écarts.'),
+  },
+  {
     id: 'ai-potential', icon: 'assistant', default: true, help: ['potentiel-ia', 'ai-potential'],
     name: () => T('AI potential', 'Potentiel d\'IA'),
     detail: () => T('Rate each activity: automatable, AI-assisted or human, with the reason and the safeguard.', 'Noter chaque activité : automatisable, assistée par IA ou humaine, avec la raison et le garde-fou.'),

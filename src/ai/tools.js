@@ -47,6 +47,10 @@ ranges ([1..10], ]1000..5000]), lists ("A","B"). Give the allowed values of text
 policy no two rules may apply together; use First or Priority when they must overlap. Check the findings each tool returns.
 test_decision evaluates a decision table on input cases (with no cases, one case per rule): use it to check a table you wrote.
 
+Process mining: load_event_log reads an event log (CSV or XES) exported from an ERP, CRM or ticketing tool.
+With a diagram, check the step matches (map_log_activities), then apply_log_frequencies and check_conformance.
+Without one, get_log_summary gives the directly-follows graph to draw the process from; review it with check_conformance.
+
 Modeling rules (validate_diagram checks most of them):
 - Every process has a start event and at least one end event. At most one blank start event per process: when the trigger is known, use a typed one (message, timer, signal, conditional).
 - Each event takes only the triggers the BPMN standard allows for its kind (for example no timer end event, no error start event outside an event subprocess, no non-interrupting error boundary event): the tools refuse the others.
@@ -574,6 +578,82 @@ export function buildTools(z) {
           .optional()
           .describe('Compute 100 tokens first, following the gateway probabilities, to add instance counts, rework and the share of each end event'),
       },
+    },
+    {
+      name: 'load_event_log',
+      title: 'Load an event log',
+      description:
+        'Loads an event log (process mining) into the editor: a CSV table with one row per step carried out (case id, step, ' +
+        'start and/or end date, optional resource), or an XES file (IEEE 1849). The columns are guessed from the headers; set ' +
+        'columns to name them. Returns the cases, events, period, the steps with their counts, and the proposed match of each step ' +
+        'with a diagram element (by name). Case ids and resources stay in the editor: no tool ever returns them. ' +
+        'Then: map_log_activities to fix the matches, apply_log_frequencies for real branch shares and durations, check_conformance ' +
+        'for deviations, or get_log_summary to draw the process from the log when the diagram is empty.',
+      annotations: edit(false, true),
+      inputSchema: {
+        content: z.string().min(1).max(50_000_000).describe('The whole file content, CSV or XES text'),
+        name: z.string().max(200).optional().describe('File name, shown to the user (for example orders-2026.csv)'),
+        format: z.enum(['csv', 'xes']).optional().describe('Format; guessed from the content when omitted'),
+        columns: z
+          .object({
+            case: z.string().optional().describe('Header of the case id column'),
+            activity: z.string().optional().describe('Header of the step (activity) column'),
+            start: z.string().optional().describe('Header of the start timestamp column'),
+            end: z.string().optional().describe('Header of the end (or only) timestamp column'),
+            resource: z.string().optional().describe('Header of the resource column'),
+          })
+          .optional()
+          .describe('CSV only: column headers, when the guess is wrong'),
+      },
+    },
+    {
+      name: 'get_log_summary',
+      title: 'Read the event log summary',
+      description:
+        'Summary of the loaded event log, in totals only: cases, events, period, median case duration, steps with counts, ' +
+        'the most frequent variants (sequences of steps), and the directly-follows graph (who follows whom, how many times, ' +
+        'median wait), filtered to the most frequent steps and paths. Use it to draw the process from the log: exclusive ' +
+        'choices where a step is followed by different steps, parallel branches where two steps appear in both orders, loops ' +
+        'where a step comes back. Read-only.',
+      annotations: READ,
+      inputSchema: {
+        activities: z.number().min(0.05).max(1).optional().describe('Share of the events covered by the steps kept, 0.05 to 1 (default 1)'),
+        paths: z.number().min(0.05).max(1).optional().describe('Share of the passes covered by the paths kept, 0.05 to 1 (default 0.9)'),
+      },
+    },
+    {
+      name: 'map_log_activities',
+      title: 'Match log steps with diagram elements',
+      description:
+        'Sets which diagram element each step of the loaded event log stands for. Keys are step names as returned by ' +
+        'load_event_log; values are element ids from get_shapes, or null for a step that is not in the diagram. Steps not ' +
+        'listed keep their current match. Returns the full matching.',
+      annotations: edit(false, true),
+      inputSchema: {
+        mapping: z.record(z.string(), elementId.nullable()).describe('Step name → element id, or null'),
+      },
+    },
+    {
+      name: 'apply_log_frequencies',
+      title: 'Apply the real frequencies of the log',
+      description:
+        'Replays the loaded event log on the diagram, writes the observed share of each gateway branch as its probability ' +
+        '(marked as coming from the log), and shows the real passes on the canvas. Returns passes per element and per flow, ' +
+        'the branch shares, the median wait before and duration of each step, and the three longest waits (bottlenecks). ' +
+        'The user can undo it with Ctrl+Z.',
+      annotations: edit(true, true),
+      inputSchema: {},
+    },
+    {
+      name: 'check_conformance',
+      title: 'Check the log against the diagram',
+      description:
+        'Replays each case of the loaded event log on the diagram (token replay) and returns the share of cases that follow it, ' +
+        'the fitness (0 to 1), and the deviations with their number of cases: skipped step, step done before another, step ' +
+        'without the expected step before, case stopped before an end, step not in the diagram. Shows them on the canvas. ' +
+        'Read-only for the diagram.',
+      annotations: READ,
+      inputSchema: {},
     },
     {
       name: 'set_report_commentary',

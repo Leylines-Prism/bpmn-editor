@@ -38,6 +38,7 @@ function ProbabilityEntry(props) {
   if (missing) description += T(`, ${missing} left to share the rest`, `, ${missing} se partagent le reste`)
   else if (Math.round(total) !== 100) description += T(' (values are scaled to 100 %)', ' (les valeurs sont ramenées à 100 %)')
   if (isAiProbability(bo)) description += T('. Proposed by the AI co-pilot, to review.', '. Proposée par le Co-pilote IA, à revoir.')
+  else if (bo.get('bpmnpilot:probabilitySource') === 'log') description += T('. Observed in the event log.', '. Observée dans le journal d\'événements.')
 
   return NumberFieldEntry({
     element,
