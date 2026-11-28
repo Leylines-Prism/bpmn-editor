@@ -61,7 +61,7 @@
               <li><a href="#simulation">Simulation and heatmap</a></li>
               <li><a href="#process-report">Process report</a></li>
               <li><a href="#process-mining">Event log</a></li>
-              <li><a href="#ai-potential">AI potential</a></li>
+              <li><a href="#ai-potential">Activities to hand to AI</a></li>
               <li><a href="#risks-compliance">Risks and compliance</a></li>
               <li><a href="#user-stories">User stories</a></li>
               <li><a href="#camunda-export">Camunda export</a></li>
@@ -771,7 +771,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       <section id="bpmn-experts" class="expert-part">
         <h2>Turn on Expert mode<span class="ico" data-icon="expert" aria-hidden="true"></span></h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, in the toolbar, opens a menu with the commands of the modules turned on. The first command you pick turns the mode on: the button turns blue, and the browser remembers it until <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Leave expert mode</span>. Commands that go through the co-pilot stay greyed out until a model is set.</p>
-        <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="204" alt="The blue Expert button and its open menu: Stop simulation, Process report as PDF, Markdown or Word." loading="lazy" /><figcaption>The Expert menu, with the mode on and a simulation running.</figcaption></figure>
+        <figure><img src="/src/help/img/en-menu-expert.webp" width="600" height="437" alt="The blue Expert button and its open menu in three groups: simulation, analyses by activity, then Co-pilot analysis and the PDF, Markdown and Word buttons of the process report." loading="lazy" /><figcaption>The Expert menu in three groups: simulation, analyses by activity, process report.</figcaption></figure>
         <h3 id="modules">Choose modules<span class="ico" data-icon="modules" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choose modules…</span>, at the bottom of the menu, turns each feature on or off. The menu and the Process panel only show the modules turned on. By default, everything is on except the Camunda export and decision tables. The heatmap needs the simulation.</p>
         <figure><img src="/src/help/img/en-modules-experts.webp" width="1040" height="2048" alt="The Expert modules window: Token simulation, Heatmap, Process report, Event log analysis, AI potential, Risks and compliance, User stories, Camunda export and Decision tables (DMN), each with its switch, a line of explanation and a link to the help." loading="lazy" /><figcaption>The Expert modules window: here, the Camunda export and decision tables are off.</figcaption></figure>
@@ -809,7 +809,7 @@ To finish: check the diagram, fix what fails and sum up the process in five line
 
       <section id="process-report" class="expert-part">
         <h2>Process report<span class="ico" data-icon="pdf" aria-hidden="true"></span></h2>
-        <p>The report turns the diagram into a document readable without a BPMN tool, and into a modeling review. <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Process report (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Markdown</span> or <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Word</span>, in the Expert menu. It contains:</p>
+        <p>The report turns the diagram into a document readable without a BPMN tool, and into a modeling review. In the Expert menu, under the Process report heading, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>PDF</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Markdown</span> or <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Word</span>. It contains:</p>
         <ul>
           <li>key figures and the diagram, with each element at issue circled;</li>
           <li>findings: <strong>Error</strong> in red, <strong>Warning</strong> in orange, <strong>To complete</strong> in yellow, with their source;</li>
@@ -850,8 +850,22 @@ To finish: check the diagram, fix what fails and sum up the process in five line
       </section>
 
       <section id="ai-potential" class="expert-part">
-        <h2>AI potential by activity (AI adoption)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
-        <p>An activity's <span class="ui">AI potential</span> group holds a <span class="ui">Rating</span> (Automatable, AI-assisted, Human) and its <span class="ui">Why, and safeguard</span>. <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>AI potential by activity</span>, in the Expert menu, has the co-pilot rate every activity, add the <a href="#risks-compliance">risks and controls</a> of each automatable or assisted one, then sum up where to start. The report gathers it all in a table.</p>
+        <h2>Activities to hand to AI (AI potential)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
+        <p>This function helps decide where to bring AI into a process, and on what terms. It does not rate the co-pilot: it rates the activities of your diagram.</p>
+        <p><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Which activities to hand to AI?</span>, in the Expert menu, has the co-pilot go through each activity and class it:</p>
+        <ul>
+          <li><strong>Automatable</strong>: an AI agent or an automation can perform it, a person reviews the result.</li>
+          <li><strong>AI-assisted</strong>: a person performs it, AI helps (prepare, summarize, check).</li>
+          <li><strong>Human</strong>: it calls for judgment, a relationship or an accountability that stays with a person.</li>
+        </ul>
+        <p>The co-pilot works from the activity's name, lane, documentation, assignee and systems. You get:</p>
+        <ul>
+          <li>in each activity's Process panel, <span class="ui">AI potential</span> group: the <span class="ui">Rating</span> and the <span class="ui">Why, and safeguard</span>, that is the reason for the rating, and what to put in place to make it safe;</li>
+          <li>for each automatable or assisted activity, the risks of handing it to AI (error, personal data, no review…) and the matching controls, added to those already written in the <a href="#risks-compliance">Risks and compliance</a> group;</li>
+          <li>in the chat, a three-line summary: where AI pays off first, and which risks to frame;</li>
+          <li>in the <a href="#process-report">process report</a>, a table that gathers it all.</li>
+        </ul>
+        <p>It is a proposal to review: correct the rating in the panel when it does not fit your reality. You can also fill these fields by hand, without the co-pilot. The command needs a model set for the co-pilot and the <span class="ui">AI potential</span> module (<a href="#modules">Choose modules</a>).</p>
       </section>
 
       <section id="risks-compliance" class="expert-part">

@@ -61,7 +61,7 @@
               <li><a href="#simulation">Simulation et carte de chaleur</a></li>
               <li><a href="#rapport-processus">Rapport de processus</a></li>
               <li><a href="#process-mining">Journal d'événements</a></li>
-              <li><a href="#potentiel-ia">Potentiel d'IA</a></li>
+              <li><a href="#potentiel-ia">Activités à confier à l'IA</a></li>
               <li><a href="#risques-conformite">Risques et conformité</a></li>
               <li><a href="#recits-utilisateur">Récits utilisateur</a></li>
               <li><a href="#export-camunda">Export pour Camunda</a></li>
@@ -771,7 +771,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
       <section id="experts-bpmn" class="expert-part">
         <h2>Activer le mode Expert<span class="ico" data-icon="expert" aria-hidden="true"></span></h2>
         <p><span class="uib"><span class="ico" data-icon="expert" aria-hidden="true"></span>Expert</span>, dans la barre d'outils, ouvre un menu avec les commandes des modules allumés. La première commande choisie active le mode : le bouton passe en bleu, et le navigateur s'en souvient jusqu'à <span class="uib"><span class="ico" data-icon="close" aria-hidden="true"></span>Quitter le mode Expert</span>. Les commandes qui passent par le co-pilote restent grisées tant qu'aucun modèle n'est réglé.</p>
-        <figure><img src="/src/help/img/fr-menu-expert.webp" width="588" height="204" alt="Le bouton Expert en bleu et son menu ouvert : Arrêter la simulation, Rapport de processus en PDF, en Markdown ou en Word." loading="lazy" /><figcaption>Le menu Expert, mode actif et simulation en cours.</figcaption></figure>
+        <figure><img src="/src/help/img/fr-menu-expert.webp" width="600" height="437" alt="Le bouton Expert en bleu et son menu ouvert en trois groupes : simulation, analyses par activité, puis Analyse du Co-pilote et les boutons PDF, Markdown et Word du rapport de processus." loading="lazy" /><figcaption>Le menu Expert en trois groupes : simulation, analyses par activité, rapport de processus.</figcaption></figure>
         <h3 id="modules">Choisir les modules<span class="ico" data-icon="modules" aria-hidden="true"></span></h3>
         <p><span class="uib"><span class="ico" data-icon="modules" aria-hidden="true"></span>Choisir les modules…</span>, en bas du menu, allume ou éteint chaque fonction. Le menu et le panneau Processus ne montrent que les modules allumés. Par défaut, tout est allumé sauf l'export pour Camunda et les tables de décision. La carte de chaleur demande la simulation.</p>
         <figure><img src="/src/help/img/fr-modules-experts.webp" width="1040" height="2120" alt="La fenêtre Modules experts : Simulation de jetons, Carte de chaleur, Rapport de processus, Analyse de journal d'événements, Potentiel d'IA, Risques et conformité, Récits utilisateur, Export pour Camunda et Tables de décision (DMN), chacun avec son interrupteur, sa ligne d'explication et son lien vers l'aide." loading="lazy" /><figcaption>La fenêtre Modules experts : ici, l'export pour Camunda et les tables de décision sont éteints.</figcaption></figure>
@@ -809,7 +809,7 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
 
       <section id="rapport-processus" class="expert-part">
         <h2>Rapport de processus<span class="ico" data-icon="pdf" aria-hidden="true"></span></h2>
-        <p>Le rapport fait du diagramme un document lisible sans outil BPMN, et une revue de modélisation. <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>Rapport de processus (PDF)</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Markdown</span> ou <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Word</span>, dans le menu Expert. Il contient :</p>
+        <p>Le rapport fait du diagramme un document lisible sans outil BPMN, et une revue de modélisation. Dans le menu Expert, sous l'intitulé Rapport de processus, <span class="uib"><span class="ico" data-icon="pdf" aria-hidden="true"></span>PDF</span>, <span class="uib"><span class="ico" data-icon="code" aria-hidden="true"></span>Markdown</span> ou <span class="uib"><span class="ico" data-icon="word" aria-hidden="true"></span>Word</span>. Il contient :</p>
         <ul>
           <li>les chiffres clés et le diagramme, avec chaque élément en cause entouré ;</li>
           <li>les constats : <strong>Erreur</strong> en rouge, <strong>Avertissement</strong> en orange, <strong>À compléter</strong> en jaune, et leur source ;</li>
@@ -850,8 +850,22 @@ Pour finir : vérifie le diagramme, corrige ce qui échoue et résume le process
       </section>
 
       <section id="potentiel-ia" class="expert-part">
-        <h2>Potentiel d'IA par activité (adoption de l'IA)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
-        <p>Le groupe <span class="ui">Potentiel d'IA</span> d'une activité porte une <span class="ui">Évaluation</span> (Automatisable, Assistée par IA, Humaine) et sa <span class="ui">Raison et garde-fou</span>. <span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Potentiel d'IA par activité</span>, dans le menu Expert, fait évaluer toutes les activités par le co-pilote, qui ajoute pour chaque activité automatisable ou assistée ses <a href="#risques-conformite">risques et contrôles</a>, puis résume où commencer. Le rapport reprend le tout dans un tableau.</p>
+        <h2>Activités à confier à l'IA (potentiel d'IA)<span class="ico" data-icon="assistant" aria-hidden="true"></span></h2>
+        <p>Cette fonction aide à décider où introduire l'IA dans un processus, et à quelles conditions. Elle n'évalue pas le co-pilote : elle évalue les activités de votre diagramme.</p>
+        <p><span class="uib"><span class="ico" data-icon="assistant" aria-hidden="true"></span>Quelles activités confier à l'IA ?</span>, dans le menu Expert, demande au co-pilote de passer chaque activité et de la classer :</p>
+        <ul>
+          <li><strong>Automatisable</strong> : un agent IA ou une automatisation peut la réaliser, une personne relit le résultat.</li>
+          <li><strong>Assistée par IA</strong> : une personne la réalise, l'IA l'aide (préparer, résumer, vérifier).</li>
+          <li><strong>Humaine</strong> : elle demande un jugement, une relation ou une responsabilité qui reste à une personne.</li>
+        </ul>
+        <p>Le co-pilote s'appuie sur le nom de l'activité, son couloir, sa documentation, la personne assignée et les systèmes utilisés. Vous obtenez :</p>
+        <ul>
+          <li>dans le panneau Processus de chaque activité, groupe <span class="ui">Potentiel d'IA</span> : l'<span class="ui">Évaluation</span> et la <span class="ui">Raison et garde-fou</span>, c'est-à-dire pourquoi ce classement, et ce qu'il faut prévoir pour que ce soit sûr ;</li>
+          <li>pour chaque activité automatisable ou assistée, les risques de la confier à l'IA (erreur, données personnelles, absence de relecture…) et les contrôles correspondants, ajoutés à ceux déjà écrits dans le groupe <a href="#risques-conformite">Risques et conformité</a> ;</li>
+          <li>dans le chat, un résumé en trois lignes : où l'IA rapporte d'abord, et quels risques encadrer ;</li>
+          <li>dans le <a href="#rapport-processus">rapport de processus</a>, un tableau qui reprend le tout.</li>
+        </ul>
+        <p>C'est une proposition à relire : corrigez l'évaluation dans le panneau si elle ne colle pas à votre réalité. Vous pouvez aussi remplir ces champs à la main, sans co-pilote. La commande demande un modèle réglé pour le co-pilote et le module <span class="ui">Potentiel d'IA</span> (<a href="#modules">Choisir les modules</a>).</p>
       </section>
 
       <section id="risques-conformite" class="expert-part">
