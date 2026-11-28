@@ -472,8 +472,10 @@ function ShapeColorEntry({ element, id }) {
     active=${c.fill === fill && c.stroke === stroke} onClick=${() => setVivid(c)} />`)
   return html`<div class="bio-properties-panel-entry appearance-entry" data-entry-id=${id}>
     <div class="bio-properties-panel-label">${T('Color', 'Couleur')}</div>
-    <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
-    <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
+    <div class="appearance-swatch-flow">
+      <div class="appearance-swatches" role="group" aria-label=${T('Shape color', 'Couleur de la forme')}>${swatches}</div>
+      <div class="appearance-swatches" role="group" aria-label=${T('Vivid shape colors', 'Couleurs vives de la forme')}>${vivid}</div>
+    </div>
     ${edge ? null : html`<${ColorField} id=${id + '-fill'} label=${T('Fill', 'Fond')} value=${fill} fallback=${defaults.fill} onChange=${(v) => set({ fill: v })} />`}
     <${ColorField} id=${id + '-stroke'} label=${T('Stroke', 'Contour')} value=${stroke} fallback=${defaults.stroke} onChange=${(v) => set({ stroke: v })} />
   </div>`
@@ -520,6 +522,7 @@ function TextStyleEntry({ element, id }) {
         (v) => applyFont(commandStack, elements, { name: v || undefined }))}
     </div>
     <div class="bio-properties-panel-label">${T('Text color', 'Couleur du texte')}</div>
+    <div class="appearance-swatch-flow">
     <div class="appearance-swatches" role="group" aria-label=${T('Text color', 'Couleur du texte')}>
       ${TEXT_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
@@ -527,6 +530,7 @@ function TextStyleEntry({ element, id }) {
     <div class="appearance-swatches" role="group" aria-label=${T('More text colors', 'Autres couleurs du texte')}>
       ${CONTRAST_ROW.map((c, i) => html`<${TextDot} key=${i} title=${c.label} color=${c.color}
         active=${color === c.color} onClick=${() => applyTextColor(commandStack, elements, c.color)} />`)}
+    </div>
     </div>
     <${ColorField} id=${id + '-color'} label=${T('Other', 'Autre')} value=${color || ''} fallback=${baseColor}
       onChange=${(v) => applyTextColor(commandStack, elements, v)} />

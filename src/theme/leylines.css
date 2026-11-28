@@ -749,8 +749,15 @@ body #chat-input { flex: 1; min-height: 72px; padding-right: 32px; overflow-y: h
 #properties-panel .appearance-entry { display: flex; flex-direction: column; gap: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label { margin-top: var(--space-2); }
 #properties-panel .appearance-entry > .bio-properties-panel-label:first-child { margin-top: 0; }
-/* Les pastilles suivent la largeur du panneau jusqu'à 36 px, puis restent à cette taille, alignées à gauche. */
-#properties-panel .appearance-swatches { display: grid; grid-template-columns: repeat(8, minmax(0, 36px)); justify-content: start; gap: 4px; }
+/* Pastilles de 36 px au plus. Huit par ligne au moins : sur un panneau étroit elles rétrécissent.
+   Quand le panneau s'élargit, les pastilles de la 2e ligne remontent une à une sur la 1re.
+   Les deux groupes d'une même couleur forment une seule grille (display: contents). */
+#properties-panel .appearance-swatches,
+#properties-panel .appearance-swatch-flow {
+  display: grid; gap: 4px; justify-content: start;
+  grid-template-columns: repeat(auto-fill, min(36px, calc((100% - 28px) / 8)));
+}
+#properties-panel .appearance-swatch-flow > .appearance-swatches { display: contents; }
 #properties-panel .appearance-used { display: flex; flex-direction: column; gap: 4px; }
 #properties-panel .appearance-sublabel { font-size: 11px; color: var(--ink-muted); }
 #properties-panel .appearance-swatch {
