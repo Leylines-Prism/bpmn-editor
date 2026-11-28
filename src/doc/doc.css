@@ -68,6 +68,11 @@
 }
 .doc-template-menu button small { display: block; color: var(--ink-muted); font-size: 12.5px; line-height: 17px; }
 .doc-template-menu button.suggested { background: var(--accent-soft); }
+.doc-heading-menu { width: 180px; }
+.doc-heading-menu .h1 { font-size: 20px; font-weight: 700; }
+.doc-heading-menu .h2 { font-size: 17px; font-weight: 700; }
+.doc-heading-menu .h3 { font-size: 15px; font-weight: 600; }
+.doc-heading-menu .h4 { font-size: 14px; font-weight: 600; }
 .doc-template-menu button:hover, .doc-template-menu button:focus-visible { background: var(--surface-sunken); outline: none; }
 
 .bio-properties-panel-popup.doc-editor .doc-body {
@@ -94,7 +99,7 @@
 .doc-foot .doc-count { flex: none; }
 @media (max-width: 640px) {
   .doc-views .doc-view { padding: 0 7px; font-size: 12px; }
-  .doc-toolbar .doc-fmt[data-fmt="heading"], .doc-toolbar .doc-sep { display: none; }
+  .doc-toolbar .doc-heading-wrap, .doc-toolbar .doc-sep { display: none; }
 }
 
 /* ── Pastilles du canevas ────────────────────────────────────────────── */
