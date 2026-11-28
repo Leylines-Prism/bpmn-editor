@@ -27,6 +27,7 @@ import { createExportOffer } from './export-offer.js'
 import { setupExportDestination } from './export-destination.js'
 import { printDiagram } from './print-diagram.js'
 import { setupHistory } from './history.js'
+import { setupZoomButtons } from './zoom-buttons.js'
 
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
@@ -198,6 +199,7 @@ setupHistory({
   undoButton: document.getElementById('btn-undo'),
   redoButton: document.getElementById('btn-redo'),
 })
+setupZoomButtons(modeler, document.getElementById('zoom-buttons'))
 
 // Onglet invisible du mode sans navigateur (version Docker) : le serveur l'ouvre avec ?headless=<clé>.
 // Il part d'un diagramme vide, sans reprendre le travail gardé par ce navigateur.
@@ -911,7 +913,12 @@ setupPanelPopup(modeler.get('eventBus'))
 const docEditor = setupDocEditor(modeler)
 setupDocBadges(modeler, { openEditor: docEditor.open })
 const docSearch = setupDocSearch(modeler)
-document.getElementById('btn-search').addEventListener('click', () => docSearch.open())
+// Le clic qui ouvre la recherche ne doit pas remonter jusqu'au document : diagram-js
+// referme la recherche à tout clic en dehors d'elle, et la refermerait aussitôt.
+document.getElementById('btn-search').addEventListener('click', (e) => {
+  e.stopPropagation()
+  docSearch.open()
+})
 makeResizable(document.getElementById('properties-panel'), {
   name: 'properties', label: T('Process panel width', 'Largeur du panneau Processus'), min: 240, max: 640, fallback: 300,
 })
